@@ -4,11 +4,11 @@ Update this file on every commit that advances or completes work. Do not advance
 
 ## Active pointer
 
-- **Phase:** 00 — Foundation
-- **Sub-phase:** 00.09 — Developer docs
-- **Active task:** `phase-00-foundation/09-developer-docs.md`
-- **Branch:** `feature/phase-00-foundation`
-- **Blockers:** none
+- **Phase:** 01 — Core Domain & Config
+- **Sub-phase:** 01.01 — Domain models
+- **Active task:** `phase-01-core-domain-config/01-domain-models.md`
+- **Branch:** _(to be created off `main` after Phase 00 PR is merged)_
+- **Blockers:** none — but see the Phase 00 gate-review note on the CI verification gap.
 - **Last updated:** 2026-05-27 by ohswedd
 
 ---
@@ -17,7 +17,7 @@ Update this file on every commit that advances or completes work. Do not advance
 
 Legend: `[ ]` not started · `[~]` in progress · `[x]` done · `[!]` blocked
 
-- [ ] Phase 00 — Foundation
+- [x] Phase 00 — Foundation
 - [ ] Phase 01 — Core Domain & Config
 - [ ] Phase 02 — CLI Skeleton & Run Lifecycle
 - [ ] Phase 03 — Report Schemas & Reporter
@@ -56,7 +56,7 @@ For each phase, record the gate review verdict and the reviewer's signature once
 
 | Phase | Status | Gate verdict | Reviewer | Date | Notes / linked commit |
 |---|---|---|---|---|---|
-| 00 | not started | — | — | — | — |
+| 00 | done | PASS (with CI-on-remote verification deferred to first PR — see Notes) | ohswedd | 2026-05-27 | All nine tasks (00.01–00.09) shipped on branch `feature/phase-00-foundation`. `make ci` green: ruff format-check + ruff lint + mypy strict + adr-check + pytest (4 tests) + Prettier + ESLint (3 workspaces) + tsc + Vitest (2 tests). pre-commit (gitleaks + commitlint + pre-push make-ci) wired and probed. ADRs 0001–0004 accepted. Repo tree matches PRD §11.2 exactly (41 directories). 0 AI co-author trailers in 11 commits. gitleaks: 0 leaks across 739 KB of history. **Verification gap:** the 5 GitHub Actions workflows (ci, secret-scan, commitlint, no-ai-coauthor, link-check) have NOT executed on a real PR because the repo has no GitHub remote yet. Documented in `docs/dev/ci-and-branch-protection.md`. The first push to a GitHub remote MUST exercise all 5 workflows; any divergence between docs and runtime is a Phase-00 bug to fix before Phase 01 begins. |
 | 01 | not started | — | — | — | — |
 | 02 | not started | — | — | — | — |
 | 03 | not started | — | — | — | — |
@@ -105,4 +105,4 @@ Whenever a phase changes behavior, schemas, or boundaries, record the doc update
 
 | Date | Phase | Doc updated | Section(s) | Commit |
 |---|---|---|---|---|
-| — | — | — | — | — |
+| 2026-05-27 | 00 | _(none)_ | Phase 00 introduced no behavior changes, no schema changes, no safety-boundary changes, no scoring changes, and no CLI/SDK contract changes. PRD.md and CLAUDE.md were both untouched (PRD trailing whitespace was inadvertently rewritten by the pre-commit hook during a probe and immediately restored; PRD.md, CLAUDE.md were added to the trailing-whitespace + end-of-file-fixer exclude list to make the protection permanent). No sync entry required. | n/a |
