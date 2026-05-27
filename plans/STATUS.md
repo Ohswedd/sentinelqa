@@ -7,8 +7,8 @@ Update this file on every commit that advances or completes work. Do not advance
 - **Phase:** 01 — Core Domain & Config
 - **Sub-phase:** 01.01 — Domain models
 - **Active task:** `phase-01-core-domain-config/01-domain-models.md`
-- **Branch:** _(to be created off `main` after Phase 00 PR is merged)_
-- **Blockers:** none — but see the Phase 00 gate-review note on the CI verification gap.
+- **Branch:** `feature/phase-01-core-domain-config` (branched off local `main`, which now points at the Phase-00 tip; no GitHub remote yet, so no PR was merged — local `main` stands in for the merge until the remote exists).
+- **Blockers:** none. The CI verification gap from the Phase 00 gate review still stands; first push to a GitHub remote MUST exercise all 5 workflows.
 - **Last updated:** 2026-05-27 by ohswedd
 
 ---
@@ -106,3 +106,4 @@ Whenever a phase changes behavior, schemas, or boundaries, record the doc update
 | Date | Phase | Doc updated | Section(s) | Commit |
 |---|---|---|---|---|
 | 2026-05-27 | 00 | _(none)_ | Phase 00 introduced no behavior changes, no schema changes, no safety-boundary changes, no scoring changes, and no CLI/SDK contract changes. PRD.md and CLAUDE.md were both untouched (PRD trailing whitespace was inadvertently rewritten by the pre-commit hook during a probe and immediately restored; PRD.md, CLAUDE.md were added to the trailing-whitespace + end-of-file-fixer exclude list to make the protection permanent). No sync entry required. | n/a |
+| 2026-05-27 | 01 | PRD.md | §13.2 Exit codes — replaced 7-code informal grid with the canonical 8-code grid from CLAUDE.md §13; now lists the Phase 01 exception type bound to each code so `engine/errors/codes.py` is the single source of truth. Conflict resolution per CLAUDE §2 authority order (CLAUDE > PRD). | (this branch) |
