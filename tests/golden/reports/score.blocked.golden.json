@@ -1,0 +1,43 @@
+{
+  "blockers": [
+    "FND-CRITAAAAAAAA"
+  ],
+  "components": {
+    "accessibility": 50.0,
+    "api": 0.0,
+    "flake_risk": 0.0,
+    "functional": 40.0,
+    "llm_audit": 0.0,
+    "performance": 60.0,
+    "security": 20.0,
+    "visual": 0.0
+  },
+  "policy": {
+    "block_on_critical": true,
+    "block_on_high_security": true,
+    "max_failed_p1_flows": 0,
+    "max_flake_rate": 0.05,
+    "min_quality_score": 80.0
+  },
+  "release_decision": "blocked",
+  "run_id": "RUN-PASSEDAAAAAA",
+  "schema_version": "1",
+  "severity_penalties": {
+    "critical": 40.0,
+    "high": 15.0,
+    "info": 0.0,
+    "low": 0.0,
+    "medium": 0.0
+  },
+  "total": 42.5,
+  "weights": {
+    "accessibility": 0.2,
+    "api": 0.0,
+    "flake_risk": 0.0,
+    "functional": 0.4,
+    "llm_audit": 0.0,
+    "performance": 0.2,
+    "security": 0.2,
+    "visual": 0.0
+  }
+}

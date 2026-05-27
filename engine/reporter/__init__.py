@@ -35,13 +35,24 @@ from engine.reporter.run_writer import (
     summarize_modules_and_findings,
     write_run,
 )
+from engine.reporter.score_writer import (
+    COMPONENT_AXES,
+    DEFAULT_POLICY,
+    SCORE_REPORT_SCHEMA_VERSION,
+    SEVERITY_BUCKETS,
+    write_score,
+)
 
 __all__ = [
     "ARTIFACT_SLOTS",
+    "COMPONENT_AXES",
+    "DEFAULT_POLICY",
     "FINDINGS_ENVELOPE_SCHEMA_VERSION",
     "FindingsLinterWarning",
     "RUN_REPORT_SCHEMA_VERSION",
     "RunReport",
+    "SCORE_REPORT_SCHEMA_VERSION",
+    "SEVERITY_BUCKETS",
     "build_run_report",
     "canonical_config_digest",
     "collect_linter_warnings",
@@ -52,4 +63,5 @@ __all__ = [
     "summarize_modules_and_findings",
     "write_findings",
     "write_run",
+    "write_score",
 ]

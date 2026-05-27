@@ -5,8 +5,8 @@ Update this file on every commit that advances or completes work. Do not advance
 ## Active pointer
 
 - **Phase:** 03 — Report Schemas & Reporter
-- **Sub-phase:** 03.03 — `score.json` schema
-- **Active task:** `phase-03-report-schemas-reporter/03-score-json-schema.md`
+- **Sub-phase:** 03.04 — JUnit XML emitter
+- **Active task:** `phase-03-report-schemas-reporter/04-junit-xml.md`
 - **Branch:** `feature/phase-03-report-schemas-reporter`
 - **Blockers:** none. Task 03.01 closed: `run.schema.json` (draft 2020-12) committed under `packages/shared-schema/`; `engine/reporter/run_writer.py` ships `write_run` + helpers (`canonical_config_digest`, `derive_release_decision`, `summarize_modules_and_findings`); three goldens (`run.passed/unsafe/dry_run.golden.json`) lock the wire format; shared fixtures live in `tests/conftest.py`; `make update-goldens` regenerates goldens deliberately. `make ci` green (330 passed); `make coverage` 95.69%.
 - **Last updated:** 2026-05-27 by ohswedd
