@@ -17,7 +17,7 @@ from engine.domain.ids import validate_id
 from engine.domain.schema import RUN_SCHEMA_VERSION
 from engine.domain.target import Target
 
-RunStatus = Literal["passed", "failed", "incomplete", "unsafe_blocked"]
+RunStatus = Literal["passed", "failed", "incomplete", "unsafe_blocked", "dry_run"]
 
 
 class TestRun(SentinelModel):

@@ -20,12 +20,14 @@ dev = [
     "pytest-cov==6.0.0",
     "coverage[toml]==7.6.7",
     "pydantic==2.10.3",
-    "typer==0.13.1",
+    "typer==0.15.1",
+    "click==8.1.8",
     "pyyaml==6.0.2",
     "types-PyYAML==6.0.12.20240917",
     "pre-commit==4.0.1",
     "hypothesis==6.122.1",
     "check-jsonschema==0.30.0",
+    "httpx==0.28.1",
 ]
 
 [tool.uv]
@@ -33,6 +35,7 @@ package = false
 
 [tool.uv.workspace]
 members = [
+    "engine",
     "apps/cli",
     "packages/python-sdk",
 ]
@@ -109,6 +112,7 @@ files = [
     "engine/policy",
     "engine/errors",
     "engine/log",
+    "engine/orchestrator",
     "tests",
 ]
 exclude = [
@@ -172,11 +176,11 @@ source = [
     "engine/policy",
     "engine/errors",
     "engine/log",
+    "engine/orchestrator",
+    "apps/cli/src/sentinel_cli",
 ]
-# Phase 01 ships engine/{domain,config,policy,errors,logging}. apps/cli,
-# packages/python-sdk, engine/{orchestrator,runner,...}, and modules/* stay
-# out of the coverage source until they ship real code (later phases will
-# add themselves here at the same time they cross the testable threshold).
+# Phase 02 adds engine/orchestrator and apps/cli/src/sentinel_cli; both ship
+# real code under the same 95% coverage floor.
 
 [tool.coverage.report]
 fail_under = 95

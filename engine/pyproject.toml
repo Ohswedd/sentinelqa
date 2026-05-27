@@ -1,0 +1,27 @@
+[project]
+name = "sentinelqa-engine"
+version = "0.0.0"
+description = "SentinelQA engine — domain models, config loader, safety policy, errors, logging, orchestrator."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "Apache-2.0" }
+authors = [{ name = "ohswedd" }]
+dependencies = [
+    "pydantic==2.10.3",
+    "pyyaml==6.0.2",
+]
+
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+# The engine source lives at engine/<subpkg>/ (NOT under a src/ layout). The
+# engine/ directory IS the package: it contains __init__.py and the
+# subpackages. For wheel builds, hatch ships engine/ itself; for editable
+# installs, `dev-mode-dirs` tells hatch to add the parent directory to
+# sys.path, which makes `import engine` find this directory directly.
+[tool.hatch.build]
+dev-mode-dirs = [".."]
+
+[tool.hatch.build.targets.wheel]
+packages = ["../engine"]

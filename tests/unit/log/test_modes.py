@@ -16,13 +16,17 @@ def _reset() -> None:
     logging.getLogger("sentinelqa").handlers.clear()
 
 
-def test_json_mode_emits_json(capsys: pytest.CaptureFixture[str]) -> None:
+def test_json_mode_emits_json_on_stderr(capsys: pytest.CaptureFixture[str]) -> None:
+    # CLAUDE §13: in JSON mode stdout is reserved for the CLI's
+    # machine-readable payload. All log records (including INFO) go to
+    # stderr so piping stdout through `jq` stays clean.
     configure_logging(mode="json", level="INFO")
     log = get_logger("test")
     log.info("hello")
     captured = capsys.readouterr()
-    line = captured.out.strip()
-    assert line, "JSON mode should write to stdout."
+    assert captured.out == "", "JSON mode must not write logs to stdout."
+    line = captured.err.strip()
+    assert line, "JSON mode should write log records to stderr."
     payload = json.loads(line)
     assert payload["msg"] == "hello"
 

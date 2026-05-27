@@ -100,7 +100,8 @@
         "passed",
         "failed",
         "incomplete",
-        "unsafe_blocked"
+        "unsafe_blocked",
+        "dry_run"
       ],
       "title": "Status",
       "type": "string"

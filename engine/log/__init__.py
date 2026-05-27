@@ -56,18 +56,17 @@ def configure_logging(
         return
 
     if mode == "json":
-        out_handler = logging.StreamHandler(sys.stdout)
-        out_handler.setLevel(logging.INFO)
-        out_handler.setFormatter(JSONFormatter())
-        out_handler.addFilter(redactor)
+        # JSON mode (CLAUDE §13): stdout is reserved for the CLI's
+        # machine-readable payload (one JSON object per line, emitted via
+        # `sentinel_cli.json_mode.json_stdout`). All log records — including
+        # INFO — go to stderr so piping stdout through `jq` stays clean.
         err_handler = logging.StreamHandler(sys.stderr)
-        err_handler.setLevel(logging.WARNING)
+        err_handler.setLevel(logging.INFO)
         err_handler.setFormatter(JSONFormatter())
         err_handler.addFilter(redactor)
-        # In JSON mode stdout only receives INFO; WARNING+ goes to stderr.
-        out_handler.addFilter(lambda record: record.levelno < logging.WARNING)
-        root.addHandler(out_handler)
         root.addHandler(err_handler)
+        if run_id is not None:
+            LogContext.bind_run_id(run_id)
         return
 
     # human mode: pretty-printed to stderr (so stdout stays clean for piped data).
