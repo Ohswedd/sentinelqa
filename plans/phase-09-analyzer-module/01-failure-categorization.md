@@ -22,6 +22,7 @@ Classify each failed test into one of: `app_bug`, `test_bug`, `environment_failu
 1. Implement the rule pipeline.
 2. Emit a `FailureClassification` record per failed test.
 3. Add tests covering every category.
+4. **Rehome the Phase-02 `run_modules` catch-all** (`engine/orchestrator/run_lifecycle.py::RunLifecycle.run_modules`): today it captures every `Exception` subclass into `ModuleOutcome(status="errored")` with no categorization. As part of Phase 09, the analyzer must categorize these into `environment_failure` / `app_bug` / `test_bug` and feed them through the same `FailureClassification` path. The data model already supports this via `engine.domain.module_result.ModuleResult` — extend `ModuleOutcome` (or replace it with `ModuleResult` directly) so the analyzer can read structured error context, not just a stringified type+message.
 
 ## Acceptance criteria
 
