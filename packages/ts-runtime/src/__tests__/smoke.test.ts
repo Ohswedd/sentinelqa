@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { dispatch, USAGE } from '../cli.js';
+import { dispatch, dispatchAsync, USAGE } from '../cli.js';
 import { PACKAGE_NAME, VERSION } from '../version.js';
 
 describe('ts-runtime smoke', () => {
@@ -28,15 +28,15 @@ describe('ts-runtime smoke', () => {
     expect(result.stdout).toBe(`${PACKAGE_NAME} ${VERSION}\n`);
   });
 
-  it('refuses unknown commands with exit 2', () => {
+  it('refuses unknown commands with exit 2 (sync dispatch)', () => {
     const result = dispatch(['nope']);
     expect(result.exitCode).toBe(2);
     expect(result.stderr).toContain('unknown command');
   });
 
-  it('marks Phase-04.03 commands as not-yet-implemented (exit 7)', () => {
-    const result = dispatch(['run']);
-    expect(result.exitCode).toBe(7);
-    expect(result.stderr).toContain('lands in Phase 04.03');
+  it('refuses unknown commands with exit 2 (async dispatch)', async () => {
+    const result = await dispatchAsync(['nope']);
+    expect(result.exitCode).toBe(2);
+    expect(result.stderr).toContain('unknown command');
   });
 });

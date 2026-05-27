@@ -59,10 +59,18 @@ export default tseslint.config(
     },
   },
   {
-    // Tests can use the slightly looser style guidance.
+    // Tests can use the slightly looser style guidance — fake objects,
+    // boundary casts, and intentional missing-await arrows for mocks.
     files: ['**/*.{test,spec}.{ts,tsx,cts,mts}', '**/__tests__/**/*.{ts,tsx}'],
     rules: {
       '@typescript-eslint/no-non-null-assertion': 'off',
+      '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/no-unsafe-argument': 'off',
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/no-unsafe-member-access': 'off',
+      '@typescript-eslint/no-unsafe-call': 'off',
+      '@typescript-eslint/no-unsafe-return': 'off',
+      '@typescript-eslint/require-await': 'off',
     },
   },
   {
