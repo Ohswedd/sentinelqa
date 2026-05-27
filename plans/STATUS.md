@@ -5,8 +5,8 @@ Update this file on every commit that advances or completes work. Do not advance
 ## Active pointer
 
 - **Phase:** 00 — Foundation
-- **Sub-phase:** 00.04 — Secret hygiene
-- **Active task:** `phase-00-foundation/04-secret-hygiene.md`
+- **Sub-phase:** 00.05 — Conventional Commits & branch policy
+- **Active task:** `phase-00-foundation/05-conventional-commits.md`
 - **Branch:** `feature/phase-00-foundation`
 - **Blockers:** none
 - **Last updated:** 2026-05-27 by ohswedd

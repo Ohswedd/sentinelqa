@@ -1,0 +1,98 @@
+# SentinelQA .gitignore
+# Categories per plans/phase-00-foundation/04-secret-hygiene.md.
+
+# --- Python ---------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+.python-version
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+*.egg-info/
+*.egg
+.eggs/
+
+# --- Node / TypeScript ---------------------------------------------------
+node_modules/
+.pnpm-store/
+.turbo/
+.next/
+.svelte-kit/
+.nuxt/
+.cache/
+.parcel-cache/
+
+# --- Build output (Python + TS) ------------------------------------------
+dist/
+build/
+out/
+*.tsbuildinfo
+
+# --- Playwright ----------------------------------------------------------
+playwright-report/
+test-results/
+traces/
+**/playwright/.cache/
+
+# --- SentinelQA runtime artifacts ----------------------------------------
+.sentinel/runs/
+.sentinel/baselines/
+.sentinel/reports/
+.sentinel/cache/
+
+# --- Editors / OS noise --------------------------------------------------
+.DS_Store
+Thumbs.db
+.idea/
+*.swp
+*.swo
+*~
+
+# Allow only a curated subset of .vscode/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json.example
+
+# --- Secrets (CLAUDE.md §33) ---------------------------------------------
+# Never commit .env files. .env.example is whitelisted below.
+.env
+.env.*
+.env.local
+!.env.example
+!*.env.example
+
+# Generic secret files
+secrets.*
+*.secret
+secrets/
+
+# Keys and credentials
+*.pem
+*.key
+*.p12
+*.pfx
+*.cer
+*.crt
+id_rsa*
+id_ed25519*
+id_ecdsa*
+known_hosts*
+
+# Cloud credentials
+.aws/
+.gcloud/
+gcp-key*.json
+service-account*.json
+
+# --- Misc ----------------------------------------------------------------
+*.log
+*.tmp
+*.bak
+.envrc

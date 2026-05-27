@@ -7,7 +7,7 @@
 # Prefer uv when available; fall back to python -m for environments without uv.
 UV ?= uv
 
-.PHONY: help install install-python install-ts \
+.PHONY: help install install-python install-ts install-hooks \
         lint lint-py lint-ts \
         format format-py format-ts format-check \
         typecheck typecheck-py typecheck-ts \
@@ -30,10 +30,17 @@ help:
 	@echo "  clean         Remove caches and build artifacts"
 
 # --- install ---------------------------------------------------------------
-install: install-python install-ts
+install: install-python install-ts install-hooks
 
 install-python:
 	$(UV) sync --frozen --all-packages
+
+install-hooks:
+	@if [ -f .pre-commit-config.yaml ]; then \
+		$(UV) run pre-commit install --install-hooks; \
+	else \
+		echo "skipping pre-commit install (.pre-commit-config.yaml not yet present)"; \
+	fi
 
 install-ts:
 	@if [ -f package.json ]; then \
