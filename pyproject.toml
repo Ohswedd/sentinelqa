@@ -1,0 +1,151 @@
+[project]
+name = "sentinelqa-monorepo"
+version = "0.0.0"
+description = "SentinelQA monorepo root — Playwright-native release-confidence engine. See PRD.md and CLAUDE.md."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "Apache-2.0" }
+authors = [{ name = "ohswedd" }]
+
+# This root project intentionally publishes nothing. It exists so uv has a workspace
+# root and so dev tooling (ruff, mypy, pytest) has a single config surface.
+# Real distributables live under packages/ and apps/.
+
+[dependency-groups]
+dev = [
+    "ruff==0.7.4",
+    "mypy==1.13.0",
+    "pytest==8.3.3",
+    "pytest-asyncio==0.24.0",
+    "pytest-cov==6.0.0",
+    "coverage[toml]==7.6.7",
+    "pydantic==2.10.3",
+    "typer==0.13.1",
+    "pyyaml==6.0.2",
+    "types-PyYAML==6.0.12.20240917",
+    "pre-commit==4.0.1",
+]
+
+[tool.uv]
+package = false
+
+[tool.uv.workspace]
+members = [
+    "apps/cli",
+    "packages/python-sdk",
+]
+# engine/* and modules/* sub-packages become workspace members as their code
+# lands (Phase 01 onward). Each will ship its own pyproject.toml at that point.
+# See docs/adr/0003-package-managers.md.
+
+# ---------------------------------------------------------------------------
+# Ruff — lint + format
+# ---------------------------------------------------------------------------
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+src = [
+    "apps/cli/src",
+    "packages/python-sdk/src",
+    "engine",
+    "modules",
+    "tests",
+]
+extend-exclude = [
+    ".venv",
+    "dist",
+    "build",
+    "node_modules",
+    "playwright-report",
+    "test-results",
+    ".sentinel",
+]
+
+[tool.ruff.lint]
+select = [
+    "F",   # pyflakes
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "I",   # isort
+    "UP",  # pyupgrade
+    "B",   # flake8-bugbear
+    "N",   # pep8-naming
+    "SIM", # flake8-simplify
+    "RET", # flake8-return
+    "RUF", # ruff-specific
+]
+# We do not silence anything globally. Per-file ignores can be added with care.
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101"]  # asserts are fine in tests (rule not enabled but harmless)
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "lf"
+
+# ---------------------------------------------------------------------------
+# Mypy — strict by default
+# ---------------------------------------------------------------------------
+[tool.mypy]
+python_version = "3.11"
+strict = true
+warn_unused_ignores = true
+disallow_untyped_defs = true
+warn_redundant_casts = true
+warn_return_any = true
+warn_unreachable = true
+no_implicit_optional = true
+# Files list grows phase by phase as engine/* and modules/* sub-packages ship
+# their first .py files (Phase 01 onward). Listing empty directories here makes
+# mypy error with "no .py[i] files". See docs/adr/0003-package-managers.md.
+files = [
+    "apps/cli/src",
+    "packages/python-sdk/src",
+    "tests",
+]
+exclude = [
+    "(^|/)build/",
+    "(^|/)dist/",
+    "(^|/)\\.venv/",
+]
+
+# ---------------------------------------------------------------------------
+# Pytest
+# ---------------------------------------------------------------------------
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["tests"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+addopts = [
+    "-ra",
+    "--strict-config",
+    "--strict-markers",
+]
+xfail_strict = true
+filterwarnings = ["error"]
+
+# ---------------------------------------------------------------------------
+# Coverage floor (per CLAUDE.md §17 and PRD §6.5). Phase 00 ships no production
+# code, so coverage measurement is opt-in via `make coverage`. Phase 01 wires
+# this floor into `make ci`. See docs/adr/0003-package-managers.md.
+# ---------------------------------------------------------------------------
+[tool.coverage.run]
+branch = true
+source = [
+    "apps/cli/src",
+    "packages/python-sdk/src",
+    "engine",
+    "modules",
+]
+
+[tool.coverage.report]
+fail_under = 80
+show_missing = true
+skip_covered = false
+exclude_lines = [
+    "pragma: no cover",
+    "raise NotImplementedError",
+    "if TYPE_CHECKING:",
+]

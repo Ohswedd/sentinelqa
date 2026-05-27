@@ -1,0 +1,16 @@
+[project]
+name = "sentinelqa"
+version = "0.0.0"
+description = "SentinelQA Python SDK (placeholder; real surface lands in Phase 16)."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "Apache-2.0" }
+authors = [{ name = "ohswedd" }]
+dependencies = []
+
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/sentinel"]
