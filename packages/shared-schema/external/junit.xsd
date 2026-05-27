@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Permissive subset of the JUnit/Surefire/Jenkins XML schema covering the
+  shape SentinelQA emits. Modelled after the public Windyroad/JUnit XSD
+  and the Apache Surefire reporting format so any JUnit-aware CI tool
+  (dorny/test-reporter, jenkinsci/junit-plugin, GitLab CI, Allure, etc.)
+  can ingest our output. References:
+
+    - https://github.com/windyroad/JUnit-Schema/blob/master/JUnit.xsd
+    - https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd
+
+  We intentionally stay permissive (attributes are optional, mixed
+  content allowed in failure/error bodies) so the XSD validates outputs
+  from both compact and verbose emitters.
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:element name="testsuites">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="testsuite" type="TestSuite" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+      <xs:attribute name="name" type="xs:string" use="optional"/>
+      <xs:attribute name="tests" type="xs:nonNegativeInteger" use="optional"/>
+      <xs:attribute name="failures" type="xs:nonNegativeInteger" use="optional"/>
+      <xs:attribute name="errors" type="xs:nonNegativeInteger" use="optional"/>
+      <xs:attribute name="skipped" type="xs:nonNegativeInteger" use="optional"/>
+      <xs:attribute name="time" type="xs:string" use="optional"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="TestSuite">
+    <xs:sequence>
+      <xs:element name="properties" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="property" minOccurs="0" maxOccurs="unbounded">
+              <xs:complexType>
+                <xs:attribute name="name" type="xs:string" use="required"/>
+                <xs:attribute name="value" type="xs:string" use="required"/>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="testcase" type="TestCase" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="system-out" type="xs:string" minOccurs="0"/>
+      <xs:element name="system-err" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+    <xs:attribute name="name" type="xs:string" use="required"/>
+    <xs:attribute name="classname" type="xs:string" use="optional"/>
+    <xs:attribute name="tests" type="xs:nonNegativeInteger" use="optional"/>
+    <xs:attribute name="failures" type="xs:nonNegativeInteger" use="optional"/>
+    <xs:attribute name="errors" type="xs:nonNegativeInteger" use="optional"/>
+    <xs:attribute name="skipped" type="xs:nonNegativeInteger" use="optional"/>
+    <xs:attribute name="time" type="xs:string" use="optional"/>
+    <xs:attribute name="timestamp" type="xs:string" use="optional"/>
+    <xs:attribute name="hostname" type="xs:string" use="optional"/>
+    <xs:attribute name="id" type="xs:string" use="optional"/>
+    <xs:attribute name="package" type="xs:string" use="optional"/>
+  </xs:complexType>
+
+  <xs:complexType name="TestCase">
+    <xs:sequence>
+      <xs:element name="skipped" minOccurs="0">
+        <xs:complexType mixed="true">
+          <xs:attribute name="message" type="xs:string" use="optional"/>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="failure" minOccurs="0">
+        <xs:complexType mixed="true">
+          <xs:attribute name="message" type="xs:string" use="optional"/>
+          <xs:attribute name="type" type="xs:string" use="optional"/>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="error" minOccurs="0">
+        <xs:complexType mixed="true">
+          <xs:attribute name="message" type="xs:string" use="optional"/>
+          <xs:attribute name="type" type="xs:string" use="optional"/>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="system-out" type="xs:string" minOccurs="0"/>
+      <xs:element name="system-err" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+    <xs:attribute name="name" type="xs:string" use="required"/>
+    <xs:attribute name="classname" type="xs:string" use="optional"/>
+    <xs:attribute name="time" type="xs:string" use="optional"/>
+  </xs:complexType>
+
+</xs:schema>

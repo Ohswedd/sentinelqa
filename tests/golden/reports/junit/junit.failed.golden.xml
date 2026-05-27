@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="sentinelqa-RUN-PASSEDAAAAAA" tests="4" failures="1" errors="1" skipped="1" time="5.500"><testsuite name="functional" classname="sentinelqa.functional" tests="1" failures="0" errors="0" skipped="0" time="5.200"><testcase name="functional" classname="sentinelqa.functional" time="5.200" /></testsuite><testsuite name="accessibility" classname="sentinelqa.accessibility" tests="1" failures="0" errors="1" skipped="0" time="0.300"><testcase name="accessibility" classname="sentinelqa.accessibility" time="0.300"><error message="axe-core failed to load" type="ModuleError">axe-core failed to load</error></testcase></testsuite><testsuite name="performance" classname="sentinelqa.performance" tests="1" failures="0" errors="0" skipped="1" time="0.000"><testcase name="performance" classname="sentinelqa.performance" time="0.000"><skipped message="module skipped" /></testcase></testsuite><testsuite name="security" classname="sentinelqa.security" tests="1" failures="1" errors="0" skipped="0" time="0.000"><testcase name="FND-CRITAAAAAAAA" classname="sentinelqa.security.security_headers" time="0.000"><failure message="Session cookie missing Secure flag" type="critical">Severity: critical
+Confidence: 0.95
+Description: The session cookie returned from POST /login is set without the Secure attribute. On a non-HTTPS request the cookie would be transmitted in cleartext.
+Recommendation: Set the Secure attribute on the session cookie.
+Route: /login
+Evidence:
+  - network_log: traces/login.har</failure></testcase></testsuite></testsuites>

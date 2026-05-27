@@ -25,6 +25,11 @@ from engine.reporter.findings_writer import (
     collect_linter_warnings,
     write_findings,
 )
+from engine.reporter.junit_writer import (
+    FAILURE_SEVERITIES,
+    render_junit_xml,
+    write_junit,
+)
 from engine.reporter.run_writer import (
     ARTIFACT_SLOTS,
     RUN_REPORT_SCHEMA_VERSION,
@@ -47,6 +52,7 @@ __all__ = [
     "ARTIFACT_SLOTS",
     "COMPONENT_AXES",
     "DEFAULT_POLICY",
+    "FAILURE_SEVERITIES",
     "FINDINGS_ENVELOPE_SCHEMA_VERSION",
     "FindingsLinterWarning",
     "RUN_REPORT_SCHEMA_VERSION",
@@ -60,8 +66,10 @@ __all__ = [
     "first_blocking_warning",
     "lint_finding",
     "lint_findings",
+    "render_junit_xml",
     "summarize_modules_and_findings",
     "write_findings",
+    "write_junit",
     "write_run",
     "write_score",
 ]

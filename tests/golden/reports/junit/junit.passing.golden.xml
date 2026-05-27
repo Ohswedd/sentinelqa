@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="sentinelqa-RUN-PASSEDAAAAAA" tests="4" failures="1" errors="0" skipped="0" time="6.300"><testsuite name="functional" classname="sentinelqa.functional" tests="1" failures="0" errors="0" skipped="0" time="4.200"><testcase name="functional" classname="sentinelqa.functional" time="4.200" /></testsuite><testsuite name="accessibility" classname="sentinelqa.accessibility" tests="1" failures="0" errors="0" skipped="0" time="2.100"><testcase name="FND-MEDAAAAAAAAA" classname="sentinelqa.accessibility.a11y_contrast" time="2.100" /></testsuite><testsuite name="security" classname="sentinelqa.security" tests="1" failures="1" errors="0" skipped="0" time="0.000"><testcase name="FND-HIGHAAAAAAAA" classname="sentinelqa.security.security_cookies" time="0.000"><failure message="Session cookie missing HttpOnly attribute" type="high">Severity: high
+Confidence: 0.90
+Description: The session cookie on /login is missing HttpOnly; client-side JavaScript can read it.
+Recommendation: Set HttpOnly on the session cookie.
+Route: /login
+Evidence:
+  - network_log: traces/login.har</failure></testcase></testsuite><testsuite name="performance" classname="sentinelqa.performance" tests="1" failures="0" errors="0" skipped="0" time="0.000"><testcase name="FND-INFOAAAAAAAB" classname="sentinelqa.performance.perf_lcp" time="0.000" /></testsuite></testsuites>
