@@ -1,5 +1,7 @@
 # Task 01.06 — Structured logging
 
+> **Note on the package name (refined during Phase 01 implementation):** the package ships as `engine.log`, not `engine.logging`. The original `engine.logging` name collides with the Python stdlib `logging` module — pytest's import collector tries to load `tests/unit/logging/test_*.py` (the original test dir name) as `logging.test_*` and shadows the stdlib, and mypy refuses to resolve `logging.Formatter` / `logging.LogRecord` symbols inside any file under a sibling-named package. Renaming the package and the test dir to `engine/log/` and `tests/unit/log/` side-steps both. The API surface (`get_logger`, `configure_logging`, `LogContext`, formatters, redaction filter, audit stream) is unchanged.
+
 ## Objective
 
 Provide a single logging facility used by every module. Logs must be structured (JSON Lines in CI/JSON mode, pretty in human mode), redacted by default, and respect `--quiet` / `--verbose` / `--ci` / `--json` from PRD §13.
@@ -10,7 +12,7 @@ Provide a single logging facility used by every module. Logs must be structured 
 
 ## Deliverables
 
-- `engine/logging/__init__.py` exposing:
+- `engine/log/__init__.py` exposing:
   - `get_logger(name: str) -> SentinelLogger`.
   - `configure_logging(*, mode: Literal["human","json","quiet"], level: str, run_id: str | None)` — called once at CLI entry (Phase 02).
 - Two formatters: `JSONFormatter` (one JSON object per line, fields: `ts`, `level`, `logger`, `msg`, `run_id`, `module`, `extra`) and `HumanFormatter` (color-coded, time, level, message).
@@ -18,7 +20,7 @@ Provide a single logging facility used by every module. Logs must be structured 
 - In `json` mode, **only** JSON lines reach stdout; warnings, info, debug go to stderr unless `--verbose`.
 - `quiet` mode silences everything except errors.
 - A `LogContext` helper attaches the active `run_id`, `module`, and `task_id` to every record via `contextvars`.
-- `engine/logging/audit.py` distinct from operational logs — audit entries (safety decisions, policy gate outcomes) always go to `.sentinel/runs/<run-id>/audit.log` AND to stderr if `--verbose`.
+- `engine/log/audit.py` distinct from operational logs — audit entries (safety decisions, policy gate outcomes) always go to `.sentinel/runs/<run-id>/audit.log` AND to stderr if `--verbose`.
 
 ## Steps
 
@@ -36,9 +38,9 @@ Provide a single logging facility used by every module. Logs must be structured 
 
 ## Tests required
 
-- `tests/unit/logging/test_formatters.py` — JSON parseable, fields present.
-- `tests/unit/logging/test_redaction_filter.py` — secrets scrubbed.
-- `tests/unit/logging/test_modes.py` — human/json/quiet modes behave correctly.
+- `tests/unit/log/test_formatters.py` — JSON parseable, fields present.
+- `tests/unit/log/test_redaction_filter.py` — secrets scrubbed.
+- `tests/unit/log/test_modes.py` — human/json/quiet modes behave correctly.
 
 ## PRD / CLAUDE.md references
 
