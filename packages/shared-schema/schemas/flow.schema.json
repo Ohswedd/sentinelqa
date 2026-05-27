@@ -1,0 +1,129 @@
+{
+  "$defs": {
+    "FlowStep": {
+      "additionalProperties": false,
+      "description": "One step inside a :class:`Flow`.",
+      "properties": {
+        "description": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Description",
+          "type": "string"
+        },
+        "expected_outcome": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Expected Outcome",
+          "type": "string"
+        },
+        "target_element_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Target Element Id"
+        },
+        "target_route_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Target Route Id"
+        }
+      },
+      "required": [
+        "description",
+        "expected_outcome"
+      ],
+      "title": "FlowStep",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "A named user journey through the app.",
+  "properties": {
+    "id": {
+      "title": "Id",
+      "type": "string"
+    },
+    "name": {
+      "maxLength": 200,
+      "minLength": 1,
+      "title": "Name",
+      "type": "string"
+    },
+    "priority": {
+      "default": "P2",
+      "enum": [
+        "P0",
+        "P1",
+        "P2",
+        "P3"
+      ],
+      "title": "Priority",
+      "type": "string"
+    },
+    "required_auth_role": {
+      "anyOf": [
+        {
+          "maxLength": 64,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Required Auth Role"
+    },
+    "required_data_state": {
+      "anyOf": [
+        {
+          "maxLength": 200,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Required Data State"
+    },
+    "risk": {
+      "default": "medium",
+      "enum": [
+        "critical",
+        "high",
+        "medium",
+        "low"
+      ],
+      "title": "Risk",
+      "type": "string"
+    },
+    "steps": {
+      "items": {
+        "$ref": "#/$defs/FlowStep"
+      },
+      "title": "Steps",
+      "type": "array"
+    }
+  },
+  "required": [
+    "id",
+    "name",
+    "steps"
+  ],
+  "title": "Flow",
+  "type": "object",
+  "x-sentinelqa-schema-version": "1"
+}

@@ -1,0 +1,50 @@
+{
+  "additionalProperties": false,
+  "description": "One generated Playwright test bound to a :class:`Flow`.",
+  "properties": {
+    "confidence": {
+      "default": 1.0,
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Confidence",
+      "type": "number"
+    },
+    "file_path": {
+      "format": "path",
+      "title": "File Path",
+      "type": "string"
+    },
+    "flow_id": {
+      "title": "Flow Id",
+      "type": "string"
+    },
+    "id": {
+      "title": "Id",
+      "type": "string"
+    },
+    "test_type": {
+      "default": "functional",
+      "enum": [
+        "functional",
+        "a11y",
+        "api",
+        "performance",
+        "visual",
+        "security",
+        "chaos",
+        "llm_audit",
+        "regression"
+      ],
+      "title": "Test Type",
+      "type": "string"
+    }
+  },
+  "required": [
+    "id",
+    "flow_id",
+    "file_path"
+  ],
+  "title": "TestCase",
+  "type": "object",
+  "x-sentinelqa-schema-version": "1"
+}

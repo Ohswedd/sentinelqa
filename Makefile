@@ -11,9 +11,10 @@ UV ?= uv
         lint lint-py lint-ts \
         format format-py format-ts format-check \
         typecheck typecheck-py typecheck-ts \
-        test test-py test-ts \
+        test test-py test-ts test-fast test-full \
         coverage \
         adr-check \
+        schemas \
         clean ci
 
 help:
@@ -23,10 +24,13 @@ help:
 	@echo "  format        Format Python and TypeScript in place"
 	@echo "  format-check  Verify formatting without modifying files (CI mode)"
 	@echo "  typecheck     mypy + tsc --noEmit"
-	@echo "  test          Run all unit/integration tests"
+	@echo "  test          Run default tests (slow/bench markers excluded)"
+	@echo "  test-fast     Alias for test"
+	@echo "  test-full     Include slow + bench tests (property + perf)"
 	@echo "  coverage      Run tests with coverage and enforce the floor"
-	@echo "  adr-check     Validate ADR template adherence (wired in Phase 00.07)"
-	@echo "  ci            format-check + lint + typecheck + test"
+	@echo "  adr-check     Validate ADR template adherence"
+	@echo "  schemas       Emit JSON Schemas for every engine.domain model"
+	@echo "  ci            format-check + lint + typecheck + adr-check + test"
 	@echo "  clean         Remove caches and build artifacts"
 
 # --- install ---------------------------------------------------------------
@@ -107,10 +111,20 @@ test-ts:
 		echo "skipping TS test (package.json lands in Phase 00.03)"; \
 	fi
 
-# Coverage is opt-in until Phase 01 ships measurable production code.
-# Configured floor lives in pyproject.toml ([tool.coverage.report].fail_under).
+# Phase 01: coverage floor is enforced; fail_under lives in pyproject.toml.
 coverage:
 	$(UV) run pytest --cov --cov-report=term-missing
+
+# `test` already excludes `slow` and `bench` markers via pyproject; alias as
+# `test-fast` for symmetry with `test-full`.
+test-fast: test-py
+
+test-full:
+	$(UV) run pytest --override-ini="addopts=-ra --strict-config --strict-markers --import-mode=importlib"
+
+# Generate JSON Schemas for every domain model into packages/shared-schema/.
+schemas:
+	$(UV) run python -c "from pathlib import Path; from engine.domain.jsonschema import dump_schemas; written = dump_schemas(Path('packages/shared-schema/schemas')); [print(p) for p in written]"
 
 # --- adr-check -------------------------------------------------------------
 adr-check:

@@ -1,0 +1,88 @@
+# SentinelQA configuration example (PRD §17.1).
+#
+# Copy this file to `sentinel.config.yaml` at your project root and edit
+# the values for your app. Secrets MUST come from environment variables —
+# the loader rejects inline values for password / token / api_key keys.
+# Authority: PRD §17, CLAUDE.md §6 (safety boundary), CLAUDE.md §12 (config rules).
+version: 1
+
+project:
+  name: example-app
+  framework: nextjs
+  package_manager: pnpm
+
+source:
+  root: .
+  include:
+    - app
+    - pages
+    - src
+  exclude:
+    - node_modules
+    - .next
+    - dist
+
+target:
+  base_url: http://localhost:3000
+  # Every host SentinelQA is allowed to touch. Wildcards are rejected
+  # explicitly — list each authorized host (CLAUDE.md §6).
+  allowed_hosts:
+    - localhost
+    - 127.0.0.1
+    - staging.example.com
+  # Only required when security.mode is `authorized_destructive`.
+  # proof_of_authorization: ./.sentinel/auth/staging-proof.yaml
+
+auth:
+  strategy: test_user
+  login_url: /login
+  # Secrets come from env vars; never inline them here.
+  username_env: TEST_USER_EMAIL
+  password_env: TEST_USER_PASSWORD
+
+modules:
+  functional: true
+  api: true
+  accessibility: true
+  performance: true
+  visual: false
+  security: true
+  chaos: false
+  llm_audit: true
+
+security:
+  # `safe` is the default; the only other value (`authorized_destructive`)
+  # requires `target.proof_of_authorization` to point at a signed doc.
+  mode: safe
+  destructive_tests: false
+  max_requests_per_second: 5
+  allowed_payload_level: low
+
+performance:
+  budgets:
+    lcp_ms: 2500
+    cls: 0.1
+    inp_ms: 200
+    api_p95_ms: 500
+    js_total_kb: 500
+
+visual:
+  baselines_dir: .sentinel/baselines
+  threshold: 0.02
+  mask_dynamic_content: true
+
+policy:
+  min_quality_score: 85
+  block_on_critical: true
+  block_on_high_security: true
+  max_flake_rate: 0.03
+  allow_medium_a11y: false
+  max_failed_p1_flows: 0
+
+report:
+  output_dir: .sentinel/reports
+  formats:
+    - html
+    - json
+    - junit
+    - sarif

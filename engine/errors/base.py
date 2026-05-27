@@ -1,0 +1,224 @@
+"""Typed exception hierarchy.
+
+Each concrete exception declares its symbolic ``DEFAULT_CODE`` from the
+registry; the base class :class:`SentinelError` does the work of looking up
+the message template, exit code, and suggested fix at construction time, so
+call sites stay terse::
+
+    raise ConfigSchemaError(detail="missing required key 'target.base_url'")
+
+The CLI catches :class:`SentinelError` at its outermost boundary and maps it
+to an exit code via ``error.exit_code``. Anything that escapes as a plain
+``Exception`` is funneled into :class:`InternalError` (exit code 7).
+"""
+
+from __future__ import annotations
+
+from typing import Any, ClassVar
+
+from engine.errors.codes import (
+    ERROR_REGISTRY,
+    EXIT_INTERNAL_ERROR,
+    EXIT_RUNTIME_ERROR,
+    ErrorCodeSpec,
+)
+
+
+class SentinelError(Exception):
+    """Base for every SentinelQA exception that crosses a public boundary.
+
+    Concrete subclasses set :attr:`DEFAULT_CODE` to a key registered in
+    :data:`engine.errors.codes.ERROR_REGISTRY`. Construction reads the spec
+    and applies it, but every field can still be overridden per-call.
+    """
+
+    DEFAULT_CODE: ClassVar[str] = "E-INT-001"
+
+    def __init__(
+        self,
+        message: str | None = None,
+        *,
+        code: str | None = None,
+        exit_code: int | None = None,
+        technical_context: dict[str, Any] | None = None,
+        suggested_fix: str | None = None,
+        **template_fields: Any,
+    ) -> None:
+        resolved_code = code or self.DEFAULT_CODE
+        spec: ErrorCodeSpec | None = ERROR_REGISTRY.get(resolved_code)
+
+        if message is None and spec is not None:
+            try:
+                message = spec.message_template.format(**template_fields)
+            except KeyError:
+                # Missing template fields is a programming bug, not a user
+                # error — surface it with a stable, readable fallback.
+                message = spec.message_template
+
+        if message is None:
+            message = "Unspecified SentinelQA error."
+
+        self.code: str = resolved_code
+        self.message: str = message
+        self.exit_code: int = (
+            exit_code
+            if exit_code is not None
+            else (spec.exit_code if spec is not None else EXIT_RUNTIME_ERROR)
+        )
+        self.technical_context: dict[str, Any] = dict(technical_context or {})
+        if template_fields:
+            # Preserve template inputs so the agent message carries enough
+            # context for the SDK consumer (Phase 16) to render them too.
+            for key, value in template_fields.items():
+                self.technical_context.setdefault(key, value)
+        self.suggested_fix: str = (
+            suggested_fix
+            if suggested_fix is not None
+            else (spec.suggested_fix if spec is not None else "")
+        )
+
+        super().__init__(self.message)
+
+    def to_agent_message(self) -> dict[str, Any]:
+        """Serialize for SDK/MCP consumers (redaction applied)."""
+
+        # Local import avoids a circular dependency: redaction lives in
+        # engine.policy and may itself construct SentinelError when its
+        # config-driven allowlist gets misused.
+        from engine.policy.redaction import redact
+
+        payload: dict[str, Any] = {
+            "type": "error",
+            "code": self.code,
+            "exit_code": self.exit_code,
+            "message": self.message,
+            "suggested_fix": self.suggested_fix,
+            "context": self.technical_context,
+        }
+        redacted = redact(payload)
+        # `redact` returns the same shape it received; the dict cast keeps
+        # mypy happy without changing runtime behavior.
+        assert isinstance(redacted, dict)
+        return redacted
+
+
+# ---------------------------------------------------------------------------
+# Configuration errors (exit code 2)
+# ---------------------------------------------------------------------------
+
+
+class ConfigError(SentinelError):
+    """Any failure to load or validate `sentinel.config.yaml`."""
+
+    DEFAULT_CODE = "E-CFG-002"
+
+
+class ConfigFileNotFoundError(ConfigError):
+    """The config file does not exist or is unreadable."""
+
+    DEFAULT_CODE = "E-CFG-001"
+
+
+class ConfigSchemaError(ConfigError):
+    """The config parsed but failed schema validation."""
+
+    DEFAULT_CODE = "E-CFG-002"
+
+
+class ConfigSecretInlineError(ConfigError):
+    """A secret was inlined where only an env-var reference is allowed."""
+
+    DEFAULT_CODE = "E-CFG-003"
+
+
+# ---------------------------------------------------------------------------
+# Safety errors (exit code 4)
+# ---------------------------------------------------------------------------
+
+
+class UnsafeTargetError(SentinelError):
+    """Generic safety-boundary rejection (CLAUDE.md §6)."""
+
+    DEFAULT_CODE = "E-SAFE-001"
+
+
+class UnknownHostError(UnsafeTargetError):
+    """Host not in target allowlist and not local."""
+
+    DEFAULT_CODE = "E-SAFE-001"
+
+
+class DestructiveWithoutProofError(UnsafeTargetError):
+    """Destructive mode requested without proof-of-authorization."""
+
+    DEFAULT_CODE = "E-SAFE-002"
+
+
+class ForbiddenFlagError(UnsafeTargetError):
+    """A stealth/evasion/bypass flag was requested."""
+
+    DEFAULT_CODE = "E-SAFE-003"
+
+
+# ---------------------------------------------------------------------------
+# Dependency / runtime errors
+# ---------------------------------------------------------------------------
+
+
+class DependencyMissingError(SentinelError):
+    """A required external dependency is missing."""
+
+    DEFAULT_CODE = "E-DEP-001"
+
+
+class TestExecutionError(SentinelError):
+    """Generic non-fatal failure inside the test runner (exit code 6)."""
+
+    DEFAULT_CODE = "E-RUN-001"
+
+
+class QualityGateFailedError(SentinelError):
+    """Findings cleared the run but failed policy gates (exit code 1)."""
+
+    DEFAULT_CODE = "E-QGATE-001"
+
+
+class InternalError(SentinelError):
+    """Catch-all for uncategorized programmer-fault failures (exit code 7)."""
+
+    DEFAULT_CODE = "E-INT-001"
+
+    def __init__(
+        self,
+        message: str | None = None,
+        **kwargs: Any,
+    ) -> None:
+        super().__init__(message, exit_code=EXIT_INTERNAL_ERROR, **kwargs)
+
+
+class PluginError(SentinelError):
+    """Failure originating in a plugin.
+
+    Exit code depends on whether the plugin failed to load (5, treated as a
+    missing dependency from the host's POV) or crashed at runtime (7).
+    """
+
+    DEFAULT_CODE = "E-PLG-001"
+
+
+__all__ = [
+    "SentinelError",
+    "ConfigError",
+    "ConfigFileNotFoundError",
+    "ConfigSchemaError",
+    "ConfigSecretInlineError",
+    "UnsafeTargetError",
+    "UnknownHostError",
+    "DestructiveWithoutProofError",
+    "ForbiddenFlagError",
+    "DependencyMissingError",
+    "TestExecutionError",
+    "QualityGateFailedError",
+    "InternalError",
+    "PluginError",
+]

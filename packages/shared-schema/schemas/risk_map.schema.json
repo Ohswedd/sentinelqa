@@ -1,0 +1,54 @@
+{
+  "$defs": {
+    "RouteRisk": {
+      "additionalProperties": false,
+      "description": "Per-route risk score (0..1 normalized).",
+      "properties": {
+        "justifications": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Justifications",
+          "type": "array"
+        },
+        "route_id": {
+          "title": "Route Id",
+          "type": "string"
+        },
+        "score": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Score",
+          "type": "number"
+        }
+      },
+      "required": [
+        "route_id",
+        "score"
+      ],
+      "title": "RouteRisk",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Aggregated per-route risk derived from the discovery graph.",
+  "properties": {
+    "entries": {
+      "items": {
+        "$ref": "#/$defs/RouteRisk"
+      },
+      "title": "Entries",
+      "type": "array"
+    },
+    "id": {
+      "title": "Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "id"
+  ],
+  "title": "RiskMap",
+  "type": "object",
+  "x-sentinelqa-schema-version": "1"
+}

@@ -888,15 +888,20 @@ sentinel mcp
 
 ### 13.2 Exit codes
 
-| Code | Meaning |
-|---:|---|
-| 0 | Passed |
-| 1 | Quality gate failed |
-| 2 | Configuration error |
-| 3 | Target not authorized |
-| 4 | Test execution error |
-| 5 | Internal SentinelQA error |
-| 6 | Unsafe command rejected |
+Deterministic and aligned with `CLAUDE.md` §13 (authority order `CLAUDE.md` §2 puts CLAUDE rules above the PRD, so the engineering constitution's exit-code grid is canonical). Every CLI command MUST exit with exactly one of these codes; the mapping is owned by `engine/errors/codes.py` and `engine/policy/exit_codes.py` (Phase 01).
+
+| Code | Meaning | Raised by (Phase 01 exception) |
+|---:|---|---|
+| 0 | Success | — |
+| 1 | Quality gate failed | `QualityGateFailedError` |
+| 2 | Configuration error | `ConfigError` and subclasses |
+| 3 | Runtime error (uncategorized non-fatal failure) | `SentinelError` raised without a more specific subclass |
+| 4 | Unsafe target blocked | `UnsafeTargetError` and subclasses |
+| 5 | Dependency missing | `DependencyMissingError`, `PluginError` (load-time) |
+| 6 | Test execution failed | `TestExecutionError` |
+| 7 | Internal error | `InternalError`, `PluginError` (runtime crash) |
+
+The earlier draft of this section listed "Target not authorized = 3" and "Unsafe command rejected = 6"; that ordering was retired during Phase 01 conflict resolution to align with `CLAUDE.md` §13 and the Phase 01 task spec `plans/phase-01-core-domain-config/04-exceptions.md`. The Phase 01 gate review checks that an unallowlisted host produces exit code 4, not 3 or 6.
 
 ### 13.3 Example commands
 

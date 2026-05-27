@@ -1,0 +1,86 @@
+{
+  "additionalProperties": false,
+  "description": "An HTTP / GraphQL endpoint the app exposes.",
+  "properties": {
+    "auth_strategy": {
+      "default": "unknown",
+      "enum": [
+        "none",
+        "bearer",
+        "cookie",
+        "basic",
+        "api_key",
+        "oauth",
+        "unknown"
+      ],
+      "title": "Auth Strategy",
+      "type": "string"
+    },
+    "id": {
+      "title": "Id",
+      "type": "string"
+    },
+    "method": {
+      "enum": [
+        "GET",
+        "POST",
+        "PUT",
+        "PATCH",
+        "DELETE",
+        "HEAD",
+        "OPTIONS"
+      ],
+      "title": "Method",
+      "type": "string"
+    },
+    "path": {
+      "maxLength": 2048,
+      "minLength": 1,
+      "title": "Path",
+      "type": "string"
+    },
+    "request_schema": {
+      "anyOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Request Schema"
+    },
+    "response_schema": {
+      "anyOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Response Schema"
+    },
+    "source": {
+      "default": "discovered",
+      "enum": [
+        "discovered",
+        "openapi",
+        "graphql",
+        "user_provided"
+      ],
+      "title": "Source",
+      "type": "string"
+    }
+  },
+  "required": [
+    "id",
+    "method",
+    "path"
+  ],
+  "title": "ApiEndpoint",
+  "type": "object",
+  "x-sentinelqa-schema-version": "1"
+}

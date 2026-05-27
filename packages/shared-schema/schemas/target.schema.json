@@ -1,0 +1,53 @@
+{
+  "additionalProperties": false,
+  "description": "The application endpoint SentinelQA is allowed to interact with.",
+  "properties": {
+    "allowed_hosts": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Allowed Hosts",
+      "type": "array",
+      "uniqueItems": true
+    },
+    "base_url": {
+      "format": "uri",
+      "minLength": 1,
+      "title": "Base Url",
+      "type": "string"
+    },
+    "mode": {
+      "default": "safe",
+      "enum": [
+        "safe",
+        "authorized_destructive"
+      ],
+      "title": "Mode",
+      "type": "string"
+    },
+    "proof_of_authorization": {
+      "anyOf": [
+        {
+          "format": "path",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Proof Of Authorization"
+    },
+    "schema_version": {
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "base_url"
+  ],
+  "title": "Target",
+  "type": "object",
+  "x-sentinelqa-schema-version": "1"
+}

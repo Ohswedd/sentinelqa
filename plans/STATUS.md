@@ -4,11 +4,11 @@ Update this file on every commit that advances or completes work. Do not advance
 
 ## Active pointer
 
-- **Phase:** 01 — Core Domain & Config
-- **Sub-phase:** 01.01 — Domain models
-- **Active task:** `phase-01-core-domain-config/01-domain-models.md`
-- **Branch:** _(to be created off `main` after Phase 00 PR is merged)_
-- **Blockers:** none — but see the Phase 00 gate-review note on the CI verification gap.
+- **Phase:** 02 — CLI Skeleton & Run Lifecycle
+- **Sub-phase:** 02.01 — Typer CLI scaffold
+- **Active task:** `phase-02-cli-skeleton-run-lifecycle/01-cli-skeleton.md` (to be opened when Phase 02 starts)
+- **Branch:** _(to be created off `main` once Phase 01 is merged; local `main` will be fast-forwarded to the Phase-01 branch tip as a stand-in until a remote exists.)_
+- **Blockers:** none. The Phase 00 CI verification gap was closed during Phase 01 (PR #1 ran all 8 required checks green; two Phase-00 workflow bugs were fixed in commit `3148fd4`). Branch protection on `main` is not server-enforced because GitHub gates that feature behind Pro for private repos — pre-push hooks + CODEOWNERS + Conventional Commits CI provide the practical equivalent.
 - **Last updated:** 2026-05-27 by ohswedd
 
 ---
@@ -18,7 +18,7 @@ Update this file on every commit that advances or completes work. Do not advance
 Legend: `[ ]` not started · `[~]` in progress · `[x]` done · `[!]` blocked
 
 - [x] Phase 00 — Foundation
-- [ ] Phase 01 — Core Domain & Config
+- [x] Phase 01 — Core Domain & Config
 - [ ] Phase 02 — CLI Skeleton & Run Lifecycle
 - [ ] Phase 03 — Report Schemas & Reporter
 - [ ] Phase 04 — TypeScript Playwright Runtime
@@ -56,8 +56,8 @@ For each phase, record the gate review verdict and the reviewer's signature once
 
 | Phase | Status | Gate verdict | Reviewer | Date | Notes / linked commit |
 |---|---|---|---|---|---|
-| 00 | done | PASS (with CI-on-remote verification deferred to first PR — see Notes) | ohswedd | 2026-05-27 | All nine tasks (00.01–00.09) shipped on branch `feature/phase-00-foundation`. `make ci` green: ruff format-check + ruff lint + mypy strict + adr-check + pytest (4 tests) + Prettier + ESLint (3 workspaces) + tsc + Vitest (2 tests). pre-commit (gitleaks + commitlint + pre-push make-ci) wired and probed. ADRs 0001–0004 accepted. Repo tree matches PRD §11.2 exactly (41 directories). 0 AI co-author trailers in 11 commits. gitleaks: 0 leaks across 739 KB of history. **Verification gap:** the 5 GitHub Actions workflows (ci, secret-scan, commitlint, no-ai-coauthor, link-check) have NOT executed on a real PR because the repo has no GitHub remote yet. Documented in `docs/dev/ci-and-branch-protection.md`. The first push to a GitHub remote MUST exercise all 5 workflows; any divergence between docs and runtime is a Phase-00 bug to fix before Phase 01 begins. |
-| 01 | not started | — | — | — | — |
+| 00 | done | PASS (CI-on-remote verification closed during Phase 01 — see Notes) | ohswedd | 2026-05-27 | All nine tasks (00.01–00.09) shipped on branch `feature/phase-00-foundation`. `make ci` green: ruff format-check + ruff lint + mypy strict + adr-check + pytest (4 tests) + Prettier + ESLint (3 workspaces) + tsc + Vitest (2 tests). pre-commit (gitleaks + commitlint + pre-push make-ci) wired and probed. ADRs 0001–0004 accepted. Repo tree matches PRD §11.2 exactly (41 directories). 0 AI co-author trailers in 11 commits. gitleaks: 0 leaks across 739 KB of history. **Verification gap closed (2026-05-27):** the private GitHub repo `Ohswedd/sentinelqa` was created at the end of Phase 01; PR #1 (Phase 01 → main) exercised all 8 required checks. The first run surfaced two genuine Phase-00 workflow bugs — `gitleaks-action@v2` crashed when trying to upload a SARIF artifact that was never written (no leaks), and `lychee --base .` failed because lychee 0.23 requires an absolute path or URL. Both fixed in commit `3148fd4`; all 8 checks green afterward. Branch protection on `main` could not be wired via API because GitHub gates that feature behind GitHub Pro for private repos; the user-facing equivalent (pre-push hook + CODEOWNERS + Conventional Commits in CI) is in place locally and on the remote checks. |
+| 01 | done | PASS | ohswedd | 2026-05-27 | All eight tasks (01.01–01.08) shipped on branch `feature/phase-01-core-domain-config`. `make ci` green: ruff format-check + ruff lint + mypy strict + adr-check + pytest (193 tests with `make test-full`, 187 with default markers) + Prettier + ESLint + tsc + Vitest. `make coverage` reports 96.24% (floor: 95%). Domain models: every PRD §18.1 entity is a frozen Pydantic v2 model with prefix-based ID generator, `extra="forbid"`, and SCHEMA_VERSION ClassVar; `make schemas` writes 17 stable `*.schema.json` files into `packages/shared-schema/schemas/`. Config: strict `sentinel.config.yaml` loader with `${ENV}` interpolation, unknown-key rejection, inline-secret refusal; `sentinel.config.yaml.example` round-trips. Safety: `SafetyPolicy.enforce` covers local/allowlisted/destructive branches; `UnsafeTargetError` → exit 4; audit log writes redacted JSONL; forbidden-feature deny-list scanned by `tests/security/test_no_stealth_flags.py`. Errors: typed hierarchy (`SentinelError` → 11 subclasses), `to_agent_message()` redacted; exit codes 0/1/2/3/4/5/6/7 wired through `engine.errors.codes.ERROR_REGISTRY`. Redaction: real impl, header + URL + dict surfaces, entropy heuristic + hypothesis property tests (10 000 examples slow tier). Logging: human/JSON/quiet modes, redaction filter on every record, context-var enrichment. ADR-0005 (Config schema), ADR-0006 (Safety policy), `docs/dev/schema-versioning.md`, and `docs/user/error-codes.md` shipped. PRD §13.2 was corrected to the canonical 8-code exit grid in the same branch (sync log entry below). 0 AI co-author trailers. |
 | 02 | not started | — | — | — | — |
 | 03 | not started | — | — | — | — |
 | 04 | not started | — | — | — | — |
@@ -106,3 +106,5 @@ Whenever a phase changes behavior, schemas, or boundaries, record the doc update
 | Date | Phase | Doc updated | Section(s) | Commit |
 |---|---|---|---|---|
 | 2026-05-27 | 00 | _(none)_ | Phase 00 introduced no behavior changes, no schema changes, no safety-boundary changes, no scoring changes, and no CLI/SDK contract changes. PRD.md and CLAUDE.md were both untouched (PRD trailing whitespace was inadvertently rewritten by the pre-commit hook during a probe and immediately restored; PRD.md, CLAUDE.md were added to the trailing-whitespace + end-of-file-fixer exclude list to make the protection permanent). No sync entry required. | n/a |
+| 2026-05-27 | 01 | PRD.md | §13.2 Exit codes — replaced 7-code informal grid with the canonical 8-code grid from CLAUDE.md §13; now lists the Phase 01 exception type bound to each code so `engine/errors/codes.py` is the single source of truth. Conflict resolution per CLAUDE §2 authority order (CLAUDE > PRD). | a5ab2d1 |
+| 2026-05-27 | 01 | _(none beyond §13.2)_ | Phase 01 introduces typed core models, the strict config loader, the safety policy, the redaction layer, and the structured logger. None of those changes alter externally-observable product behavior beyond the exit-code grid logged above. CLI/SDK contracts have not shipped yet (Phase 02+), so the PRD's §13.1 CLI and §14 SDK sections did not need updating. | (this branch) |
