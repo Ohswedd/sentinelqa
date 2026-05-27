@@ -1,0 +1,172 @@
+{
+  "$schema": "https://docs.oasis-open.org/sarif/sarif/v2.1.0/errata01/os/schemas/sarif-schema-2.1.0.json",
+  "runs": [
+    {
+      "automationDetails": {
+        "id": "RUN-PASSEDAAAAAA"
+      },
+      "results": [
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "https://localhost:8080/login"
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "Session cookie missing HttpOnly attribute\n\nThe session cookie on /login is missing HttpOnly; client-side JavaScript can read it."
+          },
+          "properties": {
+            "category": "security/cookies",
+            "confidence": 0.9,
+            "evidence": [
+              {
+                "id": "EVD-HIGHAAAAAAAA",
+                "path": "traces/login.har",
+                "type": "network_log"
+              }
+            ],
+            "finding_id": "FND-HIGHAAAAAAAA",
+            "module": "security",
+            "severity": "high"
+          },
+          "ruleId": "SEC-002",
+          "ruleIndex": 2
+        },
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "logicalLocations": [
+                {
+                  "kind": "element",
+                  "name": "button[type=submit]"
+                }
+              ],
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "https://localhost:8080/signup"
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "Insufficient contrast on submit button\n\nThe /signup submit button has contrast ratio 3.8 (WCAG AA needs \u22654.5)."
+          },
+          "properties": {
+            "category": "a11y/contrast",
+            "confidence": 0.7,
+            "evidence": [
+              {
+                "id": "EVD-MEDAAAAAAAAA",
+                "path": "screenshots/signup.png",
+                "type": "screenshot"
+              }
+            ],
+            "finding_id": "FND-MEDAAAAAAAAA",
+            "module": "accessibility",
+            "severity": "medium"
+          },
+          "ruleId": "A11Y-001",
+          "ruleIndex": 0
+        },
+        {
+          "level": "note",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "https://localhost:8080/"
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "LCP within budget\n\nLCP measured at 1.8s; budget is 2.5s."
+          },
+          "properties": {
+            "category": "perf/lcp",
+            "confidence": 0.6,
+            "evidence": [
+              {
+                "id": "EVD-INFOAAAAAAAB",
+                "path": "traces/home.zip",
+                "type": "trace"
+              }
+            ],
+            "finding_id": "FND-INFOAAAAAAAB",
+            "module": "performance",
+            "severity": "info"
+          },
+          "ruleId": "PERF-001",
+          "ruleIndex": 1
+        }
+      ],
+      "tool": {
+        "driver": {
+          "informationUri": "https://sentinelqa.dev",
+          "name": "SentinelQA",
+          "rules": [
+            {
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "fullDescription": {
+                "text": "Contrast ratio < 4.5 fails WCAG 2.1 AA for normal text."
+              },
+              "helpUri": "https://docs.sentinelqa.dev/rules/A11Y-001",
+              "id": "A11Y-001",
+              "name": "InsufficientContrast",
+              "properties": {
+                "category": "a11y/contrast"
+              },
+              "shortDescription": {
+                "text": "Foreground/background contrast below WCAG AA threshold."
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "fullDescription": {
+                "text": "LCP measured under the 2.5s default budget."
+              },
+              "helpUri": "https://docs.sentinelqa.dev/rules/PERF-001",
+              "id": "PERF-001",
+              "name": "LcpWithinBudget",
+              "properties": {
+                "category": "perf/lcp"
+              },
+              "shortDescription": {
+                "text": "Largest Contentful Paint within configured budget."
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "fullDescription": {
+                "text": "The Set-Cookie response header lacks HttpOnly."
+              },
+              "helpUri": "https://docs.sentinelqa.dev/rules/SEC-002",
+              "id": "SEC-002",
+              "name": "MissingHttpOnly",
+              "properties": {
+                "category": "security/cookies"
+              },
+              "shortDescription": {
+                "text": "Session cookie missing HttpOnly attribute."
+              }
+            }
+          ],
+          "version": "0.0.0"
+        }
+      }
+    }
+  ],
+  "version": "2.1.0"
+}

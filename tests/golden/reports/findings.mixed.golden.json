@@ -1,0 +1,98 @@
+{
+  "count": 3,
+  "findings": [
+    {
+      "affected_target": "https://localhost:8080",
+      "category": "security/cookies",
+      "confidence": 0.9,
+      "created_at": "2026-05-27T12:00:30Z",
+      "description": "The session cookie on /login is missing HttpOnly; client-side JavaScript can read it.",
+      "evidence": [
+        {
+          "id": "EVD-HIGHAAAAAAAA",
+          "path": "traces/login.har",
+          "redacted": true,
+          "type": "network_log"
+        }
+      ],
+      "id": "FND-HIGHAAAAAAAA",
+      "location": {
+        "file": null,
+        "line": null,
+        "route": "/login",
+        "selector": null
+      },
+      "module": "security",
+      "recommendation": "Set HttpOnly on the session cookie.",
+      "reproduction_steps": [],
+      "run_id": "RUN-PASSEDAAAAAA",
+      "schema_version": "1",
+      "severity": "high",
+      "suggested_fix": null,
+      "title": "Session cookie missing HttpOnly attribute"
+    },
+    {
+      "affected_target": "https://localhost:8080",
+      "category": "a11y/contrast",
+      "confidence": 0.7,
+      "created_at": "2026-05-27T12:00:30Z",
+      "description": "The /signup submit button has contrast ratio 3.8 (WCAG AA needs \u22654.5).",
+      "evidence": [
+        {
+          "id": "EVD-MEDAAAAAAAAA",
+          "path": "screenshots/signup.png",
+          "redacted": true,
+          "type": "screenshot"
+        }
+      ],
+      "id": "FND-MEDAAAAAAAAA",
+      "location": {
+        "file": null,
+        "line": null,
+        "route": "/signup",
+        "selector": "button[type=submit]"
+      },
+      "module": "accessibility",
+      "recommendation": "Increase foreground/background contrast to \u22654.5.",
+      "reproduction_steps": [],
+      "run_id": "RUN-PASSEDAAAAAA",
+      "schema_version": "1",
+      "severity": "medium",
+      "suggested_fix": null,
+      "title": "Insufficient contrast on submit button"
+    },
+    {
+      "affected_target": "https://localhost:8080",
+      "category": "perf/lcp",
+      "confidence": 0.6,
+      "created_at": "2026-05-27T12:00:30Z",
+      "description": "LCP measured at 1.8s; budget is 2.5s.",
+      "evidence": [
+        {
+          "id": "EVD-INFOAAAAAAAB",
+          "path": "traces/home.zip",
+          "redacted": true,
+          "type": "trace"
+        }
+      ],
+      "id": "FND-INFOAAAAAAAB",
+      "location": {
+        "file": null,
+        "line": null,
+        "route": "/",
+        "selector": null
+      },
+      "module": "performance",
+      "recommendation": "No action required.",
+      "reproduction_steps": [],
+      "run_id": "RUN-PASSEDAAAAAA",
+      "schema_version": "1",
+      "severity": "info",
+      "suggested_fix": null,
+      "title": "LCP within budget"
+    }
+  ],
+  "generated_at": "2026-05-27T12:00:30+00:00",
+  "run_id": "RUN-PASSEDAAAAAA",
+  "schema_version": "1"
+}

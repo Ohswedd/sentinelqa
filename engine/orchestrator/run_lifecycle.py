@@ -12,7 +12,7 @@ DO abort, with the run marked ``unsafe_blocked`` / ``incomplete``.
 
 from __future__ import annotations
 
-from collections.abc import Iterable
+from collections.abc import Iterable, Mapping
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from pathlib import Path
@@ -20,7 +20,11 @@ from typing import Any
 from urllib.parse import urlparse
 
 from engine.config.schema import RootConfig
+from engine.domain.finding import Finding
 from engine.domain.ids import IdGenerator
+from engine.domain.module_result import ModuleResult
+from engine.domain.policy_decision import PolicyDecision
+from engine.domain.quality_score import QualityScore
 from engine.domain.target import Target
 from engine.domain.test_run import RunStatus, TestRun
 from engine.errors.base import (
@@ -78,6 +82,13 @@ class LifecycleContext:
     quality_gate_passed: bool = True
     status: RunStatus = "incomplete"
     early_exit: bool = False
+    # Phase 03+: typed domain objects passed to the Reporter when modules
+    # produce them. Raw `findings` / `quality_score` above stay around
+    # for the legacy dict path until Phase 14 retires them.
+    typed_findings: tuple[Finding, ...] = field(default_factory=tuple)
+    typed_module_results: tuple[ModuleResult, ...] = field(default_factory=tuple)
+    typed_score: QualityScore | None = None
+    typed_policy: PolicyDecision | None = None
 
 
 class RunLifecycle:
@@ -93,6 +104,22 @@ class RunLifecycle:
         self._artifacts_root = artifacts_root or Path(".sentinel") / "runs"
         self._registry = registry or default_registry()
         self._safety = safety_policy or SafetyPolicy()
+        self._ensure_default_hooks()
+
+    def _ensure_default_hooks(self) -> None:
+        """Register Phase-03 reporter hook on first use (idempotent).
+
+        Imported locally to avoid the orchestrator <-> reporter circular
+        dependency. A sentinel flag on the registry keeps registration
+        idempotent so tests that build fresh lifecycles don't double-register.
+        """
+
+        if getattr(self._registry, "_reporter_hook_registered", False):
+            return
+        from engine.reporter.dispatcher import register_reporter_hook
+
+        register_reporter_hook(self._registry)
+        self._registry._reporter_hook_registered = True  # type: ignore[attr-defined]
 
     # ------------------------------------------------------------------
     # Public entry point
@@ -285,24 +312,25 @@ class RunLifecycle:
             hook(ctx)
 
     def generate_reports(self, ctx: LifecycleContext) -> None:
+        # Reports must carry the final status, so finalize before any
+        # report hooks run. Phase 03's Reporter (registered on this
+        # phase) writes run.json + report.md etc. with the correct
+        # status; persist_artifacts then only handles the latest
+        # pointer.
+        ctx.finished_at = datetime.now(UTC)
+        self._finalize_status(ctx)
         for hook in ctx.registry.phase_hooks.get(LifecyclePhase.GENERATE_REPORTS, []):
             hook(ctx)
 
     def persist_artifacts(self, ctx: LifecycleContext) -> None:
-        # CLAUDE §10 lists "persist artifacts" before "return deterministic
-        # exit code". The persisted `run.json` must carry the final status,
-        # so we compute the status first and then write artifacts. The
-        # `return_deterministic_exit_code` step still owns the exit-code
-        # mapping for the CLI boundary.
+        # Phase 03 moved run.json / findings.json / score.json into the
+        # Reporter (called from `generate_reports`). This step now only
+        # finalizes the artifact directory (latest pointer) so the
+        # canonical write path is single-source-of-truth (CLAUDE.md §11).
         assert ctx.artifacts is not None
-        ctx.finished_at = datetime.now(UTC)
-        self._finalize_status(ctx)
-        run_payload = self._run_payload(ctx)
-        ctx.artifacts.write_json("run.json", run_payload)
-        if ctx.findings:
-            ctx.artifacts.write_json("findings.json", {"findings": ctx.findings})
-        if ctx.quality_score:
-            ctx.artifacts.write_json("score.json", ctx.quality_score)
+        if ctx.finished_at is None:
+            ctx.finished_at = datetime.now(UTC)
+            self._finalize_status(ctx)
         update_latest_pointer(self._artifacts_root, ctx.artifacts.root)
 
     def return_deterministic_exit_code(self, ctx: LifecycleContext) -> None:
@@ -356,43 +384,74 @@ class RunLifecycle:
 
     def _finalize_unsafe(self, ctx: LifecycleContext, exc: UnsafeTargetError) -> None:
         ctx.finished_at = datetime.now(UTC)
-        if ctx.artifacts is not None and ctx.audit_log_path is not None:
-            write_audit_entry(
-                ctx.audit_log_path,
-                {
-                    "event": "safety_block",
-                    "code": exc.code,
-                    "message": exc.message,
-                    "host": exc.technical_context.get("host"),
-                },
-            )
-            ctx.artifacts.write_json("run.json", self._run_payload(ctx))
+        if ctx.artifacts is None or ctx.audit_log_path is None:
+            return
+        write_audit_entry(
+            ctx.audit_log_path,
+            {
+                "event": "safety_block",
+                "code": exc.code,
+                "message": exc.message,
+                "host": exc.technical_context.get("host"),
+            },
+        )
+        self._write_short_circuit_run(ctx, errors=({"code": exc.code, "message": exc.message},))
 
     def _finalize_dry_run(self, ctx: LifecycleContext) -> None:
         ctx.finished_at = datetime.now(UTC)
         assert ctx.artifacts is not None
-        ctx.artifacts.write_json("run.json", self._run_payload(ctx))
+        self._write_short_circuit_run(ctx)
         update_latest_pointer(self._artifacts_root, ctx.artifacts.root)
 
-    def _run_payload(self, ctx: LifecycleContext) -> dict[str, Any]:
-        return {
-            "id": ctx.run_id,
-            "started_at": ctx.started_at.isoformat(),
-            "finished_at": (ctx.finished_at.isoformat() if ctx.finished_at else None),
-            "status": ctx.status,
-            "target": (ctx.target.to_dict() if ctx.target is not None else None),
-            "modules_run": sorted({o.name for o in ctx.module_outcomes}),
-            "module_outcomes": [
-                {
-                    "name": o.name,
-                    "status": o.status,
-                    "error_message": o.error_message,
-                }
-                for o in ctx.module_outcomes
-            ],
-            "config_snapshot": ctx.config.to_dict(),
-            "schema_version": TestRun.SCHEMA_VERSION,
+    def _write_short_circuit_run(
+        self,
+        ctx: LifecycleContext,
+        *,
+        errors: tuple[Mapping[str, str], ...] = (),
+    ) -> None:
+        """Write ``run.json`` for the unsafe / dry-run early exits.
+
+        Uses the same wire format as the happy path (`engine.reporter.run_writer.write_run`),
+        so every successful and short-circuit run shares one schema. The
+        full Reporter dispatcher is intentionally NOT invoked here — these
+        exits have no findings/score/policy and no module ran, so only
+        `run.json` + `audit.log` are produced (CLAUDE.md §10, §11).
+        """
+
+        from engine.reporter.run_writer import write_run
+
+        assert ctx.artifacts is not None
+        assert ctx.target is not None
+        assert ctx.run_id is not None
+        test_run = TestRun(
+            id=ctx.run_id,
+            started_at=ctx.started_at,
+            finished_at=ctx.finished_at,
+            target=ctx.target,
+            config_snapshot=ctx.config.to_dict(),
+            modules_run=tuple(sorted({o.name for o in ctx.module_outcomes})),
+            status=ctx.status,
+        )
+        # Short-circuit paths never reach generate_reports, so no other
+        # artifact_paths slot is populated; only audit.log is guaranteed
+        # to exist (the unsafe path always writes it; dry_run runs after
+        # safety enforcement which already wrote the safety_allowed line).
+        artifact_paths: dict[str, str | None] = {
+            "findings": None,
+            "score": None,
+            "junit": None,
+            "sarif": None,
+            "report_html": None,
+            "report_md": None,
+            "audit_log": "audit.log",
         }
+        write_run(
+            ctx.artifacts,
+            test_run,
+            config_snapshot=ctx.config.to_dict(),
+            errors=errors,
+            artifact_paths=artifact_paths,
+        )
 
     def _build_run(self, ctx: LifecycleContext) -> TestRun:
         assert ctx.target is not None

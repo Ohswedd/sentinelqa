@@ -14,7 +14,7 @@ UV ?= uv
         test test-py test-ts test-fast test-full \
         coverage \
         adr-check \
-        schemas \
+        schemas update-goldens \
         clean ci
 
 help:
@@ -30,6 +30,7 @@ help:
 	@echo "  coverage      Run tests with coverage and enforce the floor"
 	@echo "  adr-check     Validate ADR template adherence"
 	@echo "  schemas       Emit JSON Schemas for every engine.domain model"
+	@echo "  update-goldens  Regenerate report goldens (Phase 03+); commit the diff"
 	@echo "  ci            format-check + lint + typecheck + adr-check + test"
 	@echo "  clean         Remove caches and build artifacts"
 
@@ -125,6 +126,19 @@ test-full:
 # Generate JSON Schemas for every domain model into packages/shared-schema/.
 schemas:
 	$(UV) run python -c "from pathlib import Path; from engine.domain.jsonschema import dump_schemas; written = dump_schemas(Path('packages/shared-schema/schemas')); [print(p) for p in written]"
+
+# Phase 03: rewrite report goldens in place. Reviewer sees the diff in the
+# follow-up commit — the only place schema drift may originate.
+# Prompts for confirmation; pass FORCE=1 to skip the prompt (CI use only).
+update-goldens:
+	@if [ -z "$$FORCE" ]; then \
+		printf "About to rewrite tests/golden/reports/ in place.\n"; \
+		printf "Diff the result and commit deliberately.\n"; \
+		printf "Continue? [y/N] "; \
+		read ans; \
+		case "$$ans" in y|Y|yes|YES) ;; *) echo "aborted."; exit 1 ;; esac; \
+	fi
+	SENTINELQA_UPDATE_GOLDENS=1 $(UV) run pytest tests/golden -p no:cacheprovider
 
 # --- adr-check -------------------------------------------------------------
 adr-check:

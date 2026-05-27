@@ -48,14 +48,25 @@ class ArtifactDirectory:
         out.mkdir(parents=True, exist_ok=True)
         return out
 
-    def write_json(self, name: str, obj: Any) -> Path:
+    def write_json(self, name: str, obj: Any, *, redaction_depth: int = 6) -> Path:
         # `_jsonable` first so domain objects / Pydantic models / Paths
         # become primitives; THEN `redact` so secret keys and values are
         # masked. Reversing the order causes redact to coerce Path objects
         # via repr() rather than str().
+        #
+        # ``redaction_depth`` caps recursion in :func:`redact`. The 6-deep
+        # default suits run.json / findings.json / score.json (shallow
+        # envelopes). The SARIF writer raises this because the official
+        # SARIF 2.1.0 schema nests rules/results/locations far deeper.
         return self._atomic_write(
             name,
-            json.dumps(redact(_jsonable(obj)), sort_keys=True, indent=2, default=str) + "\n",
+            json.dumps(
+                redact(_jsonable(obj), depth=redaction_depth),
+                sort_keys=True,
+                indent=2,
+                default=str,
+            )
+            + "\n",
         )
 
     def write_yaml(self, name: str, obj: Any) -> Path:

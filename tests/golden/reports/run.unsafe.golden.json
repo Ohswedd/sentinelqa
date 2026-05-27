@@ -1,0 +1,37 @@
+{
+  "artifact_paths": {
+    "audit_log": "audit.log",
+    "findings": null,
+    "junit": null,
+    "report_html": null,
+    "report_md": null,
+    "sarif": null,
+    "score": null
+  },
+  "config_digest": "sha256:19f52782733b58974ca2227cf6a9fd922cc8770774fe4b13edff166a60e1d331",
+  "errors": [
+    {
+      "code": "E-SAFE-001",
+      "message": "Host 'example.com' is not in target.allowed_hosts and is not local."
+    }
+  ],
+  "finished_at": "2026-05-27T12:00:30+00:00",
+  "modules_run": [],
+  "quality_score": null,
+  "release_decision": "unsafe_target_rejected",
+  "run_id": "RUN-UNSAFEAAAAAA",
+  "schema_version": "1",
+  "started_at": "2026-05-27T12:00:00+00:00",
+  "status": "unsafe_blocked",
+  "summary": {
+    "blocked": 0,
+    "failed": 0,
+    "info": 0,
+    "passed": 0
+  },
+  "target": {
+    "base_url": "https://localhost:8080/",
+    "host": "localhost",
+    "mode": "safe"
+  }
+}

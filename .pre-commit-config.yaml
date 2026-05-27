@@ -11,11 +11,14 @@ repos:
       # PRD.md and CLAUDE.md intentionally use trailing-double-space as a
       # Markdown hard line break (CommonMark §6.7). Excluding them from the
       # auto-fixers preserves the authoring style; they are still scanned by
-      # gitleaks and detect-private-key below.
+      # gitleaks and detect-private-key below. Phase 03 report goldens
+      # (`tests/golden/`) are byte-for-byte fixtures written by Python's
+      # `json.dumps` / `xml.etree` / the Markdown writer — any whitespace
+      # massage here would silently break the schema-drift guard.
       - id: trailing-whitespace
-        exclude: ^(PRD\.md|CLAUDE\.md)$
+        exclude: ^(PRD\.md|CLAUDE\.md|tests/golden/)
       - id: end-of-file-fixer
-        exclude: ^(PRD\.md|CLAUDE\.md)$
+        exclude: ^(PRD\.md|CLAUDE\.md|tests/golden/)
       - id: check-yaml
       - id: check-json
       - id: check-added-large-files

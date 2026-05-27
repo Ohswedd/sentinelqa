@@ -1,0 +1,70 @@
+{
+  "$schema": "https://docs.oasis-open.org/sarif/sarif/v2.1.0/errata01/os/schemas/sarif-schema-2.1.0.json",
+  "runs": [
+    {
+      "automationDetails": {
+        "id": "RUN-PASSEDAAAAAA"
+      },
+      "results": [
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "https://localhost:8080/login"
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "Session cookie missing Secure flag\n\nThe session cookie returned from POST /login is set without the Secure attribute. On a non-HTTPS request the cookie would be transmitted in cleartext."
+          },
+          "properties": {
+            "category": "security/headers",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "id": "EVD-CRITAAAAAAAA",
+                "path": "traces/login.har",
+                "type": "network_log"
+              }
+            ],
+            "finding_id": "FND-CRITAAAAAAAA",
+            "module": "security",
+            "severity": "critical"
+          },
+          "ruleId": "SEC-001",
+          "ruleIndex": 0
+        }
+      ],
+      "tool": {
+        "driver": {
+          "informationUri": "https://sentinelqa.dev",
+          "name": "SentinelQA",
+          "rules": [
+            {
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "fullDescription": {
+                "text": "The Set-Cookie response header lacks Secure; the cookie may be transmitted over an unencrypted channel."
+              },
+              "helpUri": "https://docs.sentinelqa.dev/rules/SEC-001",
+              "id": "SEC-001",
+              "name": "MissingSecureFlag",
+              "properties": {
+                "category": "security/headers"
+              },
+              "shortDescription": {
+                "text": "Session cookie missing Secure flag."
+              }
+            }
+          ],
+          "version": "0.0.0"
+        }
+      }
+    }
+  ],
+  "version": "2.1.0"
+}

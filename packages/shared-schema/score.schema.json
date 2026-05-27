@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sentinelqa.dev/score.schema.json",
+  "title": "SentinelQA QualityScore",
+  "description": "Wire format for `.sentinel/runs/<run-id>/score.json`. PRD §19; CLAUDE.md §25.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "run_id",
+    "total",
+    "components",
+    "weights",
+    "severity_penalties",
+    "blockers",
+    "release_decision",
+    "policy"
+  ],
+  "properties": {
+    "schema_version": { "const": "1" },
+    "run_id": {
+      "type": "string",
+      "pattern": "^RUN-[A-Z0-9]{12}$"
+    },
+    "total": {
+      "description": "0..100. Null when no scoring was performed (unsafe_blocked, dry_run).",
+      "anyOf": [{ "type": "number", "minimum": 0, "maximum": 100 }, { "type": "null" }]
+    },
+    "components": { "$ref": "#/$defs/Components" },
+    "weights": { "$ref": "#/$defs/Components" },
+    "severity_penalties": { "$ref": "#/$defs/SeverityPenalties" },
+    "blockers": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^FND-[A-Z0-9]{12}$"
+      }
+    },
+    "release_decision": {
+      "enum": ["pass", "pass_with_warnings", "blocked", "inconclusive", "unsafe_target_rejected"]
+    },
+    "policy": { "$ref": "#/$defs/Policy" }
+  },
+  "$defs": {
+    "Components": {
+      "description": "Per-axis sub-scores. All values 0..100 (or 0..1 for ratios). Missing axes are reported as 0.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "functional",
+        "security",
+        "performance",
+        "accessibility",
+        "api",
+        "visual",
+        "llm_audit",
+        "flake_risk"
+      ],
+      "properties": {
+        "functional": { "type": "number", "minimum": 0 },
+        "security": { "type": "number", "minimum": 0 },
+        "performance": { "type": "number", "minimum": 0 },
+        "accessibility": { "type": "number", "minimum": 0 },
+        "api": { "type": "number", "minimum": 0 },
+        "visual": { "type": "number", "minimum": 0 },
+        "llm_audit": { "type": "number", "minimum": 0 },
+        "flake_risk": { "type": "number", "minimum": 0 }
+      }
+    },
+    "SeverityPenalties": {
+      "description": "Penalty (0..100) applied to `total` per severity bucket. Persisted even when zero so blockers stay reviewable.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["critical", "high", "medium", "low", "info"],
+      "properties": {
+        "critical": { "type": "number", "minimum": 0 },
+        "high": { "type": "number", "minimum": 0 },
+        "medium": { "type": "number", "minimum": 0 },
+        "low": { "type": "number", "minimum": 0 },
+        "info": { "type": "number", "minimum": 0 }
+      }
+    },
+    "Policy": {
+      "description": "Effective release-policy thresholds at run time. Mirrors PRD §17.1 `policy` block.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "min_quality_score",
+        "block_on_critical",
+        "block_on_high_security",
+        "max_failed_p1_flows",
+        "max_flake_rate"
+      ],
+      "properties": {
+        "min_quality_score": { "type": "number", "minimum": 0, "maximum": 100 },
+        "block_on_critical": { "type": "boolean" },
+        "block_on_high_security": { "type": "boolean" },
+        "max_failed_p1_flows": { "type": "integer", "minimum": 0 },
+        "max_flake_rate": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    }
+  }
+}

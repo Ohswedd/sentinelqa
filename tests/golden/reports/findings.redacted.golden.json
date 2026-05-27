@@ -1,0 +1,38 @@
+{
+  "count": 1,
+  "findings": [
+    {
+      "affected_target": "https://localhost:8080",
+      "category": "security/headers",
+      "confidence": 0.95,
+      "created_at": "2026-05-27T12:00:30Z",
+      "description": "GET /api/users/me returned 500; response body included Authorization: [REDACTED:bearer_token]",
+      "evidence": [
+        {
+          "id": "EVD-REDACTAAAAAA",
+          "path": "traces/api-users-me.har",
+          "redacted": true,
+          "type": "network_log"
+        }
+      ],
+      "id": "FND-REDACTAAAAAA",
+      "location": {
+        "file": null,
+        "line": null,
+        "route": "/api/users/me",
+        "selector": null
+      },
+      "module": "security",
+      "recommendation": "Filter Authorization header from server error responses.",
+      "reproduction_steps": [],
+      "run_id": "RUN-PASSEDAAAAAA",
+      "schema_version": "1",
+      "severity": "critical",
+      "suggested_fix": null,
+      "title": "Authorization header leaked in error response"
+    }
+  ],
+  "generated_at": "2026-05-27T12:00:30+00:00",
+  "run_id": "RUN-PASSEDAAAAAA",
+  "schema_version": "1"
+}
