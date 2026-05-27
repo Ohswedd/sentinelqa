@@ -2,14 +2,20 @@
 # Install once per clone: `pre-commit install` (chained into `make install`).
 # See docs/dev/secret-hygiene.md and CLAUDE.md §33.
 
-default_install_hook_types: [pre-commit, commit-msg]
+default_install_hook_types: [pre-commit, commit-msg, pre-push]
 
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
     hooks:
+      # PRD.md and CLAUDE.md intentionally use trailing-double-space as a
+      # Markdown hard line break (CommonMark §6.7). Excluding them from the
+      # auto-fixers preserves the authoring style; they are still scanned by
+      # gitleaks and detect-private-key below.
       - id: trailing-whitespace
+        exclude: ^(PRD\.md|CLAUDE\.md)$
       - id: end-of-file-fixer
+        exclude: ^(PRD\.md|CLAUDE\.md)$
       - id: check-yaml
       - id: check-json
       - id: check-added-large-files
@@ -32,3 +38,26 @@ repos:
       - id: ruff
         args: [--fix, --exit-non-zero-on-fix]
       - id: ruff-format
+
+  # Conventional Commits — runs at the commit-msg stage (CLAUDE.md §4).
+  - repo: https://github.com/alessandrojcm/commitlint-pre-commit-hook
+    rev: v9.18.0
+    hooks:
+      - id: commitlint
+        stages: [commit-msg]
+        additional_dependencies:
+          - '@commitlint/cli@19.6.0'
+          - '@commitlint/config-conventional@19.6.0'
+
+  # Pre-push: run the full quality-gate matrix before a branch leaves the
+  # laptop (CLAUDE.md §4 + §17). Bypassing with --no-verify is forbidden
+  # unless explicitly authorized.
+  - repo: local
+    hooks:
+      - id: make-ci
+        name: make ci (lint + typecheck + test)
+        entry: make ci
+        language: system
+        stages: [pre-push]
+        pass_filenames: false
+        always_run: true

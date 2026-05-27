@@ -1,0 +1,158 @@
+# Commit message convention
+
+Status: `Stable`
+
+Authority: `CLAUDE.md` §4. Enforcement: `commitlint.config.cjs` invoked by `.pre-commit-config.yaml` at the `commit-msg` stage.
+
+## Format
+
+```
+<type>(<scope>): <subject>
+
+<body — optional, explain WHY not WHAT>
+
+<footer — optional, e.g. references or BREAKING CHANGE notes>
+```
+
+### Allowed types (CLAUDE.md §4 whitelist)
+
+`feat`, `fix`, `docs`, `test`, `refactor`, `security`, `ci`, `chore`, `perf`, `build`
+
+Any other type is rejected by `commitlint`.
+
+### Rules
+
+- `type`: lower-case, from the whitelist above, required.
+- `scope`: kebab-case, encouraged (e.g. `cli`, `policy`, `discovery`, `tooling`, `repo`). Multi-scope (`(scope1,scope2)`) is allowed.
+- `subject`: imperative present tense ("add", not "added"). Don't end with a period. No specific case is forced because of proper nouns like "SentinelQA".
+- Header (`type(scope): subject`): max 100 chars.
+- Body lines: max 200 chars. Wrap at ~72 in practice for readability.
+- Footer: machine-parseable footers like `Refs: PRD §11.2`, `Closes: #42`, or `BREAKING CHANGE: ...`.
+
+### Forbidden footers
+
+- `Co-authored-by: <any AI tool>` — never (`CLAUDE.md` §3). CI workflow `no-ai-coauthor.yml` (Phase 00.08) blocks PRs with these.
+
+## Worked examples
+
+Each example below would pass `commitlint`. The selection covers every type in the whitelist plus a few real-world flavors.
+
+### 1. `feat` — new product capability
+
+```
+feat(discovery): emit forms inventory with semantic role hints
+
+Discovery now records every <form> with its inferred role (login,
+signup, search, payment) plus a confidence score. The forms inventory
+feeds the planner so generated login/CRUD tests can target real flows
+instead of guessing from labels.
+
+Refs: PRD §9.1
+```
+
+### 2. `fix` — bug fix in existing behavior
+
+```
+fix(policy): refuse public targets when allowlist is empty
+
+Previously an empty allowlist meant "allow everything", which violates
+PRD §23.1 and CLAUDE.md §26. The loader now treats empty as "deny all
+non-default" and the CLI prints the policy decision before any module
+runs.
+
+Closes: #117
+```
+
+### 3. `docs` — documentation-only
+
+```
+docs(dev): document the agent execution loop in agent-workflow.md
+
+Adds a step-by-step description of plans/PROMT.md so a fresh agent can
+pick up the active phase without re-deriving the loop.
+```
+
+### 4. `test` — test-only
+
+```
+test(reporter): add golden test for findings.json schema v1
+
+Captures the v1 schema as a fixture so future schema changes must
+explicitly update the golden (per CLAUDE.md §16 regression rule).
+```
+
+### 5. `refactor` — internal restructuring without behavior change
+
+```
+refactor(orchestrator): split run lifecycle into pure stages
+
+Extracts the load/validate/resolve/safety steps into pure functions on
+RunPipeline so each stage is independently testable. No external
+behavior change; existing CLI tests still pass.
+```
+
+### 6. `security` — safety / hardening
+
+```
+security(repo): block staged commits containing private-key blocks
+
+Adds the detect-private-key pre-commit hook to .pre-commit-config.yaml
+on top of gitleaks. Verified locally: a file containing the OpenSSH
+private-key header block is rejected even when the surrounding file
+extension is .txt.
+
+Refs: CLAUDE.md §33, PRD §23.1
+```
+
+### 7. `ci` — CI workflow change
+
+```
+ci(workflows): cache pnpm store between runs
+
+Cuts cold-cache install time from ~45s to ~9s on ubuntu-latest. No
+behavior change; only the cache key is new.
+```
+
+### 8. `chore` — repo hygiene / configs
+
+```
+chore(tooling): bump ruff to 0.8 and re-lock
+
+Pin only — no rule changes. Re-runs format/lint/typecheck/tests; all
+green.
+```
+
+### 9. `perf` — performance with a measurable target
+
+```
+perf(discovery): cap crawler concurrency at 4 to stay under budget
+
+Brings discovery on the FastAPI example from p95 ~8.4s to p95 ~3.2s
+while keeping coverage equivalent (verified with the Phase 05 perf
+gate).
+
+Refs: PRD §12.5
+```
+
+### 10. `build` — build system / packaging
+
+```
+build(python-sdk): switch to hatchling for reproducible wheels
+
+Replaces the implicit setuptools backend with hatchling and includes
+py.typed in the wheel so downstream type-checkers pick up the SDK
+types out of the box.
+```
+
+## What gets rejected by commitlint
+
+These will all fail the commit-msg hook:
+
+- `fixed login bug` (no type)
+- `feature(cli): add init command` (`feature` not in whitelist; use `feat`)
+- `Feat(cli): add init` (type must be lower-case)
+- `feat(cli): added init command.` (past tense + trailing period — style preferences flagged by review; the period is the part `commitlint` enforces if `subject-full-stop` is configured)
+- `chore: ` (empty subject)
+- A 180-char header (over `header-max-length`)
+
+If you ever need to bypass commitlint locally (you very rarely do), `--no-verify` is forbidden by `CLAUDE.md` §4 unless explicitly authorized in that conversation.
