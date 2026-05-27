@@ -129,7 +129,15 @@ schemas:
 
 # Phase 03: rewrite report goldens in place. Reviewer sees the diff in the
 # follow-up commit — the only place schema drift may originate.
+# Prompts for confirmation; pass FORCE=1 to skip the prompt (CI use only).
 update-goldens:
+	@if [ -z "$$FORCE" ]; then \
+		printf "About to rewrite tests/golden/reports/ in place.\n"; \
+		printf "Diff the result and commit deliberately.\n"; \
+		printf "Continue? [y/N] "; \
+		read ans; \
+		case "$$ans" in y|Y|yes|YES) ;; *) echo "aborted."; exit 1 ;; esac; \
+	fi
 	SENTINELQA_UPDATE_GOLDENS=1 $(UV) run pytest tests/golden -p no:cacheprovider
 
 # --- adr-check -------------------------------------------------------------
