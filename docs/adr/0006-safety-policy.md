@@ -20,7 +20,7 @@ Every later module — discovery, security, performance, chaos, LLM-audit — mu
 The decision branches are explicit and finite:
 
 1. **Local target + `safe` mode.** Allowed. (Loopback IPv4, IPv6 `::1`, RFC1918, link-local, and the literal names `localhost` / `ip6-localhost` / `ip6-loopback`.)
-2. **Local target + `authorized_destructive` mode.** Allowed *only* with a valid proof-of-authorization. Local destructive tests can wipe a dev database; a paper trail is mandatory.
+2. **Local target + `authorized_destructive` mode.** Allowed _only_ with a valid proof-of-authorization. Local destructive tests can wipe a dev database; a paper trail is mandatory.
 3. **Public target + `safe` mode + host in `target.allowed_hosts`.** Allowed.
 4. **Public target + `safe` mode + host NOT in allowlist.** Refused with `UnknownHostError` (E-SAFE-001, exit code 4).
 5. **Public target + `authorized_destructive` + valid proof.** Allowed.

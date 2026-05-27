@@ -20,3 +20,9 @@ PRD.md
 CLAUDE.md
 LICENSE
 NOTICE
+
+# Generated JSON Schemas — `make schemas` rewrites these from Pydantic
+# models using json.dumps. Letting Prettier reformat them would cause
+# spurious diffs on every regeneration. They are still under gitleaks and
+# tracked in git as the schema-versioning contract (CLAUDE.md §11, §38).
+packages/shared-schema/schemas/
