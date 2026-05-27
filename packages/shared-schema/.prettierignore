@@ -1,0 +1,5 @@
+# Generated JSON Schemas — `make schemas` rewrites these from Pydantic
+# models using json.dumps. Prettier reformatting them would cause spurious
+# diffs on every regeneration. See repo-root .prettierignore for the same
+# rule; this duplicate covers per-workspace prettier invocations.
+schemas/

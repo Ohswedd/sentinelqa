@@ -28,6 +28,10 @@ dev = [
     "hypothesis==6.122.1",
     "check-jsonschema==0.30.0",
     "httpx==0.28.1",
+    "jsonschema==4.23.0",
+    "types-jsonschema==4.23.0.20241208",
+    "lxml==5.3.0",
+    "lxml-stubs==0.5.1",
 ]
 
 [tool.uv]
@@ -113,6 +117,7 @@ files = [
     "engine/errors",
     "engine/log",
     "engine/orchestrator",
+    "engine/reporter",
     "tests",
 ]
 exclude = [
@@ -177,6 +182,7 @@ source = [
     "engine/errors",
     "engine/log",
     "engine/orchestrator",
+    "engine/reporter",
     "apps/cli/src/sentinel_cli",
 ]
 # Phase 02 adds engine/orchestrator and apps/cli/src/sentinel_cli; both ship

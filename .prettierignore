@@ -26,3 +26,9 @@ NOTICE
 # spurious diffs on every regeneration. They are still under gitleaks and
 # tracked in git as the schema-versioning contract (CLAUDE.md §11, §38).
 packages/shared-schema/schemas/
+
+# Phase 03 report goldens — written by the Python writers via json.dumps
+# with sort_keys + indent=2 (or by xml.etree). Prettier must NOT reformat
+# them; the byte-for-byte comparison is the contract that detects schema
+# drift. `make update-goldens` is the only sanctioned way to regenerate.
+tests/golden/

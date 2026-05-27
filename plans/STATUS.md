@@ -5,10 +5,10 @@ Update this file on every commit that advances or completes work. Do not advance
 ## Active pointer
 
 - **Phase:** 03 — Report Schemas & Reporter
-- **Sub-phase:** 03.01 — `run.json` schema
-- **Active task:** `phase-03-report-schemas-reporter/01-run-json-schema.md`
-- **Branch:** _(to be created off `main` once Phase 02 is merged; local `main` will be fast-forwarded to the Phase-02 branch tip as a stand-in until a remote PR lands.)_
-- **Blockers:** none. Phase 02 closed with `make ci` green, `make coverage` 95.47% (floor 95%), `make test-full` 312/312, `make schemas` regenerates `test_run.schema.json` to include the new `dry_run` status (committed in the Phase-02 branch).
+- **Sub-phase:** 03.02 — `findings.json` schema
+- **Active task:** `phase-03-report-schemas-reporter/02-findings-json-schema.md`
+- **Branch:** `feature/phase-03-report-schemas-reporter`
+- **Blockers:** none. Task 03.01 closed: `run.schema.json` (draft 2020-12) committed under `packages/shared-schema/`; `engine/reporter/run_writer.py` ships `write_run` + helpers (`canonical_config_digest`, `derive_release_decision`, `summarize_modules_and_findings`); three goldens (`run.passed/unsafe/dry_run.golden.json`) lock the wire format; shared fixtures live in `tests/conftest.py`; `make update-goldens` regenerates goldens deliberately. `make ci` green (330 passed); `make coverage` 95.69%.
 - **Last updated:** 2026-05-27 by ohswedd
 
 ---
