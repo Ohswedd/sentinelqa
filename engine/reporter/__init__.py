@@ -14,6 +14,17 @@ task by task as each writer is added.
 
 from __future__ import annotations
 
+from engine.reporter.findings_linter import (
+    FindingsLinterWarning,
+    first_blocking_warning,
+    lint_finding,
+    lint_findings,
+)
+from engine.reporter.findings_writer import (
+    FINDINGS_ENVELOPE_SCHEMA_VERSION,
+    collect_linter_warnings,
+    write_findings,
+)
 from engine.reporter.run_writer import (
     ARTIFACT_SLOTS,
     RUN_REPORT_SCHEMA_VERSION,
@@ -27,11 +38,18 @@ from engine.reporter.run_writer import (
 
 __all__ = [
     "ARTIFACT_SLOTS",
+    "FINDINGS_ENVELOPE_SCHEMA_VERSION",
+    "FindingsLinterWarning",
     "RUN_REPORT_SCHEMA_VERSION",
     "RunReport",
     "build_run_report",
     "canonical_config_digest",
+    "collect_linter_warnings",
     "derive_release_decision",
+    "first_blocking_warning",
+    "lint_finding",
+    "lint_findings",
     "summarize_modules_and_findings",
+    "write_findings",
     "write_run",
 ]
