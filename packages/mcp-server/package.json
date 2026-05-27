@@ -1,0 +1,21 @@
+{
+  "name": "@sentinelqa/mcp-server",
+  "version": "0.0.0",
+  "private": true,
+  "description": "SentinelQA MCP server exposing sentinel.* tools to LLM agents. PRD §16. Real surface lands in Phase 18.",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --passWithNoTests",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "devDependencies": {
+    "@types/node": "20.17.9",
+    "typescript": "5.7.2",
+    "vitest": "2.1.8"
+  }
+}

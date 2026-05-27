@@ -5,8 +5,8 @@ Update this file on every commit that advances or completes work. Do not advance
 ## Active pointer
 
 - **Phase:** 00 — Foundation
-- **Sub-phase:** 00.02 — Python tooling
-- **Active task:** `phase-00-foundation/02-python-tooling.md`
+- **Sub-phase:** 00.04 — Secret hygiene
+- **Active task:** `phase-00-foundation/04-secret-hygiene.md`
 - **Branch:** `feature/phase-00-foundation`
 - **Blockers:** none
 - **Last updated:** 2026-05-27 by ohswedd

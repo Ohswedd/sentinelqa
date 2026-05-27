@@ -71,7 +71,7 @@ format-ts:
 format-check:
 	$(UV) run ruff format --check .
 	@if [ -f package.json ]; then \
-		pnpm -r run format:check; \
+		pnpm exec prettier --check .; \
 	fi
 
 # --- typecheck -------------------------------------------------------------

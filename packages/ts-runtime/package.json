@@ -1,0 +1,22 @@
+{
+  "name": "@sentinelqa/ts-runtime",
+  "version": "0.0.0",
+  "private": true,
+  "description": "SentinelQA TypeScript runtime — Playwright helpers and runtime tracing. PRD §15. Real surface lands in Phase 04.",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "devDependencies": {
+    "@playwright/test": "1.49.0",
+    "@types/node": "20.17.9",
+    "typescript": "5.7.2",
+    "vitest": "2.1.8"
+  }
+}
