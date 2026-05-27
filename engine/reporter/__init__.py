@@ -14,6 +14,14 @@ task by task as each writer is added.
 
 from __future__ import annotations
 
+from engine.reporter.dispatcher import (
+    SUPPORTED_FORMATS,
+    Reporter,
+    ReporterPlugin,
+    ReportFormat,
+    ReportInputs,
+    register_reporter_hook,
+)
 from engine.reporter.findings_linter import (
     FindingsLinterWarning,
     first_blocking_warning,
@@ -29,6 +37,14 @@ from engine.reporter.junit_writer import (
     FAILURE_SEVERITIES,
     render_junit_xml,
     write_junit,
+)
+from engine.reporter.markdown_writer import (
+    RELEASE_DECISION_LABEL,
+    SEVERITY_LABEL,
+    SEVERITY_ORDER,
+    md_escape,
+    render_markdown,
+    write_markdown,
 )
 from engine.reporter.run_writer import (
     ARTIFACT_SLOTS,
@@ -65,14 +81,23 @@ __all__ = [
     "COMPONENT_AXES",
     "DEFAULT_POLICY",
     "FAILURE_SEVERITIES",
+    "SUPPORTED_FORMATS",
+    "Reporter",
+    "ReporterPlugin",
+    "ReportFormat",
+    "ReportInputs",
+    "register_reporter_hook",
     "FINDINGS_ENVELOPE_SCHEMA_VERSION",
     "FindingsLinterWarning",
+    "RELEASE_DECISION_LABEL",
     "RUN_REPORT_SCHEMA_VERSION",
     "RunReport",
     "SARIF_SCHEMA_URI",
     "SARIF_VERSION",
     "SCORE_REPORT_SCHEMA_VERSION",
     "SEVERITY_BUCKETS",
+    "SEVERITY_LABEL",
+    "SEVERITY_ORDER",
     "SEVERITY_TO_LEVEL",
     "SarifRule",
     "SarifRuleRegistry",
@@ -85,10 +110,13 @@ __all__ = [
     "first_blocking_warning",
     "lint_finding",
     "lint_findings",
+    "md_escape",
     "render_junit_xml",
+    "render_markdown",
     "summarize_modules_and_findings",
     "write_findings",
     "write_junit",
+    "write_markdown",
     "write_run",
     "write_sarif",
     "write_score",

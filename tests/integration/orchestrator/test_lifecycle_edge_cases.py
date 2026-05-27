@@ -72,20 +72,56 @@ def test_validate_config_catches_post_load_mutation(tmp_path: Path) -> None:
         lc.validate_config(ctx)
 
 
-def test_persist_artifacts_includes_findings_and_score(tmp_path: Path) -> None:
+def test_reporter_emits_findings_and_score_from_typed_ctx(tmp_path: Path) -> None:
+    """Phase 03 reporter contract: typed Finding / QualityScore on the
+    lifecycle context surface in `findings.json` / `score.json` /
+    `report.md` via the Reporter dispatcher."""
+
+    from datetime import UTC, datetime
+
+    from engine.domain.evidence import Evidence
+    from engine.domain.finding import Finding, FindingLocation
+    from engine.domain.quality_score import QualityScore
+    from engine.orchestrator.registry import LifecyclePhase
+
     cfg = load_config(_write_all_modules_config(tmp_path))
     registry = ModuleRegistry()
 
-    from engine.orchestrator.registry import LifecyclePhase
+    def attach_typed_state(ctx) -> None:
+        ctx.typed_findings = (
+            Finding(
+                id="FND-CTXAAAAAAAAA",
+                run_id=ctx.run_id,
+                module="security",
+                category="security/headers",
+                severity="high",
+                confidence=0.85,
+                title="Session cookie missing Secure flag",
+                description="POST /login Set-Cookie header lacks Secure.",
+                location=FindingLocation(route="/login"),
+                evidence=(
+                    Evidence(
+                        id="EVD-CTXAAAAAAAAA",
+                        type="network_log",
+                        path=Path("traces/login.har"),
+                        redacted=True,
+                    ),
+                ),
+                recommendation="Set the Secure attribute.",
+                affected_target="http://localhost:3000",
+                created_at=datetime.now(UTC),
+            ),
+        )
+        ctx.typed_score = QualityScore(
+            id="SCR-CTXAAAAAAAAA",
+            run_id=ctx.run_id,
+            total=82.0,
+            components={"security": 70.0},
+            weights={"security": 1.0},
+            severity_penalties_applied={"high": 18.0},
+        )
 
-    def add_findings(ctx) -> None:
-        ctx.findings.append({"id": "FND-001"})
-
-    def add_score(ctx) -> None:
-        ctx.quality_score = {"score": 99}
-
-    registry.register_phase_hook(LifecyclePhase.NORMALIZE_FINDINGS, add_findings)
-    registry.register_phase_hook(LifecyclePhase.CALCULATE_QUALITY_SCORE, add_score)
+    registry.register_phase_hook(LifecyclePhase.NORMALIZE_FINDINGS, attach_typed_state)
 
     lc = RunLifecycle(artifacts_root=tmp_path / "runs", registry=registry)
     tr = lc.execute(cfg)
@@ -93,7 +129,9 @@ def test_persist_artifacts_includes_findings_and_score(tmp_path: Path) -> None:
     assert (run_dir / "findings.json").exists()
     assert (run_dir / "score.json").exists()
     findings = json.loads((run_dir / "findings.json").read_text(encoding="utf-8"))
-    assert findings["findings"][0]["id"] == "FND-001"
+    assert findings["findings"][0]["id"] == "FND-CTXAAAAAAAAA"
+    score = json.loads((run_dir / "score.json").read_text(encoding="utf-8"))
+    assert score["total"] == 82.0
 
 
 def test_module_raises_sentinel_error_subclass(tmp_path: Path) -> None:

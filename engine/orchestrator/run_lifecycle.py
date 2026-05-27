@@ -20,7 +20,11 @@ from typing import Any
 from urllib.parse import urlparse
 
 from engine.config.schema import RootConfig
+from engine.domain.finding import Finding
 from engine.domain.ids import IdGenerator
+from engine.domain.module_result import ModuleResult
+from engine.domain.policy_decision import PolicyDecision
+from engine.domain.quality_score import QualityScore
 from engine.domain.target import Target
 from engine.domain.test_run import RunStatus, TestRun
 from engine.errors.base import (
@@ -78,6 +82,13 @@ class LifecycleContext:
     quality_gate_passed: bool = True
     status: RunStatus = "incomplete"
     early_exit: bool = False
+    # Phase 03+: typed domain objects passed to the Reporter when modules
+    # produce them. Raw `findings` / `quality_score` above stay around
+    # for the legacy dict path until Phase 14 retires them.
+    typed_findings: tuple[Finding, ...] = field(default_factory=tuple)
+    typed_module_results: tuple[ModuleResult, ...] = field(default_factory=tuple)
+    typed_score: QualityScore | None = None
+    typed_policy: PolicyDecision | None = None
 
 
 class RunLifecycle:
@@ -93,6 +104,22 @@ class RunLifecycle:
         self._artifacts_root = artifacts_root or Path(".sentinel") / "runs"
         self._registry = registry or default_registry()
         self._safety = safety_policy or SafetyPolicy()
+        self._ensure_default_hooks()
+
+    def _ensure_default_hooks(self) -> None:
+        """Register Phase-03 reporter hook on first use (idempotent).
+
+        Imported locally to avoid the orchestrator <-> reporter circular
+        dependency. A sentinel flag on the registry keeps registration
+        idempotent so tests that build fresh lifecycles don't double-register.
+        """
+
+        if getattr(self._registry, "_reporter_hook_registered", False):
+            return
+        from engine.reporter.dispatcher import register_reporter_hook
+
+        register_reporter_hook(self._registry)
+        self._registry._reporter_hook_registered = True  # type: ignore[attr-defined]
 
     # ------------------------------------------------------------------
     # Public entry point
@@ -285,24 +312,25 @@ class RunLifecycle:
             hook(ctx)
 
     def generate_reports(self, ctx: LifecycleContext) -> None:
+        # Reports must carry the final status, so finalize before any
+        # report hooks run. Phase 03's Reporter (registered on this
+        # phase) writes run.json + report.md etc. with the correct
+        # status; persist_artifacts then only handles the latest
+        # pointer.
+        ctx.finished_at = datetime.now(UTC)
+        self._finalize_status(ctx)
         for hook in ctx.registry.phase_hooks.get(LifecyclePhase.GENERATE_REPORTS, []):
             hook(ctx)
 
     def persist_artifacts(self, ctx: LifecycleContext) -> None:
-        # CLAUDE §10 lists "persist artifacts" before "return deterministic
-        # exit code". The persisted `run.json` must carry the final status,
-        # so we compute the status first and then write artifacts. The
-        # `return_deterministic_exit_code` step still owns the exit-code
-        # mapping for the CLI boundary.
+        # Phase 03 moved run.json / findings.json / score.json into the
+        # Reporter (called from `generate_reports`). This step now only
+        # finalizes the artifact directory (latest pointer) so the
+        # canonical write path is single-source-of-truth (CLAUDE.md §11).
         assert ctx.artifacts is not None
-        ctx.finished_at = datetime.now(UTC)
-        self._finalize_status(ctx)
-        run_payload = self._run_payload(ctx)
-        ctx.artifacts.write_json("run.json", run_payload)
-        if ctx.findings:
-            ctx.artifacts.write_json("findings.json", {"findings": ctx.findings})
-        if ctx.quality_score:
-            ctx.artifacts.write_json("score.json", ctx.quality_score)
+        if ctx.finished_at is None:
+            ctx.finished_at = datetime.now(UTC)
+            self._finalize_status(ctx)
         update_latest_pointer(self._artifacts_root, ctx.artifacts.root)
 
     def return_deterministic_exit_code(self, ctx: LifecycleContext) -> None:
