@@ -112,16 +112,12 @@ test-ts:
 coverage:
 	$(UV) run pytest --cov --cov-report=term-missing
 
-# --- adr-check (wired in Phase 00.07) --------------------------------------
+# --- adr-check -------------------------------------------------------------
 adr-check:
-	@if [ -x scripts/check-adrs.sh ]; then \
-		scripts/check-adrs.sh; \
-	else \
-		echo "adr-check script not yet installed (lands in Phase 00.07)"; \
-	fi
+	scripts/check-adrs.sh
 
 # --- ci --------------------------------------------------------------------
-ci: format-check lint typecheck test
+ci: format-check lint typecheck adr-check test
 	@echo "ci: all gates passed"
 
 # --- clean -----------------------------------------------------------------

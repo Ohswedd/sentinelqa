@@ -45,6 +45,9 @@ jobs:
       - name: Mypy (strict)
         run: uv run mypy
 
+      - name: ADR template check
+        run: scripts/check-adrs.sh
+
       - name: Pytest
         run: uv run pytest --junitxml=tests/unit/junit.xml
 

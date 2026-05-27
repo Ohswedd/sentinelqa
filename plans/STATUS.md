@@ -5,8 +5,8 @@ Update this file on every commit that advances or completes work. Do not advance
 ## Active pointer
 
 - **Phase:** 00 — Foundation
-- **Sub-phase:** 00.07 — ADR framework
-- **Active task:** `phase-00-foundation/07-adr-framework.md`
+- **Sub-phase:** 00.08 — LICENSE, CODEOWNERS, ownership lock
+- **Active task:** `phase-00-foundation/08-license-and-ownership.md`
 - **Branch:** `feature/phase-00-foundation`
 - **Blockers:** none
 - **Last updated:** 2026-05-27 by ohswedd
