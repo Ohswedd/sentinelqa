@@ -29,11 +29,21 @@ PRD_COMMANDS = (
     "mcp",
 )
 
+# Rich emits SGR escapes (ESC[...m) around command names when the runner
+# thinks it's writing to a TTY; that breaks `\b<cmd>\b` regex matching
+# because the byte immediately before `init` is `m`, a word character.
+# Strip them before asserting.
+_ANSI_RE = re.compile(r"\x1b\[[0-9;]*m")
+
+
+def _strip_ansi(text: str) -> str:
+    return _ANSI_RE.sub("", text)
+
 
 def test_help_lists_every_prd_command(runner: CliRunner, cli) -> None:
     result = runner.invoke(cli, ["--help"], terminal_width=120)
     assert result.exit_code == 0, result.output
-    output = result.stdout
+    output = _strip_ansi(result.stdout)
     for command in PRD_COMMANDS:
         assert re.search(
             rf"\b{re.escape(command)}\b", output
@@ -43,4 +53,5 @@ def test_help_lists_every_prd_command(runner: CliRunner, cli) -> None:
 def test_help_no_args_shows_help(runner: CliRunner, cli) -> None:
     # `no_args_is_help=True` — invoking with no args should print help and exit.
     result = runner.invoke(cli, [], terminal_width=120)
-    assert "Usage:" in result.stdout or "Commands" in result.stdout
+    output = _strip_ansi(result.stdout)
+    assert "Usage:" in output or "Commands" in output
