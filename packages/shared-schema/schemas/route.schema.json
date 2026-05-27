@@ -1,0 +1,58 @@
+{
+  "additionalProperties": false,
+  "description": "A discovered URL exposed by the app.",
+  "properties": {
+    "auth_required": {
+      "default": false,
+      "title": "Auth Required",
+      "type": "boolean"
+    },
+    "http_methods": {
+      "items": {
+        "enum": [
+          "GET",
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE",
+          "HEAD",
+          "OPTIONS"
+        ],
+        "type": "string"
+      },
+      "title": "Http Methods",
+      "type": "array",
+      "uniqueItems": true
+    },
+    "id": {
+      "title": "Id",
+      "type": "string"
+    },
+    "parent_template": {
+      "anyOf": [
+        {
+          "maxLength": 2048,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Parent Template"
+    },
+    "path": {
+      "maxLength": 2048,
+      "minLength": 1,
+      "title": "Path",
+      "type": "string"
+    }
+  },
+  "required": [
+    "id",
+    "path"
+  ],
+  "title": "Route",
+  "type": "object",
+  "x-sentinelqa-schema-version": "1"
+}

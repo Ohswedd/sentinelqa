@@ -146,3 +146,5 @@ Every doc carries one of four status labels at the top: `Planned`, `Experimental
 - [`docs/dev/ci-and-branch-protection.md`](./docs/dev/ci-and-branch-protection.md) — required CI checks and branch protection.
 - [`docs/dev/status-labels.md`](./docs/dev/status-labels.md) — doc status conventions.
 - [`docs/dev/agent-workflow.md`](./docs/dev/agent-workflow.md) — AI-contributor playbook.
+- [`docs/dev/schema-versioning.md`](./docs/dev/schema-versioning.md) — schema-versioning policy for every machine-readable artifact.
+- [`docs/user/error-codes.md`](./docs/user/error-codes.md) — exit-code / error-code matrix.

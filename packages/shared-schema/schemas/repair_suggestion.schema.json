@@ -1,0 +1,113 @@
+{
+  "$defs": {
+    "Evidence": {
+      "additionalProperties": false,
+      "description": "One artifact proving a finding.",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "path": {
+          "format": "path",
+          "title": "Path",
+          "type": "string"
+        },
+        "redacted": {
+          "default": true,
+          "title": "Redacted",
+          "type": "boolean"
+        },
+        "type": {
+          "enum": [
+            "screenshot",
+            "video",
+            "trace",
+            "har",
+            "console_log",
+            "network_log",
+            "dom_snapshot",
+            "stack_trace",
+            "api_sample",
+            "source_ref"
+          ],
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "path"
+      ],
+      "title": "Evidence",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "A healer-proposed locator or test repair (CLAUDE.md \u00a723).\n\nEvery field carries first-class evidence so reviewers can judge the\nproposal without re-running the failing test. Assertion-weakening or\nintent-changing repairs are forbidden by CLAUDE.md \u00a723 and must be\nsurfaced as ``requires_human_review=True``.",
+  "properties": {
+    "confidence": {
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Confidence",
+      "type": "number"
+    },
+    "evidence": {
+      "items": {
+        "$ref": "#/$defs/Evidence"
+      },
+      "title": "Evidence",
+      "type": "array"
+    },
+    "id": {
+      "title": "Id",
+      "type": "string"
+    },
+    "original": {
+      "maxLength": 8000,
+      "minLength": 1,
+      "title": "Original",
+      "type": "string"
+    },
+    "proposed": {
+      "maxLength": 8000,
+      "minLength": 1,
+      "title": "Proposed",
+      "type": "string"
+    },
+    "reason": {
+      "maxLength": 4000,
+      "minLength": 1,
+      "title": "Reason",
+      "type": "string"
+    },
+    "requires_human_review": {
+      "default": true,
+      "title": "Requires Human Review",
+      "type": "boolean"
+    },
+    "schema_version": {
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "target_test": {
+      "maxLength": 2048,
+      "minLength": 1,
+      "title": "Target Test",
+      "type": "string"
+    }
+  },
+  "required": [
+    "id",
+    "target_test",
+    "original",
+    "proposed",
+    "confidence",
+    "reason"
+  ],
+  "title": "RepairSuggestion",
+  "type": "object",
+  "x-sentinelqa-schema-version": "1"
+}

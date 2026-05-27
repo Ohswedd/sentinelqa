@@ -1,0 +1,120 @@
+{
+  "$defs": {
+    "Target": {
+      "additionalProperties": false,
+      "description": "The application endpoint SentinelQA is allowed to interact with.",
+      "properties": {
+        "allowed_hosts": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Allowed Hosts",
+          "type": "array",
+          "uniqueItems": true
+        },
+        "base_url": {
+          "format": "uri",
+          "minLength": 1,
+          "title": "Base Url",
+          "type": "string"
+        },
+        "mode": {
+          "default": "safe",
+          "enum": [
+            "safe",
+            "authorized_destructive"
+          ],
+          "title": "Mode",
+          "type": "string"
+        },
+        "proof_of_authorization": {
+          "anyOf": [
+            {
+              "format": "path",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Proof Of Authorization"
+        },
+        "schema_version": {
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "base_url"
+      ],
+      "title": "Target",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "One end-to-end SentinelQA audit invocation.",
+  "properties": {
+    "config_snapshot": {
+      "title": "Config Snapshot",
+      "type": "object"
+    },
+    "finished_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Finished At"
+    },
+    "id": {
+      "title": "Id",
+      "type": "string"
+    },
+    "modules_run": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Modules Run",
+      "type": "array"
+    },
+    "schema_version": {
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "started_at": {
+      "format": "date-time",
+      "title": "Started At",
+      "type": "string"
+    },
+    "status": {
+      "default": "incomplete",
+      "enum": [
+        "passed",
+        "failed",
+        "incomplete",
+        "unsafe_blocked"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "target": {
+      "$ref": "#/$defs/Target"
+    }
+  },
+  "required": [
+    "id",
+    "started_at",
+    "target"
+  ],
+  "title": "TestRun",
+  "type": "object",
+  "x-sentinelqa-schema-version": "1"
+}

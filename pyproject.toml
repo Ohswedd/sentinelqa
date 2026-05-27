@@ -24,6 +24,8 @@ dev = [
     "pyyaml==6.0.2",
     "types-PyYAML==6.0.12.20240917",
     "pre-commit==4.0.1",
+    "hypothesis==6.122.1",
+    "check-jsonschema==0.30.0",
 ]
 
 [tool.uv]
@@ -102,7 +104,11 @@ no_implicit_optional = true
 files = [
     "apps/cli/src",
     "packages/python-sdk/src",
+    "engine/domain",
+    "engine/config",
     "engine/policy",
+    "engine/errors",
+    "engine/log",
     "tests",
 ]
 exclude = [
@@ -110,6 +116,14 @@ exclude = [
     "(^|/)dist/",
     "(^|/)\\.venv/",
 ]
+
+# Tests stay typed (no `Any` leaks, no untyped defs) but we allow Pydantic-style
+# coercion at the test boundary: Pydantic accepts `str` where `AnyUrl` is
+# declared, `list[str]` where `frozenset[str]` is declared, etc. Disabling
+# `arg-type` only on tests preserves strict checking everywhere else.
+[[tool.mypy.overrides]]
+module = "tests.*"
+disable_error_code = ["arg-type", "type-arg", "no-untyped-def", "misc"]
 
 # ---------------------------------------------------------------------------
 # Pytest
@@ -124,9 +138,26 @@ addopts = [
     "-ra",
     "--strict-config",
     "--strict-markers",
+    # importlib mode avoids stdlib name collisions for sub-directories like
+    # tests/unit/logging/ (otherwise pytest would try to import the test
+    # module as `logging.test_*`, masking the stdlib).
+    "--import-mode=importlib",
+    # Slow tests (hypothesis property suites, performance benchmarks) opt out
+    # of the default invocation; `make test-full` re-includes them.
+    "-m",
+    "not slow and not bench",
 ]
 xfail_strict = true
 filterwarnings = ["error"]
+markers = [
+    "slow: property-based or otherwise slow test (excluded from `make test`).",
+    "bench: micro-benchmark; excluded from default test runs.",
+]
+# Domain entities are named `TestRun`, `TestCase`, and `TestExecutionError`
+# (PRD §18). Pytest's default `python_classes = ["Test*"]` would otherwise
+# try to collect them. We use only test *functions*, never test classes,
+# so disable class collection entirely.
+python_classes = ["_NoClassCollection_"]
 
 # ---------------------------------------------------------------------------
 # Coverage floor (per CLAUDE.md §17 and PRD §6.5). Phase 00 ships no production
@@ -136,14 +167,19 @@ filterwarnings = ["error"]
 [tool.coverage.run]
 branch = true
 source = [
-    "apps/cli/src",
-    "packages/python-sdk/src",
-    "engine",
-    "modules",
+    "engine/domain",
+    "engine/config",
+    "engine/policy",
+    "engine/errors",
+    "engine/log",
 ]
+# Phase 01 ships engine/{domain,config,policy,errors,logging}. apps/cli,
+# packages/python-sdk, engine/{orchestrator,runner,...}, and modules/* stay
+# out of the coverage source until they ship real code (later phases will
+# add themselves here at the same time they cross the testable threshold).
 
 [tool.coverage.report]
-fail_under = 80
+fail_under = 95
 show_missing = true
 skip_covered = false
 exclude_lines = [

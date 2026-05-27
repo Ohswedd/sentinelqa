@@ -1,0 +1,44 @@
+{
+  "additionalProperties": false,
+  "description": "One artifact proving a finding.",
+  "properties": {
+    "id": {
+      "title": "Id",
+      "type": "string"
+    },
+    "path": {
+      "format": "path",
+      "title": "Path",
+      "type": "string"
+    },
+    "redacted": {
+      "default": true,
+      "title": "Redacted",
+      "type": "boolean"
+    },
+    "type": {
+      "enum": [
+        "screenshot",
+        "video",
+        "trace",
+        "har",
+        "console_log",
+        "network_log",
+        "dom_snapshot",
+        "stack_trace",
+        "api_sample",
+        "source_ref"
+      ],
+      "title": "Type",
+      "type": "string"
+    }
+  },
+  "required": [
+    "id",
+    "type",
+    "path"
+  ],
+  "title": "Evidence",
+  "type": "object",
+  "x-sentinelqa-schema-version": "1"
+}

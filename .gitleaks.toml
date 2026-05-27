@@ -1,0 +1,43 @@
+# SentinelQA gitleaks configuration.
+#
+# Extends gitleaks' built-in rule set with an allowlist for *test fixtures*
+# only. CLAUDE.md §33 still forbids real secrets anywhere in the tree; the
+# rules below name the exact fake-secret strings that ship inside redaction
+# tests so the scanner can see them and let them through.
+#
+# Adding a new test fixture? Either:
+#  - Use the existing fake values listed under `regexes` below, OR
+#  - Add the new fake string to `regexes` along with a comment that names
+#    the test that needs it.
+#
+# Do NOT widen the path allowlist beyond `tests/` — production code is
+# never allowed to carry secret-shaped strings.
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Test fixtures for redaction unit + property tests"
+paths = [
+  '''^tests/unit/policy/test_redaction\.py$''',
+  '''^tests/unit/policy/test_redaction_perf\.py$''',
+  '''^tests/unit/log/test_redaction_filter\.py$''',
+  '''^tests/unit/log/test_modes\.py$''',
+  '''^tests/unit/log/test_formatters\.py$''',
+  '''^tests/unit/test_coverage_gaps\.py$''',
+  '''^tests/property/test_redaction_property\.py$''',
+]
+regexes = [
+  # Canonical AWS example access-key from public AWS docs.
+  '''AKIAIOSFODNN7EXAMPLE''',
+  # Fake `sk-`/`pk-` style keys used in redaction tests.
+  '''sk-abc123def456ghi789jkl012mno345''',
+  '''sk-1234567890abcdef1234567890''',
+  '''sk-abcdefghijklmnopqrstuvwxyz''',
+  # Fake bearer / JWT / PEM test fixtures.
+  '''Bearer abc\.def\.ghi''',
+  '''Bearer abcdef0123456789''',
+  '''Bearer abcdefghi''',
+  '''eyJhbGciOi\.eyJzdWIiOi\.signaturepart''',
+  '''MIIBOgIBAAJBAKj''',
+]

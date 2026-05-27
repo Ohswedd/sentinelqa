@@ -1,0 +1,132 @@
+{
+  "$defs": {
+    "FormField": {
+      "additionalProperties": false,
+      "description": "One field inside a :class:`Form`.",
+      "properties": {
+        "accessible_label": {
+          "anyOf": [
+            {
+              "maxLength": 512,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Accessible Label"
+        },
+        "name": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "placeholder": {
+          "anyOf": [
+            {
+              "maxLength": 512,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Placeholder"
+        },
+        "required": {
+          "default": false,
+          "title": "Required",
+          "type": "boolean"
+        },
+        "type": {
+          "default": "unknown",
+          "enum": [
+            "text",
+            "email",
+            "password",
+            "tel",
+            "url",
+            "number",
+            "checkbox",
+            "radio",
+            "select",
+            "textarea",
+            "file",
+            "date",
+            "hidden",
+            "unknown"
+          ],
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "FormField",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "A discovered HTML form.",
+  "properties": {
+    "action_url": {
+      "anyOf": [
+        {
+          "format": "uri",
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Action Url"
+    },
+    "fields": {
+      "items": {
+        "$ref": "#/$defs/FormField"
+      },
+      "title": "Fields",
+      "type": "array"
+    },
+    "id": {
+      "title": "Id",
+      "type": "string"
+    },
+    "method": {
+      "default": "POST",
+      "enum": [
+        "GET",
+        "POST",
+        "PUT",
+        "PATCH",
+        "DELETE",
+        "HEAD",
+        "OPTIONS"
+      ],
+      "title": "Method",
+      "type": "string"
+    },
+    "submit_handler_present": {
+      "default": false,
+      "title": "Submit Handler Present",
+      "type": "boolean"
+    },
+    "validation_present": {
+      "default": false,
+      "title": "Validation Present",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "id"
+  ],
+  "title": "Form",
+  "type": "object",
+  "x-sentinelqa-schema-version": "1"
+}

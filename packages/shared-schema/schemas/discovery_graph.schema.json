@@ -1,0 +1,412 @@
+{
+  "$defs": {
+    "ApiEndpoint": {
+      "additionalProperties": false,
+      "description": "An HTTP / GraphQL endpoint the app exposes.",
+      "properties": {
+        "auth_strategy": {
+          "default": "unknown",
+          "enum": [
+            "none",
+            "bearer",
+            "cookie",
+            "basic",
+            "api_key",
+            "oauth",
+            "unknown"
+          ],
+          "title": "Auth Strategy",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "method": {
+          "enum": [
+            "GET",
+            "POST",
+            "PUT",
+            "PATCH",
+            "DELETE",
+            "HEAD",
+            "OPTIONS"
+          ],
+          "title": "Method",
+          "type": "string"
+        },
+        "path": {
+          "maxLength": 2048,
+          "minLength": 1,
+          "title": "Path",
+          "type": "string"
+        },
+        "request_schema": {
+          "anyOf": [
+            {
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Request Schema"
+        },
+        "response_schema": {
+          "anyOf": [
+            {
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Response Schema"
+        },
+        "source": {
+          "default": "discovered",
+          "enum": [
+            "discovered",
+            "openapi",
+            "graphql",
+            "user_provided"
+          ],
+          "title": "Source",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "method",
+        "path"
+      ],
+      "title": "ApiEndpoint",
+      "type": "object"
+    },
+    "AuthBoundary": {
+      "additionalProperties": false,
+      "description": "A boundary between authenticated and anonymous routes.",
+      "properties": {
+        "enforced_server_side": {
+          "default": true,
+          "title": "Enforced Server Side",
+          "type": "boolean"
+        },
+        "required_role": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Required Role"
+        },
+        "route_id": {
+          "title": "Route Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "route_id"
+      ],
+      "title": "AuthBoundary",
+      "type": "object"
+    },
+    "Element": {
+      "additionalProperties": false,
+      "description": "An interactive element (button, link, input, etc.).",
+      "properties": {
+        "accessible_name": {
+          "anyOf": [
+            {
+              "maxLength": 512,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Accessible Name"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "role": {
+          "maxLength": 64,
+          "minLength": 1,
+          "title": "Role",
+          "type": "string"
+        },
+        "route_id": {
+          "title": "Route Id",
+          "type": "string"
+        },
+        "selector": {
+          "maxLength": 2048,
+          "minLength": 1,
+          "title": "Selector",
+          "type": "string"
+        },
+        "tags": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Tags",
+          "type": "array",
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "id",
+        "role",
+        "selector",
+        "route_id"
+      ],
+      "title": "Element",
+      "type": "object"
+    },
+    "Form": {
+      "additionalProperties": false,
+      "description": "A discovered HTML form.",
+      "properties": {
+        "action_url": {
+          "anyOf": [
+            {
+              "format": "uri",
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Action Url"
+        },
+        "fields": {
+          "items": {
+            "$ref": "#/$defs/FormField"
+          },
+          "title": "Fields",
+          "type": "array"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "method": {
+          "default": "POST",
+          "enum": [
+            "GET",
+            "POST",
+            "PUT",
+            "PATCH",
+            "DELETE",
+            "HEAD",
+            "OPTIONS"
+          ],
+          "title": "Method",
+          "type": "string"
+        },
+        "submit_handler_present": {
+          "default": false,
+          "title": "Submit Handler Present",
+          "type": "boolean"
+        },
+        "validation_present": {
+          "default": false,
+          "title": "Validation Present",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "title": "Form",
+      "type": "object"
+    },
+    "FormField": {
+      "additionalProperties": false,
+      "description": "One field inside a :class:`Form`.",
+      "properties": {
+        "accessible_label": {
+          "anyOf": [
+            {
+              "maxLength": 512,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Accessible Label"
+        },
+        "name": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "placeholder": {
+          "anyOf": [
+            {
+              "maxLength": 512,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Placeholder"
+        },
+        "required": {
+          "default": false,
+          "title": "Required",
+          "type": "boolean"
+        },
+        "type": {
+          "default": "unknown",
+          "enum": [
+            "text",
+            "email",
+            "password",
+            "tel",
+            "url",
+            "number",
+            "checkbox",
+            "radio",
+            "select",
+            "textarea",
+            "file",
+            "date",
+            "hidden",
+            "unknown"
+          ],
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "FormField",
+      "type": "object"
+    },
+    "Route": {
+      "additionalProperties": false,
+      "description": "A discovered URL exposed by the app.",
+      "properties": {
+        "auth_required": {
+          "default": false,
+          "title": "Auth Required",
+          "type": "boolean"
+        },
+        "http_methods": {
+          "items": {
+            "enum": [
+              "GET",
+              "POST",
+              "PUT",
+              "PATCH",
+              "DELETE",
+              "HEAD",
+              "OPTIONS"
+            ],
+            "type": "string"
+          },
+          "title": "Http Methods",
+          "type": "array",
+          "uniqueItems": true
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "parent_template": {
+          "anyOf": [
+            {
+              "maxLength": 2048,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Parent Template"
+        },
+        "path": {
+          "maxLength": 2048,
+          "minLength": 1,
+          "title": "Path",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "path"
+      ],
+      "title": "Route",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "The graph produced by the discovery module (Phase 05).",
+  "properties": {
+    "api_endpoints": {
+      "items": {
+        "$ref": "#/$defs/ApiEndpoint"
+      },
+      "title": "Api Endpoints",
+      "type": "array"
+    },
+    "auth_boundaries": {
+      "items": {
+        "$ref": "#/$defs/AuthBoundary"
+      },
+      "title": "Auth Boundaries",
+      "type": "array"
+    },
+    "elements": {
+      "items": {
+        "$ref": "#/$defs/Element"
+      },
+      "title": "Elements",
+      "type": "array"
+    },
+    "forms": {
+      "items": {
+        "$ref": "#/$defs/Form"
+      },
+      "title": "Forms",
+      "type": "array"
+    },
+    "id": {
+      "title": "Id",
+      "type": "string"
+    },
+    "routes": {
+      "items": {
+        "$ref": "#/$defs/Route"
+      },
+      "title": "Routes",
+      "type": "array"
+    }
+  },
+  "required": [
+    "id"
+  ],
+  "title": "DiscoveryGraph",
+  "type": "object",
+  "x-sentinelqa-schema-version": "1"
+}

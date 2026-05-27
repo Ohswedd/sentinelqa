@@ -1,0 +1,75 @@
+{
+  "additionalProperties": false,
+  "description": "The application under audit.",
+  "properties": {
+    "framework": {
+      "default": "unknown",
+      "enum": [
+        "nextjs",
+        "react",
+        "vue",
+        "svelte",
+        "angular",
+        "fastapi",
+        "django",
+        "flask",
+        "express",
+        "rails",
+        "unknown"
+      ],
+      "title": "Framework",
+      "type": "string"
+    },
+    "name": {
+      "maxLength": 200,
+      "minLength": 1,
+      "title": "Name",
+      "type": "string"
+    },
+    "package_manager": {
+      "default": "unknown",
+      "enum": [
+        "pnpm",
+        "npm",
+        "yarn",
+        "bun",
+        "uv",
+        "pip",
+        "poetry",
+        "unknown"
+      ],
+      "title": "Package Manager",
+      "type": "string"
+    },
+    "root": {
+      "format": "path",
+      "title": "Root",
+      "type": "string"
+    },
+    "schema_version": {
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "version": {
+      "anyOf": [
+        {
+          "maxLength": 64,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Version"
+    }
+  },
+  "required": [
+    "name",
+    "root"
+  ],
+  "title": "Project",
+  "type": "object",
+  "x-sentinelqa-schema-version": "1"
+}
