@@ -40,6 +40,18 @@ from engine.reporter.run_writer import (
     summarize_modules_and_findings,
     write_run,
 )
+from engine.reporter.sarif_rules import (
+    SarifRule,
+    SarifRuleRegistry,
+    default_sarif_registry,
+)
+from engine.reporter.sarif_writer import (
+    SARIF_SCHEMA_URI,
+    SARIF_VERSION,
+    SEVERITY_TO_LEVEL,
+    build_sarif_document,
+    write_sarif,
+)
 from engine.reporter.score_writer import (
     COMPONENT_AXES,
     DEFAULT_POLICY,
@@ -57,11 +69,18 @@ __all__ = [
     "FindingsLinterWarning",
     "RUN_REPORT_SCHEMA_VERSION",
     "RunReport",
+    "SARIF_SCHEMA_URI",
+    "SARIF_VERSION",
     "SCORE_REPORT_SCHEMA_VERSION",
     "SEVERITY_BUCKETS",
+    "SEVERITY_TO_LEVEL",
+    "SarifRule",
+    "SarifRuleRegistry",
     "build_run_report",
+    "build_sarif_document",
     "canonical_config_digest",
     "collect_linter_warnings",
+    "default_sarif_registry",
     "derive_release_decision",
     "first_blocking_warning",
     "lint_finding",
@@ -71,5 +90,6 @@ __all__ = [
     "write_findings",
     "write_junit",
     "write_run",
+    "write_sarif",
     "write_score",
 ]
