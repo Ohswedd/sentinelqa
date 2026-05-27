@@ -1,0 +1,112 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  python:
+    name: python (${{ matrix.python }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.11', '3.12']
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up uv (with cache)
+        uses: astral-sh/setup-uv@v4
+        with:
+          version: '0.5.24'
+          enable-cache: true
+
+      - name: Install Python ${{ matrix.python }}
+        run: uv python install ${{ matrix.python }}
+
+      - name: Install dependencies (frozen)
+        run: uv sync --frozen --all-packages
+
+      - name: Ruff format --check
+        run: uv run ruff format --check .
+
+      - name: Ruff lint
+        run: uv run ruff check .
+
+      - name: Mypy (strict)
+        run: uv run mypy
+
+      - name: Pytest
+        run: uv run pytest --junitxml=tests/unit/junit.xml
+
+      - name: Upload Python test artifacts on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-junit-${{ matrix.python }}
+          path: |
+            tests/**/junit.xml
+            **/.pytest_cache/**
+          if-no-files-found: ignore
+
+  typescript:
+    name: typescript (node ${{ matrix.node }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: ['20', '22']
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.4
+          run_install: false
+
+      - name: Set up Node ${{ matrix.node }} (with pnpm cache)
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: pnpm
+
+      - name: Install dependencies (frozen)
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright (chromium + deps)
+        # Install Chromium and the OS-level deps so the first Phase-04
+        # change is not blocked on a broken Playwright bootstrap.
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Prettier --check
+        run: pnpm exec prettier --check .
+
+      - name: ESLint
+        run: pnpm -r run lint
+
+      - name: tsc --noEmit
+        run: pnpm -r run typecheck
+
+      - name: Vitest
+        run: pnpm -r run test
+
+      - name: Upload TS test artifacts on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ts-artifacts-node-${{ matrix.node }}
+          path: |
+            **/playwright-report/**
+            **/test-results/**
+          if-no-files-found: ignore

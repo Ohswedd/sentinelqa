@@ -5,8 +5,8 @@ Update this file on every commit that advances or completes work. Do not advance
 ## Active pointer
 
 - **Phase:** 00 — Foundation
-- **Sub-phase:** 00.06 — CI bootstrap
-- **Active task:** `phase-00-foundation/06-ci-bootstrap.md`
+- **Sub-phase:** 00.07 — ADR framework
+- **Active task:** `phase-00-foundation/07-adr-framework.md`
 - **Branch:** `feature/phase-00-foundation`
 - **Blockers:** none
 - **Last updated:** 2026-05-27 by ohswedd

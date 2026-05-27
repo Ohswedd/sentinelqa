@@ -1,0 +1,23 @@
+# SentinelQA CODEOWNERS
+#
+# Authority: CLAUDE.md §3. Only human owners may be listed. No AI tools,
+# no bot accounts, no vendor handles.
+#
+# IMPORTANT: the handle below is the *git committer* name (ohswedd). If your
+# GitHub handle differs, update this file before opening the first PR — the
+# review-required gate depends on the listed owners being real GitHub users.
+
+# Default owner — everything not matched by a more specific rule.
+*                              @ohswedd
+
+# Authority documents — owner must approve any change.
+/PRD.md                        @ohswedd
+/CLAUDE.md                     @ohswedd
+/plans/                        @ohswedd
+/docs/adr/                     @ohswedd
+
+# CI, ownership, and security — owner-only.
+/.github/                      @ohswedd
+/.pre-commit-config.yaml       @ohswedd
+/LICENSE                       @ohswedd
+/NOTICE                        @ohswedd
