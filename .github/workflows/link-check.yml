@@ -26,13 +26,17 @@ jobs:
         # — external links are scanned periodically by a separate job once
         # Phase 27 lands. Failing on a broken internal link reflects an
         # actual repo bug.
+        #
+        # `--base` is omitted: lychee 0.23 requires an absolute path or URL
+        # there, and we only use relative links in this repo (no
+        # root-relative `/foo/bar.md` references), so the default cwd-based
+        # resolution works correctly.
         uses: lycheeverse/lychee-action@v2
         with:
           args: >-
             --offline
             --no-progress
             --include-fragments
-            --base .
             --exclude-path node_modules
             --exclude-path .venv
             --exclude-path plans/PROMT.md
