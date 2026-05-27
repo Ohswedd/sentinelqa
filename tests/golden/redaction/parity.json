@@ -1,0 +1,182 @@
+[
+  {
+    "id": "plain-text",
+    "kind": "string",
+    "input": "hello world",
+    "expected": "hello world"
+  },
+  {
+    "id": "bearer-token",
+    "kind": "string",
+    "input": "Authorization: Bearer abc.DEF-ghi_jklmno0123456789",
+    "expected": "Authorization: [REDACTED:bearer_token]"
+  },
+  {
+    "id": "basic-auth",
+    "kind": "string",
+    "input": "Authorization: Basic dXNlcjpwYXNzd29yZA==",
+    "expected": "Authorization: [REDACTED:basic_auth]"
+  },
+  {
+    "id": "jwt",
+    "kind": "string",
+    "input": "token=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjMifQ.deadbeef-cafebabe1234",
+    "expected": "token=[REDACTED:jwt]"
+  },
+  {
+    "id": "aws-access-key-id",
+    "kind": "string",
+    "input": "aws_access_key_id=AKIAIOSFODNN7EXAMPLE",
+    "expected": "aws_access_key_id=[REDACTED:aws_access_key_id]"
+  },
+  {
+    "id": "github-token",
+    "kind": "string",
+    "input": "GITHUB_TOKEN=ghp_abcdefghijklmnopqrstuvwxyz0123456789",
+    "expected": "GITHUB_TOKEN=[REDACTED:github_token]"
+  },
+  {
+    "id": "slack-token",
+    "kind": "string",
+    "input": "SLACK=xoxb-1234567890-abcdef-XYZ",
+    "expected": "SLACK=[REDACTED:slack_token]"
+  },
+  {
+    "id": "openai-key",
+    "kind": "string",
+    "input": "OPENAI_API_KEY=sk-abcdef1234567890ABCDEFabcdef1234",
+    "expected": "OPENAI_API_KEY=[REDACTED:openai_or_anthropic_key]"
+  },
+  {
+    "id": "publishable-key",
+    "kind": "string",
+    "input": "STRIPE_PK=pk-abcdef1234567890ABCDEFabcdef1234",
+    "expected": "STRIPE_PK=[REDACTED:publishable_key]"
+  },
+  {
+    "id": "private-key",
+    "kind": "string",
+    "input": "-----BEGIN RSA PRIVATE KEY-----\nMIIEpAIBAAKCAQEAabcd...\n-----END RSA PRIVATE KEY-----",
+    "expected": "[REDACTED:private_key]"
+  },
+  {
+    "id": "high-entropy-token",
+    "kind": "string",
+    "input": "session=Hb3KsP9w-jK4VqL0nx7Ze1QmRtUvY2Cd",
+    "expected": "session=[REDACTED:high_entropy_token]"
+  },
+  {
+    "id": "no-secret",
+    "kind": "string",
+    "input": "the quick brown fox jumps over the lazy dog",
+    "expected": "the quick brown fox jumps over the lazy dog"
+  },
+  {
+    "id": "gcp-service-account-marker",
+    "kind": "string",
+    "input": "config: { \"type\": \"service_account\", \"project_id\": \"foo\" }",
+    "expected": "config: { [REDACTED:gcp_service_account], \"project_id\": \"foo\" }"
+  },
+  {
+    "id": "value-dict-with-secrets",
+    "kind": "value",
+    "input": {
+      "username": "alice",
+      "password": "hunter2",
+      "Authorization": "Bearer token-xyz-very-long-token-for-test-123",
+      "extra": "ok"
+    },
+    "expected": {
+      "username": "alice",
+      "password": "[REDACTED:password]",
+      "Authorization": "[REDACTED:authorization]",
+      "extra": "ok"
+    }
+  },
+  {
+    "id": "value-nested-list",
+    "kind": "value",
+    "input": {
+      "items": [
+        {
+          "api_key": "12345abcdef"
+        },
+        {
+          "name": "no secret here"
+        },
+        {
+          "Token": ""
+        }
+      ],
+      "deep": {
+        "level2": {
+          "set_cookie": "sid=xyz"
+        }
+      }
+    },
+    "expected": {
+      "items": [
+        {
+          "api_key": "[REDACTED:api_key]"
+        },
+        {
+          "name": "no secret here"
+        },
+        {
+          "Token": ""
+        }
+      ],
+      "deep": {
+        "level2": {
+          "set_cookie": "[REDACTED:cookie]"
+        }
+      }
+    }
+  },
+  {
+    "id": "value-primitives",
+    "kind": "value",
+    "input": {
+      "n": 42,
+      "b": true,
+      "x": null,
+      "f": 1.5
+    },
+    "expected": {
+      "n": 42,
+      "b": true,
+      "x": null,
+      "f": 1.5
+    }
+  },
+  {
+    "id": "headers-mixed",
+    "kind": "headers",
+    "input": {
+      "Authorization": "Bearer abc-def-ghi",
+      "Cookie": "sid=abc123; csrftoken=xyz789",
+      "Content-Type": "application/json",
+      "X-Api-Key": "live_key_12345"
+    },
+    "expected": {
+      "Authorization": "[REDACTED:authorization]",
+      "Cookie": "[REDACTED:cookie]",
+      "Content-Type": "application/json",
+      "X-Api-Key": "[REDACTED:x-api-key]"
+    }
+  },
+  {
+    "id": "headers-non-secret",
+    "kind": "headers",
+    "input": {
+      "Accept": "text/html",
+      "Host": "example.com",
+      "User-Agent": "sentinel-test/1.0"
+    },
+    "expected": {
+      "Accept": "text/html",
+      "Host": "example.com",
+      "User-Agent": "sentinel-test/1.0"
+    }
+  }
+]

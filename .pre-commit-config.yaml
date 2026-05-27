@@ -24,12 +24,18 @@ repos:
       - id: check-added-large-files
         args: ['--maxkb=2048']
       - id: detect-private-key
-        # The redaction tests carry a PEM-shaped fixture header so we can
-        # prove redact() catches it. The body is junk text, not a key.
-        # CLAUDE.md §33's intent (no real secrets in the tree) is upheld;
-        # gitleaks still scans the same file thanks to .gitleaks.toml's
-        # narrower fixture allowlist.
-        exclude: ^tests/unit/policy/test_redaction\.py$
+        # The redaction tests + Phase 04 parity fixture carry PEM-shaped
+        # fixture headers so we can prove redact() catches them. The
+        # bodies are junk text, not real keys. CLAUDE.md §33's intent (no
+        # real secrets in the tree) is upheld; gitleaks still scans the
+        # same files thanks to .gitleaks.toml's narrower fixture
+        # allowlist.
+        exclude: |
+          (?x)^(
+            tests/unit/policy/test_redaction\.py|
+            tests/golden/redaction/parity\.json|
+            scripts/export-redaction-parity\.py
+          )$
       - id: check-merge-conflict
       - id: check-case-conflict
       - id: mixed-line-ending

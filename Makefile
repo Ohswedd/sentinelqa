@@ -124,8 +124,11 @@ test-full:
 	$(UV) run pytest --override-ini="addopts=-ra --strict-config --strict-markers --import-mode=importlib"
 
 # Generate JSON Schemas for every domain model into packages/shared-schema/.
+# Also re-export the redaction ruleset the TS runtime mirrors (Phase 04).
 schemas:
 	$(UV) run python -c "from pathlib import Path; from engine.domain.jsonschema import dump_schemas; written = dump_schemas(Path('packages/shared-schema/schemas')); [print(p) for p in written]"
+	$(UV) run python scripts/export-redaction-rules.py
+	$(UV) run python scripts/export-redaction-parity.py
 
 # Phase 03: rewrite report goldens in place. Reviewer sees the diff in the
 # follow-up commit — the only place schema drift may originate.

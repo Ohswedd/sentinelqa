@@ -1,0 +1,180 @@
+{
+  "schema_version": "1.0.0",
+  "description": "SentinelQA redaction ruleset. Python (`engine.policy.redaction`) is the source of truth; this file mirrors it for the TS runtime. Edit Python first, then run `scripts/export-redaction-rules.py`.",
+  "secret_key_names": [
+    "access_token",
+    "api-key",
+    "api_key",
+    "apikey",
+    "auth_token",
+    "authorization",
+    "client_secret",
+    "cookie",
+    "csrf_token",
+    "id_token",
+    "passwd",
+    "password",
+    "private_key",
+    "privatekey",
+    "proxy-authorization",
+    "proxy_authorization",
+    "pwd",
+    "refresh_token",
+    "rsa_private_key",
+    "secret",
+    "service_account_key",
+    "session_id",
+    "session_token",
+    "sessionid",
+    "set-cookie",
+    "set_cookie",
+    "ssh_key",
+    "token",
+    "x-api-key",
+    "x-auth-token",
+    "x_api_key",
+    "x_auth_token",
+    "xsrf_token"
+  ],
+  "category_for_key": {
+    "access_token": "access_token",
+    "api-key": "api_key",
+    "api_key": "api_key",
+    "apikey": "api_key",
+    "auth_token": "auth_token",
+    "authorization": "authorization",
+    "client_secret": "client_secret",
+    "cookie": "cookie",
+    "csrf_token": "csrf_token",
+    "id_token": "id_token",
+    "passwd": "password",
+    "password": "password",
+    "private_key": "private_key",
+    "privatekey": "private_key",
+    "proxy-authorization": "authorization",
+    "proxy_authorization": "authorization",
+    "pwd": "password",
+    "refresh_token": "refresh_token",
+    "rsa_private_key": "private_key",
+    "secret": "secret_field",
+    "service_account_key": "gcp_service_account",
+    "session_id": "session_id",
+    "session_token": "session_id",
+    "sessionid": "session_id",
+    "set-cookie": "cookie",
+    "set_cookie": "cookie",
+    "ssh_key": "private_key",
+    "token": "token",
+    "x-api-key": "api_key",
+    "x-auth-token": "auth_token",
+    "x_api_key": "api_key",
+    "x_auth_token": "auth_token",
+    "xsrf_token": "csrf_token"
+  },
+  "url_secret_query_keys": [
+    "access_token",
+    "api_key",
+    "apikey",
+    "auth_token",
+    "code",
+    "id_token",
+    "refresh_token",
+    "session",
+    "session_id",
+    "sessionid",
+    "sig",
+    "signature",
+    "token"
+  ],
+  "always_redact_headers": [
+    "api-key",
+    "authorization",
+    "cookie",
+    "proxy-authorization",
+    "set-cookie",
+    "x-api-key",
+    "x-auth-token",
+    "x-csrf-token",
+    "x-xsrf-token"
+  ],
+  "value_rules": [
+    {
+      "category": "bearer_token",
+      "pattern": "Bearer\\s+[A-Za-z0-9._\\-+/=]{8,}",
+      "flags": [
+        "IGNORECASE"
+      ],
+      "description": "HTTP `Bearer <token>` Authorization values."
+    },
+    {
+      "category": "basic_auth",
+      "pattern": "Basic\\s+[A-Za-z0-9+/=]{8,}",
+      "flags": [
+        "IGNORECASE"
+      ],
+      "description": "HTTP Basic auth header values."
+    },
+    {
+      "category": "jwt",
+      "pattern": "\\beyJ[A-Za-z0-9_\\-]{4,}\\.[A-Za-z0-9_\\-]{4,}\\.[A-Za-z0-9_\\-]{4,}\\b",
+      "flags": [],
+      "description": "JSON Web Tokens (three base64url segments)."
+    },
+    {
+      "category": "aws_access_key_id",
+      "pattern": "\\b(?:AKIA|ASIA|AIDA|AROA)[A-Z0-9]{16}\\b",
+      "flags": [],
+      "description": "AWS access-key IDs."
+    },
+    {
+      "category": "aws_secret_access_key",
+      "pattern": "(?i)aws(.{0,20})?(secret|key)(.{0,20})?[:=]\\s*[A-Za-z0-9/+=]{40}",
+      "flags": [
+        "IGNORECASE"
+      ],
+      "description": "AWS secret access keys in key=value pairs."
+    },
+    {
+      "category": "gcp_service_account",
+      "pattern": "\"type\"\\s*:\\s*\"service_account\"",
+      "flags": [],
+      "description": "GCP service-account JSON marker; redacts the whole match."
+    },
+    {
+      "category": "openai_or_anthropic_key",
+      "pattern": "\\bsk-[A-Za-z0-9_\\-]{20,}\\b",
+      "flags": [],
+      "description": "Anthropic/OpenAI-style secret keys (`sk-...`)."
+    },
+    {
+      "category": "publishable_key",
+      "pattern": "\\bpk-[A-Za-z0-9_\\-]{20,}\\b",
+      "flags": [],
+      "description": "Publishable keys with a `pk-` prefix."
+    },
+    {
+      "category": "github_token",
+      "pattern": "\\bgh[pousr]_[A-Za-z0-9]{30,}\\b",
+      "flags": [],
+      "description": "GitHub personal-access / app tokens."
+    },
+    {
+      "category": "slack_token",
+      "pattern": "\\bxox[abprs]-[A-Za-z0-9-]{10,}\\b",
+      "flags": [],
+      "description": "Slack tokens."
+    },
+    {
+      "category": "private_key",
+      "pattern": "-----BEGIN [A-Z ]*PRIVATE KEY-----[\\s\\S]+?-----END [A-Z ]*PRIVATE KEY-----",
+      "flags": [],
+      "description": "PEM-encoded private keys."
+    }
+  ],
+  "entropy": {
+    "min_token_length": 32,
+    "min_bits_per_char": 4.0,
+    "pattern": "[A-Za-z0-9_\\-]{32,}"
+  },
+  "redacted_template": "[REDACTED:{category}]"
+}
