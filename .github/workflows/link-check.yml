@@ -31,6 +31,13 @@ jobs:
         # there, and we only use relative links in this repo (no
         # root-relative `/foo/bar.md` references), so the default cwd-based
         # resolution works correctly.
+        #
+        # `tests/golden/` is excluded because the Markdown goldens
+        # produced by Phase 03's writer reference forward-looking
+        # artifacts (`report.html` lands in Phase 15) and test-fixture
+        # evidence paths (`traces/login.har`). The goldens are
+        # byte-locked outputs of the renderer, not human-authored docs —
+        # broken links inside them are by design.
         uses: lycheeverse/lychee-action@v2
         with:
           args: >-
@@ -40,5 +47,6 @@ jobs:
             --exclude-path node_modules
             --exclude-path .venv
             --exclude-path plans/PROMT.md
+            --exclude-path tests/golden
             './**/*.md'
           fail: true
