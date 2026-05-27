@@ -8,8 +8,8 @@ Update this file on every commit that advances or completes work. Do not advance
 - **Sub-phase:** _to be determined from `plans/phase-04-typescript-playwright-runtime/README.md`_
 - **Active task:** first task in `plans/phase-04-typescript-playwright-runtime/` (Phase 03 gate closed)
 - **Branch:** to be created (`feature/phase-04-…`); Phase 03 work lives on `feature/phase-03-report-schemas-reporter`.
-- **Blockers:** none. Phase 03 closed: `make ci` green (434 passed), `make test-full` (443 passed, +9 slow including 3 hypothesis property tests), `make coverage` 95.00% (floor). 21 schema-validity checks + 22 goldens locked.
-- **Last updated:** 2026-05-27 by ohswedd
+- **Blockers:** none. Phase 03 closed (gaps resolved on 2026-05-28). `make ci` green (454 passed), `make test-full` (463 passed, +9 slow including 3 hypothesis property tests), `make coverage` 95.71% (floor 95% with sustainable headroom). 21 schema-validity checks + 22 goldens locked. Phase-03 follow-ups: (a) the legacy `_run_payload` shape is gone — `_finalize_unsafe` / `_finalize_dry_run` now route through `engine.reporter.run_writer.write_run`, so every run shares one wire format; (b) reporter coverage gaps closed (`markdown_writer` 93→100%, `sarif_rules` 91→100%, `sarif_writer` 87→98%, `findings_writer` 88→92%, `run_writer` 97→98%).
+- **Last updated:** 2026-05-28 by ohswedd
 
 ---
 

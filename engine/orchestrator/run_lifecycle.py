@@ -12,7 +12,7 @@ DO abort, with the run marked ``unsafe_blocked`` / ``incomplete``.
 
 from __future__ import annotations
 
-from collections.abc import Iterable
+from collections.abc import Iterable, Mapping
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from pathlib import Path
@@ -384,43 +384,74 @@ class RunLifecycle:
 
     def _finalize_unsafe(self, ctx: LifecycleContext, exc: UnsafeTargetError) -> None:
         ctx.finished_at = datetime.now(UTC)
-        if ctx.artifacts is not None and ctx.audit_log_path is not None:
-            write_audit_entry(
-                ctx.audit_log_path,
-                {
-                    "event": "safety_block",
-                    "code": exc.code,
-                    "message": exc.message,
-                    "host": exc.technical_context.get("host"),
-                },
-            )
-            ctx.artifacts.write_json("run.json", self._run_payload(ctx))
+        if ctx.artifacts is None or ctx.audit_log_path is None:
+            return
+        write_audit_entry(
+            ctx.audit_log_path,
+            {
+                "event": "safety_block",
+                "code": exc.code,
+                "message": exc.message,
+                "host": exc.technical_context.get("host"),
+            },
+        )
+        self._write_short_circuit_run(ctx, errors=({"code": exc.code, "message": exc.message},))
 
     def _finalize_dry_run(self, ctx: LifecycleContext) -> None:
         ctx.finished_at = datetime.now(UTC)
         assert ctx.artifacts is not None
-        ctx.artifacts.write_json("run.json", self._run_payload(ctx))
+        self._write_short_circuit_run(ctx)
         update_latest_pointer(self._artifacts_root, ctx.artifacts.root)
 
-    def _run_payload(self, ctx: LifecycleContext) -> dict[str, Any]:
-        return {
-            "id": ctx.run_id,
-            "started_at": ctx.started_at.isoformat(),
-            "finished_at": (ctx.finished_at.isoformat() if ctx.finished_at else None),
-            "status": ctx.status,
-            "target": (ctx.target.to_dict() if ctx.target is not None else None),
-            "modules_run": sorted({o.name for o in ctx.module_outcomes}),
-            "module_outcomes": [
-                {
-                    "name": o.name,
-                    "status": o.status,
-                    "error_message": o.error_message,
-                }
-                for o in ctx.module_outcomes
-            ],
-            "config_snapshot": ctx.config.to_dict(),
-            "schema_version": TestRun.SCHEMA_VERSION,
+    def _write_short_circuit_run(
+        self,
+        ctx: LifecycleContext,
+        *,
+        errors: tuple[Mapping[str, str], ...] = (),
+    ) -> None:
+        """Write ``run.json`` for the unsafe / dry-run early exits.
+
+        Uses the same wire format as the happy path (`engine.reporter.run_writer.write_run`),
+        so every successful and short-circuit run shares one schema. The
+        full Reporter dispatcher is intentionally NOT invoked here — these
+        exits have no findings/score/policy and no module ran, so only
+        `run.json` + `audit.log` are produced (CLAUDE.md §10, §11).
+        """
+
+        from engine.reporter.run_writer import write_run
+
+        assert ctx.artifacts is not None
+        assert ctx.target is not None
+        assert ctx.run_id is not None
+        test_run = TestRun(
+            id=ctx.run_id,
+            started_at=ctx.started_at,
+            finished_at=ctx.finished_at,
+            target=ctx.target,
+            config_snapshot=ctx.config.to_dict(),
+            modules_run=tuple(sorted({o.name for o in ctx.module_outcomes})),
+            status=ctx.status,
+        )
+        # Short-circuit paths never reach generate_reports, so no other
+        # artifact_paths slot is populated; only audit.log is guaranteed
+        # to exist (the unsafe path always writes it; dry_run runs after
+        # safety enforcement which already wrote the safety_allowed line).
+        artifact_paths: dict[str, str | None] = {
+            "findings": None,
+            "score": None,
+            "junit": None,
+            "sarif": None,
+            "report_html": None,
+            "report_md": None,
+            "audit_log": "audit.log",
         }
+        write_run(
+            ctx.artifacts,
+            test_run,
+            config_snapshot=ctx.config.to_dict(),
+            errors=errors,
+            artifact_paths=artifact_paths,
+        )
 
     def _build_run(self, ctx: LifecycleContext) -> TestRun:
         assert ctx.target is not None

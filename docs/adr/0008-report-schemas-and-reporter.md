@@ -70,6 +70,14 @@ because it is the canonical lifecycle record; other formats are opt-in.
 Phase-15 placeholder. Each emitted artifact writes one
 `artifact_emitted` line to the audit log.
 
+Short-circuit lifecycle exits (`unsafe_blocked`, `dry_run`) bypass
+`generate_reports` but still write `run.json` through
+`engine.reporter.run_writer.write_run` so every run — happy path or
+short-circuit — uses the same wire format. The short-circuit paths
+do not emit findings/score/junit/sarif/markdown because no module
+ran; their `artifact_paths.audit_log` slot is populated and every
+other slot is `null`.
+
 `ReporterPlugin` is shipped as a `Protocol` so Phase 24 can replace the
 ad-hoc dispatch with entry-point discovery without changing the writer
 contracts.

@@ -160,3 +160,39 @@ def test_write_run_artifact_slot_defaults_to_null(tmp_path: Path) -> None:
     for slot in ARTIFACT_SLOTS:
         assert slot in payload["artifact_paths"]
         assert payload["artifact_paths"][slot] is None
+
+
+def test_canonical_config_digest_handles_pydantic_model() -> None:
+    """`canonical_config_digest` recurses into nested Pydantic models."""
+
+    target = Target(base_url="https://localhost:8080", mode="safe")
+    digest_via_model = canonical_config_digest({"target": target})
+    digest_via_dict = canonical_config_digest({"target": target.to_dict()})
+    assert digest_via_model == digest_via_dict
+
+
+def test_canonical_config_digest_handles_frozenset() -> None:
+    d1 = canonical_config_digest({"hosts": frozenset({"b", "a"})})
+    d2 = canonical_config_digest({"hosts": ["a", "b"]})
+    assert d1 == d2
+
+
+def test_normalize_error_falls_back_to_internal_code(tmp_path: Path) -> None:
+    """Missing/empty error code and message default to safe placeholders."""
+
+    target = Target(base_url="https://localhost:8080", mode="safe")
+    started = datetime(2026, 5, 27, 12, 0, 0, tzinfo=UTC)
+    run = TestRun(
+        id="RUN-DEFAULTSAAAB",
+        started_at=started,
+        finished_at=started,
+        target=target,
+        config_snapshot={},
+        modules_run=(),
+        status="failed",
+    )
+    artifacts = ArtifactDirectory.create(tmp_path, run.id)
+    written = write_run(artifacts, run, errors=({"code": "", "message": ""},))
+    payload = json.loads(written.read_text(encoding="utf-8"))
+    assert payload["errors"][0]["code"] == "E-INT-001"
+    assert payload["errors"][0]["message"] == "Unspecified error."
