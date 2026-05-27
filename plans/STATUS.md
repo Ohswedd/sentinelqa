@@ -5,11 +5,11 @@ Update this file on every commit that advances or completes work. Do not advance
 ## Active pointer
 
 - **Phase:** 00 — Foundation
-- **Sub-phase:** 00.01 — Repository structure & monorepo layout
-- **Active task:** `phase-00-foundation/01-repo-structure.md`
-- **Branch:** _(to be created)_
+- **Sub-phase:** 00.02 — Python tooling
+- **Active task:** `phase-00-foundation/02-python-tooling.md`
+- **Branch:** `feature/phase-00-foundation`
 - **Blockers:** none
-- **Last updated:** _(YYYY-MM-DD by author)_
+- **Last updated:** 2026-05-27 by ohswedd
 
 ---
 
