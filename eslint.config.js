@@ -69,7 +69,11 @@ export default tseslint.config(
     // Config files (vitest.config.ts, eslint.config.js, prettier.config.*, etc.)
     // are intentionally outside the per-package tsconfig include globs, so we
     // disable type-aware linting for them and use the plain TS parser instead.
-    files: ['**/*.config.{js,mjs,cjs,ts,mts,cts}', 'eslint.config.js'],
+    files: [
+      '**/*.config.{js,mjs,cjs,ts,mts,cts}',
+      'eslint.config.js',
+      '**/scripts/**/*.{js,mjs,cjs,ts,mts,cts}',
+    ],
     extends: [tseslint.configs.disableTypeChecked],
     languageOptions: {
       parserOptions: {
