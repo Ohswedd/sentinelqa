@@ -1,0 +1,63 @@
+name: No AI co-author
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  scan:
+    name: no-ai-coauthor
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (full history)
+        uses: actions/checkout@v4
+        with:
+          # We need history so we can scan the PR commit range, not just
+          # the merge commit.
+          fetch-depth: 0
+
+      - name: Determine commit range
+        id: range
+        run: |
+          set -euo pipefail
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            echo "base=${{ github.event.pull_request.base.sha }}" >> "$GITHUB_OUTPUT"
+            echo "head=${{ github.event.pull_request.head.sha }}" >> "$GITHUB_OUTPUT"
+          else
+            # push to main: scan the commits being added (before..after).
+            echo "base=${{ github.event.before }}" >> "$GITHUB_OUTPUT"
+            echo "head=${{ github.sha }}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Scan commit messages for AI co-author trailers
+        env:
+          BASE: ${{ steps.range.outputs.base }}
+          HEAD: ${{ steps.range.outputs.head }}
+        run: |
+          set -euo pipefail
+          # CLAUDE.md §3: no AI tool may appear as a co-author. The pattern
+          # below is intentionally broad (case-insensitive, matches whole
+          # words) and covers the major AI coding assistants known at the
+          # time of writing. Add new tools as they appear (see
+          # docs/dev/ownership.md).
+          PATTERN='Co-authored-by:.*(\bClaude\b|\bGPT\b|\bCopilot\b|\bGemini\b|\bCodex\b|\bAnthropic\b|\bOpenAI\b|\bBard\b|\bAider\b|\bCursor\b|\bDevin\b)'
+
+          # Handle the "first push to a new branch" case where BASE may be
+          # 0000... — fall back to scanning only the head commit in that case.
+          if [[ -z "${BASE}" || "${BASE}" == "0000000000000000000000000000000000000000" ]]; then
+            RANGE="${HEAD}^..${HEAD}"
+          else
+            RANGE="${BASE}..${HEAD}"
+          fi
+
+          echo "Scanning range: ${RANGE}"
+          if git log --format='%B%n--%n' "${RANGE}" | grep -Eni "${PATTERN}"; then
+            echo "::error::AI co-author trailer found in commit message (CLAUDE.md §3 forbids this)."
+            echo "See docs/dev/ownership.md for how to remove the trailer and re-push."
+            exit 1
+          fi
+          echo "No AI co-author trailers found."

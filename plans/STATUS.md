@@ -5,8 +5,8 @@ Update this file on every commit that advances or completes work. Do not advance
 ## Active pointer
 
 - **Phase:** 00 — Foundation
-- **Sub-phase:** 00.08 — LICENSE, CODEOWNERS, ownership lock
-- **Active task:** `phase-00-foundation/08-license-and-ownership.md`
+- **Sub-phase:** 00.09 — Developer docs
+- **Active task:** `phase-00-foundation/09-developer-docs.md`
 - **Branch:** `feature/phase-00-foundation`
 - **Blockers:** none
 - **Last updated:** 2026-05-27 by ohswedd
