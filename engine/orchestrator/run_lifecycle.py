@@ -101,6 +101,8 @@ class LifecycleContext:
     typed_module_results: tuple[ModuleResult, ...] = field(default_factory=tuple)
     typed_score: QualityScore | None = None
     typed_policy: PolicyDecision | None = None
+    # Phase 10+: per-module options threaded from the CLI / SDK.
+    module_options: dict[str, Mapping[str, Any]] = field(default_factory=dict)
 
 
 class RunLifecycle:
@@ -117,6 +119,11 @@ class RunLifecycle:
         self._registry = registry or default_registry()
         self._safety = safety_policy or SafetyPolicy()
         self._ensure_default_hooks()
+        # The last :class:`LifecycleContext` populated by ``execute``. The
+        # CLI / SDK reads this immediately after a synchronous call to
+        # ``execute`` to fetch typed module results + findings without
+        # round-tripping through disk. Resets at the top of every ``execute``.
+        self._last_context: LifecycleContext | None = None
 
     def _ensure_default_hooks(self) -> None:
         """Register Phase-03 reporter hook on first use (idempotent).
@@ -144,8 +151,15 @@ class RunLifecycle:
         requested_modules: list[str] | None = None,
         dry_run: bool = False,
         ci: bool = False,
+        module_options: Mapping[str, Mapping[str, Any]] | None = None,
     ) -> TestRun:
-        """Run the lifecycle and return the finalized :class:`TestRun`."""
+        """Run the lifecycle and return the finalized :class:`TestRun`.
+
+        ``module_options`` lets the caller hand per-module knobs (spec
+        root, grep, shard, workers) to the SentinelModule instance via
+        ``ModuleContext.options``. Keys are module names; values are
+        free-form mappings consumed by the module.
+        """
 
         context = LifecycleContext(
             config=config,
@@ -153,7 +167,12 @@ class RunLifecycle:
             requested_modules=requested_modules,
             dry_run=dry_run,
             ci=ci,
+            module_options=dict(module_options or {}),
         )
+        # Expose the in-flight context to callers (the CLI reads typed
+        # results immediately after ``execute`` returns). Cleared at top of
+        # every ``execute`` so stale state from a previous run never leaks.
+        self._last_context = context
 
         # Steps 1-2 happen before the run id exists so we can fail fast.
         self.load_config(context)
@@ -278,6 +297,7 @@ class RunLifecycle:
         # which is already loaded above. Importing here keeps the run-modules
         # path importable in test setups that monkey-patch the analyzer.
         from engine.analyzer.categorize import categorize_module_error
+        from engine.modules.base import ModulePrerequisiteError, SentinelModule
 
         for name in self._modules_to_run(ctx):
             factory = ctx.registry.modules.get(name)
@@ -289,10 +309,48 @@ class RunLifecycle:
             try:
                 # Modules receive the config + safety decision; their
                 # real interface lands in Phase 24. For Phase 02 we
-                # invoke and tolerate any callable.
+                # invoke and tolerate any callable. Phase 10 wraps the
+                # SentinelModule lifecycle: if the factory returns a
+                # SentinelModule instance we drive the seven CLAUDE §9
+                # steps and merge findings/metrics into the context.
                 result = factory(ctx.config, ctx.safety_decision)
+                if isinstance(result, SentinelModule):
+                    module_result = self._invoke_sentinel_module(ctx, name, result)
+                    ctx.typed_module_results = (*ctx.typed_module_results, module_result)
+                    ctx.typed_findings = (*ctx.typed_findings, *module_result.findings)
+                    ctx.module_outcomes.append(
+                        ModuleOutcome(
+                            name=name,
+                            status="succeeded",
+                            metadata={
+                                "module_result_id": module_result.id,
+                                "module_status": module_result.status,
+                                "findings": len(module_result.findings),
+                            },
+                        )
+                    )
+                else:
+                    ctx.module_outcomes.append(
+                        ModuleOutcome(
+                            name=name, status="succeeded", metadata={"result": str(result)}
+                        )
+                    )
+            except ModulePrerequisiteError as exc:
+                classification = categorize_module_error(
+                    module=name,
+                    exc_type=type(exc).__name__,
+                    exc_message=str(exc),
+                )
                 ctx.module_outcomes.append(
-                    ModuleOutcome(name=name, status="succeeded", metadata={"result": str(result)})
+                    ModuleOutcome(
+                        name=name,
+                        status="errored",
+                        error_message=str(exc),
+                        error_type=type(exc).__name__,
+                        error_category=classification.category,
+                        error_confidence=classification.confidence,
+                        error_rationale=classification.rationale,
+                    )
                 )
             except TestExecutionError as exc:
                 classification = categorize_module_error(
@@ -410,6 +468,43 @@ class RunLifecycle:
     # ------------------------------------------------------------------
     # Helpers
     # ------------------------------------------------------------------
+
+    @property
+    def last_context(self) -> LifecycleContext | None:
+        """Most recent :class:`LifecycleContext` populated by ``execute``.
+
+        ``None`` before the first call. Callers should treat the context
+        as read-only — the lifecycle owns its lifetime.
+        """
+
+        return self._last_context
+
+    def _invoke_sentinel_module(
+        self,
+        ctx: LifecycleContext,
+        module_name: str,
+        module: Any,
+    ) -> ModuleResult:
+        """Drive a :class:`SentinelModule`'s seven-step lifecycle (CLAUDE §9)."""
+
+        from engine.modules.base import ModuleContext
+
+        assert ctx.artifacts is not None
+        assert ctx.run_id is not None
+        assert ctx.target is not None
+        assert ctx.safety_decision is not None
+        module_ctx = ModuleContext(
+            module_name=module_name,
+            config=ctx.config,
+            safety_decision=ctx.safety_decision,
+            artifacts=ctx.artifacts,
+            run_id=ctx.run_id,
+            run_dir=ctx.artifacts.root,
+            target=ctx.target,
+            id_generator=IdGenerator(),
+            options=ctx.module_options.get(module_name, {}),
+        )
+        return module.run(module_ctx)  # type: ignore[no-any-return]
 
     def _modules_to_run(self, ctx: LifecycleContext) -> Iterable[str]:
         if ctx.requested_modules is not None:
