@@ -420,6 +420,25 @@ Rules:
 - Avoid sleeps except where justified.
 - Use trace mode on failure.
 
+#### 9.3.1 MVP delivery (Phase 07)
+
+`engine.generator` ships the Phase-07 MVP wired behind `sentinel generate`. The implementation is governed by ADR-0012.
+
+- **Templates.** Fourteen Jinja2 templates under `engine/generator/templates/`: `smoke`, `login`, `signup`, `logout`, `crud_create`, `crud_read`, `crud_update`, `crud_delete`, `role_boundary`, `payment_sandbox`, `file_upload`, `api_contract`, `a11y_axe`, `perf_budget`. Each emits one or more `sentinelTest` blocks importing `@sentinelqa/ts-runtime/playwright`, with semantic locators, explicit assertions, and `{ tag: [...] }` test tags reflecting the flow's priority + planner-emitted tags.
+- **Renderer.** `engine.generator.render.render_template(name, ctx)` uses Jinja2 with `StrictUndefined` so missing context vars raise `RenderError`. Templates MUST include `{{ banner }}` at the top; the banner marker is the basis for the writer's hand-edit guard. Two regex filters (`regex_literal` escapes literal labels, `regex_pattern` passes alternation patterns verbatim) keep the template authors out of escape-hell.
+- **Page objects.** `engine.generator.page_objects.generate_page_objects` emits one `<RouteName>Page.ts` per route that either appears in ≥ 2 flows or has ≥ 3 interactive elements. Each page object encapsulates semantic locators (one accessor per discovered element with an accessible name + role), a `goto()` action, and a `verify()` assertion against the route's anchor landmark. Elements without an accessible name are dropped (recorded in `GeneratedPageObject.skipped_elements`).
+- **Fixtures.** `engine.generator.fixtures.generate_fixtures` emits four files when the corresponding config is provided:
+  - `tests/sentinel/fixtures/auth.ts` — `authenticatedTest` extension that performs login once per worker. Credentials are read from `auth.username_env` / `auth.password_env`; the env-var **names** are referenced in the source, never the values.
+  - `tests/sentinel/fixtures/data.ts` — opt-in `freshUser` fixture that POSTs to the config-named (or heuristically chosen) user-create endpoint. The runtime guard fails closed unless `security.mode == "authorized_destructive"`.
+  - `tests/sentinel/setup/global-setup.ts` and `tests/sentinel/setup/global-teardown.ts` — Playwright lifecycle hooks.
+- **Brittleness audit.** `engine.generator.locator_strategy.audit_specs` shells out to `sentinel-ts audit-locators --file <path>` (new in Phase 07, added to the TS CLI). The Phase-04 `auditLocatorBrittleness` rule set is the single source of truth. `sentinel generate` runs the audit BEFORE writing any spec; findings abort the write and exit code 6. `--no-audit` skips it for local debugging only.
+- **Plan markdown.** `engine.generator.plan_md.render_generated_plan_md` emits `tests/sentinel/sentinel.generated.plan.md` with a deterministic summary (counts, per-flow table, file list) and a diff-vs-prior section when a previous plan.md exists.
+- **Writer.** `engine.generator.writer.write_generated_files` is the only path that writes generated files. It detects SentinelQA-managed files via the banner marker in the first 4 KiB. Hand-owned files (no marker) raise `OverwriteError` (exit 6) unless `sentinel generate --force` is passed. Writes are atomic (temp file + `os.replace`).
+- **Pipeline.** `engine.generator.pipeline.GeneratorPipeline.generate` takes a `TestPlan` + `DiscoveryGraph` and returns a `GenerationResult` carrying every `GeneratedFile` (path + content + kind). The pipeline never touches the filesystem; the CLI does.
+- **CLI.** `sentinel generate --url <URL>` (or `--from-plan <path> --from-discovery <dir>`) replaces the Phase-02 stub. Options: `--out tests`, `--source .`, `--force`, `--no-tsc`, `--no-audit`, `--json`, `--quiet`, `--dry-run`. Exit codes: `0` on success, `4` for unsafe targets (safety policy refusal before any write), `6` for audit failures or hand-owned file collisions.
+- **Determinism.** Re-running `sentinel generate --from-discovery <dir>` produces byte-identical files. Spec filenames are derived from `extractor + flow.name` slug + (when needed) a stable disambiguator from discovery IDs (`form:FRM-*` / `endpoint:API-*` tags). Auto-generated planner IDs (`FLW-*`, `RUN-*`) never appear in spec source or filenames.
+- **Safety boundary.** Generated tests never embed credentials. The data fixture refuses to run unless `security.mode == "authorized_destructive"`. The generator never produces stealth, evasion, or rate-limit-bypass code.
+
 ### 9.4 Runner module
 
 Purpose: Execute tests locally, in CI, or through remote providers.

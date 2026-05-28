@@ -292,6 +292,105 @@ async function* fallbackGlob(pattern: string, cwd: string): AsyncGenerator<strin
 }
 
 /**
+ * `sentinel-ts audit-locators` — run the brittleness audit
+ * (`auditLocatorBrittleness`) over one or more spec files and return a
+ * structured report. The CLI prints JSON so the Python generator
+ * (`engine.generator.locator_strategy`) can re-parse it without a TS
+ * parser. Exit code mirrors `sentinel-ts`'s convention: 0 = clean, 1 =
+ * warnings found, 2 = read/parse error.
+ */
+export interface LocatorAuditFinding {
+  readonly file: string;
+  readonly line: number;
+  readonly column: number;
+  readonly message: string;
+  readonly snippet: string;
+}
+
+export interface LocatorAuditReport {
+  readonly schema_version: '1.0.0';
+  readonly files_scanned: number;
+  readonly findings: readonly LocatorAuditFinding[];
+}
+
+export interface AuditLocatorsOptions {
+  /** Spec file paths to audit. Relative paths are resolved against `cwd`. */
+  readonly files: readonly string[];
+  /** Working dir for resolving relative paths (defaults to process.cwd()). */
+  readonly cwd?: string;
+  /** Override the audit function (for tests). */
+  readonly auditFn?: (
+    spec: string,
+  ) =>
+    | { readonly warnings: readonly LocatorAuditWarning[] }
+    | Promise<{ readonly warnings: readonly LocatorAuditWarning[] }>;
+  /** Override fs#readFile (for tests). */
+  readonly readFileFn?: (p: string) => Promise<string>;
+}
+
+interface LocatorAuditWarning {
+  readonly line: number;
+  readonly column: number;
+  readonly message: string;
+  readonly snippet: string;
+}
+
+export async function auditLocators(opts: AuditLocatorsOptions): Promise<LocatorAuditReport> {
+  const cwd = opts.cwd ?? process.cwd();
+  const readFile =
+    opts.readFileFn ??
+    (async (p: string): Promise<string> => {
+      const fsp = await import('node:fs/promises');
+      return await fsp.readFile(p, 'utf8');
+    });
+  const defaultAuditModulePromise = opts.auditFn
+    ? undefined
+    : (import('./locators.js') as Promise<{
+        auditLocatorBrittleness: (s: string) => {
+          readonly warnings: readonly LocatorAuditWarning[];
+        };
+      }>);
+  const auditFn: (
+    spec: string,
+  ) =>
+    | { readonly warnings: readonly LocatorAuditWarning[] }
+    | Promise<{ readonly warnings: readonly LocatorAuditWarning[] }> =
+    opts.auditFn ??
+    (async (spec: string): Promise<{ readonly warnings: readonly LocatorAuditWarning[] }> => {
+      const mod = await defaultAuditModulePromise!;
+      return mod.auditLocatorBrittleness(spec);
+    });
+
+  const findings: LocatorAuditFinding[] = [];
+  for (const rel of opts.files) {
+    const abs = resolvePath(cwd, rel);
+    const source = await readFile(abs);
+    const { warnings } = await auditFn(source);
+    for (const w of warnings) {
+      findings.push({
+        file: rel,
+        line: w.line,
+        column: w.column,
+        message: w.message,
+        snippet: w.snippet,
+      });
+    }
+  }
+  findings.sort((a, b) =>
+    a.file === b.file
+      ? a.line === b.line
+        ? a.column - b.column
+        : a.line - b.line
+      : a.file.localeCompare(b.file),
+  );
+  return {
+    schema_version: '1.0.0',
+    files_scanned: opts.files.length,
+    findings,
+  };
+}
+
+/**
  * `sentinel-ts validate-helpers` — confirms `@sentinelqa/ts-runtime`
  * loads, the redaction-rules JSON is readable, and PROTOCOL_VERSION is
  * exported. Returns a structured result; the CLI renders it as

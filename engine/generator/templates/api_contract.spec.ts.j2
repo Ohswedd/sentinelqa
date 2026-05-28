@@ -1,0 +1,41 @@
+{{ banner }}
+import { sentinelTest as test, expect } from '@sentinelqa/ts-runtime/playwright';
+
+test.describe({{ endpoint_title | js_string }} + ' — contract', () => {
+  test(
+    {{ method | js_string }} + ' ' + {{ path | js_string }} + ' returns the documented status',
+    { tag: [{% for tag in tags %}{{ tag | js_string }}{% if not loop.last %}, {% endif %}{% endfor %}] },
+    async ({ request }) => {
+      const response = await request.fetch({{ request_path | js_string }}, {
+        method: {{ method | js_string }},
+{% if request_body_json %}
+        data: {{ request_body_json }},
+{% endif %}
+      });
+
+      await test.step('status code is in the documented set', async () => {
+        const expected = [{% for code in expected_status %}{{ code }}{% if not loop.last %}, {% endif %}{% endfor %}];
+        expect(expected).toContain(response.status());
+      });
+
+{% if expected_content_type %}
+      await test.step('content-type matches the contract', async () => {
+        const contentType = response.headers()['content-type'] ?? '';
+        expect(contentType.toLowerCase()).toContain({{ expected_content_type | js_string }});
+      });
+{% endif %}
+    },
+  );
+
+  test(
+    {{ method | js_string }} + ' ' + {{ path | js_string }} + ' rejects unauthenticated request',
+    { tag: [{% for tag in tags %}{{ tag | js_string }}{% if not loop.last %}, {% endif %}{% endfor %}] },
+    async ({ request }) => {
+      test.skip({{ skip_unauth_test | tojson }}, 'Endpoint allows anonymous access.');
+      const response = await request.fetch({{ request_path | js_string }}, {
+        method: {{ method | js_string }},
+      });
+      expect([401, 403]).toContain(response.status());
+    },
+  );
+});

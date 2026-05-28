@@ -1,0 +1,43 @@
+{{ banner }}
+import { sentinelTest as test, expect } from '@sentinelqa/ts-runtime/playwright';
+
+const SAMPLE_DATA = {
+  email: {{ sample_email | js_string }},
+  password: {{ sample_password | js_string }},
+} as const;
+
+test.describe('Authentication — signup', () => {
+  test(
+    'new user can sign up',
+    { tag: [{% for tag in tags %}{{ tag | js_string }}{% if not loop.last %}, {% endif %}{% endfor %}] },
+    async ({ page }) => {
+      await page.goto({{ signup_path | js_string }});
+
+      await test.step('fill signup form', async () => {
+        await page.getByLabel({{ email_label | regex_pattern }}).fill(SAMPLE_DATA.email);
+        await page.getByLabel({{ password_label | regex_pattern }}).fill(SAMPLE_DATA.password);
+{% if confirm_password_label %}
+        await page
+          .getByLabel({{ confirm_password_label | regex_pattern }})
+          .fill(SAMPLE_DATA.password);
+{% endif %}
+        await page.getByRole('button', { name: {{ submit_label | regex_pattern }} }).click();
+      });
+
+      await test.step('confirm signup outcome', async () => {
+        await expect(page).toHaveURL({{ success_url_regex | regex_pattern }});
+      });
+    },
+  );
+
+  test(
+    'signup rejects an obviously invalid email',
+    { tag: [{% for tag in tags %}{{ tag | js_string }}{% if not loop.last %}, {% endif %}{% endfor %}] },
+    async ({ page }) => {
+      await page.goto({{ signup_path | js_string }});
+      await page.getByLabel({{ email_label | regex_pattern }}).fill('not-an-email');
+      await page.getByRole('button', { name: {{ submit_label | regex_pattern }} }).click();
+      await expect(page.getByText({{ invalid_email_regex | regex_pattern }})).toBeVisible();
+    },
+  );
+});

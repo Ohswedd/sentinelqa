@@ -11,7 +11,7 @@
 // progress spinners or non-JSONL chatter to stdout (CLAUDE §13/§39).
 import { stderr, stdout, argv, exit } from 'node:process';
 
-import { listTests, runPlaywright, validateHelpers } from './runner.js';
+import { auditLocators, listTests, runPlaywright, validateHelpers } from './runner.js';
 import { PACKAGE_NAME, VERSION } from './version.js';
 
 export const USAGE = `Usage: sentinel-ts <command> [options]
@@ -24,6 +24,10 @@ Commands:
                        --ci                CI mode (no spinners, JSONL only).
   list-tests         List spec files matching a glob.
                        --pattern <glob>    Glob relative to cwd (required).
+  audit-locators     Brittleness audit of generated spec files.
+                       --file <path>       Spec to audit. Repeat for multiple
+                                           files (e.g. --file a.ts --file b.ts).
+                       --json              Emit JSON (default for this command).
   validate-helpers   Sanity-check that @sentinelqa/ts-runtime is wired in.
                        --json              Emit JSON instead of text.
 
@@ -54,6 +58,7 @@ export interface DispatchOptions {
   readonly runFn?: typeof runPlaywright;
   readonly listTestsFn?: typeof listTests;
   readonly validateFn?: typeof validateHelpers;
+  readonly auditLocatorsFn?: typeof auditLocators;
   readonly cwd?: string;
 }
 
@@ -78,6 +83,8 @@ export async function dispatchAsync(
       return await handleRun(rest, opts);
     case 'list-tests':
       return await handleListTests(rest, opts);
+    case 'audit-locators':
+      return await handleAuditLocators(rest, opts);
     case 'validate-helpers':
       return await handleValidateHelpers(rest, opts);
     default:
@@ -149,6 +156,47 @@ async function handleListTests(args: readonly string[], opts: DispatchOptions): 
   }
 }
 
+function takeMultiFlag(args: readonly string[], flag: string): string[] {
+  const out: string[] = [];
+  for (let i = 0; i < args.length; i += 1) {
+    if (args[i] === flag && i + 1 < args.length) {
+      const v = args[i + 1];
+      if (v !== undefined) out.push(v);
+    }
+  }
+  return out;
+}
+
+async function handleAuditLocators(
+  args: readonly string[],
+  opts: DispatchOptions,
+): Promise<CliResult> {
+  const files = takeMultiFlag(args, '--file');
+  if (files.length === 0) {
+    return {
+      stdout: '',
+      stderr: 'sentinel-ts audit-locators: at least one --file <path> is required.\n',
+      exitCode: 2,
+    };
+  }
+  const fn = opts.auditLocatorsFn ?? auditLocators;
+  try {
+    const report = await fn({ files, ...(opts.cwd !== undefined ? { cwd: opts.cwd } : {}) });
+    const body = JSON.stringify(report) + '\n';
+    return {
+      stdout: body,
+      stderr: '',
+      exitCode: report.findings.length === 0 ? 0 : 1,
+    };
+  } catch (err) {
+    return {
+      stdout: '',
+      stderr: `sentinel-ts audit-locators: ${(err as Error).message}\n`,
+      exitCode: 2,
+    };
+  }
+}
+
 async function handleValidateHelpers(
   args: readonly string[],
   opts: DispatchOptions,
@@ -184,7 +232,12 @@ export function dispatch(args: readonly string[]): CliResult {
   }
   const [command] = args;
   if (command === undefined) return { stdout: USAGE, stderr: '', exitCode: 0 };
-  if (command === 'run' || command === 'list-tests' || command === 'validate-helpers') {
+  if (
+    command === 'run' ||
+    command === 'list-tests' ||
+    command === 'validate-helpers' ||
+    command === 'audit-locators'
+  ) {
     return {
       stdout: '',
       stderr: `sentinel-ts: \`${command}\` requires async dispatch (use dispatchAsync).\n`,

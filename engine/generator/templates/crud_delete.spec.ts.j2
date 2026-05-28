@@ -1,0 +1,29 @@
+{{ banner }}
+import { sentinelTest as test, expect } from '@sentinelqa/ts-runtime/playwright';
+
+test.describe({{ resource_title | js_string }} + ' — delete', () => {
+  test(
+    'user can delete a ' + {{ resource_singular | js_string }},
+    { tag: [{% for tag in tags %}{{ tag | js_string }}{% if not loop.last %}, {% endif %}{% endfor %}] },
+    async ({ page }) => {
+      await page.goto({{ detail_path | js_string }});
+
+      await test.step('initiate delete', async () => {
+        await page.getByRole('button', { name: {{ delete_label | regex_pattern }} }).click();
+      });
+
+{% if confirm_dialog_label %}
+      await test.step('confirm in dialog', async () => {
+        await page.getByRole('button', { name: {{ confirm_dialog_label | regex_pattern }} }).click();
+      });
+{% endif %}
+
+      await test.step('confirm deletion outcome', async () => {
+        await expect(page).toHaveURL({{ post_delete_url_regex | regex_pattern }});
+{% if success_text %}
+        await expect(page.getByText({{ success_text | regex_pattern }})).toBeVisible();
+{% endif %}
+      });
+    },
+  );
+});

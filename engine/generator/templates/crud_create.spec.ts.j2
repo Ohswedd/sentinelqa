@@ -1,0 +1,39 @@
+{{ banner }}
+import { sentinelTest as test, expect } from '@sentinelqa/ts-runtime/playwright';
+
+test.describe({{ resource_title | js_string }} + ' — create', () => {
+  test(
+    'user can create a new ' + {{ resource_singular | js_string }},
+    { tag: [{% for tag in tags %}{{ tag | js_string }}{% if not loop.last %}, {% endif %}{% endfor %}] },
+    async ({ page }) => {
+      await page.goto({{ create_path | js_string }});
+
+      await test.step('fill required fields', async () => {
+{% for field in fields %}
+        await page.getByLabel({{ field.label | regex_pattern }}).fill({{ field.sample_value | js_string }});
+{% endfor %}
+      });
+
+      await test.step('submit form', async () => {
+        await page.getByRole('button', { name: {{ submit_label | regex_pattern }} }).click();
+      });
+
+      await test.step('confirm creation outcome', async () => {
+        await expect(page).toHaveURL({{ success_url_regex | regex_pattern }});
+{% if success_text %}
+        await expect(page.getByText({{ success_text | regex_pattern }})).toBeVisible();
+{% endif %}
+      });
+    },
+  );
+
+  test(
+    'create rejects missing required fields',
+    { tag: [{% for tag in tags %}{{ tag | js_string }}{% if not loop.last %}, {% endif %}{% endfor %}] },
+    async ({ page }) => {
+      await page.goto({{ create_path | js_string }});
+      await page.getByRole('button', { name: {{ submit_label | regex_pattern }} }).click();
+      await expect(page.getByText({{ required_error_regex | regex_pattern }})).toBeVisible();
+    },
+  );
+});

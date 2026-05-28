@@ -1,0 +1,30 @@
+{{ banner }}
+import { sentinelTest as test, expect } from '@sentinelqa/ts-runtime/playwright';
+
+test.describe({{ resource_title | js_string }} + ' — list & read', () => {
+  test(
+    'list page renders ' + {{ resource_plural | js_string }},
+    { tag: [{% for tag in tags %}{{ tag | js_string }}{% if not loop.last %}, {% endif %}{% endfor %}] },
+    async ({ page }) => {
+      await page.goto({{ list_path | js_string }});
+
+      await test.step('assert list landmark', async () => {
+        await expect(
+          page.getByRole({{ list_role | js_string }}{% if list_name %}, { name: {{ list_name | regex_pattern }} }{% endif %}),
+        ).toBeVisible();
+      });
+    },
+  );
+
+{% if detail_path %}
+  test(
+    'detail page renders for an existing ' + {{ resource_singular | js_string }},
+    { tag: [{% for tag in tags %}{{ tag | js_string }}{% if not loop.last %}, {% endif %}{% endfor %}] },
+    async ({ page }) => {
+      await page.goto({{ detail_path | js_string }});
+      await expect(page).toHaveURL({{ detail_path | regex_literal }});
+      await expect(page.getByRole('main')).toBeVisible();
+    },
+  );
+{% endif %}
+});

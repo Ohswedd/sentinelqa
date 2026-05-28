@@ -4,11 +4,11 @@ Update this file on every commit that advances or completes work. Do not advance
 
 ## Active pointer
 
-- **Phase:** 07 — Generator Module
-- **Sub-phase:** _to be determined from `plans/phase-07-generator-module/README.md`_
-- **Active task:** first task in `plans/phase-07-generator-module/` (Phase 06 merged to `main` as `53f8720`).
-- **Branch:** to be created (`feature/phase-07-…`); Phase 06 branch deleted on merge.
-- **Blockers:** none. Phase 06 merged 2026-05-28 (PR #7, `53f8720`). `make ci` green at merge time (631 Python + 115 TS = 746), `make coverage` 95.14 % (floor 95 %), planner-package coverage 97.46 % (floor 90 %), TS coverage 93.99 % lines / 79.55 % branches (floors 85 / 75). ADR-0011 accepted. PRD §9.2 expanded with §9.2.1.
+- **Phase:** 07 — Generator Module (gate review in progress; all six tasks shipped on `feature/phase-07-generator-module`).
+- **Sub-phase:** task 07.07 (Phase 07 test sweep) — gate verified locally; awaiting PR + CI + merge.
+- **Active task:** PR open, CI watch, squash-merge per `PROMT.md` step 7.
+- **Branch:** `feature/phase-07-generator-module`.
+- **Blockers:** none. `make ci` green locally (735 Python + 124 TS = 859 tests), `make coverage` 95.21 % (floor 95 %), generator-package coverage 96 %+ (floor 90 %), TS coverage 93.80 % lines / 79.46 % branches (floors 85 / 75). ADR-0012 accepted. PRD §9.3 expanded with §9.3.1.
 - **Last updated:** 2026-05-28 by ohswedd
 
 ---

@@ -17,7 +17,15 @@ from typing import Annotated, Final
 
 import typer
 
-from sentinel_cli.commands import audit_cmd, discover_cmd, doctor_cmd, init_cmd, plan_cmd, stubs
+from sentinel_cli.commands import (
+    audit_cmd,
+    discover_cmd,
+    doctor_cmd,
+    generate_cmd,
+    init_cmd,
+    plan_cmd,
+    stubs,
+)
 from sentinel_cli.state import GlobalState, detect_ci_default
 
 # Commands stubbed-out in Phase 02. Each entry binds (command_name,
@@ -25,7 +33,6 @@ from sentinel_cli.state import GlobalState, detect_ci_default
 # something in Phase 02 (`init`, `doctor`, `audit`) are NOT here. Phase 05
 # replaces the `discover` stub.
 _STUB_COMMANDS: Final[tuple[tuple[str, str, str], ...]] = (
-    ("generate", "07", "Generate Playwright specs from the plan."),
     ("test", "08", "Run generated tests via the Playwright runner."),
     ("functional", "10", "Run functional checks (login, CRUD, roles, etc.)."),
     ("api", "22", "Run API contract + negative-case checks."),
@@ -177,6 +184,10 @@ def build_app() -> typer.Typer:
         name="plan",
         help="Build a deterministic test plan (optional LLM augment) from discovery + risk.",
     )(plan_cmd.run_plan)
+    cli.command(
+        name="generate",
+        help="Generate Playwright specs, page objects, and fixtures from the plan.",
+    )(generate_cmd.run_generate)
 
     for name, phase, summary in _STUB_COMMANDS:
         stubs.register_stub(cli, name=name, phase=phase, summary=summary)

@@ -354,6 +354,18 @@ wheels = [
 ]
 
 [[package]]
+name = "jinja2"
+version = "3.1.4"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "markupsafe" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/ed/55/39036716d19cab0747a5020fc7e907f362fbf48c984b14e62127f7e68e5d/jinja2-3.1.4.tar.gz", hash = "sha256:4a3aee7acbbe7303aede8e9648d13b8bf88a429282aa6122a993f0ac800cb369", size = 240245 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/31/80/3a54838c3fb461f6fec263ebf3a3a41771bd05190238de3486aae8540c36/jinja2-3.1.4-py3-none-any.whl", hash = "sha256:bc5dd2abb727a5319567b7a813e6a2e7318c39f4f487cfe6c89c6f9c7d25197d", size = 133271 },
+]
+
+[[package]]
 name = "jsonschema"
 version = "4.23.0"
 source = { registry = "https://pypi.org/simple" }
@@ -1284,6 +1296,7 @@ dependencies = [
     { name = "beautifulsoup4" },
     { name = "graphql-core" },
     { name = "httpx" },
+    { name = "jinja2" },
     { name = "lxml" },
     { name = "openapi-spec-validator" },
     { name = "pydantic" },
@@ -1295,6 +1308,7 @@ requires-dist = [
     { name = "beautifulsoup4", specifier = "==4.12.3" },
     { name = "graphql-core", specifier = "==3.2.5" },
     { name = "httpx", specifier = "==0.28.1" },
+    { name = "jinja2", specifier = "==3.1.4" },
     { name = "lxml", specifier = "==5.3.0" },
     { name = "openapi-spec-validator", specifier = "==0.7.1" },
     { name = "pydantic", specifier = "==2.10.3" },
@@ -1315,6 +1329,7 @@ dev = [
     { name = "graphql-core" },
     { name = "httpx" },
     { name = "hypothesis" },
+    { name = "jinja2" },
     { name = "jsonschema" },
     { name = "lxml" },
     { name = "lxml-stubs" },
@@ -1345,6 +1360,7 @@ dev = [
     { name = "graphql-core", specifier = "==3.2.5" },
     { name = "httpx", specifier = "==0.28.1" },
     { name = "hypothesis", specifier = "==6.122.1" },
+    { name = "jinja2", specifier = "==3.1.4" },
     { name = "jsonschema", specifier = "==4.23.0" },
     { name = "lxml", specifier = "==5.3.0" },
     { name = "lxml-stubs", specifier = "==0.5.1" },
