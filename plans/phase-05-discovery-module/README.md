@@ -6,10 +6,13 @@ Implement the **Discovery** module (PRD §9.1): crawl the target app, build a ro
 
 Discovery is read-only and safe by default; it must respect the safety policy at every request.
 
+> **Scope note (ADR-0010):** Phase 05 ships an **HTTP-first** discovery MVP — `httpx` for fetching, `lxml`/`BeautifulSoup4` for HTML parsing, JS-bundle scanning for endpoint references. This covers SSR / hydrated / static apps. Pure CSR SPAs (Vite + React with empty `<div id="root">`) are out of scope for this phase; they are handled by `plans/phase-17-ci-integration/07-playwright-discovery-backend.md`, which adds a `PlaywrightCrawlBackend` behind the `CrawlBackend` Protocol defined here. The two backends must produce equivalent `DiscoveryGraph` shapes; downstream modules don't need to know which ran.
+
 ## PRD / CLAUDE.md references
 
 - PRD §9.1 Discovery module, §11 Architecture.
 - CLAUDE.md §6 Safety boundary, §9 Module contract, §10 Run lifecycle.
+- ADR-0010 — Discovery MVP is HTTP-first; Playwright SPA crawl lands in Phase 17.
 
 ## Sub-phases & tasks
 

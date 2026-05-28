@@ -42,14 +42,15 @@ Use [`_template.md`](./_template.md). The required headings are validated by `sc
 
 ## Index of accepted ADRs
 
-| ID                                                        | Title                                             | Status     | Phase |
-| --------------------------------------------------------- | ------------------------------------------------- | ---------- | ----- |
-| [0001](./0001-repository-structure.md)                    | Repository structure                              | `Accepted` | 00    |
-| [0002](./0002-language-strategy.md)                       | Language strategy (Python + TypeScript)           | `Accepted` | 00    |
-| [0003](./0003-package-managers.md)                        | Package managers (uv + pnpm)                      | `Accepted` | 00    |
-| [0004](./0004-conventional-commits-and-no-ai-coauthor.md) | Conventional Commits + no-AI-coauthor enforcement | `Accepted` | 00    |
-| [0005](./0005-config-schema.md)                           | Config schema and loader                          | `Accepted` | 01    |
-| [0006](./0006-safety-policy.md)                           | Safety policy and target allowlist                | `Accepted` | 01    |
-| [0007](./0007-run-lifecycle.md)                           | Run lifecycle                                     | `Accepted` | 02    |
-| [0008](./0008-report-schemas-and-reporter.md)             | Report schemas and reporter pipeline              | `Accepted` | 03    |
-| [0009](./0009-python-ts-protocol.md)                      | Python ↔ TypeScript JSONL protocol               | `Accepted` | 04    |
+| ID                                                        | Title                                                               | Status     | Phase |
+| --------------------------------------------------------- | ------------------------------------------------------------------- | ---------- | ----- |
+| [0001](./0001-repository-structure.md)                    | Repository structure                                                | `Accepted` | 00    |
+| [0002](./0002-language-strategy.md)                       | Language strategy (Python + TypeScript)                             | `Accepted` | 00    |
+| [0003](./0003-package-managers.md)                        | Package managers (uv + pnpm)                                        | `Accepted` | 00    |
+| [0004](./0004-conventional-commits-and-no-ai-coauthor.md) | Conventional Commits + no-AI-coauthor enforcement                   | `Accepted` | 00    |
+| [0005](./0005-config-schema.md)                           | Config schema and loader                                            | `Accepted` | 01    |
+| [0006](./0006-safety-policy.md)                           | Safety policy and target allowlist                                  | `Accepted` | 01    |
+| [0007](./0007-run-lifecycle.md)                           | Run lifecycle                                                       | `Accepted` | 02    |
+| [0008](./0008-report-schemas-and-reporter.md)             | Report schemas and reporter pipeline                                | `Accepted` | 03    |
+| [0009](./0009-python-ts-protocol.md)                      | Python ↔ TypeScript JSONL protocol                                 | `Accepted` | 04    |
+| [0010](./0010-discovery-mvp-http-first.md)                | Discovery MVP is HTTP-first; Playwright SPA crawl lands in Phase 17 | `Accepted` | 05    |
