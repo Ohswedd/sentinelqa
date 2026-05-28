@@ -344,6 +344,19 @@ Required capabilities:
 - Detect repeated components.
 - Detect auth boundaries.
 
+#### 9.1.1 MVP delivery (Phase 05)
+
+The MVP ships in Phase 05 as an HTTP-first pipeline (`engine.discovery`):
+
+- `Crawler` (`engine/discovery/crawler.py`) — httpx-based BFS, robots.txt aware, rate-limited (token bucket), same-host-only by default, transparent UA `SentinelQA/<version>` + `X-SentinelQA-Test-Run: <run-id>` header. Pluggable `CrawlBackend` Protocol.
+- `DomMapBuilder`, `FormsInventory`, `ApiDetector`, `AuthBoundaryDetector`, `OpenAPIIngester`, `GraphQLIngester` — produce the typed records the `DiscoveryGraph` carries.
+- `build_risk_map` + `RISK_RULES` — ten deterministic, audited rules (login/auth, admin, payment, 5xx, unreachable, form-without-submit, form-without-validation, missing accessible labels, API referenced-only, crawl-failed) summed and clipped to `[0, 1]`. Justifications are recorded per route so the score is fully explainable.
+- `sentinel discover --url ...` — replaces the Phase 02 stub. Runs lifecycle steps 1–8 (config → safety → run id → artifact dir → snapshot → discovery), enforces the safety policy before any I/O, writes `discovery.json`, `forms.json`, `api.json`, `auth.json`, `risk.json`, and a human-readable `discovery.report.md` into the run dir.
+
+`discovery.engine: http` is the only backend shipped in Phase 05. The config key is reserved so the Phase 17 Playwright backend (see `plans/phase-17-ci-integration/07-playwright-discovery-backend.md`) plugs in without a schema bump. ADR-0010 records the trade-off: SSR / hydrated / static apps work fully; pure CSR SPAs (empty `<div id="root">`) are out of scope for the MVP and produce an explicit `spa_empty_body` risk note when the body looks empty.
+
+Safety boundary: credentials are read from env vars by name (never inlined in artifacts), the login POST body is never persisted, and `target.allowed_hosts` enforcement runs before any HTTP request.
+
 ### 9.2 Planner module
 
 Purpose: Convert discovery into a test plan.

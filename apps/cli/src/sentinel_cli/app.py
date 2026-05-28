@@ -17,14 +17,14 @@ from typing import Annotated, Final
 
 import typer
 
-from sentinel_cli.commands import audit_cmd, doctor_cmd, init_cmd, stubs
+from sentinel_cli.commands import audit_cmd, discover_cmd, doctor_cmd, init_cmd, stubs
 from sentinel_cli.state import GlobalState, detect_ci_default
 
 # Commands stubbed-out in Phase 02. Each entry binds (command_name,
 # future_phase, one_line_help). Lifecycle commands that actually do
-# something in Phase 02 (`init`, `doctor`, `audit`) are NOT here.
+# something in Phase 02 (`init`, `doctor`, `audit`) are NOT here. Phase 05
+# replaces the `discover` stub.
 _STUB_COMMANDS: Final[tuple[tuple[str, str, str], ...]] = (
-    ("discover", "05", "Crawl the target, build the discovery graph."),
     ("plan", "06", "Generate a deterministic test plan from discovery."),
     ("generate", "07", "Generate Playwright specs from the plan."),
     ("test", "08", "Run generated tests via the Playwright runner."),
@@ -170,6 +170,10 @@ def build_app() -> typer.Typer:
     cli.command(name="audit", help="Run the full audit lifecycle against the target.")(
         audit_cmd.run_audit
     )
+    cli.command(
+        name="discover",
+        help="Crawl the target, build the discovery graph + risk map, write artifacts.",
+    )(discover_cmd.run_discover)
 
     for name, phase, summary in _STUB_COMMANDS:
         stubs.register_stub(cli, name=name, phase=phase, summary=summary)

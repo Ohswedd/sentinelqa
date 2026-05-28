@@ -132,6 +132,40 @@ class VisualConfig(SentinelModel):
     mask_dynamic_content: bool = True
 
 
+class DiscoveryOpenAPIConfig(SentinelModel):
+    """`discovery.openapi:` block — optional schema augmentation."""
+
+    path: Path | None = None
+    url: str | None = Field(default=None, max_length=2048)
+
+
+class DiscoveryGraphQLConfig(SentinelModel):
+    """`discovery.graphql:` block — optional schema augmentation."""
+
+    path: Path | None = None
+    url: str | None = Field(default=None, max_length=2048)
+
+
+class DiscoveryConfig(SentinelModel):
+    """`discovery:` block (PRD §9.1, ADR-0010).
+
+    The MVP `engine: "http"` backend is the only one shipped in Phase 05;
+    `engine: "playwright"` is reserved for Phase 17 (see
+    `plans/phase-17-ci-integration/07-playwright-discovery-backend.md`).
+    """
+
+    engine: Literal["http", "playwright"] = "http"
+    max_depth: int = Field(default=3, ge=0, le=10)
+    max_pages: int = Field(default=50, ge=1, le=2000)
+    rate_limit_rps: float = Field(default=5.0, gt=0.0, le=100.0)
+    respect_robots: bool = True
+    same_host_only: bool = True
+    extra_allowed_hosts: tuple[str, ...] = Field(default_factory=tuple)
+    request_timeout_seconds: float = Field(default=10.0, gt=0.0, le=120.0)
+    openapi: DiscoveryOpenAPIConfig = Field(default_factory=lambda: DiscoveryOpenAPIConfig())
+    graphql: DiscoveryGraphQLConfig = Field(default_factory=lambda: DiscoveryGraphQLConfig())
+
+
 class PolicyConfig(SentinelModel):
     """`policy:` block."""
 
@@ -174,6 +208,7 @@ class RootConfig(SentinelModel):
     security: SecurityConfig = Field(default_factory=lambda: SecurityConfig())
     performance: PerformanceConfig = Field(default_factory=lambda: PerformanceConfig())
     visual: VisualConfig = Field(default_factory=lambda: VisualConfig())
+    discovery: DiscoveryConfig = Field(default_factory=lambda: DiscoveryConfig())
     policy: PolicyConfig = Field(default_factory=lambda: PolicyConfig())
     report: ReportConfig = Field(default_factory=lambda: ReportConfig())
     schema_version: str = Field(default=CONFIG_SCHEMA_VERSION)
@@ -202,6 +237,9 @@ __all__ = [
     "PerformanceConfig",
     "PerformanceBudgets",
     "VisualConfig",
+    "DiscoveryConfig",
+    "DiscoveryOpenAPIConfig",
+    "DiscoveryGraphQLConfig",
     "PolicyConfig",
     "ReportConfig",
 ]

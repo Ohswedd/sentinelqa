@@ -17,6 +17,7 @@ Make SentinelQA easy to drop into any CI/CD pipeline (PRD §21, CLAUDE §39): po
 4. `04-ci-modes.md` — `sentinel ci` modes implementation.
 5. `05-diff-aware.md` — `--diff origin/main...HEAD` impact mapping.
 6. `06-tests.md` — CI smoke runs.
+7. `07-playwright-discovery-backend.md` — Playwright-driven discovery backend for CSR SPAs (re-homed from Phase 05 by ADR-0010).
 
 ## Definition of Done
 
