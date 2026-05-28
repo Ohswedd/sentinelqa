@@ -34,7 +34,8 @@ repos:
           (?x)^(
             tests/unit/policy/test_redaction\.py|
             tests/golden/redaction/parity\.json|
-            scripts/export-redaction-parity\.py
+            scripts/export-redaction-parity\.py|
+            tests/unit/modules/security/test_secret_patterns\.py
           )$
       - id: check-merge-conflict
       - id: check-case-conflict

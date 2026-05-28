@@ -42,22 +42,23 @@ Use [`_template.md`](./_template.md). The required headings are validated by `sc
 
 ## Index of accepted ADRs
 
-| ID                                                        | Title                                                                                | Status     | Phase |
-| --------------------------------------------------------- | ------------------------------------------------------------------------------------ | ---------- | ----- |
-| [0001](./0001-repository-structure.md)                    | Repository structure                                                                 | `Accepted` | 00    |
-| [0002](./0002-language-strategy.md)                       | Language strategy (Python + TypeScript)                                              | `Accepted` | 00    |
-| [0003](./0003-package-managers.md)                        | Package managers (uv + pnpm)                                                         | `Accepted` | 00    |
-| [0004](./0004-conventional-commits-and-no-ai-coauthor.md) | Conventional Commits + no-AI-coauthor enforcement                                    | `Accepted` | 00    |
-| [0005](./0005-config-schema.md)                           | Config schema and loader                                                             | `Accepted` | 01    |
-| [0006](./0006-safety-policy.md)                           | Safety policy and target allowlist                                                   | `Accepted` | 01    |
-| [0007](./0007-run-lifecycle.md)                           | Run lifecycle                                                                        | `Accepted` | 02    |
-| [0008](./0008-report-schemas-and-reporter.md)             | Report schemas and reporter pipeline                                                 | `Accepted` | 03    |
-| [0009](./0009-python-ts-protocol.md)                      | Python ↔ TypeScript JSONL protocol                                                  | `Accepted` | 04    |
-| [0010](./0010-discovery-mvp-http-first.md)                | Discovery MVP is HTTP-first; Playwright SPA crawl lands in Phase 17                  | `Accepted` | 05    |
-| [0011](./0011-planner-deterministic-vs-llm.md)            | Planner is deterministic-first; LLM adapter opt-in behind a locked, versioned prompt | `Accepted` | 06    |
-| [0012](./0012-generated-test-conventions.md)              | Generated test conventions (Jinja2 templates, banner safety, TS-owned audit)         | `Accepted` | 07    |
-| [0013](./0013-runner-architecture.md)                     | Runner architecture (local + Docker, retry, quarantine, sharding)                    | `Accepted` | 08    |
-| [0014](./0014-analyzer-rules.md)                          | Analyzer rules (categorization, root cause, repro, retry, optional LLM)              | `Accepted` | 09    |
-| [0015](./0015-module-contract-and-functional-module.md)   | Module contract + functional module (CLAUDE §9 lifecycle + `sentinel functional`)    | `Accepted` | 10    |
-| [0016](./0016-accessibility-module.md)                    | Accessibility module — axe-core + deterministic checks (`sentinel a11y`)             | `Accepted` | 11    |
-| [0017](./0017-performance-module.md)                      | Performance module — synthetic page/API/CPU/leak budgets (`sentinel perf`)           | `Accepted` | 12    |
+| ID                                                        | Title                                                                                       | Status     | Phase |
+| --------------------------------------------------------- | ------------------------------------------------------------------------------------------- | ---------- | ----- |
+| [0001](./0001-repository-structure.md)                    | Repository structure                                                                        | `Accepted` | 00    |
+| [0002](./0002-language-strategy.md)                       | Language strategy (Python + TypeScript)                                                     | `Accepted` | 00    |
+| [0003](./0003-package-managers.md)                        | Package managers (uv + pnpm)                                                                | `Accepted` | 00    |
+| [0004](./0004-conventional-commits-and-no-ai-coauthor.md) | Conventional Commits + no-AI-coauthor enforcement                                           | `Accepted` | 00    |
+| [0005](./0005-config-schema.md)                           | Config schema and loader                                                                    | `Accepted` | 01    |
+| [0006](./0006-safety-policy.md)                           | Safety policy and target allowlist                                                          | `Accepted` | 01    |
+| [0007](./0007-run-lifecycle.md)                           | Run lifecycle                                                                               | `Accepted` | 02    |
+| [0008](./0008-report-schemas-and-reporter.md)             | Report schemas and reporter pipeline                                                        | `Accepted` | 03    |
+| [0009](./0009-python-ts-protocol.md)                      | Python ↔ TypeScript JSONL protocol                                                         | `Accepted` | 04    |
+| [0010](./0010-discovery-mvp-http-first.md)                | Discovery MVP is HTTP-first; Playwright SPA crawl lands in Phase 17                         | `Accepted` | 05    |
+| [0011](./0011-planner-deterministic-vs-llm.md)            | Planner is deterministic-first; LLM adapter opt-in behind a locked, versioned prompt        | `Accepted` | 06    |
+| [0012](./0012-generated-test-conventions.md)              | Generated test conventions (Jinja2 templates, banner safety, TS-owned audit)                | `Accepted` | 07    |
+| [0013](./0013-runner-architecture.md)                     | Runner architecture (local + Docker, retry, quarantine, sharding)                           | `Accepted` | 08    |
+| [0014](./0014-analyzer-rules.md)                          | Analyzer rules (categorization, root cause, repro, retry, optional LLM)                     | `Accepted` | 09    |
+| [0015](./0015-module-contract-and-functional-module.md)   | Module contract + functional module (CLAUDE §9 lifecycle + `sentinel functional`)           | `Accepted` | 10    |
+| [0016](./0016-accessibility-module.md)                    | Accessibility module — axe-core + deterministic checks (`sentinel a11y`)                    | `Accepted` | 11    |
+| [0017](./0017-performance-module.md)                      | Performance module — synthetic page/API/CPU/leak budgets (`sentinel perf`)                  | `Accepted` | 12    |
+| [0018](./0018-security-module.md)                         | Security module — safe HTTP checks, gated probes, dep + SAST adapters (`sentinel security`) | `Accepted` | 13    |

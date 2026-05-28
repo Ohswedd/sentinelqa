@@ -58,6 +58,21 @@ class TargetConfig(SentinelModel):
         return value
 
 
+class AuthSecondUserConfig(SentinelModel):
+    """`auth.second_user:` block (Phase 13.07, IDOR check).
+
+    Names env vars holding the credentials for a *second* test user, used
+    by the IDOR smoke check to compare resource access across accounts.
+    Without this block, the IDOR check is skipped with an ``info`` note
+    rather than fabricating a finding.
+    """
+
+    username_env: str | None = Field(default=None, max_length=128)
+    password_env: str | None = Field(default=None, max_length=128)
+    token_env: str | None = Field(default=None, max_length=128)
+    user_id: str | None = Field(default=None, max_length=128)
+
+
 class AuthConfig(SentinelModel):
     """`auth:` block.
 
@@ -70,6 +85,9 @@ class AuthConfig(SentinelModel):
     username_env: str | None = Field(default=None, max_length=128)
     password_env: str | None = Field(default=None, max_length=128)
     token_env: str | None = Field(default=None, max_length=128)
+    second_user: AuthSecondUserConfig = Field(
+        default_factory=lambda: AuthSecondUserConfig(),
+    )
 
 
 class ModulesConfig(SentinelModel):
@@ -90,13 +108,73 @@ class ModulesConfig(SentinelModel):
     llm_audit: bool = True
 
 
+class SecurityChecksConfig(SentinelModel):
+    """`security.checks:` block (Phase 13, ADR-0018).
+
+    Boolean per-check toggles. Defaults follow CLAUDE §26 "safe by default":
+
+    - Always-on safe HTTP checks: headers, cookies, CORS, CSRF, reflected
+      XSS, IDOR, frontend secrets.
+    - Off by default (require explicit opt-in + mode/proof escalation):
+      stored XSS (``authorized_destructive`` + proof), SQLi (local mode
+      or ``authorized_destructive`` + proof), SAST (semgrep is opt-in
+      because it has heavy runtime cost).
+    """
+
+    headers: bool = True
+    cookies: bool = True
+    cors: bool = True
+    csrf: bool = True
+    xss_reflected: bool = True
+    xss_stored: bool = False
+    sqli: bool = False
+    idor: bool = True
+    frontend_secrets: bool = True
+    dependency_scan: bool = True
+    sast: bool = False
+
+
+class DependencyScannersConfig(SentinelModel):
+    """`security.dependency_scanners:` block (Phase 13.09).
+
+    Per-tool toggles. ``pip-audit`` and ``npm audit`` default ON because
+    every modern project ships at least one of the matching lockfiles;
+    each adapter no-ops gracefully when the lockfile is missing. The
+    multi-language ``osv-scanner`` is opt-in (its scan can be slow).
+    ``semgrep`` is the optional SAST adapter (separate from
+    ``security.checks.sast`` because users may enable the broad SAST
+    capability while picking a non-semgrep engine in the future).
+    """
+
+    pip_audit: bool = True
+    npm_audit: bool = True
+    osv_scanner: bool = False
+    semgrep: bool = False
+
+
 class SecurityConfig(SentinelModel):
-    """`security:` block."""
+    """`security:` block (Phase 13, ADR-0018).
+
+    The Phase-13 SecurityModule reads ``checks`` to decide which probes
+    to run, ``dependency_scanners`` to drive the dep-scan adapters, and
+    ``routes`` to enumerate the endpoint set (mirrors the
+    ``performance.routes`` / ``accessibility.routes`` pattern). The
+    ``mode`` knob escalates the safety boundary: dangerous probes (stored
+    XSS, SQLi) only run with ``authorized_destructive`` mode AND a valid
+    proof-of-authorization document (see
+    :class:`engine.policy.proof_of_authorization.ProofOfAuthorization`).
+    """
 
     mode: Mode = "safe"
     destructive_tests: bool = False
     max_requests_per_second: int = Field(default=5, ge=1, le=1000)
     allowed_payload_level: Literal["none", "low", "medium", "high"] = "low"
+    checks: SecurityChecksConfig = Field(default_factory=lambda: SecurityChecksConfig())
+    dependency_scanners: DependencyScannersConfig = Field(
+        default_factory=lambda: DependencyScannersConfig()
+    )
+    routes: tuple[str, ...] = Field(default_factory=tuple, max_length=200)
+    request_timeout_seconds: float = Field(default=15.0, gt=0.0, le=300.0)
 
     @model_validator(mode="after")
     def _destructive_requires_mode(self) -> SecurityConfig:
@@ -104,6 +182,16 @@ class SecurityConfig(SentinelModel):
             raise ValueError(
                 "security.destructive_tests=true requires "
                 "security.mode='authorized_destructive'."
+            )
+        return self
+
+    @model_validator(mode="after")
+    def _stored_xss_requires_destructive(self) -> SecurityConfig:
+        if self.checks.xss_stored and self.mode != "authorized_destructive":
+            raise ValueError(
+                "security.checks.xss_stored=true requires "
+                "security.mode='authorized_destructive' "
+                "(stored XSS writes state; see PRD §10.7 + CLAUDE.md §26)."
             )
         return self
 
@@ -391,8 +479,11 @@ __all__ = [
     "SourceConfig",
     "TargetConfig",
     "AuthConfig",
+    "AuthSecondUserConfig",
     "ModulesConfig",
     "SecurityConfig",
+    "SecurityChecksConfig",
+    "DependencyScannersConfig",
     "PerformanceConfig",
     "PerformanceBudgets",
     "VisualConfig",
