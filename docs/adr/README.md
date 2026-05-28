@@ -52,3 +52,4 @@ Use [`_template.md`](./_template.md). The required headings are validated by `sc
 | [0006](./0006-safety-policy.md)                           | Safety policy and target allowlist                | `Accepted` | 01    |
 | [0007](./0007-run-lifecycle.md)                           | Run lifecycle                                     | `Accepted` | 02    |
 | [0008](./0008-report-schemas-and-reporter.md)             | Report schemas and reporter pipeline              | `Accepted` | 03    |
+| [0009](./0009-python-ts-protocol.md)                      | Python ↔ TypeScript JSONL protocol               | `Accepted` | 04    |

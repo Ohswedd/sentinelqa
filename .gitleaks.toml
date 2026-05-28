@@ -10,8 +10,9 @@
 #  - Add the new fake string to `regexes` along with a comment that names
 #    the test that needs it.
 #
-# Do NOT widen the path allowlist beyond `tests/` — production code is
-# never allowed to carry secret-shaped strings.
+# Do NOT widen the path allowlist beyond `tests/`, `scripts/` (test-fixture
+# generators only), and `packages/ts-runtime/src/__tests__/` — production
+# code is never allowed to carry secret-shaped strings.
 
 [extend]
 useDefault = true
@@ -26,6 +27,17 @@ paths = [
   '''^tests/unit/log/test_formatters\.py$''',
   '''^tests/unit/test_coverage_gaps\.py$''',
   '''^tests/property/test_redaction_property\.py$''',
+  # Phase 04 — Python ↔ TS redaction parity. The exporter script and
+  # the generated fixture both contain literal example strings that
+  # match the rule patterns; that is the point — they need to be
+  # redacted by the implementations being tested. Same allowance for
+  # the TS-side redaction tests.
+  '''^scripts/export-redaction-parity\.py$''',
+  '''^tests/golden/redaction/parity\.json$''',
+  '''^tests/integration/policy/test_redaction_parity_python\.py$''',
+  '''^packages/ts-runtime/src/__tests__/redact\.test\.ts$''',
+  '''^packages/ts-runtime/src/__tests__/redact\.parity\.test\.ts$''',
+  '''^packages/ts-runtime/src/__tests__/helpers\.test\.ts$''',
 ]
 regexes = [
   # Canonical AWS example access-key from public AWS docs.

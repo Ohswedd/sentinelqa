@@ -353,7 +353,20 @@ _URL_SECRET_QUERY_KEYS: Final[frozenset[str]] = frozenset(
 
 
 def redact_url(url: str) -> str:
-    """Strip userinfo from the netloc and redact secret-shaped query params."""
+    """Strip userinfo from the netloc and redact secret-shaped query params.
+
+    **Cross-language parity note** (Phase 04, ADR-0009, PRD §15.7): the TS
+    mirror (``redactUrl`` in ``packages/ts-runtime/src/redact.ts``)
+    canonicalises the hostname to lower case via the WHATWG ``URL`` API,
+    while ``urlparse`` preserves the original hostname case. The two
+    implementations therefore cannot produce byte-identical output for
+    arbitrary URLs. The contract is **behavioural**: userinfo is stripped
+    on both sides, secret-shaped query keys are replaced with
+    ``[REDACTED:url_token]``, and non-secret query values still pass
+    through the value-level redactor. Cross-language consumers that need
+    to *compare* URLs must normalise hostname case + query order before
+    comparison.
+    """
 
     parsed = urlparse(url)
     netloc = parsed.netloc

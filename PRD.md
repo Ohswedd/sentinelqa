@@ -981,32 +981,70 @@ RepairSuggestion
 
 ### 15.1 Purpose
 
-The TypeScript runtime executes generated Playwright tests and module-specific browser workflows.
+The TypeScript runtime executes generated Playwright tests and module-specific browser workflows. It ships as a single workspace package — `@sentinelqa/ts-runtime` — with three subpath exports consumed by later phases: `./playwright` (generated-test helpers + `sentinelTest`), `./protocol` (JSONL event types + emitter/parser), and `./locators` (semantic-first strategy chain + brittleness audit). The Python ↔ TypeScript boundary is owned by ADR-0009.
 
 ### 15.2 Example helper
 
 ```ts
-import { test, expect } from "@playwright/test";
-import { sentinelStep, captureEvidence } from "@sentinelqa/playwright";
+import { sentinelTest as test, expect } from "@sentinelqa/ts-runtime/playwright";
+import { sentinelStep, captureEvidence } from "@sentinelqa/ts-runtime/playwright";
 
-test("user can create a project", async ({ page }) => {
-  await sentinelStep("login", async () => {
+test("user can create a project", async ({ page, sentinel }) => {
+  await sentinelStep(sentinel, "login", async () => {
     await page.goto("/login");
     await page.getByLabel("Email").fill(process.env.TEST_USER_EMAIL!);
     await page.getByLabel("Password").fill(process.env.TEST_USER_PASSWORD!);
     await page.getByRole("button", { name: /sign in/i }).click();
   });
 
-  await sentinelStep("create project", async () => {
+  await sentinelStep(sentinel, "create project", async () => {
     await page.getByRole("button", { name: /new project/i }).click();
     await page.getByLabel("Project name").fill("Sentinel Test Project");
     await page.getByRole("button", { name: /create/i }).click();
     await expect(page.getByText("Sentinel Test Project")).toBeVisible();
   });
 
-  await captureEvidence(page, "project-created");
+  await captureEvidence(sentinel, page, "project-created");
 });
 ```
+
+### 15.3 `sentinel-ts` binary contract
+
+Python orchestrates `sentinel-ts` (resolved to `dist/cli.js`) over stdout as the canonical Playwright launcher. Surfaces shipped in Phase 04:
+
+| Command            | Purpose                                                                                      |
+| ------------------ | -------------------------------------------------------------------------------------------- |
+| `--help` / `-h`    | Print the usage block.                                                                       |
+| `--version` / `-V` | Print `@sentinelqa/ts-runtime <semver>`.                                                     |
+| `run`              | `--input <run-config.json>` invokes Playwright with the custom reporter and streams JSONL.   |
+| `list-tests`       | `--pattern <glob>` lists spec files; skips `node_modules` / `dist` / `.git` in every result. |
+| `validate-helpers` | Sanity-check that the package loads, the redaction ruleset is readable, and helpers export.  |
+
+Deterministic exit codes: `0` all pass, `1` ≥1 test failed/timed out, `2` Playwright crashed / config invalid / spawn failed / unknown command or flag, `7` programmer error (sync dispatch hit an async command). These map onto PRD §13.2 / CLAUDE §13.
+
+### 15.4 JSONL event protocol
+
+The runtime emits one JSON event per stdout line, parsed by Python's `engine/orchestrator/ts_bridge.py`. Every event carries the envelope `{type, schema_version, seq, ts}`; the discriminator is `type` and the schema covers fourteen kinds: `run.start`, `run.end`, `test.start`, `test.end`, `step.start`, `step.end`, `evidence`, `network.request`, `network.response`, `console`, `dom.snapshot`, `module.event`, `log`, `error`. The wire format is locked by `packages/shared-schema/ts-events.schema.json` (Draft 2020-12). A canonical fixture (`tests/golden/ts-events/sample.jsonl`) drives the cross-language parity tests; schema bumps require a successor ADR (ADR-0009 owns the rules).
+
+### 15.5 Evidence capture defaults
+
+`sentinelTest` and `sentinel-ts run` apply the CLAUDE §21 defaults uniformly: `trace: 'on-first-retry'`, `screenshot: 'only-on-failure'`, `video: 'retain-on-failure'`. The reporter translates Playwright trace/screenshot/video attachments into `evidence` events; opt-in helpers add `dom.snapshot` (with an AX-tree hash for the Healer in Phase 20), redacted browser-console events (`console`), redacted network events (`network.request` / `network.response`), and HAR via `harConfig(ctx)` when the run config sets `evidence.har: true`. The "failure always emits evidence" contract is pinned by an integration test.
+
+### 15.6 Semantic locator strategy
+
+`@sentinelqa/ts-runtime/locators` exports the strategy chain used by Phase 07 (Generator) and Phase 20 (Healer): `getByRole → getByLabel → getByPlaceholder → getByText → getByTestId → getByAltText → getByTitle`. `bestLocator(page, target)` returns the first strategy whose locator matches exactly one element. `describeLocator(locator)` captures role, accessible name, text, ARIA-landmark ancestors, and `tagName` for Healer repairs. `auditLocatorBrittleness(spec)` is a static analysis (via ts-morph) that flags brittle patterns (`:nth-of-type`, raw XPath, deeply nested div soup, class-prefix matchers) so generated specs satisfy CLAUDE §21 before they reach disk.
+
+### 15.7 Safety boundary and redaction symmetry
+
+The TS runtime never imports stealth, evasion, fingerprint-spoofing, CAPTCHA-bypass, or proxy-rotation libraries (CLAUDE §6, PRD §2). Redaction is mirrored from Python via `packages/shared-schema/redaction-rules.json` (Python is the source of truth; `scripts/export-redaction-rules.py --check` is the drift gate). A 19-record byte-parity fixture asserts string / recursive-value / header outputs match across both languages. Every JSONL line and every on-disk artifact (DOM snapshots, network/console logs, error stacks) passes through `redact()` before write.
+
+**URL redaction — behavioural contract, not byte-form parity.** `redact_url` (Python, `urllib.parse.urlparse`) preserves the original hostname case; `redactUrl` (TS, `URL`) canonicalises the hostname to lower case. The two implementations therefore cannot guarantee byte-identical output for arbitrary URLs. The contract is instead behavioural and is enforced on both sides:
+
+- userinfo is stripped (no `user:pass@` ever appears in the output);
+- secret-shaped query keys (`token`, `access_token`, …) are replaced with the marker `[REDACTED:url_token]`;
+- non-secret query values are still passed through the value-level redactor.
+
+Any future Python ↔ TS consumer that needs to *compare* URLs across the boundary must normalise both sides (lowercase the hostname, sort query parameters) before comparison.
 
 ---
 
