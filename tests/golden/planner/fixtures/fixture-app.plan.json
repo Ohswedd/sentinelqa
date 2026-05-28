@@ -1,0 +1,1117 @@
+{
+  "plan": {
+    "coverage_estimate": {
+      "by_module": {
+        "api": 3,
+        "functional": 25,
+        "llm_audit": 1
+      },
+      "total": 29
+    },
+    "discovery_graph_id": "DG-AAAA00000010",
+    "flows": [
+      {
+        "confidence": 0.85,
+        "description": "Verify admin-only access enforcement.",
+        "extractor": "admin",
+        "id": "FLW-AAAA00000023",
+        "name": "admin: /admin/users",
+        "priority": "P0",
+        "required_auth_role": "admin",
+        "required_data_state": null,
+        "risk": "critical",
+        "source": "deterministic",
+        "steps": [
+          {
+            "description": "Anonymous GET /admin/users",
+            "expected_outcome": "403 or redirect to login",
+            "target_element_id": null,
+            "target_route_id": "RT-AAAA00000005"
+          },
+          {
+            "description": "Authenticated non-admin GET /admin/users",
+            "expected_outcome": "403",
+            "target_element_id": null,
+            "target_route_id": "RT-AAAA00000005"
+          },
+          {
+            "description": "Authenticated admin GET /admin/users",
+            "expected_outcome": "200 with admin UI",
+            "target_element_id": null,
+            "target_route_id": "RT-AAAA00000005"
+          }
+        ],
+        "tags": [
+          "admin",
+          "authorization",
+          "extractor:admin"
+        ]
+      },
+      {
+        "confidence": 0.95,
+        "description": "Anonymous request must be redirected or 401; authenticated request must succeed.",
+        "extractor": "route.auth_boundary",
+        "id": "FLW-AAAA00000005",
+        "name": "auth-boundary: /admin/users",
+        "priority": "P0",
+        "required_auth_role": "admin",
+        "required_data_state": null,
+        "risk": "critical",
+        "source": "deterministic",
+        "steps": [
+          {
+            "description": "Anonymous GET /admin/users",
+            "expected_outcome": "redirect to login OR 401/403 response",
+            "target_element_id": null,
+            "target_route_id": "RT-AAAA00000005"
+          },
+          {
+            "description": "Authenticated GET /admin/users",
+            "expected_outcome": "200 response with authenticated content",
+            "target_element_id": null,
+            "target_route_id": "RT-AAAA00000005"
+          }
+        ],
+        "tags": [
+          "auth_boundary",
+          "security"
+        ]
+      },
+      {
+        "confidence": 0.95,
+        "description": "Authenticate via the discovered login form.",
+        "extractor": "login",
+        "id": "FLW-AAAA0000001D",
+        "name": "login",
+        "priority": "P0",
+        "required_auth_role": null,
+        "required_data_state": null,
+        "risk": "critical",
+        "source": "deterministic",
+        "steps": [
+          {
+            "description": "Navigate to /login",
+            "expected_outcome": "login form is visible",
+            "target_element_id": null,
+            "target_route_id": "RT-AAAA00000002"
+          },
+          {
+            "description": "Enter test credentials",
+            "expected_outcome": "form accepts input without client-side errors",
+            "target_element_id": null,
+            "target_route_id": "RT-AAAA00000002"
+          },
+          {
+            "description": "Submit credentials",
+            "expected_outcome": "user lands on an authenticated route",
+            "target_element_id": null,
+            "target_route_id": "RT-AAAA00000002"
+          }
+        ],
+        "tags": [
+          "auth",
+          "extractor:login",
+          "login"
+        ]
+      },
+      {
+        "confidence": 0.75,
+        "description": "Exercise the payment flow in sandbox mode with the provider's documented test cards. Never use production credentials.",
+        "extractor": "payment_sandbox",
+        "id": "FLW-AAAA00000027",
+        "name": "payment sandbox: /checkout/stripe",
+        "priority": "P0",
+        "required_auth_role": null,
+        "required_data_state": null,
+        "risk": "critical",
+        "source": "deterministic",
+        "steps": [
+          {
+            "description": "Navigate to /checkout/stripe",
+            "expected_outcome": "payment form is visible",
+            "target_element_id": null,
+            "target_route_id": "RT-AAAA00000008"
+          },
+          {
+            "description": "Submit a provider-documented test card",
+            "expected_outcome": "sandbox returns a success / declined response per the provider documentation",
+            "target_element_id": null,
+            "target_route_id": "RT-AAAA00000008"
+          }
+        ],
+        "tags": [
+          "extractor:payment_sandbox",
+          "payment_sandbox",
+          "provider:stripe",
+          "sandbox"
+        ]
+      },
+      {
+        "confidence": 0.9,
+        "description": "Register a new account through the discovered signup route.",
+        "extractor": "signup",
+        "id": "FLW-AAAA0000001E",
+        "name": "signup",
+        "priority": "P0",
+        "required_auth_role": null,
+        "required_data_state": null,
+        "risk": "critical",
+        "source": "deterministic",
+        "steps": [
+          {
+            "description": "Navigate to /signup",
+            "expected_outcome": "signup form is visible",
+            "target_element_id": null,
+            "target_route_id": "RT-AAAA00000003"
+          },
+          {
+            "description": "Fill required fields with safe sample data",
+            "expected_outcome": "form accepts input",
+            "target_element_id": null,
+            "target_route_id": "RT-AAAA00000003"
+          },
+          {
+            "description": "Submit",
+            "expected_outcome": "account is created or verification email is requested",
+            "target_element_id": null,
+            "target_route_id": "RT-AAAA00000003"
+          }
+        ],
+        "tags": [
+          "auth",
+          "extractor:signup",
+          "signup"
+        ]
+      },
+      {
+        "confidence": 0.95,
+        "description": "Smoke test: load /admin/users and assert a stable anchor element.",
+        "extractor": "route.smoke",
+        "id": "FLW-AAAA00000003",
+        "name": "smoke: /admin/users",
+        "priority": "P0",
+        "required_auth_role": null,
+        "required_data_state": null,
+        "risk": "critical",
+        "source": "deterministic",
+        "steps": [
+          {
+            "description": "Navigate to /admin/users",
+            "expected_outcome": "page renders without 5xx errors",
+            "target_element_id": null,
+            "target_route_id": "RT-AAAA00000005"
+          },
+          {
+            "description": "Assert an anchor element is visible",
+            "expected_outcome": "anchor element is present in the rendered DOM",
+            "target_element_id": null,
+            "target_route_id": "RT-AAAA00000005"
+          }
+        ],
+        "tags": [
+          "category:admin",
+          "smoke"
+        ]
+      },
+      {
+        "confidence": 0.95,
+        "description": "Smoke test: load /login and assert a stable anchor element.",
+        "extractor": "route.smoke",
+        "id": "FLW-AAAA00000011",
+        "name": "smoke: /login",
+        "priority": "P0",
+        "required_auth_role": null,
+        "required_data_state": null,
+        "risk": "critical",
+        "source": "deterministic",
+        "steps": [
+          {
+            "description": "Navigate to /login",
+            "expected_outcome": "page renders without 5xx errors",
+            "target_element_id": null,
+            "target_route_id": "RT-AAAA00000002"
+          },
+          {
+            "description": "Assert an anchor element is visible",
+            "expected_outcome": "anchor element is present in the rendered DOM",
+            "target_element_id": null,
+            "target_route_id": "RT-AAAA00000002"
+          }
+        ],
+        "tags": [
+          "category:login",
+          "smoke"
+        ]
+      },
+      {
+        "confidence": 0.95,
+        "description": "Fill the form (2 field(s)) and verify submission outcome.",
+        "extractor": "form.submit",
+        "id": "FLW-AAAA00000013",
+        "name": "submit form on /login",
+        "priority": "P0",
+        "required_auth_role": null,
+        "required_data_state": null,
+        "risk": "critical",
+        "source": "deterministic",
+        "steps": [
+          {
+            "description": "Navigate to /login",
+            "expected_outcome": "form is present and interactive",
+            "target_element_id": null,
+            "target_route_id": "RT-AAAA00000002"
+          },
+          {
+            "description": "Fill required fields with safe sample data",
+            "expected_outcome": "all required fields accept input",
+            "target_element_id": null,
+            "target_route_id": "RT-AAAA00000002"
+          },
+          {
+            "description": "Submit the form",
+            "expected_outcome": "server returns a success or validated-failure response",
+            "target_element_id": null,
+            "target_route_id": "RT-AAAA00000002"
+          }
+        ],
+        "tags": [
+          "category:login",
+          "form",
+          "form:FRM-AAAA0000000B"
+        ]
+      },
+      {
+        "confidence": 0.95,
+        "description": "Smoke test: load /checkout/stripe and assert a stable anchor element.",
+        "extractor": "route.smoke",
+        "id": "FLW-AAAA0000000B",
+        "name": "smoke: /checkout/stripe",
+        "priority": "P0",
+        "required_auth_role": null,
+        "required_data_state": null,
+        "risk": "high",
+        "source": "deterministic",
+        "steps": [
+          {
+            "description": "Navigate to /checkout/stripe",
+            "expected_outcome": "page renders without 5xx errors",
+            "target_element_id": null,
+            "target_route_id": "RT-AAAA00000008"
+          },
+          {
+            "description": "Assert an anchor element is visible",
+            "expected_outcome": "anchor element is present in the rendered DOM",
+            "target_element_id": null,
+            "target_route_id": "RT-AAAA00000008"
+          }
+        ],
+        "tags": [
+          "category:payment",
+          "smoke"
+        ]
+      },
+      {
+        "confidence": 0.95,
+        "description": "Smoke test: load /signup and assert a stable anchor element.",
+        "extractor": "route.smoke",
+        "id": "FLW-AAAA00000015",
+        "name": "smoke: /signup",
+        "priority": "P0",
+        "required_auth_role": null,
+        "required_data_state": null,
+        "risk": "high",
+        "source": "deterministic",
+        "steps": [
+          {
+            "description": "Navigate to /signup",
+            "expected_outcome": "page renders without 5xx errors",
+            "target_element_id": null,
+            "target_route_id": "RT-AAAA00000003"
+          },
+          {
+            "description": "Assert an anchor element is visible",
+            "expected_outcome": "anchor element is present in the rendered DOM",
+            "target_element_id": null,
+            "target_route_id": "RT-AAAA00000003"
+          }
+        ],
+        "tags": [
+          "category:signup",
+          "smoke"
+        ]
+      },
+      {
+        "confidence": 0.95,
+        "description": "Contract test for DELETE /api/items/[id] (source=discovered).",
+        "extractor": "api.contract",
+        "id": "FLW-AAAA00000039",
+        "name": "api contract: DELETE /api/items/[id]",
+        "priority": "P1",
+        "required_auth_role": null,
+        "required_data_state": null,
+        "risk": "high",
+        "source": "deterministic",
+        "steps": [
+          {
+            "description": "Issue DELETE /api/items/[id]",
+            "expected_outcome": "response matches the documented contract",
+            "target_element_id": null,
+            "target_route_id": null
+          }
+        ],
+        "tags": [
+          "api",
+          "endpoint:API-AAAA0000000F",
+          "source:discovered"
+        ]
+      },
+      {
+        "confidence": 0.95,
+        "description": "Contract test for GET /api/items (source=discovered).",
+        "extractor": "api.contract",
+        "id": "FLW-AAAA00000035",
+        "name": "api contract: GET /api/items",
+        "priority": "P1",
+        "required_auth_role": null,
+        "required_data_state": null,
+        "risk": "high",
+        "source": "deterministic",
+        "steps": [
+          {
+            "description": "Issue GET /api/items",
+            "expected_outcome": "response matches the documented contract",
+            "target_element_id": null,
+            "target_route_id": null
+          }
+        ],
+        "tags": [
+          "api",
+          "endpoint:API-AAAA0000000D",
+          "source:discovered"
+        ]
+      },
+      {
+        "confidence": 0.95,
+        "description": "Contract test for POST /api/items (source=discovered).",
+        "extractor": "api.contract",
+        "id": "FLW-AAAA00000037",
+        "name": "api contract: POST /api/items",
+        "priority": "P1",
+        "required_auth_role": null,
+        "required_data_state": null,
+        "risk": "high",
+        "source": "deterministic",
+        "steps": [
+          {
+            "description": "Issue POST /api/items",
+            "expected_outcome": "response matches the documented contract",
+            "target_element_id": null,
+            "target_route_id": null
+          }
+        ],
+        "tags": [
+          "api",
+          "endpoint:API-AAAA0000000E",
+          "source:discovered"
+        ]
+      },
+      {
+        "confidence": 0.7,
+        "description": "Delete a single resource via /api/items/[id].",
+        "extractor": "crud",
+        "id": "FLW-AAAA00000022",
+        "name": "crud:delete /api/items",
+        "priority": "P1",
+        "required_auth_role": null,
+        "required_data_state": "existing-record",
+        "risk": "high",
+        "source": "deterministic",
+        "steps": [
+          {
+            "description": "DELETE /api/items/[id]",
+            "expected_outcome": "204 OR 200; subsequent GET returns 404",
+            "target_element_id": null,
+            "target_route_id": "RT-AAAA00000007"
+          }
+        ],
+        "tags": [
+          "crud",
+          "delete",
+          "extractor:crud"
+        ]
+      },
+      {
+        "confidence": 0.7,
+        "description": "Update a single resource via /api/items/[id].",
+        "extractor": "crud",
+        "id": "FLW-AAAA00000021",
+        "name": "crud:update /api/items",
+        "priority": "P1",
+        "required_auth_role": null,
+        "required_data_state": "existing-record",
+        "risk": "high",
+        "source": "deterministic",
+        "steps": [
+          {
+            "description": "PATCH/PUT /api/items/[id]",
+            "expected_outcome": "200 with updated entity",
+            "target_element_id": null,
+            "target_route_id": "RT-AAAA00000007"
+          }
+        ],
+        "tags": [
+          "crud",
+          "extractor:crud",
+          "update"
+        ]
+      },
+      {
+        "confidence": 0.8,
+        "description": "Upload a small safe sample file and verify the response.",
+        "extractor": "file_upload_download",
+        "id": "FLW-AAAA00000026",
+        "name": "file upload",
+        "priority": "P1",
+        "required_auth_role": null,
+        "required_data_state": null,
+        "risk": "high",
+        "source": "deterministic",
+        "steps": [
+          {
+            "description": "Pick a small safe sample file (PNG)",
+            "expected_outcome": "file selector accepts the input",
+            "target_element_id": null,
+            "target_route_id": null
+          },
+          {
+            "description": "Submit",
+            "expected_outcome": "server returns 200/201 with a downloadable reference; no executable types accepted",
+            "target_element_id": null,
+            "target_route_id": "RT-AAAA00000009"
+          }
+        ],
+        "tags": [
+          "extractor:file_upload_download",
+          "file_upload"
+        ]
+      },
+      {
+        "confidence": 0.8,
+        "description": "Verify that role='admin' is required to access /admin/users and lower-privileged roles are denied.",
+        "extractor": "role",
+        "id": "FLW-AAAA00000024",
+        "name": "role:admin \u2192 /admin/users",
+        "priority": "P1",
+        "required_auth_role": "admin",
+        "required_data_state": null,
+        "risk": "high",
+        "source": "deterministic",
+        "steps": [
+          {
+            "description": "Authenticated lower-privileged GET /admin/users",
+            "expected_outcome": "403",
+            "target_element_id": null,
+            "target_route_id": "RT-AAAA00000005"
+          },
+          {
+            "description": "Authenticated admin GET /admin/users",
+            "expected_outcome": "200 with role-appropriate UI",
+            "target_element_id": null,
+            "target_route_id": "RT-AAAA00000005"
+          }
+        ],
+        "tags": [
+          "authorization",
+          "extractor:role",
+          "role"
+        ]
+      },
+      {
+        "confidence": 0.8,
+        "description": "Verify that role='user' is required to access /dashboard and lower-privileged roles are denied.",
+        "extractor": "role",
+        "id": "FLW-AAAA00000025",
+        "name": "role:user \u2192 /dashboard",
+        "priority": "P1",
+        "required_auth_role": "user",
+        "required_data_state": null,
+        "risk": "high",
+        "source": "deterministic",
+        "steps": [
+          {
+            "description": "Authenticated lower-privileged GET /dashboard",
+            "expected_outcome": "403",
+            "target_element_id": null,
+            "target_route_id": "RT-AAAA00000004"
+          },
+          {
+            "description": "Authenticated user GET /dashboard",
+            "expected_outcome": "200 with role-appropriate UI",
+            "target_element_id": null,
+            "target_route_id": "RT-AAAA00000004"
+          }
+        ],
+        "tags": [
+          "authorization",
+          "extractor:role",
+          "role"
+        ]
+      },
+      {
+        "confidence": 0.7,
+        "description": "Create a new resource under /api/items. No prior fixture state required.",
+        "extractor": "crud",
+        "id": "FLW-AAAA0000001F",
+        "name": "crud:create /api/items",
+        "priority": "P1",
+        "required_auth_role": null,
+        "required_data_state": "none",
+        "risk": "medium",
+        "source": "deterministic",
+        "steps": [
+          {
+            "description": "POST /api/items",
+            "expected_outcome": "201 with persisted entity in response",
+            "target_element_id": null,
+            "target_route_id": "RT-AAAA00000006"
+          }
+        ],
+        "tags": [
+          "create",
+          "crud",
+          "extractor:crud"
+        ]
+      },
+      {
+        "confidence": 0.95,
+        "description": "Fill the form (2 field(s)) and verify submission outcome.",
+        "extractor": "form.submit",
+        "id": "FLW-AAAA00000019",
+        "name": "submit form on /uploads",
+        "priority": "P1",
+        "required_auth_role": null,
+        "required_data_state": null,
+        "risk": "medium",
+        "source": "deterministic",
+        "steps": [
+          {
+            "description": "Navigate to /uploads",
+            "expected_outcome": "form is present and interactive",
+            "target_element_id": null,
+            "target_route_id": "RT-AAAA00000009"
+          },
+          {
+            "description": "Fill required fields with safe sample data",
+            "expected_outcome": "all required fields accept input",
+            "target_element_id": null,
+            "target_route_id": "RT-AAAA00000009"
+          },
+          {
+            "description": "Submit the form",
+            "expected_outcome": "server returns a success or validated-failure response",
+            "target_element_id": null,
+            "target_route_id": "RT-AAAA00000009"
+          }
+        ],
+        "tags": [
+          "form",
+          "form:FRM-AAAA0000000C",
+          "llm_audit_candidate"
+        ]
+      },
+      {
+        "confidence": 0.95,
+        "description": "Anonymous request must be redirected or 401; authenticated request must succeed.",
+        "extractor": "route.auth_boundary",
+        "id": "FLW-AAAA0000000F",
+        "name": "auth-boundary: /dashboard",
+        "priority": "P2",
+        "required_auth_role": "user",
+        "required_data_state": null,
+        "risk": "medium",
+        "source": "deterministic",
+        "steps": [
+          {
+            "description": "Anonymous GET /dashboard",
+            "expected_outcome": "redirect to login OR 401/403 response",
+            "target_element_id": null,
+            "target_route_id": "RT-AAAA00000004"
+          },
+          {
+            "description": "Authenticated GET /dashboard",
+            "expected_outcome": "200 response with authenticated content",
+            "target_element_id": null,
+            "target_route_id": "RT-AAAA00000004"
+          }
+        ],
+        "tags": [
+          "auth_boundary",
+          "security"
+        ]
+      },
+      {
+        "confidence": 0.7,
+        "description": "Read a single resource via /api/items/[id].",
+        "extractor": "crud",
+        "id": "FLW-AAAA00000020",
+        "name": "crud:read /api/items",
+        "priority": "P2",
+        "required_auth_role": null,
+        "required_data_state": "existing-record",
+        "risk": "medium",
+        "source": "deterministic",
+        "steps": [
+          {
+            "description": "GET /api/items/[id]",
+            "expected_outcome": "200 with documented payload",
+            "target_element_id": null,
+            "target_route_id": "RT-AAAA00000007"
+          }
+        ],
+        "tags": [
+          "crud",
+          "extractor:crud",
+          "read"
+        ]
+      },
+      {
+        "confidence": 0.7,
+        "description": "Verify a notification/email link callback. The token is opaque; fetched fresh from the test environment per run.",
+        "extractor": "notification",
+        "id": "FLW-AAAA00000028",
+        "name": "notification callback: /verify/[token]",
+        "priority": "P2",
+        "required_auth_role": null,
+        "required_data_state": null,
+        "risk": "medium",
+        "source": "deterministic",
+        "steps": [
+          {
+            "description": "GET /verify/[token] with a fresh token",
+            "expected_outcome": "200 with the documented post-action UI / redirect",
+            "target_element_id": null,
+            "target_route_id": "RT-AAAA0000000A"
+          }
+        ],
+        "tags": [
+          "extractor:notification",
+          "notification"
+        ]
+      },
+      {
+        "confidence": 0.95,
+        "description": "Smoke test: load /api/items and assert a stable anchor element.",
+        "extractor": "route.smoke",
+        "id": "FLW-AAAA00000007",
+        "name": "smoke: /api/items",
+        "priority": "P2",
+        "required_auth_role": null,
+        "required_data_state": null,
+        "risk": "medium",
+        "source": "deterministic",
+        "steps": [
+          {
+            "description": "Navigate to /api/items",
+            "expected_outcome": "page renders without 5xx errors",
+            "target_element_id": null,
+            "target_route_id": "RT-AAAA00000006"
+          },
+          {
+            "description": "Assert an anchor element is visible",
+            "expected_outcome": "anchor element is present in the rendered DOM",
+            "target_element_id": null,
+            "target_route_id": "RT-AAAA00000006"
+          }
+        ],
+        "tags": [
+          "smoke"
+        ]
+      },
+      {
+        "confidence": 0.95,
+        "description": "Smoke test: load /api/items/[id] and assert a stable anchor element.",
+        "extractor": "route.smoke",
+        "id": "FLW-AAAA00000009",
+        "name": "smoke: /api/items/[id]",
+        "priority": "P2",
+        "required_auth_role": null,
+        "required_data_state": null,
+        "risk": "medium",
+        "source": "deterministic",
+        "steps": [
+          {
+            "description": "Navigate to /api/items/[id]",
+            "expected_outcome": "page renders without 5xx errors",
+            "target_element_id": null,
+            "target_route_id": "RT-AAAA00000007"
+          },
+          {
+            "description": "Assert an anchor element is visible",
+            "expected_outcome": "anchor element is present in the rendered DOM",
+            "target_element_id": null,
+            "target_route_id": "RT-AAAA00000007"
+          }
+        ],
+        "tags": [
+          "smoke"
+        ]
+      },
+      {
+        "confidence": 0.95,
+        "description": "Smoke test: load /dashboard and assert a stable anchor element.",
+        "extractor": "route.smoke",
+        "id": "FLW-AAAA0000000D",
+        "name": "smoke: /dashboard",
+        "priority": "P2",
+        "required_auth_role": null,
+        "required_data_state": null,
+        "risk": "medium",
+        "source": "deterministic",
+        "steps": [
+          {
+            "description": "Navigate to /dashboard",
+            "expected_outcome": "page renders without 5xx errors",
+            "target_element_id": null,
+            "target_route_id": "RT-AAAA00000004"
+          },
+          {
+            "description": "Assert an anchor element is visible",
+            "expected_outcome": "anchor element is present in the rendered DOM",
+            "target_element_id": null,
+            "target_route_id": "RT-AAAA00000004"
+          }
+        ],
+        "tags": [
+          "smoke"
+        ]
+      },
+      {
+        "confidence": 0.95,
+        "description": "Smoke test: load /uploads and assert a stable anchor element.",
+        "extractor": "route.smoke",
+        "id": "FLW-AAAA00000017",
+        "name": "smoke: /uploads",
+        "priority": "P2",
+        "required_auth_role": null,
+        "required_data_state": null,
+        "risk": "medium",
+        "source": "deterministic",
+        "steps": [
+          {
+            "description": "Navigate to /uploads",
+            "expected_outcome": "page renders without 5xx errors",
+            "target_element_id": null,
+            "target_route_id": "RT-AAAA00000009"
+          },
+          {
+            "description": "Assert an anchor element is visible",
+            "expected_outcome": "anchor element is present in the rendered DOM",
+            "target_element_id": null,
+            "target_route_id": "RT-AAAA00000009"
+          }
+        ],
+        "tags": [
+          "llm_audit_candidate",
+          "smoke"
+        ]
+      },
+      {
+        "confidence": 0.95,
+        "description": "Smoke test: load /verify/[token] and assert a stable anchor element.",
+        "extractor": "route.smoke",
+        "id": "FLW-AAAA0000001B",
+        "name": "smoke: /verify/[token]",
+        "priority": "P2",
+        "required_auth_role": null,
+        "required_data_state": null,
+        "risk": "medium",
+        "source": "deterministic",
+        "steps": [
+          {
+            "description": "Navigate to /verify/[token]",
+            "expected_outcome": "page renders without 5xx errors",
+            "target_element_id": null,
+            "target_route_id": "RT-AAAA0000000A"
+          },
+          {
+            "description": "Assert an anchor element is visible",
+            "expected_outcome": "anchor element is present in the rendered DOM",
+            "target_element_id": null,
+            "target_route_id": "RT-AAAA0000000A"
+          }
+        ],
+        "tags": [
+          "smoke"
+        ]
+      },
+      {
+        "confidence": 0.95,
+        "description": "Smoke test: load / and assert a stable anchor element.",
+        "extractor": "route.smoke",
+        "id": "FLW-AAAA00000001",
+        "name": "smoke: /",
+        "priority": "P3",
+        "required_auth_role": null,
+        "required_data_state": null,
+        "risk": "low",
+        "source": "deterministic",
+        "steps": [
+          {
+            "description": "Navigate to /",
+            "expected_outcome": "page renders without 5xx errors",
+            "target_element_id": null,
+            "target_route_id": "RT-AAAA00000001"
+          },
+          {
+            "description": "Assert an anchor element is visible",
+            "expected_outcome": "anchor element is present in the rendered DOM",
+            "target_element_id": null,
+            "target_route_id": "RT-AAAA00000001"
+          }
+        ],
+        "tags": [
+          "smoke"
+        ]
+      }
+    ],
+    "id": "PLN-AAAA0000003B",
+    "risk_map_id": "RM-AAAA00000011",
+    "run_id": "RUN-AAAAAAAAAAAA",
+    "target_url": "http://localhost:3000/",
+    "test_cases": [
+      {
+        "confidence": 0.85,
+        "file_path": "tests/sentinel/functional_flw_aaaa00000023.spec.ts",
+        "flow_id": "FLW-AAAA00000023",
+        "id": "TC-AAAA0000002F",
+        "module": "functional",
+        "test_type": "functional"
+      },
+      {
+        "confidence": 0.95,
+        "file_path": "tests/sentinel/functional_flw_aaaa00000005.spec.ts",
+        "flow_id": "FLW-AAAA00000005",
+        "id": "TC-AAAA00000006",
+        "module": "functional",
+        "test_type": "functional"
+      },
+      {
+        "confidence": 0.95,
+        "file_path": "tests/sentinel/functional_flw_aaaa0000001d.spec.ts",
+        "flow_id": "FLW-AAAA0000001D",
+        "id": "TC-AAAA00000029",
+        "module": "functional",
+        "test_type": "functional"
+      },
+      {
+        "confidence": 0.75,
+        "file_path": "tests/sentinel/functional_flw_aaaa00000027.spec.ts",
+        "flow_id": "FLW-AAAA00000027",
+        "id": "TC-AAAA00000033",
+        "module": "functional",
+        "test_type": "functional"
+      },
+      {
+        "confidence": 0.9,
+        "file_path": "tests/sentinel/functional_flw_aaaa0000001e.spec.ts",
+        "flow_id": "FLW-AAAA0000001E",
+        "id": "TC-AAAA0000002A",
+        "module": "functional",
+        "test_type": "functional"
+      },
+      {
+        "confidence": 0.95,
+        "file_path": "tests/sentinel/functional_flw_aaaa00000003.spec.ts",
+        "flow_id": "FLW-AAAA00000003",
+        "id": "TC-AAAA00000004",
+        "module": "functional",
+        "test_type": "functional"
+      },
+      {
+        "confidence": 0.95,
+        "file_path": "tests/sentinel/functional_flw_aaaa00000011.spec.ts",
+        "flow_id": "FLW-AAAA00000011",
+        "id": "TC-AAAA00000012",
+        "module": "functional",
+        "test_type": "functional"
+      },
+      {
+        "confidence": 0.95,
+        "file_path": "tests/sentinel/functional_flw_aaaa00000013.spec.ts",
+        "flow_id": "FLW-AAAA00000013",
+        "id": "TC-AAAA00000014",
+        "module": "functional",
+        "test_type": "functional"
+      },
+      {
+        "confidence": 0.95,
+        "file_path": "tests/sentinel/functional_flw_aaaa0000000b.spec.ts",
+        "flow_id": "FLW-AAAA0000000B",
+        "id": "TC-AAAA0000000C",
+        "module": "functional",
+        "test_type": "functional"
+      },
+      {
+        "confidence": 0.95,
+        "file_path": "tests/sentinel/functional_flw_aaaa00000015.spec.ts",
+        "flow_id": "FLW-AAAA00000015",
+        "id": "TC-AAAA00000016",
+        "module": "functional",
+        "test_type": "functional"
+      },
+      {
+        "confidence": 0.95,
+        "file_path": "tests/sentinel/api_flw_aaaa00000039.spec.ts",
+        "flow_id": "FLW-AAAA00000039",
+        "id": "TC-AAAA0000003A",
+        "module": "api",
+        "test_type": "api"
+      },
+      {
+        "confidence": 0.95,
+        "file_path": "tests/sentinel/api_flw_aaaa00000035.spec.ts",
+        "flow_id": "FLW-AAAA00000035",
+        "id": "TC-AAAA00000036",
+        "module": "api",
+        "test_type": "api"
+      },
+      {
+        "confidence": 0.95,
+        "file_path": "tests/sentinel/api_flw_aaaa00000037.spec.ts",
+        "flow_id": "FLW-AAAA00000037",
+        "id": "TC-AAAA00000038",
+        "module": "api",
+        "test_type": "api"
+      },
+      {
+        "confidence": 0.7,
+        "file_path": "tests/sentinel/functional_flw_aaaa00000022.spec.ts",
+        "flow_id": "FLW-AAAA00000022",
+        "id": "TC-AAAA0000002E",
+        "module": "functional",
+        "test_type": "functional"
+      },
+      {
+        "confidence": 0.7,
+        "file_path": "tests/sentinel/functional_flw_aaaa00000021.spec.ts",
+        "flow_id": "FLW-AAAA00000021",
+        "id": "TC-AAAA0000002D",
+        "module": "functional",
+        "test_type": "functional"
+      },
+      {
+        "confidence": 0.8,
+        "file_path": "tests/sentinel/functional_flw_aaaa00000026.spec.ts",
+        "flow_id": "FLW-AAAA00000026",
+        "id": "TC-AAAA00000032",
+        "module": "functional",
+        "test_type": "functional"
+      },
+      {
+        "confidence": 0.8,
+        "file_path": "tests/sentinel/functional_flw_aaaa00000024.spec.ts",
+        "flow_id": "FLW-AAAA00000024",
+        "id": "TC-AAAA00000030",
+        "module": "functional",
+        "test_type": "functional"
+      },
+      {
+        "confidence": 0.8,
+        "file_path": "tests/sentinel/functional_flw_aaaa00000025.spec.ts",
+        "flow_id": "FLW-AAAA00000025",
+        "id": "TC-AAAA00000031",
+        "module": "functional",
+        "test_type": "functional"
+      },
+      {
+        "confidence": 0.7,
+        "file_path": "tests/sentinel/functional_flw_aaaa0000001f.spec.ts",
+        "flow_id": "FLW-AAAA0000001F",
+        "id": "TC-AAAA0000002B",
+        "module": "functional",
+        "test_type": "functional"
+      },
+      {
+        "confidence": 0.95,
+        "file_path": "tests/sentinel/llm_audit_flw_aaaa00000019.spec.ts",
+        "flow_id": "FLW-AAAA00000019",
+        "id": "TC-AAAA0000001A",
+        "module": "llm_audit",
+        "test_type": "llm_audit"
+      },
+      {
+        "confidence": 0.95,
+        "file_path": "tests/sentinel/functional_flw_aaaa0000000f.spec.ts",
+        "flow_id": "FLW-AAAA0000000F",
+        "id": "TC-AAAA00000010",
+        "module": "functional",
+        "test_type": "functional"
+      },
+      {
+        "confidence": 0.7,
+        "file_path": "tests/sentinel/functional_flw_aaaa00000020.spec.ts",
+        "flow_id": "FLW-AAAA00000020",
+        "id": "TC-AAAA0000002C",
+        "module": "functional",
+        "test_type": "functional"
+      },
+      {
+        "confidence": 0.7,
+        "file_path": "tests/sentinel/functional_flw_aaaa00000028.spec.ts",
+        "flow_id": "FLW-AAAA00000028",
+        "id": "TC-AAAA00000034",
+        "module": "functional",
+        "test_type": "functional"
+      },
+      {
+        "confidence": 0.95,
+        "file_path": "tests/sentinel/functional_flw_aaaa00000007.spec.ts",
+        "flow_id": "FLW-AAAA00000007",
+        "id": "TC-AAAA00000008",
+        "module": "functional",
+        "test_type": "functional"
+      },
+      {
+        "confidence": 0.95,
+        "file_path": "tests/sentinel/functional_flw_aaaa00000009.spec.ts",
+        "flow_id": "FLW-AAAA00000009",
+        "id": "TC-AAAA0000000A",
+        "module": "functional",
+        "test_type": "functional"
+      },
+      {
+        "confidence": 0.95,
+        "file_path": "tests/sentinel/functional_flw_aaaa0000000d.spec.ts",
+        "flow_id": "FLW-AAAA0000000D",
+        "id": "TC-AAAA0000000E",
+        "module": "functional",
+        "test_type": "functional"
+      },
+      {
+        "confidence": 0.95,
+        "file_path": "tests/sentinel/functional_flw_aaaa00000017.spec.ts",
+        "flow_id": "FLW-AAAA00000017",
+        "id": "TC-AAAA00000018",
+        "module": "functional",
+        "test_type": "functional"
+      },
+      {
+        "confidence": 0.95,
+        "file_path": "tests/sentinel/functional_flw_aaaa0000001b.spec.ts",
+        "flow_id": "FLW-AAAA0000001B",
+        "id": "TC-AAAA0000001C",
+        "module": "functional",
+        "test_type": "functional"
+      },
+      {
+        "confidence": 0.95,
+        "file_path": "tests/sentinel/functional_flw_aaaa00000001.spec.ts",
+        "flow_id": "FLW-AAAA00000001",
+        "id": "TC-AAAA00000002",
+        "module": "functional",
+        "test_type": "functional"
+      }
+    ]
+  },
+  "schema_version": "1"
+}
