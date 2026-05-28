@@ -60,3 +60,4 @@ Use [`_template.md`](./_template.md). The required headings are validated by `sc
 | [0014](./0014-analyzer-rules.md)                          | Analyzer rules (categorization, root cause, repro, retry, optional LLM)              | `Accepted` | 09    |
 | [0015](./0015-module-contract-and-functional-module.md)   | Module contract + functional module (CLAUDE §9 lifecycle + `sentinel functional`)    | `Accepted` | 10    |
 | [0016](./0016-accessibility-module.md)                    | Accessibility module — axe-core + deterministic checks (`sentinel a11y`)             | `Accepted` | 11    |
+| [0017](./0017-performance-module.md)                      | Performance module — synthetic page/API/CPU/leak budgets (`sentinel perf`)           | `Accepted` | 12    |

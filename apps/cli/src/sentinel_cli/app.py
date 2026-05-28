@@ -25,6 +25,7 @@ from sentinel_cli.commands import (
     functional_cmd,
     generate_cmd,
     init_cmd,
+    perf_cmd,
     plan_cmd,
     stubs,
     test_cmd,
@@ -37,7 +38,6 @@ from sentinel_cli.state import GlobalState, detect_ci_default
 # replaces the `discover` stub.
 _STUB_COMMANDS: Final[tuple[tuple[str, str, str], ...]] = (
     ("api", "22", "Run API contract + negative-case checks."),
-    ("perf", "12", "Run performance checks against configured budgets."),
     ("visual", "21", "Run visual-regression checks against baselines."),
     ("security", "13", "Run safe security checks (headers, cookies, CORS)."),
     ("chaos", "23", "Run chaos checks (slow net, offline, session expiry)."),
@@ -200,6 +200,14 @@ def build_app() -> typer.Typer:
         name="a11y",
         help="Run accessibility checks (axe-core, keyboard, focus) via the lifecycle.",
     )(a11y_cmd.run_a11y)
+    cli.command(
+        name="perf",
+        help=(
+            "Run synthetic performance checks (LCP/CLS/INP/TTFB, API P95, "
+            "JS bundle, long tasks, repeated-nav stability) via the lifecycle. "
+            "All measurements are lab synthetic (CLAUDE §27), not RUM."
+        ),
+    )(perf_cmd.run_perf)
 
     for name, phase, summary in _STUB_COMMANDS:
         stubs.register_stub(cli, name=name, phase=phase, summary=summary)
