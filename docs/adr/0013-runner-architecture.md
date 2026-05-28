@@ -1,0 +1,67 @@
+# ADR-0013: Runner architecture (local + Docker, retry, quarantine, sharding)
+
+## Status
+
+Accepted
+
+<!-- Date: 2026-05-28 -->
+<!-- Authors: @ohswedd -->
+
+## Context
+
+Phase 08 ships the Runner module (PRD §9.4): the component that actually executes the Playwright specs produced by the Generator (Phase 07) and produces a normalized :class:`ModuleResult` for the Reporter (Phase 03), Analyzer (Phase 09), and Scorer (Phase 14). The PRD lists eight execution targets — local Playwright, GitHub Actions, GitLab CI, Docker, BrowserStack, Sauce Labs, and "future Sentinel Cloud" — but the MVP only needs two: **local** and **Docker** (PRD §32, Phase 08 task list).
+
+Several architectural questions had to land in code:
+
+1. **How does Python launch Playwright?** Phase 04 shipped `@sentinelqa/ts-runtime` with a `sentinel-ts run --input <run-config.json>` binary that spawns Playwright and emits JSONL. The runner could either replicate that logic in Python or shell out to the TS binary. The TS side already owns the reporter, helper API, redaction parity, and protocol envelope (ADR-0009).
+2. **How are partial streams handled?** A Playwright child can be killed mid-run (SIGINT, Docker OOM, network blip). The aggregator must not crash, and the resulting `ModuleResult.status` must distinguish a crashed run from a "all tests failed" run.
+3. **How do retries become a flake signal?** Pass-on-retry is a useful product signal (CLAUDE §23): the test is unstable but the app probably isn't broken. Without first-class flake handling, retries either hide instability (silently re-pass) or amplify it (treat flaky as failed).
+4. **How are quarantined tests prevented from rotting?** A "skip until fixed" list is a maintenance hazard if entries can sit forever. CLAUDE §23 forbids silent forever-skips.
+5. **How are sharded runs reconciled?** Two shards running in parallel must cover exactly the unsharded set, never overlap, and merge into a single normalized result.
+6. **What's the safety story for Docker?** Mounting host paths into a container expands the attack surface compared to a local subprocess. The boundary in CLAUDE §6 (no stealth, no destructive defaults) must hold at the container boundary, not just the policy boundary.
+
+## Decision
+
+We adopt the following conventions for the Runner module:
+
+1. **Python orchestrates `sentinel-ts run` as a subprocess.** `engine.runner.local.LocalRunner` spawns the TS binary via `asyncio.create_subprocess_exec`, writes a `run-configs/<module>.json` (validated against the same `RunConfig` schema both sides share — `engine/runner/run_config.py` ⇄ `packages/ts-runtime/src/runner.ts`), streams stdout JSONL through `engine.orchestrator.ts_bridge.stream_events`, and feeds the typed events into `engine.runner.results.aggregate`. Stderr is drained concurrently and persisted (after redaction) to `<run-dir>/logs/runner.<module>.log` on every exit code. SIGINT propagation: `SIGINT → SIGTERM → SIGKILL` with a configurable grace window. The TS side stays the single owner of Playwright internals.
+2. **Aggregator tolerates partial streams by design.** `aggregate` consumes typed events; a missing `run.end` flips `RunnerOutcome.incomplete=True` and the module status becomes `incomplete`. Unparseable JSON lines are skipped (not raised) so a racy stdout flush doesn't crash the run. The aggregator also writes `module-results/<module>.json` — a new versioned artifact (`MODULE_RESULTS_SCHEMA_VERSION = "1"`) that wraps the `ModuleResult` plus per-`TestExecution` records, environment context, flake rate, and quarantined IDs.
+3. **Pass-on-retry is recorded as `flaky`, not as a re-pass.** `engine.runner.results._TestAccumulator` tracks every attempt for a `test_id` and, on `finalize`, promotes the terminal status to `flaky` if any prior attempt failed and the final attempt passed. `RunnerOutcome.flake_rate = flaky_tests / (total_tests − skipped)`. The `sentinel test` CLI compares this against `config.policy.max_flake_rate` and exits 1 (`EXIT_QUALITY_GATE_FAILED`) when exceeded. Phase 14 will inherit this number for the full score model.
+4. **Quarantine is a strict, time-bounded YAML list.** `engine.runner.quarantine.Quarantine.load` parses `tests/sentinel/.quarantine.yaml` (default; configurable via `runner.quarantine.path`). Each entry requires `test_id`, `reason` (≥ 8 chars), `expires_at` (date), and `issue_url` (must start `http(s)://`). The loader rejects: unknown fields, entries past `expires_at`, and entries whose `expires_at` is more than `runner.quarantine.max_age_days` (default 14) in the future. Quarantined tests run, but their `failed`/`timed_out` results are excluded from the blocking-failure check inside `_derive_module_status`; the scorer (Phase 14) will fold them into an `info` finding per `quarantine_to_findings`.
+5. **Sharding is a stable SHA-1 hash of the POSIX spec path.** `engine.runner.sharding.split_shard` sorts specs lexicographically (POSIX separators) and assigns each to `sha1(path) % total`. Across the N shards the union equals the input set exactly. `merge_outcomes` deduplicates `TestExecution` records by `test_id` (last writer wins so a re-run in a later shard overrides a phantom), picks the worst module status (`errored > failed > incomplete > skipped > passed`), concatenates errors (with adjacent dedup), and picks the first non-None `environment`. `ShardSpec.parse("N/M")` is the single parsing path; the config schema also enforces the `N/M` shape via a regex pattern.
+6. **DockerRunner repeats the safety check before container launch.** `DockerRunner.run_async` re-invokes `SafetyPolicy.enforce` on the resolved target before any `docker run` argument is built. The container line uses `--rm --init --network bridge --add-host host.docker.internal:host-gateway`, mounts source read-only, mounts the run dir read-write, and passes `SENTINELQA_RUN_ID` + `SENTINELQA_RUN_DIR`. The image is pinned: `mcr.microsoft.com/playwright:v1.49.0-jammy` matches `@playwright/test@1.49.0` in `packages/ts-runtime`. `make build-runner-image` is the canonical local build (`apps/cli/sentinel/runner/docker/Dockerfile.runner`). No `--privileged`, no Docker socket mount, no `--cap-add`. When `docker` is missing on PATH the runner raises `DockerUnavailableError`, surfaced by the CLI as exit code 5 (`EXIT_DEPENDENCY_MISSING`).
+
+## Consequences
+
+- **Positive:**
+  - Python owns orchestration, config, and policy; TypeScript owns Playwright execution. Both responsibilities stay where they're already strong (CLAUDE §8).
+  - The aggregator's deterministic semantics (no crash on partial streams, flake-as-flaky, stable shard merge) mean CI can run `sentinel test --shard N/M` across N nodes and get a reproducible final result.
+  - The quarantine list is loud by design: an expired entry refuses to load, an entry without an issue URL refuses to load, and an entry too far in the future refuses to load. CLAUDE §23 ("never weaken assertions") is enforced at the loader, not the score model.
+  - The new `module-results/<module>.json` artifact is the wire boundary Phase 09 (Analyzer) and Phase 14 (Scorer) will consume — they don't need to re-parse JSONL.
+  - The Docker runner is safe-by-default: no privileged flags, no Docker socket, image pinned, source mounted read-only. Future runners (BrowserStack / Sauce / Sentinel Cloud) follow the same `RunnerInvocation` interface so the CLI doesn't grow per-vendor switches.
+- **Negative / trade-off:**
+  - The Python ↔ TS handoff requires `sentinel-ts` on `PATH` (or `SENTINEL_TS_BIN`). When the binary is missing the CLI exits 5 with a build-instruction message; this is the intentional escape hatch but does require operators to run `pnpm --filter @sentinelqa/ts-runtime build` in CI.
+  - The Docker image (`mcr.microsoft.com/playwright:v1.49.0-jammy`) is large (~1.7 GB). We accept this because the Playwright base ships pre-installed browsers — building a slimmer image would require us to maintain the browser-install layer ourselves.
+  - Sharding by SHA-1 of the path means adding/removing a spec re-partitions every shard. Tests that need shard affinity (very rare) must be merged into a single file. We accept this because the alternative (sticky shard mapping via a side file) becomes another stale-config hazard.
+  - The quarantine YAML uses `date` (not datetime) for `expires_at`. Time-of-day expiration was rejected as low-value precision for what is fundamentally a "fix this soon" promise.
+- **Follow-up obligations:**
+  - Phase 09 (Analyzer) consumes `module-results/<module>.json` to categorize failures (app vs test vs env vs flake). Bumping `MODULE_RESULTS_SCHEMA_VERSION` requires a migration under `engine/domain/migrations/` plus an ADR.
+  - Phase 14 (Scorer) reads `outcome.flake_rate` and the quarantined-tests list to compute the final policy gate. The Phase 08 CLI exits 1 on flake-rate violations, but the full release-decision matrix lives in Phase 14.
+  - Phase 17 (CI integration) ships the GitHub Actions / GitLab CI wiring around `sentinel test --docker --shard $CI_SHARD/$CI_TOTAL` and the `--with-generate` flag against a deployed preview URL.
+  - Phase 20 (Healer) will read the same `module-results/<module>.json` to drive locator-repair proposals; it MUST not weaken assertions to make tests pass (CLAUDE §23).
+
+## Alternatives considered
+
+- **Re-implement Playwright orchestration in Python (no `sentinel-ts run`).** Rejected: would duplicate the reporter, redaction, and protocol envelope already owned by `@sentinelqa/ts-runtime`. The next bump to `@playwright/test` would require coordinated changes on both sides instead of one.
+- **Raise on partial streams instead of marking incomplete.** Rejected: an interrupted Playwright child is a routine event (CI cancellation, timeout, OOM). A hard crash on partial input would make the runner fragile and would lose the data we did collect.
+- **Treat pass-on-retry as `passed`.** Rejected: hides instability from the scorer (CLAUDE §23 forbids silent test weakening). Treating it as `failed` is the other end of the same hazard. `flaky` is the only honest representation.
+- **Make the quarantine file an opaque skip list (no `expires_at`).** Rejected: a quarantine without an expiration becomes permanent skip rot (PRD §29.2 flake risks). The 14-day cap is intentionally low — it means quarantines are a refactor backlog, not a tombstone.
+- **Shard by test count rather than path hash.** Rejected: count-based sharding requires the runner to know every test name before splitting, which means a full Playwright dry-run pass per shard launch. Hash-based is O(1) per file and stable.
+- **Mount Docker socket into the runner container ("Docker-in-Docker").** Rejected: would let a misbehaving test spawn sibling containers, breaking the safety boundary in CLAUDE §6. Headless Playwright doesn't need it.
+- **Skip the safety re-check inside DockerRunner (lifecycle already did it).** Rejected: a config edit between the lifecycle policy enforcement and the container launch (race or programmatic invocation) would bypass the boundary. The cost of one extra check is trivial; the cost of a missed unsafe target via Docker is large.
+
+## References
+
+- PRD section(s): PRD §9.4 (Runner module), PRD §11 (Architecture), PRD §17 (Configuration), PRD §19 (Quality Scoring), PRD §20 (Evidence and Reporting), PRD §21 (CI/CD), PRD §32 (Recommended Build Order)
+- CLAUDE.md rule(s): CLAUDE.md §6 (Safety boundary), CLAUDE.md §8 (Runtime ownership), CLAUDE.md §9 (Module contract), CLAUDE.md §10 (Run lifecycle), CLAUDE.md §11 (Artifact rules), CLAUDE.md §13 (CLI rules), CLAUDE.md §23 (Self-healing rules), CLAUDE.md §33 (Logging and secrets), CLAUDE.md §35 (Dependency rules)
+- Related ADRs: ADR-0009 (Python ↔ TS protocol), ADR-0012 (Generated test conventions)
