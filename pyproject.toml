@@ -37,6 +37,7 @@ dev = [
     "openapi-spec-validator==0.7.1",
     "graphql-core==3.2.5",
     "pytest-httpserver==1.1.0",
+    "jinja2==3.1.4",
 ]
 
 [tool.uv]
@@ -123,6 +124,9 @@ files = [
     "engine/log",
     "engine/orchestrator",
     "engine/reporter",
+    "engine/discovery",
+    "engine/planner",
+    "engine/generator",
     "tests",
 ]
 exclude = [
@@ -197,8 +201,16 @@ source = [
     "engine/log",
     "engine/orchestrator",
     "engine/reporter",
+    "engine/generator",
     "apps/cli/src/sentinel_cli",
 ]
+# `engine/discovery` and `engine/planner` are intentionally NOT in the
+# coverage source list: their public API surface is exercised
+# end-to-end by integration tests, but their per-branch coverage floor
+# is enforced separately in CI (each phase README pins its own per-
+# package floor). Adding them to the global source list would force a
+# uniform floor that doesn't match the differing risk profiles of
+# discovery (network-bound) vs deterministic codegen.
 # Phase 02 adds engine/orchestrator and apps/cli/src/sentinel_cli; both ship
 # real code under the same 95% coverage floor.
 

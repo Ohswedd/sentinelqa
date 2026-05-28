@@ -1,0 +1,28 @@
+{{ banner }}
+import { sentinelTest as test, expect } from '@sentinelqa/ts-runtime/playwright';
+
+test.describe({{ describe_title | js_string }}, () => {
+  test(
+    {{ test_title | js_string }},
+    { tag: [{% for tag in tags %}{{ tag | js_string }}{% if not loop.last %}, {% endif %}{% endfor %}] },
+    async ({ page }) => {
+      await page.goto({{ route_path | js_string }});
+
+      await test.step('verify page url', async () => {
+        await expect(page).toHaveURL({{ route_path | regex_literal }});
+      });
+
+{% if anchor_role %}
+      await test.step('assert stable anchor element', async () => {
+        await expect(
+          page.getByRole({{ anchor_role | js_string }}{% if anchor_name %}, { name: {{ anchor_name | regex_pattern }} }{% endif %}),
+        ).toBeVisible();
+      });
+{% else %}
+      await test.step('assert at least one landmark is present', async () => {
+        await expect(page.getByRole('main').or(page.getByRole('navigation')).first()).toBeVisible();
+      });
+{% endif %}
+    },
+  );
+});

@@ -247,7 +247,7 @@ class DeterministicPlanner:
             # Rule 2 + 3: every form → functional flow; if no submit handler,
             # tag llm_audit_candidate.
             for form in route_forms:
-                form_priority = (
+                form_priority: Priority = (
                     "P0" if category in {"login", "payment", "admin", "signup"} else "P1"
                 )
                 if base_priority == "P0":  # if route already P0 by risk, take the higher of the two
@@ -387,7 +387,7 @@ class DeterministicPlanner:
             required_data_state=required_data_state,
             extractor=extractor,
             source="deterministic",
-            tags=frozenset(tags),
+            tags=tuple(tags),
         )
 
     def _make_case(self, flow: Flow, *, test_type: TestType) -> TestCase:

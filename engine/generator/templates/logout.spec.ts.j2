@@ -1,0 +1,27 @@
+{{ banner }}
+import { sentinelTest as test, expect } from '@sentinelqa/ts-runtime/playwright';
+
+test.describe('Authentication — logout', () => {
+  test(
+    'authenticated user can log out',
+    { tag: [{% for tag in tags %}{{ tag | js_string }}{% if not loop.last %}, {% endif %}{% endfor %}] },
+    async ({ page }) => {
+      test.skip(
+        process.env['SENTINEL_AUTH_STATE'] === undefined,
+        'Authenticated session not available; run `sentinel generate` with auth config to enable.',
+      );
+      await page.goto({{ start_path | js_string }});
+
+      await test.step('open logout control', async () => {
+        await page.getByRole('button', { name: {{ logout_label | regex_pattern }} }).click();
+      });
+
+      await test.step('confirm logout outcome', async () => {
+        await expect(page).toHaveURL({{ post_logout_url_regex | regex_pattern }});
+{% if post_logout_text %}
+        await expect(page.getByText({{ post_logout_text | regex_pattern }})).toBeVisible();
+{% endif %}
+      });
+    },
+  );
+});

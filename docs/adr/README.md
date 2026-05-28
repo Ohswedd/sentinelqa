@@ -55,3 +55,4 @@ Use [`_template.md`](./_template.md). The required headings are validated by `sc
 | [0009](./0009-python-ts-protocol.md)                      | Python ↔ TypeScript JSONL protocol                                                  | `Accepted` | 04    |
 | [0010](./0010-discovery-mvp-http-first.md)                | Discovery MVP is HTTP-first; Playwright SPA crawl lands in Phase 17                  | `Accepted` | 05    |
 | [0011](./0011-planner-deterministic-vs-llm.md)            | Planner is deterministic-first; LLM adapter opt-in behind a locked, versioned prompt | `Accepted` | 06    |
+| [0012](./0012-generated-test-conventions.md)              | Generated test conventions (Jinja2 templates, banner safety, TS-owned audit)         | `Accepted` | 07    |

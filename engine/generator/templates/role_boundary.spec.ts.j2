@@ -1,0 +1,32 @@
+{{ banner }}
+import { sentinelTest as test, expect } from '@sentinelqa/ts-runtime/playwright';
+
+test.describe({{ describe_title | js_string }} + ' — role boundary', () => {
+  test(
+    'anonymous request is redirected or denied',
+    { tag: [{% for tag in tags %}{{ tag | js_string }}{% if not loop.last %}, {% endif %}{% endfor %}] },
+    async ({ page }) => {
+      const response = await page.goto({{ protected_path | js_string }});
+      expect(
+        response === null ||
+          response.status() === 401 ||
+          response.status() === 403 ||
+          response.status() === 302 ||
+          /login|sign[- ]?in/i.test(page.url()),
+      ).toBeTruthy();
+    },
+  );
+
+  test(
+    'user without ' + {{ required_role | js_string }} + ' is blocked',
+    { tag: [{% for tag in tags %}{{ tag | js_string }}{% if not loop.last %}, {% endif %}{% endfor %}] },
+    async ({ page }) => {
+      test.skip(
+        process.env['SENTINEL_LOWPRIV_AUTH_STATE'] === undefined,
+        'Lower-privilege storageState not provided; configure auth in sentinel.config.yaml.',
+      );
+      const response = await page.goto({{ protected_path | js_string }});
+      expect(response?.status()).toBeGreaterThanOrEqual(400);
+    },
+  );
+});

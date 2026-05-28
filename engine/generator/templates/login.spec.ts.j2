@@ -1,0 +1,58 @@
+{{ banner }}
+import { sentinelTest as test, expect } from '@sentinelqa/ts-runtime/playwright';
+
+const EMAIL_ENV = {{ email_env_name | js_string }};
+const PASSWORD_ENV = {{ password_env_name | js_string }};
+
+function readCredential(envName: string): string | null {
+  const value = process.env[envName];
+  return value && value.length > 0 ? value : null;
+}
+
+test.describe('Authentication — login', () => {
+  test(
+    'user can log in with valid credentials',
+    { tag: [{% for tag in tags %}{{ tag | js_string }}{% if not loop.last %}, {% endif %}{% endfor %}] },
+    async ({ page }) => {
+      const email = readCredential(EMAIL_ENV);
+      const password = readCredential(PASSWORD_ENV);
+      test.skip(
+        email === null || password === null,
+        `Set ${EMAIL_ENV} and ${PASSWORD_ENV} to run the authenticated login flow.`,
+      );
+
+      await page.goto({{ login_path | js_string }});
+
+      await test.step('fill credentials and submit', async () => {
+        await page.getByLabel({{ email_label | regex_pattern }}).fill(email as string);
+        await page.getByLabel({{ password_label | regex_pattern }}).fill(password as string);
+        await page.getByRole('button', { name: {{ submit_label | regex_pattern }} }).click();
+      });
+
+      await test.step('confirm post-login surface', async () => {
+        await expect(page).toHaveURL({{ success_url_regex | regex_pattern }});
+{% if post_login_role %}
+        await expect(page.getByRole({{ post_login_role | js_string }})).toBeVisible();
+{% endif %}
+      });
+    },
+  );
+
+  test(
+    'login form shows validation when credentials are missing',
+    { tag: [{% for tag in tags %}{{ tag | js_string }}{% if not loop.last %}, {% endif %}{% endfor %}] },
+    async ({ page }) => {
+      await page.goto({{ login_path | js_string }});
+
+      await test.step('submit empty form', async () => {
+        await page.getByRole('button', { name: {{ submit_label | regex_pattern }} }).click();
+      });
+
+      await test.step('error surface is visible', async () => {
+        await expect(
+          page.getByText({{ validation_message_regex | regex_pattern }}),
+        ).toBeVisible();
+      });
+    },
+  );
+});

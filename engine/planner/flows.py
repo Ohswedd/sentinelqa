@@ -107,7 +107,7 @@ def _make_flow(
         required_data_state=required_data_state,
         extractor=extractor,
         source="deterministic",
-        tags=frozenset(all_tags),
+        tags=tuple(all_tags),
     )
 
 

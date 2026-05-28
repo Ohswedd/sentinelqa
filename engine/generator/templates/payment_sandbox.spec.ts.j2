@@ -1,0 +1,33 @@
+{{ banner }}
+import { sentinelTest as test, expect } from '@sentinelqa/ts-runtime/playwright';
+
+const SANDBOX_CARD = {
+  number: {{ sandbox_card_number | js_string }},
+  exp: {{ sandbox_card_exp | js_string }},
+  cvc: {{ sandbox_card_cvc | js_string }},
+} as const;
+
+test.describe('Payment sandbox', () => {
+  test(
+    'user can complete a sandbox checkout',
+    { tag: [{% for tag in tags %}{{ tag | js_string }}{% if not loop.last %}, {% endif %}{% endfor %}] },
+    async ({ page }) => {
+      test.skip(
+        process.env['SENTINEL_PAYMENT_SANDBOX'] !== '1',
+        'Set SENTINEL_PAYMENT_SANDBOX=1 to exercise payment flows against the sandbox.',
+      );
+      await page.goto({{ checkout_path | js_string }});
+
+      await test.step('fill sandbox card', async () => {
+        await page.getByLabel({{ card_number_label | regex_pattern }}).fill(SANDBOX_CARD.number);
+        await page.getByLabel({{ card_exp_label | regex_pattern }}).fill(SANDBOX_CARD.exp);
+        await page.getByLabel({{ card_cvc_label | regex_pattern }}).fill(SANDBOX_CARD.cvc);
+      });
+
+      await test.step('submit and confirm', async () => {
+        await page.getByRole('button', { name: {{ pay_label | regex_pattern }} }).click();
+        await expect(page.getByText({{ success_text | regex_pattern }})).toBeVisible();
+      });
+    },
+  );
+});

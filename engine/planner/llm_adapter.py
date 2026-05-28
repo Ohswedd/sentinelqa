@@ -226,7 +226,7 @@ def proposals_to_flows(
                 required_auth_role=proposal.required_auth_role,
                 extractor=f"llm.v{PROMPT_VERSION}",
                 source="llm",
-                tags=frozenset(("llm", *proposal.tags)),
+                tags=("llm", *proposal.tags),
             )
         except ValidationError:
             continue

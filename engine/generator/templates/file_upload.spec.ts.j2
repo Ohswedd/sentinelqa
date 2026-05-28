@@ -1,0 +1,37 @@
+{{ banner }}
+import { sentinelTest as test, expect } from '@sentinelqa/ts-runtime/playwright';
+import { Buffer } from 'node:buffer';
+
+const FIXTURE_FILE = {
+  name: {{ fixture_file_name | js_string }},
+  mimeType: {{ fixture_mime_type | js_string }},
+  // Tiny in-memory payload so the test does not depend on the filesystem.
+  buffer: Buffer.from({{ fixture_base64 | js_string }}, 'base64'),
+} as const;
+
+test.describe('File upload', () => {
+  test(
+    'user can upload a small ' + {{ fixture_kind | js_string }} + ' file',
+    { tag: [{% for tag in tags %}{{ tag | js_string }}{% if not loop.last %}, {% endif %}{% endfor %}] },
+    async ({ page }) => {
+      await page.goto({{ upload_path | js_string }});
+
+      await test.step('attach file', async () => {
+        const input = page.getByLabel({{ upload_label | regex_pattern }});
+        await input.setInputFiles({
+          name: FIXTURE_FILE.name,
+          mimeType: FIXTURE_FILE.mimeType,
+          buffer: FIXTURE_FILE.buffer,
+        });
+      });
+
+      await test.step('submit', async () => {
+        await page.getByRole('button', { name: {{ submit_label | regex_pattern }} }).click();
+      });
+
+      await test.step('confirm upload outcome', async () => {
+        await expect(page.getByText({{ success_text | regex_pattern }})).toBeVisible();
+      });
+    },
+  );
+});

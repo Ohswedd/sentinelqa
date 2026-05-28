@@ -1,0 +1,28 @@
+{{ banner }}
+import { sentinelTest as test, expect } from '@sentinelqa/ts-runtime/playwright';
+
+const BUDGETS = {
+  loadMs: {{ load_budget_ms }},
+  bytes: {{ bytes_budget }},
+} as const;
+
+test.describe({{ route_title | js_string }} + ' — performance budget', () => {
+  test(
+    'page loads within budget',
+    { tag: [{% for tag in tags %}{{ tag | js_string }}{% if not loop.last %}, {% endif %}{% endfor %}] },
+    async ({ page }) => {
+      const started = Date.now();
+      const response = await page.goto({{ route_path | js_string }}, { waitUntil: 'load' });
+      const elapsed = Date.now() - started;
+
+      await test.step('document load time within budget', async () => {
+        expect(elapsed).toBeLessThanOrEqual(BUDGETS.loadMs);
+      });
+
+      await test.step('document byte size within budget', async () => {
+        const body = await response?.body();
+        expect((body?.length ?? 0)).toBeLessThanOrEqual(BUDGETS.bytes);
+      });
+    },
+  );
+});
