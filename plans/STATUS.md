@@ -6,9 +6,9 @@ Update this file on every commit that advances or completes work. Do not advance
 
 - **Phase:** 06 — Planner Module
 - **Sub-phase:** _to be determined from `plans/phase-06-planner-module/README.md`_
-- **Active task:** first task in `plans/phase-06-planner-module/` (Phase 05 gate ready to close).
-- **Branch:** to be created (`feature/phase-06-…`); Phase 05 work lives on `feature/phase-05-discovery-module`.
-- **Blockers:** none. Phase 05 ready to merge — `make ci` green (531 Python tests + 115 TS = 646), `make coverage` 95.53 % (floor 95 %), TS coverage unchanged. ADR-0010 (Discovery MVP is HTTP-first; Playwright SPA backend re-homed to Phase 17 task 07) accepted. PRD §9.1 expanded with §9.1.1 (MVP delivery).
+- **Active task:** first task in `plans/phase-06-planner-module/` (Phase 05 merged to `main` as `2fde372`).
+- **Branch:** to be created (`feature/phase-06-…`); Phase 05 branch deleted on merge.
+- **Blockers:** none. Phase 05 merged 2026-05-28 (PR #6, `2fde372`). `make ci` green at merge time (531 Python + 115 TS = 646), `make coverage` 95.53 % (floor 95 %), TS coverage 93.99 % lines / 79.55 % branches (floors 85 / 75). ADR-0010 accepted. PRD §9.1 expanded with §9.1.1.
 - **Last updated:** 2026-05-28 by ohswedd
 
 ---
@@ -100,7 +100,7 @@ Every phase ends with a push → PR → CI → merge cycle handled by the loop p
 | 02 | feature/phase-02-cli-skeleton-run-lifecycle | — | — | — | 2026-05-27 |
 | 03 | feature/phase-03-report-schemas-reporter | — | — | — | 2026-05-27 |
 | 04 | feature/phase-04-typescript-playwright-runtime | https://github.com/Ohswedd/sentinelqa/pull/4 | https://github.com/Ohswedd/sentinelqa/actions/runs/26566004743 | bcce8b896af3c245dbbf4d92be131db2ce4f31f0 | 2026-05-28 |
-| 05 | feature/phase-05-discovery-module | _pending — push + CI + merge below_ | _pending_ | _pending_ | _pending_ |
+| 05 | feature/phase-05-discovery-module | https://github.com/Ohswedd/sentinelqa/pull/6 | https://github.com/Ohswedd/sentinelqa/actions/runs/26574849155 | 2fde372595a40655fd282eda19a4d97f69556cd5 | 2026-05-28 |
 | 06 | — | — | — | — | — |
 | 07 | — | — | — | — | — |
 | 08 | — | — | — | — | — |
