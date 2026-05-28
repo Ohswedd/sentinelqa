@@ -220,9 +220,7 @@ class GeneratorPipeline:
         inputs: GenerationInputs,
     ) -> _RenderedSpec | None:
         extractor = flow.extractor or ""
-        tags = ["@" + flow.priority.lower(), "@" + flow.risk] + [
-            "@" + t for t in _stable_tags(flow.tags)
-        ]
+        tags = _canonical_tag_set(flow)
         rel_path = Path(_spec_file_name(flow))
 
         if extractor in {"route.smoke", "route.auth_boundary"}:
@@ -539,6 +537,60 @@ _SAFE_NAME = re.compile(r"[^A-Za-z0-9_-]+")
 _ID_TAG_RE = re.compile(r"^(form|endpoint|element|route|element-?id):")
 _FORM_ID_TAG_RE = re.compile(r"^form:(FRM-[A-Za-z0-9_-]+)$")
 _ENDPOINT_ID_TAG_RE = re.compile(r"^endpoint:(API-[A-Za-z0-9_-]+)$")
+
+# Extractor name → SentinelQA module (Phase 10.03). The mapping mirrors
+# ``engine.planner.core._EXTRACTOR_TO_TEST_TYPE`` but for the canonical
+# `@module:<name>` tag that the runner / CI modes filter on.
+_EXTRACTOR_TO_MODULE: dict[str, str] = {
+    "route.smoke": "functional",
+    "route.auth_boundary": "functional",
+    "form.submit": "functional",
+    "login": "functional",
+    "signup": "functional",
+    "logout": "functional",
+    "password_reset": "functional",
+    "crud": "functional",
+    "search_filter_sort": "functional",
+    "admin": "functional",
+    "role": "functional",
+    "file_upload_download": "functional",
+    "payment_sandbox": "functional",
+    "notification": "functional",
+    "api.contract": "api",
+    "a11y": "a11y",
+    "axe": "a11y",
+    "perf": "performance",
+    "performance": "performance",
+}
+
+
+def _canonical_tag_set(flow: Flow) -> list[str]:
+    """Return the canonical Playwright tag set for ``flow`` (Phase 10.03).
+
+    The set always contains, in order:
+
+    1. ``@p0``..``@p3`` derived from ``flow.priority``.
+    2. ``@module:<name>`` derived from the extractor → module mapping.
+    3. ``@flow:<extractor>`` — the planner extractor that produced the flow.
+    4. ``@risk:<level>`` — the canonical risk bucket.
+    5. Any planner-provided tags that survive :func:`_stable_tags` (these
+       are non-ID, content-stable annotations like ``auth_boundary`` or
+       ``llm_audit_candidate``).
+    """
+
+    extractor = flow.extractor or "unknown"
+    module_name = _EXTRACTOR_TO_MODULE.get(extractor, "functional")
+    base: list[str] = [
+        f"@{flow.priority.lower()}",
+        f"@module:{module_name}",
+        f"@flow:{extractor}",
+        f"@risk:{flow.risk}",
+    ]
+    for tag in _stable_tags(flow.tags):
+        prefixed = f"@{tag}"
+        if prefixed not in base:
+            base.append(prefixed)
+    return base
 
 
 def _stable_tags(tags: tuple[str, ...]) -> tuple[str, ...]:
