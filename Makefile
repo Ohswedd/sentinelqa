@@ -129,6 +129,7 @@ schemas:
 	$(UV) run python -c "from pathlib import Path; from engine.domain.jsonschema import dump_schemas; written = dump_schemas(Path('packages/shared-schema/schemas')); [print(p) for p in written]"
 	$(UV) run python scripts/export-redaction-rules.py
 	$(UV) run python scripts/export-redaction-parity.py
+	$(UV) run python scripts/export-ts-events-parity.py
 
 # Phase 03: rewrite report goldens in place. Reviewer sees the diff in the
 # follow-up commit — the only place schema drift may originate.
