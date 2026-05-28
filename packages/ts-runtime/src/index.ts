@@ -43,15 +43,27 @@ export type {
 export { redact, redactString, redactHeaders, redactUrl, loadRedactionRules } from './redact.js';
 export type { RedactionRules, ValueRuleSpec } from './redact.js';
 
-export { sentinelStep, captureEvidence, redactedNetwork } from './helpers.js';
+export {
+  sentinelStep,
+  captureEvidence,
+  redactedNetwork,
+  redactedConsole,
+  captureDomSnapshot,
+  harConfig,
+} from './helpers.js';
 export type {
-  StepContext,
-  EvidenceContext,
+  AccessibilityPage,
   CaptureEvidenceOptions,
+  ConsoleEmitterPage,
+  ConsoleMessage,
+  DomSnapshotRef,
+  EvidenceContext,
   EvidenceRef,
-  PageLike,
-  RoutablePage,
+  HarConfig,
   NetworkInterceptor,
   NetworkRequest,
   NetworkResponse,
+  PageLike,
+  RoutablePage,
+  StepContext,
 } from './helpers.js';

@@ -4,10 +4,14 @@
 // explicitly. Generated tests pull the emitter from the `sentinelTest`
 // fixture (see ./playwright.ts).
 
+import { createHash } from 'node:crypto';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 
 import type {
+  ConsoleEvent,
+  ConsoleLevel,
+  DomSnapshotEvent,
   EvidenceEvent,
   EvidenceKind,
   NetworkRequestEvent,
@@ -16,7 +20,7 @@ import type {
   StepStartEvent,
 } from './protocol.js';
 import type { EventEmitter } from './protocol.js';
-import { redactHeaders, redactUrl, redact } from './redact.js';
+import { redact, redactHeaders, redactUrl } from './redact.js';
 
 let stepCounter = 0;
 
@@ -318,4 +322,153 @@ function extractContentType(headers: Record<string, string>): string | null {
 function safeParseInt(value: string): number | null {
   const n = Number.parseInt(value, 10);
   return Number.isFinite(n) ? n : null;
+}
+
+// ---------------------------------------------------------------------
+// Redacted console interception
+// ---------------------------------------------------------------------
+
+/**
+ * Minimal Playwright `ConsoleMessage` surface.
+ */
+export interface ConsoleMessage {
+  type(): string;
+  text(): string;
+  location(): { url?: string };
+}
+
+/**
+ * Minimal Playwright surface for the `console` listener.
+ */
+export interface ConsoleEmitterPage {
+  on(event: 'console', listener: (msg: ConsoleMessage) => void): void;
+}
+
+const VALID_CONSOLE_LEVELS = new Set<ConsoleLevel>(['log', 'debug', 'info', 'warn', 'error']);
+
+function mapConsoleLevel(playwrightType: string): ConsoleLevel {
+  // Playwright uses 'warning' where we use 'warn'.
+  if (playwrightType === 'warning') return 'warn';
+  if (VALID_CONSOLE_LEVELS.has(playwrightType as ConsoleLevel)) {
+    return playwrightType as ConsoleLevel;
+  }
+  return 'log';
+}
+
+/**
+ * Listen for browser `console` events, redact each message, and emit a
+ * `console` JSONL event per call. CLAUDE §33: every message passes
+ * through `redact()` so secrets in console.log output never reach
+ * Python.
+ */
+export function redactedConsole(page: ConsoleEmitterPage, ctx: StepContext): void {
+  const testId = ctx.testId ?? null;
+  page.on('console', (msg) => {
+    const level = mapConsoleLevel(msg.type());
+    const message = redact(msg.text()) as string;
+    const sourceRaw = msg.location().url ?? '';
+    const source = sourceRaw === '' ? '' : redactUrl(sourceRaw);
+    ctx.emitter.emit<ConsoleEvent>({
+      type: 'console',
+      test_id: testId,
+      level,
+      message,
+      source,
+    });
+  });
+}
+
+// ---------------------------------------------------------------------
+// DOM snapshot helper
+// ---------------------------------------------------------------------
+
+/**
+ * Minimal Playwright surface for accessibility snapshots.
+ */
+export interface AccessibilityPage extends PageLike {
+  accessibility?: {
+    snapshot(): Promise<unknown>;
+  };
+}
+
+export interface DomSnapshotRef {
+  readonly path: string;
+  readonly label: string;
+  readonly axTreeHash: string;
+}
+
+/**
+ * Capture a full HTML snapshot plus a hash of the accessibility tree.
+ * The hash is the *content* digest the Healer (Phase 20) compares
+ * against when deciding whether a locator change is legitimate.
+ *
+ * `axTreeHash` is `sha256` of the JSON-stringified accessibility tree
+ * with sorted keys. When the page implements no `accessibility` (our
+ * fake `PageLike` in unit tests), the hash is the digest of `null`.
+ */
+export async function captureDomSnapshot(
+  ctx: EvidenceContext,
+  page: AccessibilityPage,
+  label: string,
+): Promise<DomSnapshotRef> {
+  const labelSlug = slugify(label);
+  const path = join(ctx.runDir, 'dom', `${labelSlug}.html`);
+  const html = await page.content();
+  await ensureDir(dirname(path));
+  await writeFile(path, redact(html) as string, 'utf8');
+
+  let axTree: unknown = null;
+  if (page.accessibility !== undefined) {
+    try {
+      axTree = await page.accessibility.snapshot();
+    } catch {
+      axTree = null;
+    }
+  }
+  const axTreeHash = sha256(JSON.stringify(axTree ?? null));
+
+  ctx.emitter.emit<DomSnapshotEvent>({
+    type: 'dom.snapshot',
+    test_id: ctx.testId ?? null,
+    step_id: ctx.stepId ?? null,
+    path,
+    label,
+  });
+  return { path, label, axTreeHash };
+}
+
+function sha256(input: string): string {
+  return createHash('sha256').update(input).digest('hex');
+}
+
+// ---------------------------------------------------------------------
+// HAR config — opt-in per-context HAR recording
+// ---------------------------------------------------------------------
+
+/**
+ * Build the `recordHar` snippet a sentinelTest fixture passes to
+ * `context()`. The runner (04.03) sets `evidence.har: true` in the
+ * run-config when the user opted in; the fixture reads it and merges
+ * with the rest of the context options.
+ *
+ * The path is deterministic: `<runDir>/har/<test-id>.har`. CLAUDE §11
+ * — per-run isolation, no cross-run bleed.
+ */
+export interface HarConfig {
+  readonly recordHar: {
+    readonly path: string;
+    readonly mode: 'minimal' | 'full';
+    readonly content: 'omit' | 'embed' | 'attach';
+  };
+}
+
+export function harConfig(ctx: EvidenceContext): HarConfig {
+  const testId = ctx.testId ?? 'unknown-test';
+  return {
+    recordHar: {
+      path: join(ctx.runDir, 'har', `${testId}.har`),
+      mode: 'minimal',
+      content: 'omit',
+    },
+  };
 }
