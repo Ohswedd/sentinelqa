@@ -1,0 +1,17 @@
+{
+  "violations": [],
+  "passes": [
+    {
+      "id": "html-has-lang",
+      "impact": null,
+      "description": "lang attribute set",
+      "tags": ["wcag2a"]
+    },
+    {
+      "id": "document-title",
+      "impact": null,
+      "description": "page has a title",
+      "tags": ["wcag2a"]
+    }
+  ]
+}
