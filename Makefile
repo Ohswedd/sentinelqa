@@ -15,6 +15,7 @@ UV ?= uv
         coverage \
         adr-check \
         schemas update-goldens \
+        build-runner-image \
         clean ci
 
 help:
@@ -147,6 +148,23 @@ update-goldens:
 # --- adr-check -------------------------------------------------------------
 adr-check:
 	scripts/check-adrs.sh
+
+# --- runner image ----------------------------------------------------------
+# Phase 08.02 — pinned Playwright base for `sentinel test --docker`. The
+# Playwright tag must match the version `packages/ts-runtime` depends on
+# (`@playwright/test`). Override with `PLAYWRIGHT_TAG=v… make build-runner-image`.
+RUNNER_IMAGE ?= sentinelqa/runner:dev
+PLAYWRIGHT_TAG ?= v1.49.0-jammy
+build-runner-image:
+	@if ! command -v docker >/dev/null 2>&1; then \
+		echo "docker not on PATH; install Docker Desktop first."; \
+		exit 5; \
+	fi
+	docker build \
+		--build-arg PLAYWRIGHT_TAG=$(PLAYWRIGHT_TAG) \
+		-t $(RUNNER_IMAGE) \
+		-f apps/cli/sentinel/runner/docker/Dockerfile.runner \
+		.
 
 # --- ci --------------------------------------------------------------------
 ci: format-check lint typecheck adr-check test
