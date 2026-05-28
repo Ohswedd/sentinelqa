@@ -207,9 +207,23 @@ export async function listTests(
     : fallbackGlob(pattern, cwd);
 
   const out: string[] = [];
-  for await (const file of iter) out.push(file);
+  for await (const file of iter) {
+    if (isAlwaysSkipped(file)) continue;
+    out.push(file);
+  }
   out.sort();
   return out;
+}
+
+/** Skip-listed directories applied to every glob result. Mirrors the
+ *  filter inside `fallbackGlob` so Node's native glob produces the same
+ *  set on Node ≥ 22. */
+function isAlwaysSkipped(relPath: string): boolean {
+  const parts = relPath.split('/');
+  for (const part of parts.slice(0, -1)) {
+    if (part === 'node_modules' || part === 'dist' || part === '.git') return true;
+  }
+  return false;
 }
 
 async function* fallbackGlob(pattern: string, cwd: string): AsyncGenerator<string> {

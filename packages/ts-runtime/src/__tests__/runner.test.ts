@@ -85,6 +85,20 @@ describe('listTests', () => {
     const out = await listTests('does-not-exist/*.spec.ts', workDir);
     expect(Array.from(out)).toEqual([]);
   });
+
+  it('recurses into subdirectories and skips node_modules / dist / .git', async () => {
+    await mkdir(join(workDir, 'tests', 'nested', 'deep'), { recursive: true });
+    await mkdir(join(workDir, 'node_modules', 'should-skip'), { recursive: true });
+    await mkdir(join(workDir, 'dist'), { recursive: true });
+    await mkdir(join(workDir, '.git'), { recursive: true });
+    await writeFile(join(workDir, 'tests', 'nested', 'deep', 'a.spec.ts'), '// nested');
+    await writeFile(join(workDir, 'node_modules', 'should-skip', 'x.spec.ts'), '// skipped');
+    await writeFile(join(workDir, 'dist', 'b.spec.ts'), '// skipped');
+    await writeFile(join(workDir, '.git', 'c.spec.ts'), '// skipped');
+
+    const out = await listTests('**/*.spec.ts', workDir);
+    expect(Array.from(out)).toEqual(['tests/nested/deep/a.spec.ts']);
+  });
 });
 
 describe('resolvePlaywrightBin', () => {

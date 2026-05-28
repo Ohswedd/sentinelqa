@@ -16,6 +16,12 @@ export default tseslint.config(
       '**/.sentinel/**',
       '**/coverage/**',
       '**/.venv/**',
+      // Phase 04.07 fixtures — runtime-only files (Node static server,
+      // Playwright spec) outside the tsconfig include matrix. They are
+      // exercised by the gated Chromium smoke; eslint cannot type-aware
+      // lint them without a dedicated tsconfig and the runtime contract
+      // is already covered by src/ tests.
+      '**/fixtures/**',
     ],
   },
   eslint.configs.recommended,
