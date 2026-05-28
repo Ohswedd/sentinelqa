@@ -140,6 +140,9 @@ jobs:
       - name: Install Playwright (chromium + deps)
         run: pnpm exec playwright install --with-deps chromium
 
+      - name: Build @sentinelqa/ts-runtime (dist/ for the reporter)
+        run: pnpm --filter @sentinelqa/ts-runtime run build
+
       - name: Run gated Chromium smoke against fixture sample-app
         env:
           SENTINELQA_HAS_CHROMIUM: '1'
