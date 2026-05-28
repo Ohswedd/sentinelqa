@@ -18,7 +18,7 @@ from engine.domain.discovery_graph import AuthBoundary, DiscoveryGraph
 from engine.domain.element import Element
 from engine.domain.evidence import Evidence, EvidenceType
 from engine.domain.finding import Finding, FindingLocation, Severity
-from engine.domain.flow import Flow, FlowStep, Priority, Risk
+from engine.domain.flow import Flow, FlowSource, FlowStep, Priority, Risk
 from engine.domain.form import Form, FormField
 from engine.domain.ids import IdGenerator, validate_id
 from engine.domain.module_result import ModuleResult, ModuleStatus
@@ -37,7 +37,8 @@ from engine.domain.schema import (
     SCORE_SCHEMA_VERSION,
 )
 from engine.domain.target import Mode, Target
-from engine.domain.test_case import TestCase, TestType
+from engine.domain.test_case import TestCase, TestModule, TestType
+from engine.domain.test_plan import CoverageEstimate, TestPlan
 from engine.domain.test_run import RunStatus, TestRun
 
 __all__ = [
@@ -64,11 +65,15 @@ __all__ = [
     "ApiEndpoint",
     "ApiEndpointSource",
     "Flow",
+    "FlowSource",
     "FlowStep",
     "Priority",
     "Risk",
     "TestCase",
+    "TestModule",
     "TestType",
+    "TestPlan",
+    "CoverageEstimate",
     "TestRun",
     "RunStatus",
     "ModuleResult",

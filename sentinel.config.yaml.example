@@ -71,6 +71,21 @@ visual:
   threshold: 0.02
   mask_dynamic_content: true
 
+planner:
+  # Deterministic core ships in Phase 06. The LLM adapter is opt-in
+  # behind the `enabled` flag (ADR-0011). Provider keys are read from the
+  # env var named in `api_key_env`; they are never inlined here
+  # (CLAUDE.md §33).
+  llm:
+    enabled: false
+    # provider: "null" | "openai" | "anthropic"
+    provider: "null"
+    # model: ""   # leave empty to use the provider's default
+    # api_key_env: OPENAI_API_KEY
+    max_proposals: 10
+    max_usd_per_run: 0.50
+    request_timeout_seconds: 30.0
+
 policy:
   min_quality_score: 85
   block_on_critical: true

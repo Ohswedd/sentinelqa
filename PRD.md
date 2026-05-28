@@ -383,6 +383,19 @@ Planner must assign:
 - Required auth role.
 - Required data state.
 
+#### 9.2.1 MVP delivery (Phase 06)
+
+Phase 06 ships the planner as `engine.planner`:
+
+- **Deterministic core** — `DeterministicPlanner.plan(graph, risk, config, run_id=…)` produces a `TestPlan` from any `DiscoveryGraph` + `RiskMap`, with no network calls and no LLM dependency. Same inputs → same plan modulo IDs (verified by `tests/golden/planner/fixture-app.plan.json`).
+- **Rules engine** — every route gets a smoke flow; every form gets a functional flow (P0 on login/signup/payment/admin routes, P1 otherwise); every form without a submit handler is tagged `llm_audit_candidate`; every API endpoint becomes a contract test (executed in Phase 22); every auth-required route gets an auth-boundary flow.
+- **Named flow extractors** — login, signup, logout, password reset, CRUD, search/filter/sort, admin, role, file upload/download, payment sandbox, notification callback. Each extractor publishes its own confidence; below 0.5 the flow carries the `confidence_low` tag.
+- **Optional LLM augment** — `planner.llm.enabled=false` by default. When enabled, an `LlmPlanner` adapter proposes additional flows that are re-validated through Pydantic, capped by `max_proposals`, gated by a per-run USD budget (`max_usd_per_run`, default $0.50), and merged with `source="llm"` so downstream modules can distinguish them. The locked system prompt lives at `engine/planner/llm_prompts/planner.v1.md`; bumping the version requires a new ADR (ADR-0011).
+- **Providers shipped** — `openai_planner.py` (Chat Completions, `response_format=json_object`) and `anthropic_planner.py` (Messages API). Both speak HTTP directly via `httpx`; no vendor SDK is imported. A subclass interface (`HttpLlmProviderBase`) makes adding a third provider a small unit of work.
+- **Safety boundary** — provider credentials come from env vars by name only; the LLM payload contains route paths and counts, never form values, headers, cookies, query strings, env-var values, or source code (`build_graph_summary()` is the single point of redaction).
+- **CLI** — `sentinel plan --url …` runs lifecycle steps 1–9 and writes `plan.json` + `plan.md`. `sentinel plan --from-discovery <run-dir>` re-uses an existing `discovery.json`/`risk.json` instead of crawling again. `--llm/--no-llm` overrides `planner.llm.enabled` for the run.
+- **Artifacts** — `plan.json` (schema envelope at `packages/shared-schema/plan.schema.json`) and `plan.md` (deterministic Markdown summary). `audit.log` gains `plan.start`, `plan.llm.usage`, `plan.llm.budget_exceeded`, and `plan.complete` entries.
+
 ### 9.3 Generator module
 
 Purpose: Generate Playwright tests, fixtures, and helper files.

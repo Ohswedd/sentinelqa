@@ -57,6 +57,7 @@ ENTITY_PREFIXES: Final[frozenset[str]] = frozenset(
         "RPR",  # RepairSuggestion
         "DG",  # DiscoveryGraph
         "RM",  # RiskMap
+        "PLN",  # TestPlan (Phase 06)
     }
 )
 

@@ -52,6 +52,25 @@
   "additionalProperties": false,
   "description": "A named user journey through the app.",
   "properties": {
+    "confidence": {
+      "default": 0.95,
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Confidence",
+      "type": "number"
+    },
+    "description": {
+      "default": "",
+      "maxLength": 2000,
+      "title": "Description",
+      "type": "string"
+    },
+    "extractor": {
+      "default": "",
+      "maxLength": 64,
+      "title": "Extractor",
+      "type": "string"
+    },
     "id": {
       "title": "Id",
       "type": "string"
@@ -110,11 +129,27 @@
       "title": "Risk",
       "type": "string"
     },
+    "source": {
+      "default": "deterministic",
+      "enum": [
+        "deterministic",
+        "llm"
+      ],
+      "title": "Source",
+      "type": "string"
+    },
     "steps": {
       "items": {
         "$ref": "#/$defs/FlowStep"
       },
       "title": "Steps",
+      "type": "array"
+    },
+    "tags": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Tags",
       "type": "array"
     }
   },

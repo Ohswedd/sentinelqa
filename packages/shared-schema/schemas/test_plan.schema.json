@@ -1,0 +1,310 @@
+{
+  "$defs": {
+    "CoverageEstimate": {
+      "additionalProperties": false,
+      "description": "Per-module estimate of how many planned test cases will execute.\n\nThe estimate is an *intent* statement (how many cases were planned), not\na guaranteed outcome. The runner / scoring modules (Phase 08 / 14) own\nthe actually-executed metric.",
+      "properties": {
+        "by_module": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "title": "By Module",
+          "type": "object"
+        },
+        "total": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Total",
+          "type": "integer"
+        }
+      },
+      "title": "CoverageEstimate",
+      "type": "object"
+    },
+    "Flow": {
+      "additionalProperties": false,
+      "description": "A named user journey through the app.",
+      "properties": {
+        "confidence": {
+          "default": 0.95,
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "description": {
+          "default": "",
+          "maxLength": 2000,
+          "title": "Description",
+          "type": "string"
+        },
+        "extractor": {
+          "default": "",
+          "maxLength": 64,
+          "title": "Extractor",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "priority": {
+          "default": "P2",
+          "enum": [
+            "P0",
+            "P1",
+            "P2",
+            "P3"
+          ],
+          "title": "Priority",
+          "type": "string"
+        },
+        "required_auth_role": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Required Auth Role"
+        },
+        "required_data_state": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Required Data State"
+        },
+        "risk": {
+          "default": "medium",
+          "enum": [
+            "critical",
+            "high",
+            "medium",
+            "low"
+          ],
+          "title": "Risk",
+          "type": "string"
+        },
+        "source": {
+          "default": "deterministic",
+          "enum": [
+            "deterministic",
+            "llm"
+          ],
+          "title": "Source",
+          "type": "string"
+        },
+        "steps": {
+          "items": {
+            "$ref": "#/$defs/FlowStep"
+          },
+          "title": "Steps",
+          "type": "array"
+        },
+        "tags": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Tags",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "steps"
+      ],
+      "title": "Flow",
+      "type": "object"
+    },
+    "FlowStep": {
+      "additionalProperties": false,
+      "description": "One step inside a :class:`Flow`.",
+      "properties": {
+        "description": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Description",
+          "type": "string"
+        },
+        "expected_outcome": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Expected Outcome",
+          "type": "string"
+        },
+        "target_element_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Target Element Id"
+        },
+        "target_route_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Target Route Id"
+        }
+      },
+      "required": [
+        "description",
+        "expected_outcome"
+      ],
+      "title": "FlowStep",
+      "type": "object"
+    },
+    "TestCase": {
+      "additionalProperties": false,
+      "description": "One generated Playwright test bound to a :class:`Flow`.",
+      "properties": {
+        "confidence": {
+          "default": 1.0,
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "file_path": {
+          "format": "path",
+          "title": "File Path",
+          "type": "string"
+        },
+        "flow_id": {
+          "title": "Flow Id",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "module": {
+          "anyOf": [
+            {
+              "enum": [
+                "functional",
+                "a11y",
+                "api",
+                "performance",
+                "visual",
+                "security",
+                "chaos",
+                "llm_audit"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Module"
+        },
+        "test_type": {
+          "default": "functional",
+          "enum": [
+            "functional",
+            "a11y",
+            "api",
+            "performance",
+            "visual",
+            "security",
+            "chaos",
+            "llm_audit",
+            "regression"
+          ],
+          "title": "Test Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "flow_id",
+        "file_path"
+      ],
+      "title": "TestCase",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "A complete test plan derived from discovery + risk.",
+  "properties": {
+    "coverage_estimate": {
+      "$ref": "#/$defs/CoverageEstimate"
+    },
+    "discovery_graph_id": {
+      "title": "Discovery Graph Id",
+      "type": "string"
+    },
+    "flows": {
+      "items": {
+        "$ref": "#/$defs/Flow"
+      },
+      "title": "Flows",
+      "type": "array"
+    },
+    "id": {
+      "title": "Id",
+      "type": "string"
+    },
+    "risk_map_id": {
+      "title": "Risk Map Id",
+      "type": "string"
+    },
+    "run_id": {
+      "title": "Run Id",
+      "type": "string"
+    },
+    "target_url": {
+      "maxLength": 2048,
+      "minLength": 1,
+      "title": "Target Url",
+      "type": "string"
+    },
+    "test_cases": {
+      "items": {
+        "$ref": "#/$defs/TestCase"
+      },
+      "title": "Test Cases",
+      "type": "array"
+    }
+  },
+  "required": [
+    "id",
+    "run_id",
+    "discovery_graph_id",
+    "risk_map_id",
+    "target_url"
+  ],
+  "title": "TestPlan",
+  "type": "object",
+  "x-sentinelqa-schema-version": "1"
+}

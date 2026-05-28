@@ -28,6 +28,7 @@ from engine.domain.risk_map import RiskMap
 from engine.domain.route import Route
 from engine.domain.target import Target
 from engine.domain.test_case import TestCase
+from engine.domain.test_plan import TestPlan
 from engine.domain.test_run import TestRun
 
 if TYPE_CHECKING:
@@ -44,6 +45,7 @@ _MODELS: tuple[type[Any], ...] = (
     ApiEndpoint,
     Flow,
     TestCase,
+    TestPlan,
     TestRun,
     ModuleResult,
     Finding,

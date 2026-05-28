@@ -166,6 +166,29 @@ class DiscoveryConfig(SentinelModel):
     graphql: DiscoveryGraphQLConfig = Field(default_factory=lambda: DiscoveryGraphQLConfig())
 
 
+class PlannerLlmConfig(SentinelModel):
+    """`planner.llm:` block (Phase 06.04, ADR-0011).
+
+    The deterministic planner ships in Phase 06; the LLM adapter is opt-in
+    behind ``enabled``. Provider keys are never inlined — only env-var
+    names go in YAML, in line with :class:`AuthConfig` and CLAUDE §33.
+    """
+
+    enabled: bool = False
+    provider: Literal["null", "openai", "anthropic"] = "null"
+    model: str = Field(default="", max_length=200)
+    api_key_env: str | None = Field(default=None, max_length=128)
+    max_proposals: int = Field(default=10, ge=0, le=200)
+    max_usd_per_run: float = Field(default=0.50, ge=0.0, le=100.0)
+    request_timeout_seconds: float = Field(default=30.0, gt=0.0, le=300.0)
+
+
+class PlannerConfig(SentinelModel):
+    """`planner:` block."""
+
+    llm: PlannerLlmConfig = Field(default_factory=lambda: PlannerLlmConfig())
+
+
 class PolicyConfig(SentinelModel):
     """`policy:` block."""
 
@@ -209,6 +232,7 @@ class RootConfig(SentinelModel):
     performance: PerformanceConfig = Field(default_factory=lambda: PerformanceConfig())
     visual: VisualConfig = Field(default_factory=lambda: VisualConfig())
     discovery: DiscoveryConfig = Field(default_factory=lambda: DiscoveryConfig())
+    planner: PlannerConfig = Field(default_factory=lambda: PlannerConfig())
     policy: PolicyConfig = Field(default_factory=lambda: PolicyConfig())
     report: ReportConfig = Field(default_factory=lambda: ReportConfig())
     schema_version: str = Field(default=CONFIG_SCHEMA_VERSION)
@@ -240,6 +264,8 @@ __all__ = [
     "DiscoveryConfig",
     "DiscoveryOpenAPIConfig",
     "DiscoveryGraphQLConfig",
+    "PlannerConfig",
+    "PlannerLlmConfig",
     "PolicyConfig",
     "ReportConfig",
 ]
