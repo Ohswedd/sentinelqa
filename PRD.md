@@ -671,6 +671,17 @@ Capabilities:
 - Memory leak checks.
 - Repeated navigation stability.
 
+#### 10.5.1 MVP delivery (Phase 12, ADR-0017)
+
+- **Module.** `modules.performance.PerformanceModule` inherits from `engine.modules.base.SentinelModule` and follows the seven-step lifecycle (CLAUDE §9). The module reuses the runner-Protocol pattern introduced in ADR-0016: `execute()` calls an injected `PerformanceRunner` (production: `LocalPerformanceRunner`) instead of the Phase-08 Playwright spec runner, so each check runs against a route rather than a spec.
+- **Deterministic evaluators.** Each PRD §10.5 capability is owned by a pure Python evaluator: `page_budget.evaluate_page_budgets` for LCP/TTFB/INP/CLS medians, `api_latency.evaluate_api_latency` for per-endpoint P50/P95, `bundle_cpu.evaluate_bundle_size` + `bundle_cpu.evaluate_long_tasks` for transferred-bytes and main-thread blocking, and `nav_stability.evaluate_nav_stability` for first-to-last percentage growth on JS heap + DOM-node count. The Python side is the single source of truth for severity policy; the TS runtime never grades.
+- **Severity policy.** Page-budget, bundle-size, and CPU-blocking exceedances are `high` when overage exceeds 50 %, otherwise `medium`. API-latency P95 violations are `medium` by default and escalate to `high` when overage exceeds 100 %. Nav-stability findings are always `low` with confidence `0.5` — they are heuristics (CLAUDE §27); Phase 14 should not over-block on this signal.
+- **TS runtime.** `sentinel-ts audit-perf --input <run-config>.json` (new subcommand) launches a Chromium tab via `@playwright/test`, installs PerformanceObservers before navigation (LCP / CLS / INP / longtask), captures TTFB + DCL + load from `PerformanceNavigationTiming`, observes every JS bundle + API response via the Playwright `response` event, runs the per-route sample loop (`samples`, default 3) and the repeated-nav loop (`repeated_nav_samples`, default 5), and writes one `<route-slug>.json` per route under `<run-dir>/perf/` plus a top-level `index.json`. The launcher is injectable so vitest exercises the full dispatch path without Chromium.
+- **Wire format.** The per-route envelope carries `schema_version: "1"` (`PERF_RESULT_SCHEMA_VERSION` constant on both runtimes). Future breaking changes bump the constant. ADR-0017 §5 owns the rationale.
+- **CLI.** `sentinel perf` runs the canonical `RunLifecycle` restricted to the performance module. Options: `--url`, `--routes`, `--samples`, `--repeated-nav-samples`, `--discovery`. Exit codes: 0 (no high/critical findings), 1 (quality gate failed), 2 (config / CLI usage error), 4 (unsafe target), 5 (sentinel-ts binary missing), 6 (runner failure). Every text-mode line ends with `measurement_kind: synthetic (lab; not Real-User Monitoring)`; JSON mode emits `"measurement_kind": "synthetic"`.
+- **Safety + tone (CLAUDE §27).** Every Finding description begins with "Synthetic performance check"; descriptions also include the literal phrase "lab measurements" or "synthetic" so readers cannot mistake the output for RUM data. A forbidden-phrase guard (`tests/security/test_synthetic_perf_labeling.py`) scans the module + TS helper packages on every CI run for stronger RUM claims.
+- **Dependency.** No new workspace dependency. The TS subcommand reuses the existing `@playwright/test` dynamic import resolved by the launcher; nothing has to be installed in projects that do not run `sentinel perf`.
+
 ### 10.6 Visual testing
 
 Capabilities:

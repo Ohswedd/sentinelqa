@@ -12,6 +12,7 @@
 import { stderr, stdout, argv, exit } from 'node:process';
 
 import { auditA11y, type AuditA11yLauncher } from './a11y/audit.js';
+import { auditPerf, type AuditPerfLauncher } from './perf/audit.js';
 import { auditLocators, listTests, runPlaywright, validateHelpers } from './runner.js';
 import { PACKAGE_NAME, VERSION } from './version.js';
 
@@ -33,6 +34,11 @@ Commands:
                      accessible-name) against routes listed in a JSON config.
                        --input <path>      Run-config JSON (required). See
                                            a11y/audit.ts for the schema.
+  audit-perf         Run synthetic performance checks (LCP/CLS/INP/TTFB +
+                     API latencies + JS bundle + long tasks + nav stability)
+                     against routes listed in a JSON config.
+                       --input <path>      Run-config JSON (required). See
+                                           perf/audit.ts for the schema.
   validate-helpers   Sanity-check that @sentinelqa/ts-runtime is wired in.
                        --json              Emit JSON instead of text.
 
@@ -66,6 +72,8 @@ export interface DispatchOptions {
   readonly auditLocatorsFn?: typeof auditLocators;
   readonly auditA11yFn?: typeof auditA11y;
   readonly auditA11yLauncher?: AuditA11yLauncher;
+  readonly auditPerfFn?: typeof auditPerf;
+  readonly auditPerfLauncher?: AuditPerfLauncher;
   readonly cwd?: string;
 }
 
@@ -94,6 +102,8 @@ export async function dispatchAsync(
       return await handleAuditLocators(rest, opts);
     case 'audit-a11y':
       return await handleAuditA11y(rest, opts);
+    case 'audit-perf':
+      return await handleAuditPerf(rest, opts);
     case 'validate-helpers':
       return await handleValidateHelpers(rest, opts);
     default:
@@ -257,6 +267,53 @@ const defaultChromiumLauncher: AuditA11yLauncher = async () => {
   };
 };
 
+const defaultPerfLauncher: AuditPerfLauncher = async () => {
+  const { chromium } = await import('@playwright/test');
+  const browser = await chromium.launch({ headless: true });
+  const context = await browser.newContext();
+  return {
+    newPage: async () => {
+      const page = await context.newPage();
+      return page as unknown as Awaited<
+        ReturnType<AuditPerfLauncher>
+      >['newPage'] extends () => Promise<infer P>
+        ? P
+        : never;
+    },
+    close: async () => {
+      await context.close();
+      await browser.close();
+    },
+  };
+};
+
+async function handleAuditPerf(args: readonly string[], opts: DispatchOptions): Promise<CliResult> {
+  const inputPath = takeFlag(args, '--input');
+  if (inputPath === undefined) {
+    return {
+      stdout: '',
+      stderr: 'sentinel-ts audit-perf: --input <path> is required.\n',
+      exitCode: 2,
+    };
+  }
+  const fn = opts.auditPerfFn ?? auditPerf;
+  const launcher = opts.auditPerfLauncher ?? defaultPerfLauncher;
+  try {
+    const result = await fn({ inputPath, launcher });
+    return {
+      stdout: `${result.indexPath}\n`,
+      stderr: '',
+      exitCode: 0,
+    };
+  } catch (err) {
+    return {
+      stdout: '',
+      stderr: `sentinel-ts audit-perf: ${(err as Error).message}\n`,
+      exitCode: 2,
+    };
+  }
+}
+
 async function handleValidateHelpers(
   args: readonly string[],
   opts: DispatchOptions,
@@ -297,7 +354,8 @@ export function dispatch(args: readonly string[]): CliResult {
     command === 'list-tests' ||
     command === 'validate-helpers' ||
     command === 'audit-locators' ||
-    command === 'audit-a11y'
+    command === 'audit-a11y' ||
+    command === 'audit-perf'
   ) {
     return {
       stdout: '',

@@ -59,12 +59,36 @@ security:
   allowed_payload_level: low
 
 performance:
+  # All performance measurements are SYNTHETIC (lab) — they catch
+  # regressions reliably but are not Real-User Monitoring (CLAUDE §27).
   budgets:
     lcp_ms: 2500
     cls: 0.1
     inp_ms: 200
+    ttfb_ms: 600
     api_p95_ms: 500
     js_total_kb: 500
+    long_task_total_ms: 200
+    dom_growth_pct: 10.0
+    memory_growth_pct: 20.0
+  # Routes the performance module audits. Empty (default) means the
+  # module short-circuits unless the caller supplies routes via CLI
+  # (--routes), `sentinel audit` discovery, or this block.
+  routes: []
+  # Samples per route for LCP/CLS/INP/TTFB; the module reports the
+  # median. Default 3 keeps runs short while smoothing noise.
+  samples: 3
+  # Visits per route for the memory-leak heuristic (DOM-node count +
+  # JS heap growth). Default 5; lowest legal value is 2.
+  repeated_nav_samples: 5
+  # Skip the P95 check for endpoints with fewer than N samples.
+  api_min_samples_for_p95: 5
+  # Per-route Playwright budget; multiplied by (samples + nav samples)
+  # for the overall subprocess timeout.
+  request_timeout_seconds: 30
+  # Optional path-prefix allowlist for API timing collection. Empty
+  # means: classify by content-type / /api/ or /graphql heuristic.
+  api_path_allowlist: []
 
 visual:
   baselines_dir: .sentinel/baselines

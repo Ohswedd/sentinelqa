@@ -109,19 +109,38 @@ class SecurityConfig(SentinelModel):
 
 
 class PerformanceBudgets(SentinelModel):
-    """`performance.budgets:` block."""
+    """`performance.budgets:` block (PRD §10.5, CLAUDE §27)."""
 
     lcp_ms: int = Field(default=2500, ge=0)
     cls: float = Field(default=0.1, ge=0)
     inp_ms: int = Field(default=200, ge=0)
+    ttfb_ms: int = Field(default=600, ge=0)
     api_p95_ms: int = Field(default=500, ge=0)
     js_total_kb: int = Field(default=500, ge=0)
+    long_task_total_ms: int = Field(default=200, ge=0)
+    dom_growth_pct: float = Field(default=10.0, ge=0.0, le=1000.0)
+    memory_growth_pct: float = Field(default=20.0, ge=0.0, le=1000.0)
 
 
 class PerformanceConfig(SentinelModel):
-    """`performance:` block."""
+    """`performance:` block (Phase 12, ADR-0017).
+
+    Performance checks are explicitly **synthetic** lab measurements (CLAUDE §27);
+    the module never claims to mirror Real-User Monitoring. Routes default to
+    empty so ``sentinel audit`` short-circuits the module unless the caller
+    (CLI, SDK, or `discovery.json`) supplies a plan. ``samples`` is the per-route
+    sample count for LCP/CLS/INP/TTFB; the module reports the median of those
+    samples. ``repeated_nav_samples`` is the visit count used by the memory-leak
+    heuristic.
+    """
 
     budgets: PerformanceBudgets = Field(default_factory=PerformanceBudgets)
+    routes: tuple[str, ...] = Field(default_factory=tuple, max_length=200)
+    samples: int = Field(default=3, ge=1, le=20)
+    repeated_nav_samples: int = Field(default=5, ge=2, le=50)
+    api_min_samples_for_p95: int = Field(default=5, ge=1, le=200)
+    request_timeout_seconds: float = Field(default=30.0, gt=0.0, le=300.0)
+    api_path_allowlist: tuple[str, ...] = Field(default_factory=tuple, max_length=200)
 
 
 class VisualConfig(SentinelModel):
