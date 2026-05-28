@@ -86,6 +86,19 @@ planner:
     max_usd_per_run: 0.50
     request_timeout_seconds: 30.0
 
+analyzer:
+  # Deterministic core ships in Phase 09. The LLM explainer adds at most
+  # one sentence of refinement to the deterministic hypothesis — it never
+  # replaces the category, hypothesis, or confidence (CLAUDE §23).
+  llm:
+    enabled: false
+    # provider: "null" | "openai" | "anthropic"
+    provider: "null"
+    # model: ""   # leave empty to use the provider's default
+    # api_key_env: ANTHROPIC_API_KEY
+    max_usd_per_run: 0.25
+    request_timeout_seconds: 20.0
+
 policy:
   min_quality_score: 85
   block_on_critical: true
