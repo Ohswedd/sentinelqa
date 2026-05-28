@@ -58,3 +58,4 @@ Use [`_template.md`](./_template.md). The required headings are validated by `sc
 | [0012](./0012-generated-test-conventions.md)              | Generated test conventions (Jinja2 templates, banner safety, TS-owned audit)         | `Accepted` | 07    |
 | [0013](./0013-runner-architecture.md)                     | Runner architecture (local + Docker, retry, quarantine, sharding)                    | `Accepted` | 08    |
 | [0014](./0014-analyzer-rules.md)                          | Analyzer rules (categorization, root cause, repro, retry, optional LLM)              | `Accepted` | 09    |
+| [0015](./0015-module-contract-and-functional-module.md)   | Module contract + functional module (CLAUDE §9 lifecycle + `sentinel functional`)    | `Accepted` | 10    |
