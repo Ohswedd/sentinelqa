@@ -99,6 +99,22 @@ analyzer:
     max_usd_per_run: 0.25
     request_timeout_seconds: 20.0
 
+accessibility:
+  # `sentinel a11y` controls (Phase 11, ADR-0016).
+  # `axe.tags` defaults to WCAG 2.0 A + AA plus axe's curated
+  # best-practice set. CLAUDE §28: outputs always say "Automated
+  # accessibility check found" — they never claim "fully WCAG compliant".
+  axe:
+    tags:
+      - wcag2a
+      - wcag2aa
+      - best-practice
+  # routes:
+  #   - /
+  #   - /dashboard
+  keyboard_max_tabs: 200
+  request_timeout_seconds: 30.0
+
 policy:
   min_quality_score: 85
   block_on_critical: true

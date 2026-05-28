@@ -214,6 +214,41 @@ class AnalyzerConfig(SentinelModel):
     llm: AnalyzerLlmConfig = Field(default_factory=lambda: AnalyzerLlmConfig())
 
 
+class AccessibilityAxeConfig(SentinelModel):
+    """`accessibility.axe:` block (Phase 11, ADR-0016)."""
+
+    tags: tuple[str, ...] = Field(
+        default=("wcag2a", "wcag2aa", "best-practice"),
+        max_length=32,
+    )
+
+    @field_validator("tags")
+    @classmethod
+    def _tags_non_empty(cls, value: tuple[str, ...]) -> tuple[str, ...]:
+        if not value:
+            raise ValueError("accessibility.axe.tags must list at least one axe tag.")
+        for tag in value:
+            if not tag or len(tag) > 64:
+                raise ValueError(f"accessibility.axe.tag {tag!r} must be 1-64 chars.")
+        return value
+
+
+class AccessibilityConfig(SentinelModel):
+    """`accessibility:` block (Phase 11, ADR-0016).
+
+    Drives the AccessibilityModule. ``axe.tags`` defaults to the WCAG 2.0
+    A + AA rule sets plus axe's curated best-practice set so the module
+    catches common defects without overclaiming compliance (CLAUDE §28).
+    """
+
+    axe: AccessibilityAxeConfig = Field(
+        default_factory=lambda: AccessibilityAxeConfig(),
+    )
+    routes: tuple[str, ...] = Field(default_factory=tuple, max_length=200)
+    keyboard_max_tabs: int = Field(default=200, ge=1, le=2000)
+    request_timeout_seconds: float = Field(default=30.0, gt=0.0, le=300.0)
+
+
 class PolicyConfig(SentinelModel):
     """`policy:` block."""
 
@@ -312,6 +347,7 @@ class RootConfig(SentinelModel):
     discovery: DiscoveryConfig = Field(default_factory=lambda: DiscoveryConfig())
     planner: PlannerConfig = Field(default_factory=lambda: PlannerConfig())
     analyzer: AnalyzerConfig = Field(default_factory=lambda: AnalyzerConfig())
+    accessibility: AccessibilityConfig = Field(default_factory=lambda: AccessibilityConfig())
     policy: PolicyConfig = Field(default_factory=lambda: PolicyConfig())
     runner: RunnerConfig = Field(default_factory=lambda: RunnerConfig())
     report: ReportConfig = Field(default_factory=lambda: ReportConfig())
@@ -348,6 +384,8 @@ __all__ = [
     "PlannerLlmConfig",
     "AnalyzerConfig",
     "AnalyzerLlmConfig",
+    "AccessibilityConfig",
+    "AccessibilityAxeConfig",
     "PolicyConfig",
     "RunnerConfig",
     "RunnerRetriesConfig",
