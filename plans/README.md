@@ -78,7 +78,12 @@ No task is allowed to be vague. If a task ever feels under-specified, the contri
 6. Commit with Conventional Commits, no `Co-authored-by` for AI tools (per `CLAUDE.md` §3).
 7. Update `STATUS.md` (mark task done, advance pointer).
 8. Update `PRD.md` and the relevant ADR whenever behavior, schema, or boundaries changed.
-9. At the end of a phase, run the **Phase Gate Review** (every phase README defines its own). Do not start the next phase until that review passes.
+9. At the end of a phase, run the **Phase Gate Review** (every phase README defines its own) AND close the phase out with push → PR → CI-watch → merge to `main`. The PR URL, CI run URL, and merge commit SHA are recorded in `STATUS.md`'s **PR & merge log**. Do not start the next phase until both the gate review and the merge to `main` are complete.
+
+Two hard rules (full text in `PROMT.md`):
+
+- **No deferred scope.** "Risks", "follow-ups", `TODO`s, env-var-gated capabilities, "Phase X will…" — any of these phrasings in an end-of-phase summary mean the phase is not done. Finish the work, re-home it to a real task file in a later phase folder, or remove it from scope with an Accepted ADR. Closing a phase with un-rehomed risks is forbidden.
+- **Push → CI → merge is part of closing the phase.** The agent pushes, opens/updates the PR, waits on every required check, fixes failures (up to 3 attempts), merges to `main` with `gh pr merge --squash --delete-branch`, and updates `STATUS.md`. You should never have to run those commands by hand.
 
 The `PROMT.md` file contains the exact prompt to paste back into Claude Code to repeat this loop. After every phase, the assistant **must stop**, present the phase review, and wait for re-prompt.
 
@@ -147,8 +152,8 @@ If a PRD bullet is not visibly accounted for in the phase that should own it, th
 ## 7. Status, ownership, and review
 
 - `STATUS.md` tracks the active phase, sub-phase, task, and any blockers. Update it on every commit that advances or completes a task.
-- Every phase ends with a **Phase Gate Review**. The reviewer (human or agent) checks the gates listed in that phase's README, signs the review section in `STATUS.md`, and only then is the next phase unlocked.
-- The phase gate is hard: no advancing past a phase with deferred scope, broken tests, missing docs, or unupdated PRD/CLAUDE.md.
+- Every phase ends with a **Phase Gate Review** AND a recorded entry in the **PR & merge log** (branch, PR URL, green CI run URL, merge commit SHA, merge date). The reviewer (human or agent) checks the gates listed in that phase's README, signs the review section, drives the push/CI/merge in `PROMT.md` step 7, and only then is the next phase unlocked.
+- The phase gate is hard: no advancing past a phase with deferred scope, broken tests, missing docs, unupdated PRD/CLAUDE.md, or an unmerged feature branch. If a "follow-up" item ever appears in an end-of-phase summary, that item is in-scope for the current phase — reply `Resolve the gaps you reported before proceeding.` and the agent will pick it up.
 
 ---
 

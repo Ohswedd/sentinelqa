@@ -5,10 +5,10 @@ Update this file on every commit that advances or completes work. Do not advance
 ## Active pointer
 
 - **Phase:** 05 — Discovery Module
-- **Sub-phase:** _to be determined from `plans/phase-05-discovery-module/README.md`_
-- **Active task:** first task in `plans/phase-05-discovery-module/` (Phase 04 gate closed)
-- **Branch:** to be created (`feature/phase-05-…`); Phase 04 work lives on `feature/phase-04-typescript-playwright-runtime`.
-- **Blockers:** none. Phase 04 closed (2026-05-28). `make ci` green (477 Python + 105 TS = 582 tests), `make coverage` 95.71% Python (floor 95%), TS coverage 88.97% lines / 75.62% branches (floor 85 / 75, enforced in `packages/ts-runtime/vitest.config.ts`). ADR-0009 accepted. Python↔TS JSONL protocol locked at `schema_version 1.0.0` with byte-parity goldens (19-record TS-events fixture + 19-record redaction fixture). Phase-04 follow-ups: (a) the Chromium-launching smoke (`fixtures/specs/login.spec.ts`) is gated by `SENTINELQA_HAS_CHROMIUM=1` — Phase 17 (CI Integration) wires a dedicated CI lane that installs Chromium; (b) Node 22's native `fs/promises#glob` is preferred for `sentinel-ts list-tests`, with a manual walk for Node 20 (engines.node ≥ 20 minimum).
+- **Sub-phase:** 05.01 — Crawler (`plans/phase-05-discovery-module/01-crawler.md`)
+- **Active task:** `plans/phase-05-discovery-module/01-crawler.md` (Phase 04 merged to `main` as `bcce8b8`).
+- **Branch:** to be created (`feature/phase-05-discovery-module`); Phase 04 branch deleted on merge.
+- **Blockers:** none. Phase 04 merged 2026-05-28 (PR #4, `bcce8b8`). `make ci` re-run on `main` 2026-05-28 — green (Python suite + 115 TS tests, TS coverage 93.99 % lines / 79.55 % branches over floors 85 / 75). ADR-0009 accepted. Python↔TS JSONL protocol locked at `schema_version 1.0.0` with byte-parity goldens. Chromium smoke lane is live in `.github/workflows/ci.yml` (`chromium-smoke` job, gated by `SENTINELQA_HAS_CHROMIUM=1`).
 - **Last updated:** 2026-05-28 by ohswedd
 
 ---
@@ -86,6 +86,47 @@ For each phase, record the gate review verdict and the reviewer's signature once
 | 27 | not started | — | — | — | — |
 | 28 | not started | — | — | — | — |
 | 29 | not started | — | — | — | — |
+
+---
+
+## PR & merge log
+
+Every phase ends with a push → PR → CI → merge cycle handled by the loop prompt (see `PROMT.md` step 7). Record each phase's branch, PR, the CI run that turned the PR green, and the merge commit SHA on `main`. A phase row in the **Phase Gate Reviews** table above is not considered final until its row here is filled in.
+
+| Phase | Branch | PR URL | Green CI run | Merge commit SHA | Merged on |
+|---|---|---|---|---|---|
+| 00 | feature/phase-00-foundation | (merged before PR & merge log existed) | — | — | 2026-05-27 |
+| 01 | feature/phase-01-core-domain-config | PR #1 (Ohswedd/sentinelqa) | — | — | 2026-05-27 |
+| 02 | feature/phase-02-cli-skeleton-run-lifecycle | — | — | — | 2026-05-27 |
+| 03 | feature/phase-03-report-schemas-reporter | — | — | — | 2026-05-27 |
+| 04 | feature/phase-04-typescript-playwright-runtime | https://github.com/Ohswedd/sentinelqa/pull/4 | https://github.com/Ohswedd/sentinelqa/actions/runs/26566004743 | bcce8b896af3c245dbbf4d92be131db2ce4f31f0 | 2026-05-28 |
+| 05 | _(to be filled by the next loop)_ | — | — | — | — |
+| 06 | — | — | — | — | — |
+| 07 | — | — | — | — | — |
+| 08 | — | — | — | — | — |
+| 09 | — | — | — | — | — |
+| 10 | — | — | — | — | — |
+| 11 | — | — | — | — | — |
+| 12 | — | — | — | — | — |
+| 13 | — | — | — | — | — |
+| 14 | — | — | — | — | — |
+| 15 | — | — | — | — | — |
+| 16 | — | — | — | — | — |
+| 17 | — | — | — | — | — |
+| 18 | — | — | — | — | — |
+| 19 | — | — | — | — | — |
+| 20 | — | — | — | — | — |
+| 21 | — | — | — | — | — |
+| 22 | — | — | — | — | — |
+| 23 | — | — | — | — | — |
+| 24 | — | — | — | — | — |
+| 25 | — | — | — | — | — |
+| 26 | — | — | — | — | — |
+| 27 | — | — | — | — | — |
+| 28 | — | — | — | — | — |
+| 29 | — | — | — | — | — |
+
+> **Rule change effective 2026-05-28:** the loop prompt now requires push → CI-watch → merge on `main` as part of closing every phase. Phase 04 was retroactively closed under the new rule: PR #4 was merged on 2026-05-28 (squash, branch deleted) and this table backfilled on the same day. From Phase 05 onward the close-out happens inside the phase loop and no row should ever sit in `_pending_`.
 
 ---
 
