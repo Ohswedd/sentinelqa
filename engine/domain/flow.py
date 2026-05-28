@@ -17,6 +17,7 @@ from engine.domain.schema import CONFIG_SCHEMA_VERSION
 
 Priority = Literal["P0", "P1", "P2", "P3"]
 Risk = Literal["critical", "high", "medium", "low"]
+FlowSource = Literal["deterministic", "llm"]
 
 
 class FlowStep(SentinelModel):
@@ -52,8 +53,13 @@ class Flow(SentinelModel):
     steps: tuple[FlowStep, ...]
     priority: Priority = "P2"
     risk: Risk = "medium"
+    confidence: float = Field(default=0.95, ge=0.0, le=1.0)
     required_auth_role: str | None = Field(default=None, max_length=64)
     required_data_state: str | None = Field(default=None, max_length=200)
+    description: str = Field(default="", max_length=2000)
+    extractor: str = Field(default="", max_length=64)
+    source: FlowSource = "deterministic"
+    tags: tuple[str, ...] = Field(default_factory=tuple)
 
     @field_validator("id")
     @classmethod
@@ -67,5 +73,18 @@ class Flow(SentinelModel):
             raise ValueError("A Flow must contain at least one step.")
         return value
 
+    @field_validator("tags", mode="before")
+    @classmethod
+    def _normalize_tags(cls, value: object) -> tuple[str, ...]:
+        # Accept any iterable; canonicalize to sorted+deduped tuple so the
+        # wire format and ``in flow.tags`` membership are both stable.
+        if value is None:
+            return ()
+        if isinstance(value, str):
+            raise ValueError("tags must be a collection of strings, not a single string")
+        if isinstance(value, list | tuple | set | frozenset):
+            return tuple(sorted({str(item) for item in value}))
+        raise ValueError("tags must be a collection of strings")
 
-__all__ = ["Flow", "FlowStep", "Priority", "Risk"]
+
+__all__ = ["Flow", "FlowSource", "FlowStep", "Priority", "Risk"]

@@ -22,6 +22,28 @@
       "title": "Id",
       "type": "string"
     },
+    "module": {
+      "anyOf": [
+        {
+          "enum": [
+            "functional",
+            "a11y",
+            "api",
+            "performance",
+            "visual",
+            "security",
+            "chaos",
+            "llm_audit"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Module"
+    },
     "test_type": {
       "default": "functional",
       "enum": [
