@@ -94,6 +94,28 @@ policy:
   allow_medium_a11y: false
   max_failed_p1_flows: 0
 
+runner:
+  # `sentinel test` controls (Phase 08, ADR-0013). The runner is
+  # Playwright-native; choose between local execution and the pinned
+  # Docker image (`mcr.microsoft.com/playwright:v1.49.0-jammy`).
+  workers: auto              # auto | <int 1-64>
+  # shards: "1/4"            # uncomment to split across CI nodes
+  browser: chromium          # chromium | firefox | webkit
+  headless: true
+  timeout_ms: 30000
+  docker: false
+  docker_image: "mcr.microsoft.com/playwright:v1.49.0-jammy"
+  retries:
+    # Pass-on-retry is recorded as `flaky` and counts toward `policy.max_flake_rate`.
+    max: 1
+    backoff_ms: 1000
+  quarantine:
+    # Strict YAML list (test_id, reason, expires_at, issue_url).
+    # See ADR-0013 / CLAUDE.md §23 — entries past `expires_at` OR
+    # further out than `max_age_days` are rejected at load time, by design.
+    path: tests/sentinel/.quarantine.yaml
+    max_age_days: 14
+
 report:
   output_dir: .sentinel/reports
   formats:

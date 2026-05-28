@@ -200,6 +200,59 @@ class PolicyConfig(SentinelModel):
     max_failed_p1_flows: int = Field(default=0, ge=0)
 
 
+class RunnerRetriesConfig(SentinelModel):
+    """`runner.retries:` block (Phase 08.04)."""
+
+    max: int = Field(default=1, ge=0, le=10)
+    backoff_ms: int = Field(default=1000, ge=0, le=60_000)
+
+
+class RunnerQuarantineConfig(SentinelModel):
+    """`runner.quarantine:` block (Phase 08.04, CLAUDE.md §23).
+
+    Quarantined tests run but their result does NOT block the quality gate.
+    The list is enforced strictly: each entry must include an ``expires_at``
+    date no more than ``max_age_days`` from today, plus an issue reference
+    so the quarantine cannot rot silently.
+    """
+
+    path: Path = Path("tests/sentinel/.quarantine.yaml")
+    max_age_days: int = Field(default=14, ge=1, le=90)
+
+
+class RunnerConfig(SentinelModel):
+    """`runner:` block (Phase 08, ADR-0013).
+
+    Drives both the local Playwright runner and the Docker runner. The
+    shape is stable across executors so users can flip ``runner.docker``
+    on/off without other config edits.
+    """
+
+    workers: int | Literal["auto"] = Field(default="auto")
+    shards: str | None = Field(default=None, max_length=16, pattern=r"^[1-9][0-9]*/[1-9][0-9]*$")
+    browser: Literal["chromium", "firefox", "webkit"] = "chromium"
+    headless: bool = True
+    timeout_ms: int = Field(default=30_000, ge=1_000, le=600_000)
+    docker: bool = False
+    docker_image: str = Field(default="mcr.microsoft.com/playwright:v1.49.0-jammy", max_length=256)
+    retries: RunnerRetriesConfig = Field(default_factory=lambda: RunnerRetriesConfig())
+    quarantine: RunnerQuarantineConfig = Field(default_factory=lambda: RunnerQuarantineConfig())
+
+    @model_validator(mode="after")
+    def _shard_index_within_total(self) -> RunnerConfig:
+        if self.shards is None:
+            return self
+        current_s, total_s = self.shards.split("/", 1)
+        current = int(current_s)
+        total = int(total_s)
+        if current > total:
+            raise ValueError(
+                f"runner.shards={self.shards!r}: shard index ({current}) "
+                f"must be ≤ total ({total})."
+            )
+        return self
+
+
 class ReportConfig(SentinelModel):
     """`report:` block."""
 
@@ -234,6 +287,7 @@ class RootConfig(SentinelModel):
     discovery: DiscoveryConfig = Field(default_factory=lambda: DiscoveryConfig())
     planner: PlannerConfig = Field(default_factory=lambda: PlannerConfig())
     policy: PolicyConfig = Field(default_factory=lambda: PolicyConfig())
+    runner: RunnerConfig = Field(default_factory=lambda: RunnerConfig())
     report: ReportConfig = Field(default_factory=lambda: ReportConfig())
     schema_version: str = Field(default=CONFIG_SCHEMA_VERSION)
 
@@ -267,5 +321,8 @@ __all__ = [
     "PlannerConfig",
     "PlannerLlmConfig",
     "PolicyConfig",
+    "RunnerConfig",
+    "RunnerRetriesConfig",
+    "RunnerQuarantineConfig",
     "ReportConfig",
 ]

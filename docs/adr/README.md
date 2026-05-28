@@ -56,3 +56,4 @@ Use [`_template.md`](./_template.md). The required headings are validated by `sc
 | [0010](./0010-discovery-mvp-http-first.md)                | Discovery MVP is HTTP-first; Playwright SPA crawl lands in Phase 17                  | `Accepted` | 05    |
 | [0011](./0011-planner-deterministic-vs-llm.md)            | Planner is deterministic-first; LLM adapter opt-in behind a locked, versioned prompt | `Accepted` | 06    |
 | [0012](./0012-generated-test-conventions.md)              | Generated test conventions (Jinja2 templates, banner safety, TS-owned audit)         | `Accepted` | 07    |
+| [0013](./0013-runner-architecture.md)                     | Runner architecture (local + Docker, retry, quarantine, sharding)                    | `Accepted` | 08    |

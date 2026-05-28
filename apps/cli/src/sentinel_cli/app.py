@@ -25,6 +25,7 @@ from sentinel_cli.commands import (
     init_cmd,
     plan_cmd,
     stubs,
+    test_cmd,
 )
 from sentinel_cli.state import GlobalState, detect_ci_default
 
@@ -33,7 +34,6 @@ from sentinel_cli.state import GlobalState, detect_ci_default
 # something in Phase 02 (`init`, `doctor`, `audit`) are NOT here. Phase 05
 # replaces the `discover` stub.
 _STUB_COMMANDS: Final[tuple[tuple[str, str, str], ...]] = (
-    ("test", "08", "Run generated tests via the Playwright runner."),
     ("functional", "10", "Run functional checks (login, CRUD, roles, etc.)."),
     ("api", "22", "Run API contract + negative-case checks."),
     ("a11y", "11", "Run accessibility checks (axe-core, keyboard, focus)."),
@@ -188,6 +188,10 @@ def build_app() -> typer.Typer:
         name="generate",
         help="Generate Playwright specs, page objects, and fixtures from the plan.",
     )(generate_cmd.run_generate)
+    cli.command(
+        name="test",
+        help="Run generated tests via the Playwright runner (local or Docker).",
+    )(test_cmd.run_test)
 
     for name, phase, summary in _STUB_COMMANDS:
         stubs.register_stub(cli, name=name, phase=phase, summary=summary)

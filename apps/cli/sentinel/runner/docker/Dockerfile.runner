@@ -1,0 +1,38 @@
+# SentinelQA Docker runner image (Phase 08.02).
+#
+# Pinned to Playwright's official Jammy image so the bundled browsers
+# and node_modules match what `packages/ts-runtime` was tested against.
+# Bumping the tag here MUST also bump `runner.docker_image` defaults in
+# `engine/config/schema.py` and the parity test in
+# `tests/integration/runner/test_docker_image_pinning.py`.
+
+ARG PLAYWRIGHT_TAG=v1.49.0-jammy
+FROM mcr.microsoft.com/playwright:${PLAYWRIGHT_TAG}
+
+LABEL org.opencontainers.image.title="SentinelQA runner"
+LABEL org.opencontainers.image.description="Pinned Playwright image used by sentinel test --docker."
+LABEL org.opencontainers.image.source="https://github.com/Ohswedd/sentinelqa"
+LABEL org.opencontainers.image.licenses="Apache-2.0"
+
+# Non-root user — the Playwright base already provides `pwuser`.
+USER root
+
+# Install pnpm for monorepo-aware installs. We pin the version so the
+# image build is reproducible across machines.
+ENV PNPM_VERSION=9.15.1
+RUN corepack enable && corepack prepare pnpm@${PNPM_VERSION} --activate
+
+# SentinelQA workspace mount points (mounted by `DockerRunner` at run
+# time). The image itself stays empty so it can be reused across runs
+# without rebuilds.
+RUN mkdir -p /sentinel/run /sentinel/source && chown -R pwuser:pwuser /sentinel
+
+USER pwuser
+WORKDIR /sentinel/source
+
+# `sentinel-ts` is shipped via the monorepo's pnpm workspace; the bind
+# mount makes `node_modules/.bin/sentinel-ts` available to PATH below.
+ENV PATH="/sentinel/source/node_modules/.bin:${PATH}"
+
+ENTRYPOINT []
+CMD ["sentinel-ts", "--help"]
