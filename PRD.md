@@ -1038,6 +1038,14 @@ The runtime emits one JSON event per stdout line, parsed by Python's `engine/orc
 
 The TS runtime never imports stealth, evasion, fingerprint-spoofing, CAPTCHA-bypass, or proxy-rotation libraries (CLAUDE §6, PRD §2). Redaction is mirrored from Python via `packages/shared-schema/redaction-rules.json` (Python is the source of truth; `scripts/export-redaction-rules.py --check` is the drift gate). A 19-record byte-parity fixture asserts string / recursive-value / header outputs match across both languages. Every JSONL line and every on-disk artifact (DOM snapshots, network/console logs, error stacks) passes through `redact()` before write.
 
+**URL redaction — behavioural contract, not byte-form parity.** `redact_url` (Python, `urllib.parse.urlparse`) preserves the original hostname case; `redactUrl` (TS, `URL`) canonicalises the hostname to lower case. The two implementations therefore cannot guarantee byte-identical output for arbitrary URLs. The contract is instead behavioural and is enforced on both sides:
+
+- userinfo is stripped (no `user:pass@` ever appears in the output);
+- secret-shaped query keys (`token`, `access_token`, …) are replaced with the marker `[REDACTED:url_token]`;
+- non-secret query values are still passed through the value-level redactor.
+
+Any future Python ↔ TS consumer that needs to *compare* URLs across the boundary must normalise both sides (lowercase the hostname, sort query parameters) before comparison.
+
 ---
 
 ## 16. MCP / LLM Tool Interface

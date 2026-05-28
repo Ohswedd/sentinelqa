@@ -34,7 +34,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run --coverage",
     "test:no-coverage": "vitest run",
-    "test:smoke": "test \"$SENTINELQA_HAS_CHROMIUM\" = \"1\" && playwright test --config=fixtures/playwright.config.ts || echo \"sentinel-ts: SENTINELQA_HAS_CHROMIUM=1 not set, skipping Playwright smoke\"",
+    "test:smoke": "node fixtures/smoke-driver.mjs",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },

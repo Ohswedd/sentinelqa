@@ -8,6 +8,8 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { dispatchAsync } from '../cli.js';
 import {
   RunConfigError,
+  _fallbackGlobForTests,
+  compileGlob,
   listTests,
   loadRunConfig,
   resolvePlaywrightBin,
@@ -70,6 +72,31 @@ describe('loadRunConfig', () => {
   });
 });
 
+describe('compileGlob', () => {
+  it('matches `**/*.spec.ts` against nested + top-level paths', () => {
+    const re = compileGlob('**/*.spec.ts');
+    expect(re.test('a/b/two.spec.ts')).toBe(true);
+    expect(re.test('one.spec.ts')).toBe(true);
+    expect(re.test('a/one.spec.ts')).toBe(true);
+    expect(re.test('not-a-spec.ts')).toBe(false);
+    expect(re.test('a.spec.tsx')).toBe(false);
+  });
+
+  it('preserves literal regex meta characters', () => {
+    const re = compileGlob('foo.spec.ts');
+    expect(re.test('foo.spec.ts')).toBe(true);
+    // `.` was escaped, so a different char in that slot must not match.
+    expect(re.test('fooXspec.ts')).toBe(false);
+  });
+
+  it('expands `?` to single-char (non-slash) matcher', () => {
+    const re = compileGlob('a?.ts');
+    expect(re.test('ab.ts')).toBe(true);
+    expect(re.test('a.ts')).toBe(false);
+    expect(re.test('a/.ts')).toBe(false);
+  });
+});
+
 describe('listTests', () => {
   it('finds spec files via glob', async () => {
     await mkdir(join(workDir, 'tests'), { recursive: true });
@@ -84,6 +111,26 @@ describe('listTests', () => {
   it('returns empty list for no matches', async () => {
     const out = await listTests('does-not-exist/*.spec.ts', workDir);
     expect(Array.from(out)).toEqual([]);
+  });
+
+  it('_fallbackGlobForTests directly: traverses, regex-filters, skips vendored dirs', async () => {
+    await mkdir(join(workDir, 'a', 'b'), { recursive: true });
+    await mkdir(join(workDir, 'node_modules'), { recursive: true });
+    await writeFile(join(workDir, 'a', 'one.spec.ts'), '// 1');
+    await writeFile(join(workDir, 'a', 'b', 'two.spec.ts'), '// 2');
+    await writeFile(join(workDir, 'a', 'helper.ts'), '// h');
+    await writeFile(join(workDir, 'node_modules', 'skip.spec.ts'), '// skipped');
+
+    const out: string[] = [];
+    for await (const f of _fallbackGlobForTests('**/*.spec.ts', workDir)) out.push(f);
+    out.sort();
+    expect(out).toEqual(['a/b/two.spec.ts', 'a/one.spec.ts']);
+  });
+
+  it('_fallbackGlobForTests: returns nothing for an unreadable cwd', async () => {
+    const out: string[] = [];
+    for await (const f of _fallbackGlobForTests('**/*.spec.ts', join(workDir, 'nope'))) out.push(f);
+    expect(out).toEqual([]);
   });
 
   it('recurses into subdirectories and skips node_modules / dist / .git', async () => {
@@ -114,6 +161,42 @@ describe('validateHelpers', () => {
     expect(checks.length).toBeGreaterThanOrEqual(3);
     expect(checks.every((c) => c.ok)).toBe(true);
     expect(checks.map((c) => c.name)).toContain('redaction-rules');
+  });
+
+  it('returns a package-load failure check and short-circuits when index throws', async () => {
+    const checks = await validateHelpers({
+      importIndex: () => Promise.reject(new Error('ENOENT index')),
+    });
+    expect(checks).toHaveLength(1);
+    expect(checks[0]?.name).toBe('package-load');
+    expect(checks[0]?.ok).toBe(false);
+    expect(checks[0]?.detail).toContain('ENOENT index');
+  });
+
+  it('records a redaction-rules failure check when loadRedactionRules throws', async () => {
+    const checks = await validateHelpers({
+      importRedact: () =>
+        Promise.resolve({
+          loadRedactionRules: () => {
+            throw new Error('ruleset missing on disk');
+          },
+        }),
+    });
+    const fail = checks.find((c) => c.name === 'redaction-rules');
+    expect(fail?.ok).toBe(false);
+    expect(fail?.detail).toContain('ruleset missing on disk');
+    // The function does NOT short-circuit on this branch — helpers-exported
+    // still runs against the real helpers module.
+    expect(checks.find((c) => c.name === 'helpers-exported')?.ok).toBe(true);
+  });
+
+  it('records a helpers-exported failure check when import throws', async () => {
+    const checks = await validateHelpers({
+      importHelpers: () => Promise.reject(new Error('helpers module missing')),
+    });
+    const fail = checks.find((c) => c.name === 'helpers-exported');
+    expect(fail?.ok).toBe(false);
+    expect(fail?.detail).toContain('helpers module missing');
   });
 });
 
@@ -183,6 +266,40 @@ describe('runPlaywright', () => {
     expect(call.env['SENTINELQA_TARGET']).toBe('http://x');
   });
 
+  it('forwards --shard, --browser, --run-dir overrides into the Playwright args', async () => {
+    const cfgPath = join(workDir, 'cfg.json');
+    await writeJson(cfgPath, {
+      run_id: 'r',
+      target: 'http://x',
+      run_dir: join(workDir, 'run'),
+      shard: { current: 2, total: 3 },
+      workers: 4,
+      retries: 2,
+      timeout_ms: 15000,
+    });
+    const stderrSink = new NodeEmitter() as unknown as NodeJS.WriteStream;
+    Object.assign(stderrSink, { write: () => true });
+    const mock = buildSpawnMock({ exitCode: 0 });
+    const code = await runPlaywright({
+      inputPath: cfgPath,
+      browserOverride: 'firefox',
+      runDirOverride: '/other/run',
+
+      spawnFn: mock.fn as any,
+      reporterPathOverride: '/dev/null/reporter.js',
+      cwd: workDir,
+      stderr: stderrSink,
+    });
+    expect(code).toBe(0);
+    const call = mock.calls[0]!;
+    expect(call.args).toContain('--shard=2/3');
+    expect(call.args).toContain('--project=firefox');
+    expect(call.args).toContain('--workers=4');
+    expect(call.args).toContain('--retries=2');
+    expect(call.args).toContain('--timeout=15000');
+    expect(call.env['SENTINELQA_RUN_DIR']).toBe('/other/run');
+  });
+
   it('returns 1 on test failure and forwards stderr', async () => {
     const cfgPath = join(workDir, 'cfg.json');
     await writeJson(cfgPath, {
@@ -209,6 +326,40 @@ describe('runPlaywright', () => {
     });
     expect(code).toBe(1);
     expect(stderrOut).toContain('test failed');
+  });
+
+  it('returns 2 when the reporter module is missing and no override is set', async () => {
+    const cfgPath = join(workDir, 'cfg.json');
+    await writeJson(cfgPath, {
+      run_id: 'r',
+      target: 'http://x',
+      run_dir: join(workDir, 'run'),
+    });
+    const stderrSink = new NodeEmitter() as unknown as NodeJS.WriteStream;
+    let stderrOut = '';
+    Object.assign(stderrSink, {
+      write: (chunk: string) => {
+        stderrOut += chunk;
+        return true;
+      },
+    });
+    // workDir is a tmpdir with no `dist/` next to it, so the auto-resolved
+    // reporter path won't exist. spawnFn should never be called.
+    let spawned = false;
+    const code = await runPlaywright({
+      inputPath: cfgPath,
+
+      spawnFn: ((..._args: unknown[]) => {
+        spawned = true;
+        return new NodeEmitter();
+      }) as any,
+      cwd: workDir,
+      stderr: stderrSink,
+    });
+    expect(code).toBe(2);
+    expect(spawned).toBe(false);
+    expect(stderrOut).toContain('reporter module missing');
+    expect(stderrOut).toContain('pnpm --filter @sentinelqa/ts-runtime build');
   });
 
   it('returns 2 on spawn error', async () => {

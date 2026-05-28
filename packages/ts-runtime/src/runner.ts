@@ -226,17 +226,51 @@ function isAlwaysSkipped(relPath: string): boolean {
   return false;
 }
 
+/**
+ * Test-only — exposes the manual recursive walker used on Node 20 (and
+ * any future Node version that drops `fs/promises#glob`). Production
+ * callers always go through `listTests`, which selects between the
+ * native glob and this walker at runtime.
+ */
+export async function* _fallbackGlobForTests(pattern: string, cwd: string): AsyncGenerator<string> {
+  yield* fallbackGlob(pattern, cwd);
+}
+
+/**
+ * Compile a minimal glob pattern (`**`, `*`, `?`) to a JS RegExp.
+ * Exported for tests because the compilation has a non-trivial
+ * collision problem: a naive sequence of `String.replace` calls would
+ * convert the literal `?` we emit for `(?:.+/)?` into the wildcard
+ * `[^/]`. We avoid that by routing every wildcard through a private
+ * placeholder character first, then expanding the placeholders.
+ */
+export function compileGlob(pattern: string): RegExp {
+  const PH_GLOBSTAR_SLASH = '\x00';
+  const PH_GLOBSTAR = '\x01';
+  const PH_STAR = '\x02';
+  const PH_QMARK = '\x03';
+  const body = pattern
+    // 1. Escape every regex meta we care about EXCEPT the wildcards
+    //    `*` and `?` — those mean glob, not regex.
+    .replace(/[.+^${}()|[\]\\]/g, '\\$&')
+    // 2. Tokenise wildcards to private placeholders so step 3 can
+    //    expand them without colliding with regex syntax (`(?:`, `)?`).
+    .replace(/\*\*\//g, PH_GLOBSTAR_SLASH)
+    .replace(/\*\*/g, PH_GLOBSTAR)
+    .replace(/\*/g, PH_STAR)
+    .replace(/\?/g, PH_QMARK)
+    // 3. Expand placeholders to regex.
+    .replace(new RegExp(PH_GLOBSTAR_SLASH, 'g'), '(?:.+/)?')
+    .replace(new RegExp(PH_GLOBSTAR, 'g'), '.+')
+    .replace(new RegExp(PH_STAR, 'g'), '[^/]*')
+    .replace(new RegExp(PH_QMARK, 'g'), '[^/]');
+  return new RegExp(`^${body}$`);
+}
+
 async function* fallbackGlob(pattern: string, cwd: string): AsyncGenerator<string> {
   // Minimal recursive glob — supports `**/*.spec.ts` style only.
   const { readdir } = await import('node:fs/promises');
-  // Compile to a Regex once.
-  const escaped = pattern
-    .replace(/[.+^${}()|[\]\\]/g, '\\$&')
-    .replace(/\*\*\//g, '(?:.+/)?')
-    .replace(/\*\*/g, '.+')
-    .replace(/\*/g, '[^/]*')
-    .replace(/\?/g, '[^/]');
-  const re = new RegExp(`^${escaped}$`);
+  const re = compileGlob(pattern);
   async function* walk(dir: string, rel: string): AsyncGenerator<string> {
     let entries;
     try {
@@ -269,11 +303,59 @@ export interface ValidationCheck {
   readonly detail: string;
 }
 
-export async function validateHelpers(): Promise<readonly ValidationCheck[]> {
+/**
+ * Dependency-injected loaders for `validateHelpers`. Production callers
+ * never pass these; tests use them to exercise the error paths (the
+ * happy path is already covered by every other test that imports the
+ * helpers).
+ */
+/**
+ * Minimal contract slices we read from each module. We model these
+ * locally (rather than `typeof import('./index.js')`) so the test
+ * stubs only have to supply what `validateHelpers` actually reads;
+ * `consistent-type-imports` also forbids dynamic-import type
+ * annotations.
+ */
+interface IndexShape {
+  readonly PACKAGE_NAME: string;
+  readonly VERSION: string;
+  readonly PROTOCOL_VERSION: string;
+}
+
+interface RedactShape {
+  readonly loadRedactionRules: () => {
+    readonly value_rules: readonly unknown[];
+    readonly secret_key_names: readonly unknown[];
+  };
+}
+
+interface HelpersShape {
+  readonly sentinelStep: unknown;
+  readonly captureEvidence: unknown;
+  readonly redactedNetwork: unknown;
+}
+
+export interface ValidateHelpersDeps {
+  readonly importIndex?: () => Promise<IndexShape>;
+  readonly importRedact?: () => Promise<RedactShape>;
+  readonly importHelpers?: () => Promise<HelpersShape>;
+}
+
+export async function validateHelpers(
+  deps: ValidateHelpersDeps = {},
+): Promise<readonly ValidationCheck[]> {
+  const importIndex = deps.importIndex ?? ((): Promise<IndexShape> => import('./index.js'));
+  const importRedact =
+    deps.importRedact ??
+    ((): Promise<RedactShape> => import('./redact.js') as unknown as Promise<RedactShape>);
+  const importHelpers =
+    deps.importHelpers ??
+    ((): Promise<HelpersShape> => import('./helpers.js') as unknown as Promise<HelpersShape>);
+
   const checks: ValidationCheck[] = [];
 
   try {
-    const mod = await import('./index.js');
+    const mod = await importIndex();
     checks.push({
       name: 'package-identity',
       ok: mod.PACKAGE_NAME === '@sentinelqa/ts-runtime',
@@ -294,7 +376,7 @@ export async function validateHelpers(): Promise<readonly ValidationCheck[]> {
   }
 
   try {
-    const { loadRedactionRules } = await import('./redact.js');
+    const { loadRedactionRules } = await importRedact();
     const rules = loadRedactionRules();
     checks.push({
       name: 'redaction-rules',
@@ -310,7 +392,7 @@ export async function validateHelpers(): Promise<readonly ValidationCheck[]> {
   }
 
   try {
-    const { sentinelStep, captureEvidence, redactedNetwork } = await import('./helpers.js');
+    const { sentinelStep, captureEvidence, redactedNetwork } = await importHelpers();
     checks.push({
       name: 'helpers-exported',
       ok:
