@@ -27,6 +27,7 @@ from sentinel_cli.commands import (
     init_cmd,
     perf_cmd,
     plan_cmd,
+    security_cmd,
     stubs,
     test_cmd,
 )
@@ -39,7 +40,6 @@ from sentinel_cli.state import GlobalState, detect_ci_default
 _STUB_COMMANDS: Final[tuple[tuple[str, str, str], ...]] = (
     ("api", "22", "Run API contract + negative-case checks."),
     ("visual", "21", "Run visual-regression checks against baselines."),
-    ("security", "13", "Run safe security checks (headers, cookies, CORS)."),
     ("chaos", "23", "Run chaos checks (slow net, offline, session expiry)."),
     ("llm-audit", "19", "Run LLM-code audit (dead buttons, fake routes, etc.)."),
     ("fix", "20", "Propose locator repairs and other safe self-healing fixes."),
@@ -208,6 +208,14 @@ def build_app() -> typer.Typer:
             "All measurements are lab synthetic (CLAUDE §27), not RUM."
         ),
     )(perf_cmd.run_perf)
+    cli.command(
+        name="security",
+        help=(
+            "Run safe security checks (headers, cookies, CORS, CSRF, reflected "
+            "XSS, IDOR, frontend secrets, dep-scan, optional SAST). Dangerous "
+            "probes require --mode authorized_destructive + --proof-of-authorization."
+        ),
+    )(security_cmd.run_security)
 
     for name, phase, summary in _STUB_COMMANDS:
         stubs.register_stub(cli, name=name, phase=phase, summary=summary)

@@ -38,6 +38,14 @@ paths = [
   '''^packages/ts-runtime/src/__tests__/redact\.test\.ts$''',
   '''^packages/ts-runtime/src/__tests__/redact\.parity\.test\.ts$''',
   '''^packages/ts-runtime/src/__tests__/helpers\.test\.ts$''',
+  # Phase 13 — security module secret-detector fixtures. The detector
+  # patterns are exercised against deliberately-shaped fake secrets in
+  # these tests; they are not real credentials.
+  '''^tests/unit/modules/security/test_secret_patterns\.py$''',
+  '''^tests/unit/modules/security/test_frontend_secrets\.py$''',
+  '''^tests/integration/modules/security/test_frontend_secrets_integration\.py$''',
+  '''^tests/integration/modules/security/test_e2e\.py$''',
+  '''^tests/integration/cli/test_security\.py$''',
 ]
 regexes = [
   # Canonical AWS example access-key from public AWS docs.

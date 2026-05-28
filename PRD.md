@@ -714,6 +714,105 @@ Safe checks:
 - Static security scan integration.
 - SARIF export.
 
+#### 10.7.1 MVP delivery (Phase 13)
+
+Phase 13 ships `modules.security.SecurityModule(SentinelModule)` and the
+`sentinel security` CLI command. ADR-0018 owns the rationale; this
+section names what is actually shipped and the safety contract:
+
+- **Module shape.** `SecurityModule` inherits from
+  `engine.modules.base.SentinelModule` and runs the seven-step
+  lifecycle (CLAUDE §9). `execute()` drives every enabled check via a
+  shared `CheckContext` (immutable, carries the `httpx.Client`,
+  `Target`, `SafetyDecision`, audit-log path, env snapshot, and route
+  list). Findings are translated by
+  `modules.security.findings.findings_from_checks` and persisted
+  alongside per-check artifacts under `<run-dir>/security/`.
+- **Per-check files.** Each PRD §10.7 bullet has its own module under
+  `modules/security/checks/`:
+
+  - `headers.py` — OWASP-aligned rule set (HSTS / CSP / XFO /
+    XCONTENT-TYPE-OPTIONS / Referrer-Policy / Permissions-Policy).
+  - `cookies.py` — `HttpOnly` / `Secure` / `SameSite` evaluation,
+    auth-cookie heuristic, dedicated rule for `SameSite=None`
+    without `Secure`.
+  - `cors.py` — OPTIONS preflight from the synthetic origin
+    `https://sentinelqa.invalid`; flags wildcard+credentials and
+    reflective ACAO.
+  - `csrf.py` — form parser + token / meta / `SameSite` heuristic;
+    POST/PUT/PATCH/DELETE forms only.
+  - `xss_reflected.py` — non-executable marker (`__SENTINELQA_XSS__`)
+    reflected unescaped → high finding; confidence reduced when a
+    `script-src 'self'` CSP is present.
+  - `xss_stored.py` — gated. Refuses to run unless
+    `security.mode == "authorized_destructive"`,
+    `security.checks.xss_stored == true`, AND a valid proof-of-
+    authorization document is configured. Returns
+    `skipped=True`+reason otherwise (CLAUDE §37: no fake completion).
+  - `sqli.py` — boolean + capped time-based behavioural probe; runs
+    only against local hosts (loopback / RFC1918) OR
+    `authorized_destructive` + proof. Compares status, body length,
+    and elapsed time across baseline / true / false probes.
+  - `idor.py` — second-user resource access. Skipped (with `info`
+    reason) when `auth.second_user.token_env` is absent. Uses a
+    bearer token only — username/password login orchestration is a
+    Phase 17 follow-up.
+  - `frontend_secrets.py` — JS bundle scan via the detection-mode
+    regex catalog in `modules/security/secret_patterns.py`. DOM /
+    localStorage / sessionStorage scanning is opt-in via JSON
+    snapshots under `<run-dir>/security/snapshots/<route-slug>.json`
+    (the Playwright capture helper that produces these is documented
+    separately).
+  - `deps.py` — `pip-audit` (default-on if `requirements.txt` /
+    `poetry.lock` / `uv.lock` is present), `npm audit` (default-on if
+    `package-lock.json` / `npm-shrinkwrap.json` is present),
+    `osv-scanner` (opt-in). Adapters never auto-install — the doctor
+    command surfaces missing tools.
+  - `sast.py` — `semgrep --config auto --json`. Opt-in via both
+    `security.checks.sast=true` and
+    `security.dependency_scanners.semgrep=true`.
+- **Rule catalog + SARIF.** `modules/security/rules.py` is the single
+  source of truth for stable `SEC-*` rule IDs (e.g.
+  `SEC-HEADERS-HSTS-MISSING`). On import, the package registers every
+  rule with `engine.reporter.sarif_rules.default_sarif_registry()`;
+  the Phase-03 SARIF writer reads them by category. Rule IDs are
+  stable across releases — renaming one is a breaking change for any
+  downstream dashboard.
+- **Wire format.** `security/index.json` + `security/<check>.json`
+  versioned by `SECURITY_RESULT_SCHEMA_VERSION="1"` (Pydantic models
+  in `modules/security/models.py`). Finding records (PRD §18.2)
+  carry the per-check artifact path as evidence.
+- **Safety contract.** Every public `run_*` function in
+  `modules/security/checks/` begins with `SafetyPolicy().enforce(...)`
+  OR with an explicit precondition gate (e.g. `_allowed_to_run`,
+  `_second_user_token`) that returns `skipped=True` BEFORE any I/O.
+  The AST guard in `tests/security/test_module_calls_policy.py`
+  enforces this on every CI run. The forbidden-flag guard in
+  `tests/security/test_security_forbidden_flags.py` enforces
+  CLAUDE §6 on the new CLI surface (no `--stealth`, no `--evade`,
+  no `--bypass-*`, etc.).
+- **Audit logging.** Every probe writes one redacted entry to
+  `.sentinel/runs/<run-id>/audit.log` via
+  `engine.policy.audit_log.write_audit_entry`. Stored XSS, SQLi,
+  and IDOR additionally log `skipped` events with the precise reason
+  when they refuse to run.
+- **CLI.** `sentinel security` replaces the Phase-02 stub. Options:
+  `--url` (override `target.base_url`), `--routes` (comma-separated
+  override), `--discovery` (pull routes from a `discovery.json`),
+  `--mode safe|authorized_destructive`,
+  `--proof-of-authorization <path>`, `--checks <list>` (restrict the
+  set, intersected with config). Exit codes follow the canonical
+  grid (0/1/2/4/5/6 per CLAUDE §13).
+- **Config surface.** `security.checks.{headers, cookies, cors, csrf,
+  xss_reflected, xss_stored, sqli, idor, frontend_secrets,
+  dependency_scan, sast}` per-check toggles;
+  `security.dependency_scanners.{pip_audit, npm_audit, osv_scanner,
+  semgrep}` adapter toggles; `security.routes` for the default route
+  list; `security.request_timeout_seconds`;
+  `security.max_requests_per_second` for the token-bucket limiter;
+  `auth.second_user.{username_env, password_env, token_env,
+  user_id}` for IDOR.
+
 ### 10.8 Chaos/adversarial testing
 
 Safe chaos tests:

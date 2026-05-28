@@ -57,6 +57,32 @@ security:
   destructive_tests: false
   max_requests_per_second: 5
   allowed_payload_level: low
+  # Routes the security module audits. Empty (default) means the
+  # module short-circuits unless the caller supplies routes via CLI
+  # (--routes), `sentinel audit` discovery, or this block.
+  routes: []
+  request_timeout_seconds: 15.0
+  # Per-check toggles. Stored XSS and SQLi require destructive mode;
+  # SAST and frontend storage scanning are opt-in.
+  checks:
+    headers: true
+    cookies: true
+    cors: true
+    csrf: true
+    xss_reflected: true
+    xss_stored: false
+    sqli: false
+    idor: true
+    frontend_secrets: true
+    dependency_scan: true
+    sast: false
+  # Dependency / SAST adapters. Each runs only when its binary is on
+  # PATH and the matching lockfile exists. Adapters never auto-install.
+  dependency_scanners:
+    pip_audit: true
+    npm_audit: true
+    osv_scanner: false
+    semgrep: false
 
 performance:
   # All performance measurements are SYNTHETIC (lab) — they catch

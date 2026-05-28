@@ -35,6 +35,7 @@ ALLOWED_PATHS = {
     # Tests for the forbidden-features registry are allowed to reference
     # the literals — they exist precisely to assert the registry's content.
     Path("tests/security/test_no_stealth_flags.py"),
+    Path("tests/security/test_security_forbidden_flags.py"),
     Path("tests/unit/policy/test_forbidden_features.py"),
     Path("PRD.md"),
     Path("CLAUDE.md"),
