@@ -103,7 +103,7 @@ Every phase ends with a push → PR → CI → merge cycle handled by the loop p
 | 05 | feature/phase-05-discovery-module | https://github.com/Ohswedd/sentinelqa/pull/6 | https://github.com/Ohswedd/sentinelqa/actions/runs/26574849155 | 2fde372595a40655fd282eda19a4d97f69556cd5 | 2026-05-28 |
 | 06 | feature/phase-06-planner-module | https://github.com/Ohswedd/sentinelqa/pull/7 | https://github.com/Ohswedd/sentinelqa/actions/runs/26577068394 | 53f8720f59fb782da886bd73fc80a6a9864f3938 | 2026-05-28 |
 | 07 | feature/phase-07-generator-module | https://github.com/Ohswedd/sentinelqa/pull/8 | https://github.com/Ohswedd/sentinelqa/actions/runs/26581099520 | 18a6a66a75e029eb9894ef11867e50be94572cc9 | 2026-05-28 |
-| 08 | — | — | — | — | — |
+| 08 | feature/phase-08-runner-module | https://github.com/Ohswedd/sentinelqa/pull/9 | https://github.com/Ohswedd/sentinelqa/actions/runs/26584149975 | 3909ccf9dfa8130ca747def230b513dca40f891c | 2026-05-28 |
 | 09 | — | — | — | — | — |
 | 10 | — | — | — | — | — |
 | 11 | — | — | — | — | — |
