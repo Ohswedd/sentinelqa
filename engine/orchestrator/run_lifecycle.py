@@ -49,11 +49,23 @@ _LOGGER = get_logger("orchestrator.lifecycle")
 
 @dataclass
 class ModuleOutcome:
-    """In-memory record of a single module invocation."""
+    """In-memory record of a single module invocation.
+
+    When a module raises, Phase 09's analyzer classifies the error into
+    one of the canonical :data:`engine.analyzer.models.FailureCategory`
+    values (rehome of CLAUDE §10's broad ``except Exception`` per task
+    09.01). The classification is exposed through ``error_category`` /
+    ``error_confidence`` / ``error_rationale`` so the reporter and SDK
+    can surface *why* a module fell over instead of just "errored".
+    """
 
     name: str
     status: str  # "succeeded" | "errored" | "skipped"
     error_message: str | None = None
+    error_type: str | None = None
+    error_category: str | None = None
+    error_confidence: float | None = None
+    error_rationale: str | None = None
     metadata: dict[str, Any] = field(default_factory=dict)
 
 
@@ -262,6 +274,11 @@ class RunLifecycle:
             hook(ctx)
 
     def run_modules(self, ctx: LifecycleContext) -> None:
+        # Local import: the analyzer depends on engine.orchestrator.ts_bridge,
+        # which is already loaded above. Importing here keeps the run-modules
+        # path importable in test setups that monkey-patch the analyzer.
+        from engine.analyzer.categorize import categorize_module_error
+
         for name in self._modules_to_run(ctx):
             factory = ctx.registry.modules.get(name)
             if factory is None:
@@ -278,19 +295,54 @@ class RunLifecycle:
                     ModuleOutcome(name=name, status="succeeded", metadata={"result": str(result)})
                 )
             except TestExecutionError as exc:
+                classification = categorize_module_error(
+                    module=name,
+                    exc_type=type(exc).__name__,
+                    exc_message=exc.message,
+                )
                 ctx.module_outcomes.append(
-                    ModuleOutcome(name=name, status="errored", error_message=exc.message)
+                    ModuleOutcome(
+                        name=name,
+                        status="errored",
+                        error_message=exc.message,
+                        error_type=type(exc).__name__,
+                        error_category=classification.category,
+                        error_confidence=classification.confidence,
+                        error_rationale=classification.rationale,
+                    )
                 )
             except SentinelError as exc:
+                classification = categorize_module_error(
+                    module=name,
+                    exc_type=type(exc).__name__,
+                    exc_message=exc.message,
+                )
                 ctx.module_outcomes.append(
-                    ModuleOutcome(name=name, status="errored", error_message=exc.message)
+                    ModuleOutcome(
+                        name=name,
+                        status="errored",
+                        error_message=exc.message,
+                        error_type=type(exc).__name__,
+                        error_category=classification.category,
+                        error_confidence=classification.confidence,
+                        error_rationale=classification.rationale,
+                    )
                 )
             except Exception as exc:
+                classification = categorize_module_error(
+                    module=name,
+                    exc_type=type(exc).__name__,
+                    exc_message=str(exc),
+                )
                 ctx.module_outcomes.append(
                     ModuleOutcome(
                         name=name,
                         status="errored",
                         error_message=f"{type(exc).__name__}: {exc}",
+                        error_type=type(exc).__name__,
+                        error_category=classification.category,
+                        error_confidence=classification.confidence,
+                        error_rationale=classification.rationale,
                     )
                 )
 

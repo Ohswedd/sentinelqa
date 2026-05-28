@@ -189,6 +189,31 @@ class PlannerConfig(SentinelModel):
     llm: PlannerLlmConfig = Field(default_factory=lambda: PlannerLlmConfig())
 
 
+class AnalyzerLlmConfig(SentinelModel):
+    """`analyzer.llm:` block (Phase 09.05, ADR-0014).
+
+    The deterministic analyzer ships in Phase 09; the LLM explainer is
+    opt-in behind ``enabled``. Provider keys are never inlined — only
+    env-var names go in YAML, in line with :class:`AuthConfig` and
+    CLAUDE §33. The explainer adds at most one sentence of refinement
+    to each deterministic hypothesis; it never replaces the
+    deterministic category, hypothesis, or confidence (CLAUDE §23).
+    """
+
+    enabled: bool = False
+    provider: Literal["null", "openai", "anthropic"] = "null"
+    model: str = Field(default="", max_length=200)
+    api_key_env: str | None = Field(default=None, max_length=128)
+    max_usd_per_run: float = Field(default=0.25, ge=0.0, le=100.0)
+    request_timeout_seconds: float = Field(default=20.0, gt=0.0, le=300.0)
+
+
+class AnalyzerConfig(SentinelModel):
+    """`analyzer:` block (Phase 09, ADR-0014)."""
+
+    llm: AnalyzerLlmConfig = Field(default_factory=lambda: AnalyzerLlmConfig())
+
+
 class PolicyConfig(SentinelModel):
     """`policy:` block."""
 
@@ -286,6 +311,7 @@ class RootConfig(SentinelModel):
     visual: VisualConfig = Field(default_factory=lambda: VisualConfig())
     discovery: DiscoveryConfig = Field(default_factory=lambda: DiscoveryConfig())
     planner: PlannerConfig = Field(default_factory=lambda: PlannerConfig())
+    analyzer: AnalyzerConfig = Field(default_factory=lambda: AnalyzerConfig())
     policy: PolicyConfig = Field(default_factory=lambda: PolicyConfig())
     runner: RunnerConfig = Field(default_factory=lambda: RunnerConfig())
     report: ReportConfig = Field(default_factory=lambda: ReportConfig())
@@ -320,6 +346,8 @@ __all__ = [
     "DiscoveryGraphQLConfig",
     "PlannerConfig",
     "PlannerLlmConfig",
+    "AnalyzerConfig",
+    "AnalyzerLlmConfig",
     "PolicyConfig",
     "RunnerConfig",
     "RunnerRetriesConfig",
