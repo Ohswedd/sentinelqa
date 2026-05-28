@@ -86,6 +86,8 @@ class RunnerInvocation:
     shard: ShardSpec | None = None
     workers: int | None = None
     quarantine: Quarantine = field(default_factory=Quarantine.empty)
+    grep: str | None = None
+    """Playwright ``--grep`` pattern (tag selection per Phase 10.03)."""
 
 
 SpawnFn = Callable[..., Awaitable[asyncio.subprocess.Process]]
@@ -199,6 +201,7 @@ class LocalRunner:
             headless=runner_cfg.headless,
             timeout_ms=runner_cfg.timeout_ms,
             retries=runner_cfg.retries.max,
+            grep=invocation.grep,
             env=env,
         )
         # Persist under run-configs/<module>.json so each module's invocation

@@ -41,6 +41,7 @@ class RunConfig(BaseModel):
     headless: bool = True
     timeout_ms: int = Field(default=30_000, ge=1_000, le=600_000)
     retries: int = Field(default=0, ge=0, le=10)
+    grep: str | None = Field(default=None, max_length=512)
     env: dict[str, str] = Field(default_factory=dict)
 
 

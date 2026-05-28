@@ -250,6 +250,7 @@ class DockerRunner:
             headless=True,  # Docker is always headless.
             timeout_ms=runner_cfg.timeout_ms,
             retries=runner_cfg.retries.max,
+            grep=invocation.grep,
             env={},
         )
         out_dir = artifacts.subdir("run-configs")

@@ -41,6 +41,7 @@ const RunConfigSchema = z
     headless: z.boolean().default(true),
     timeout_ms: z.number().int().positive().default(30_000),
     retries: z.number().int().min(0).default(0),
+    grep: z.string().min(1).max(512).nullable().optional(),
     env: z.record(z.string()).default({}),
   })
   .strict();
@@ -147,6 +148,9 @@ export async function runPlaywright(opts: RunnerOptions): Promise<number> {
   ];
   if (config.shard !== undefined) {
     args.push(`--shard=${config.shard.current}/${config.shard.total}`);
+  }
+  if (config.grep !== undefined && config.grep !== null && config.grep.length > 0) {
+    args.push(`--grep=${config.grep}`);
   }
   for (const spec of config.spec_files) args.push(spec);
 
