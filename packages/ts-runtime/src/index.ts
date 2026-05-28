@@ -51,6 +51,23 @@ export {
   captureDomSnapshot,
   harConfig,
 } from './helpers.js';
+export {
+  auditLocatorBrittleness,
+  bestLocator,
+  describeLocator,
+  renderStrategy,
+} from './locators.js';
+export type {
+  BestLocatorResult,
+  BrittlenessAudit,
+  BrittlenessWarning,
+  ElementTarget,
+  EvaluableLocator,
+  LocatorDescriptor,
+  LocatorLike,
+  LocatorStrategy,
+  QueryablePage,
+} from './locators.js';
 export type {
   AccessibilityPage,
   CaptureEvidenceOptions,
