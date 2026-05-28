@@ -589,6 +589,19 @@ Required flows:
 - Notification/email link flows.
 - Payment sandbox flows.
 
+#### 10.1.1 MVP delivery (Phase 10)
+
+The functional module ships in Phase 10 as the first concrete `SentinelModule` (CLAUDE §9, ADR-0015). Key implementation contracts:
+
+- **Module package:** `modules/functional/` houses `FunctionalModule(SentinelModule)`. Importing the package auto-registers the module with the process-wide `ModuleRegistry` so `sentinel audit` and `sentinel functional` both pick it up without bespoke wiring.
+- **Lifecycle:** `validate_prerequisites → plan → execute → collect_evidence → emit_findings → emit_metrics → summarize`. The seven steps are owned by the module; the orchestrator calls `module.run(ctx)`. The sentinel-ts probe lives inside `execute()` so projects that haven't generated specs yet (no work to do) report `skipped`, not `errored`.
+- **Findings translation:** failed/timed-out `TestExecution` records become typed `Finding`s with PRD §20 evidence via `engine.modules.base.build_finding_from_failed_test`. Quarantined tests (Phase 08.04) never produce findings; the quality gate is unaffected by their result.
+- **Tag conventions (ADR-0015 §6):** every generated spec emits, in order, `@p0..p3`, `@module:<name>`, `@flow:<extractor>`, `@risk:<level>`, plus any planner-attached, ID-stripped tags. The `@module:` value is mapped from the planner extractor (Phase 06) — most flows land on `functional`, with `api.contract` → `api`, `a11y` → `a11y`, `perf` → `performance`.
+- **Slice modes:** `sentinel functional --mode smoke|standard|full` resolves a Playwright `--grep` value via `modules.functional.tags.TagSelection`. `smoke → @p0`, `standard → @p0|@p1`, `full → no filter`. Combined with `--grep <user>` the two are intersected. The TS runner accepts a new `grep?: string` field on the run-config schema and forwards it to `playwright test --grep <value>`.
+- **CLI:** `sentinel functional` runs the canonical `RunLifecycle` restricted to the functional module. Options: `--url`, `--mode`, `--grep`, `--workers`, `--shard`, `--retries`, `--spec-root`, plus the global `--config / --ci / --json / --quiet / --verbose`. Exit codes follow the standard grid: 0 (passed, no findings ≥ high), 1 (quality gate failed), 2 (config / shard / mode error), 4 (unsafe target), 5 (runner binary missing), 6 (runner error).
+- **Lifecycle hand-off:** `RunLifecycle.execute(... module_options={"functional": {...}})` threads per-module options into `ModuleContext.options`. `RunLifecycle.last_context` exposes the most recent context so the CLI / SDK (Phase 16) can read typed findings + module results without a disk round-trip.
+- **Safety:** the payment_sandbox template uses Stripe's published `4242 4242 4242 4242` test card and gates the test on `SENTINEL_PAYMENT_SANDBOX=1`; production card numbers never appear in generated specs (CLAUDE §6, PRD §2). Login specs read credentials from env-var-named slots only (CLAUDE §33). Fixtures (`packages/ts-runtime/fixtures/sample-app[-broken]/`) are dev-only and never distributed as examples.
+
 ### 10.2 Regression testing
 
 Modes:

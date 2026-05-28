@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>SentinelQA Sample App — admin (broken)</title>
+  </head>
+  <body>
+    <!-- BROKEN: this page should return 403 / require auth.
+         Instead it surfaces the public landing so any role-boundary
+         spec written against this fixture must fail. -->
+    <main>
+      <h1>Public landing</h1>
+      <p>You should not be able to reach this without an admin role.</p>
+    </main>
+  </body>
+</html>

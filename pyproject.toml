@@ -128,6 +128,8 @@ files = [
     "engine/planner",
     "engine/generator",
     "engine/analyzer",
+    "engine/modules",
+    "modules/functional",
     "tests",
 ]
 exclude = [
@@ -205,6 +207,8 @@ source = [
     "engine/generator",
     "engine/runner",
     "engine/analyzer",
+    "engine/modules",
+    "modules/functional",
     "apps/cli/src/sentinel_cli",
 ]
 # `engine/discovery` and `engine/planner` are intentionally NOT in the
