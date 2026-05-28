@@ -642,6 +642,21 @@ Capabilities:
 - Landmark structure.
 - Screen-reader name detection.
 
+#### 10.4.1 MVP delivery (Phase 11)
+
+The accessibility module ships in Phase 11 as the second concrete `SentinelModule` (CLAUDE §9, ADR-0016). It is the first module that does **not** drive a Playwright spec set — accessibility checks are per-route, not per-test, so the module pairs the standard module lifecycle with a dedicated runner.
+
+- **Module package:** `modules/accessibility/` houses `AccessibilityModule(SentinelModule)`. Importing the package auto-registers the module with the process-wide `ModuleRegistry` so `sentinel audit` and `sentinel a11y` both pick it up without bespoke wiring.
+- **Lifecycle:** `validate_prerequisites → plan → execute → collect_evidence → emit_findings → emit_metrics → summarize`. `plan()` resolves the route set in priority order: CLI `--routes` → `discovery.json` → `config.accessibility.routes` → `("/",)` default. `execute()` calls the configured `A11yRunner` (production: `LocalA11yRunner`; tests: `StubA11yRunner`).
+- **Runner abstraction (ADR-0016 §4):** `A11yRunner` is a `Protocol` over `run(invocation: A11yInvocation) -> A11yRunOutcome`. `LocalA11yRunner` spawns `sentinel-ts audit-a11y --input <run-config>.json` via `subprocess.run`, captures stderr, and reads the per-route JSON artifacts the TS subcommand writes under `<run-dir>/a11y/`.
+- **TS subcommand:** `sentinel-ts audit-a11y` reads a deterministic JSON config (`run_id`, `target`, `out_dir`, `routes`, `axe_tags`, `request_timeout_ms`, `keyboard_max_tabs`), launches Chromium via `@playwright/test`, navigates each route, injects axe-core, runs the keyboard / landmark / accessible-name helpers (`packages/ts-runtime/src/a11y/*.ts`), writes one `<route-slug>.json` per route plus a top-level `index.json`, and exits 0 even when violations are found. Non-zero exits are reserved for runtime failures (Chromium launch, missing axe-core, etc.).
+- **Check set (PRD §10.4 capabilities):** axe-core for rule-based violations including contrast; `walkFocus` for tab order + focus-visible + positive-tabindex detection; `detectFocusTrap` for modal escape; `detectLandmarkIssues` for required (`<main>`) + recommended (`<header>`, `<nav>`, `<footer>`) landmarks; `detectMissingAccessibleNames` for the ARIA name chain (`aria-labelledby` → `aria-label` → label text → visible text → `title`; **placeholders are not a sufficient fallback**).
+- **Findings translation:** `modules.accessibility.findings.findings_from_pages` maps each `A11yPageResult` to PRD §18.2 `Finding` records. Severity mapping: axe `critical|serious → high`, `moderate → medium`, `minor → low`; keyboard `focus-trap → high`, `focus-visible|keyboard-navigation → medium`; landmark `missing → medium`, `duplicate → low`; accessible-name → `medium`. Confidence: `0.95` for stable axe rules, `0.6` for axe `experimental` rules, `0.9` for deterministic Python checks. Curated remediation strings live in `_AXE_REMEDIATIONS`; uncurated rules fall back to axe's `help` text.
+- **Wire format:** the per-route JSON envelope carries `schema_version: "1"` (`A11Y_RESULT_SCHEMA_VERSION` constant on both runtimes). Future breaking changes bump the constant.
+- **CLI:** `sentinel a11y` runs the canonical `RunLifecycle` restricted to the accessibility module. Options: `--url`, `--routes`, `--axe-tags`, `--discovery`. Exit codes: 0 (no high/critical findings), 1 (quality gate failed), 2 (config / CLI usage error), 4 (unsafe target), 5 (sentinel-ts binary missing), 6 (runner failure).
+- **Safety + tone (CLAUDE §28):** every description begins with "Automated accessibility check found"; the phrases "fully WCAG compliant" / "WCAG compliant" never appear in product output. A forbidden-phrase guard (`tests/security/test_no_wcag_compliance_claims.py`) scans the module + TS helper packages on every CI run.
+- **Dependency:** `axe-core` is **not** a workspace dependency. Projects that adopt the accessibility module install it themselves (`pnpm add axe-core`); the TS helper resolves it via `require.resolve('axe-core/axe.min.js')` at runtime and raises a typed `AxeCoreNotInstalledError` when missing.
+
 ### 10.5 Performance testing
 
 Capabilities:
