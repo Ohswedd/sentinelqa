@@ -18,6 +18,7 @@ from typing import Annotated, Final
 import typer
 
 from sentinel_cli.commands import (
+    a11y_cmd,
     audit_cmd,
     discover_cmd,
     doctor_cmd,
@@ -36,7 +37,6 @@ from sentinel_cli.state import GlobalState, detect_ci_default
 # replaces the `discover` stub.
 _STUB_COMMANDS: Final[tuple[tuple[str, str, str], ...]] = (
     ("api", "22", "Run API contract + negative-case checks."),
-    ("a11y", "11", "Run accessibility checks (axe-core, keyboard, focus)."),
     ("perf", "12", "Run performance checks against configured budgets."),
     ("visual", "21", "Run visual-regression checks against baselines."),
     ("security", "13", "Run safe security checks (headers, cookies, CORS)."),
@@ -196,6 +196,10 @@ def build_app() -> typer.Typer:
         name="functional",
         help="Run functional checks (login, CRUD, roles, etc.) via the lifecycle.",
     )(functional_cmd.run_functional)
+    cli.command(
+        name="a11y",
+        help="Run accessibility checks (axe-core, keyboard, focus) via the lifecycle.",
+    )(a11y_cmd.run_a11y)
 
     for name, phase, summary in _STUB_COMMANDS:
         stubs.register_stub(cli, name=name, phase=phase, summary=summary)

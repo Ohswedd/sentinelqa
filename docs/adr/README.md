@@ -59,3 +59,4 @@ Use [`_template.md`](./_template.md). The required headings are validated by `sc
 | [0013](./0013-runner-architecture.md)                     | Runner architecture (local + Docker, retry, quarantine, sharding)                    | `Accepted` | 08    |
 | [0014](./0014-analyzer-rules.md)                          | Analyzer rules (categorization, root cause, repro, retry, optional LLM)              | `Accepted` | 09    |
 | [0015](./0015-module-contract-and-functional-module.md)   | Module contract + functional module (CLAUDE §9 lifecycle + `sentinel functional`)    | `Accepted` | 10    |
+| [0016](./0016-accessibility-module.md)                    | Accessibility module — axe-core + deterministic checks (`sentinel a11y`)             | `Accepted` | 11    |

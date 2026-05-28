@@ -1,0 +1,109 @@
+{
+  "violations": [
+    {
+      "id": "html-has-lang",
+      "impact": "serious",
+      "tags": ["wcag2a", "cat.language"],
+      "description": "Ensures every HTML document has a lang attribute",
+      "help": "Documents must have a lang attribute",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.10/html-has-lang",
+      "nodes": [
+        {
+          "target": ["html"],
+          "html": "<html>",
+          "failureSummary": "Fix any of the following: The <html> element does not have a lang attribute"
+        }
+      ]
+    },
+    {
+      "id": "document-title",
+      "impact": "serious",
+      "tags": ["wcag2a"],
+      "description": "Ensures each HTML document contains a non-empty <title> element",
+      "help": "Documents must contain a title element",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.10/document-title",
+      "nodes": [
+        {
+          "target": ["title"],
+          "html": "<title></title>",
+          "failureSummary": "Fix any of the following: Empty title"
+        }
+      ]
+    },
+    {
+      "id": "image-alt",
+      "impact": "critical",
+      "tags": ["wcag2a", "cat.text-alternatives"],
+      "description": "Images must have alternate text",
+      "help": "Images must have alternate text",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.10/image-alt",
+      "nodes": [
+        {
+          "target": ["img"],
+          "html": "<img src=\"data:...\">",
+          "failureSummary": "Element does not have an alt attribute"
+        }
+      ]
+    },
+    {
+      "id": "button-name",
+      "impact": "serious",
+      "tags": ["wcag2a", "cat.name-role-value"],
+      "description": "Buttons must have discernible text",
+      "help": "Buttons must have discernible text",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.10/button-name",
+      "nodes": [
+        {
+          "target": ["#icon-btn"],
+          "html": "<button id=\"icon-btn\">",
+          "failureSummary": "Element has no accessible name"
+        }
+      ]
+    },
+    {
+      "id": "link-name",
+      "impact": "serious",
+      "tags": ["wcag2a", "cat.name-role-value"],
+      "description": "Links must have discernible text",
+      "help": "Links must have discernible text",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.10/link-name",
+      "nodes": [
+        {
+          "target": ["a[href=\"https://example.test\"]"],
+          "html": "<a href=\"https://example.test\"></a>",
+          "failureSummary": "Element has no accessible name"
+        }
+      ]
+    },
+    {
+      "id": "color-contrast",
+      "impact": "serious",
+      "tags": ["wcag2aa", "cat.color"],
+      "description": "Elements must have sufficient color contrast",
+      "help": "Elements must have sufficient color contrast",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.10/color-contrast",
+      "nodes": [
+        {
+          "target": ["p"],
+          "html": "<p style=\"color: #eee; background: #fff\">",
+          "failureSummary": "Element has insufficient color contrast of 1.5 (foreground color: #eeeeee, background color: #ffffff)"
+        }
+      ]
+    },
+    {
+      "id": "label",
+      "impact": "critical",
+      "tags": ["wcag2a"],
+      "description": "Form elements must have labels",
+      "help": "Form elements must have labels",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.10/label",
+      "nodes": [
+        {
+          "target": ["#search"],
+          "html": "<input id=\"search\" type=\"text\" placeholder=\"Search\">",
+          "failureSummary": "Element has no label"
+        }
+      ]
+    }
+  ]
+}

@@ -11,6 +11,7 @@
 // progress spinners or non-JSONL chatter to stdout (CLAUDE §13/§39).
 import { stderr, stdout, argv, exit } from 'node:process';
 
+import { auditA11y, type AuditA11yLauncher } from './a11y/audit.js';
 import { auditLocators, listTests, runPlaywright, validateHelpers } from './runner.js';
 import { PACKAGE_NAME, VERSION } from './version.js';
 
@@ -28,6 +29,10 @@ Commands:
                        --file <path>       Spec to audit. Repeat for multiple
                                            files (e.g. --file a.ts --file b.ts).
                        --json              Emit JSON (default for this command).
+  audit-a11y         Run accessibility checks (axe + keyboard + landmarks +
+                     accessible-name) against routes listed in a JSON config.
+                       --input <path>      Run-config JSON (required). See
+                                           a11y/audit.ts for the schema.
   validate-helpers   Sanity-check that @sentinelqa/ts-runtime is wired in.
                        --json              Emit JSON instead of text.
 
@@ -59,6 +64,8 @@ export interface DispatchOptions {
   readonly listTestsFn?: typeof listTests;
   readonly validateFn?: typeof validateHelpers;
   readonly auditLocatorsFn?: typeof auditLocators;
+  readonly auditA11yFn?: typeof auditA11y;
+  readonly auditA11yLauncher?: AuditA11yLauncher;
   readonly cwd?: string;
 }
 
@@ -85,6 +92,8 @@ export async function dispatchAsync(
       return await handleListTests(rest, opts);
     case 'audit-locators':
       return await handleAuditLocators(rest, opts);
+    case 'audit-a11y':
+      return await handleAuditA11y(rest, opts);
     case 'validate-helpers':
       return await handleValidateHelpers(rest, opts);
     default:
@@ -197,6 +206,57 @@ async function handleAuditLocators(
   }
 }
 
+async function handleAuditA11y(args: readonly string[], opts: DispatchOptions): Promise<CliResult> {
+  const inputPath = takeFlag(args, '--input');
+  if (inputPath === undefined) {
+    return {
+      stdout: '',
+      stderr: 'sentinel-ts audit-a11y: --input <path> is required.\n',
+      exitCode: 2,
+    };
+  }
+  const fn = opts.auditA11yFn ?? auditA11y;
+  const launcher = opts.auditA11yLauncher ?? defaultChromiumLauncher;
+  try {
+    const result = await fn({ inputPath, launcher });
+    return {
+      stdout: `${result.indexPath}\n`,
+      stderr: '',
+      exitCode: 0,
+    };
+  } catch (err) {
+    return {
+      stdout: '',
+      stderr: `sentinel-ts audit-a11y: ${(err as Error).message}\n`,
+      exitCode: 2,
+    };
+  }
+}
+
+// Production launcher — only resolved when the subcommand is dispatched
+// for real (tests inject `opts.auditA11yLauncher`). The Playwright
+// import is dynamic so importing the CLI module never pulls Chromium
+// in the test environment.
+const defaultChromiumLauncher: AuditA11yLauncher = async () => {
+  const { chromium } = await import('@playwright/test');
+  const browser = await chromium.launch({ headless: true });
+  const context = await browser.newContext();
+  return {
+    newPage: async () => {
+      const page = await context.newPage();
+      return page as unknown as Awaited<
+        ReturnType<AuditA11yLauncher>
+      >['newPage'] extends () => Promise<infer P>
+        ? P
+        : never;
+    },
+    close: async () => {
+      await context.close();
+      await browser.close();
+    },
+  };
+};
+
 async function handleValidateHelpers(
   args: readonly string[],
   opts: DispatchOptions,
@@ -236,7 +296,8 @@ export function dispatch(args: readonly string[]): CliResult {
     command === 'run' ||
     command === 'list-tests' ||
     command === 'validate-helpers' ||
-    command === 'audit-locators'
+    command === 'audit-locators' ||
+    command === 'audit-a11y'
   ) {
     return {
       stdout: '',

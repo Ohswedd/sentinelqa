@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>SentinelQA a11y fixture — compliant</title>
+  </head>
+  <body>
+    <header>
+      <nav aria-label="Primary">
+        <a href="/">Home</a>
+        <a href="/about">About</a>
+      </nav>
+    </header>
+    <main>
+      <h1>Compliant accessibility fixture</h1>
+      <p>This page is designed to satisfy the SentinelQA accessibility checks.</p>
+      <form>
+        <label for="email">Email</label>
+        <input id="email" type="email" name="email" />
+        <button type="submit">Subscribe</button>
+      </form>
+      <p>
+        <a href="https://example.test" aria-label="Example external link">Example</a>
+      </p>
+      <img src="data:image/png;base64,iVBORw0KGgo=" alt="Decorative placeholder" />
+    </main>
+    <footer>
+      <p>&copy; SentinelQA fixtures</p>
+    </footer>
+  </body>
+</html>
