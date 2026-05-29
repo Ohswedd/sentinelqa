@@ -78,6 +78,32 @@ def _walk_pages(
             response = safe_request(client, op.method, url, max_body_kb=payload_cap)
         except (httpx.HTTPError, OSError):
             return
+        # A 4xx on a paginated walk past page 1 is the empty-page-error
+        # case (PRD §10.3: empty pages should return 200 with empty
+        # array, not 4xx). We allow page 1 to return 4xx without
+        # flagging because the endpoint may simply require auth or
+        # other parameters the contract check covers.
+        if response.status_code >= 400 and page >= 1:
+            issues.append(
+                ApiIssue(
+                    rule_id="PAGINATION-EMPTY-PAGE-ERROR",
+                    severity="medium",
+                    confidence=0.85,
+                    title=f"Empty page returned error: GET {op.path}",
+                    description=(
+                        f"Requesting page={page} returned HTTP "
+                        f"{response.status_code}. Empty pages should return "
+                        "200 with an empty array (PRD §10.3)."
+                    ),
+                    method="GET",
+                    route=op.path,
+                    expected_status=200,
+                    observed_status=response.status_code,
+                    recommendation=("Return 200 with an empty array beyond the last page."),
+                    evidence={"page": str(page)},
+                )
+            )
+            return
         ct = response.headers.get("content-type", "").split(";")[0].strip()
         if ct:
             seen_content_types.add(ct)
@@ -124,9 +150,13 @@ def _walk_pages(
                 )
             )
             return
-        # Empty page: ensure success not error.
+        # Reached an empty page on a 2xx — that's the documented contract.
         if _is_empty_page(body):
             if response.status_code >= 400:
+                # Defensive: already handled above for 4xx/5xx, but keep
+                # the guard so future contract refinements (e.g. 3xx on
+                # the empty page) get a clear finding instead of silent
+                # acceptance.
                 issues.append(
                     ApiIssue(
                         rule_id="PAGINATION-EMPTY-PAGE-ERROR",
