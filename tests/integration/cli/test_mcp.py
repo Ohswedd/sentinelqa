@@ -2,12 +2,22 @@
 
 from __future__ import annotations
 
+import re
 from pathlib import Path
 
 import pytest
 from typer.testing import CliRunner
 
 from sentinel_cli.app import build_app
+
+_ANSI_RE = re.compile(r"\x1b\[[0-9;]*[A-Za-z]")
+
+
+def _plain(text: str) -> str:
+    """Strip ANSI escape codes from CliRunner output (CI renders with rich
+    formatting; local often doesn't)."""
+
+    return _ANSI_RE.sub("", text)
 
 
 def _write_config(tmp_path: Path) -> Path:
@@ -38,17 +48,19 @@ def test_mcp_command_appears_in_help() -> None:
     runner = CliRunner()
     result = runner.invoke(build_app(), ["--help"])
     assert result.exit_code == 0
-    assert " mcp " in result.stdout
-    assert "Phase 18" not in result.stdout  # the stub message is gone
+    stdout = _plain(result.stdout)
+    assert " mcp " in stdout
+    assert "Phase 18" not in stdout  # the stub message is gone
 
 
 def test_mcp_help_lists_options() -> None:
     runner = CliRunner()
     result = runner.invoke(build_app(), ["mcp", "--help"])
     assert result.exit_code == 0
-    assert "--stdio" in result.stdout
-    assert "--http" in result.stdout
-    assert "--log-level" in result.stdout
+    stdout = _plain(result.stdout)
+    assert "--stdio" in stdout
+    assert "--http" in stdout
+    assert "--log-level" in stdout
 
 
 def test_mcp_http_rejects_non_loopback_port_value_zero(tmp_path: Path) -> None:

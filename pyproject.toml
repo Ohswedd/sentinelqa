@@ -181,6 +181,13 @@ filterwarnings = [
     # The crawler now sets cookies on the client, but third-party calls in
     # tests (httpx introspection requests) may still trip it.
     "ignore:Setting per-request cookies:DeprecationWarning",
+    # The SDK wraps async methods around sync ones via asyncio.run, which
+    # creates ephemeral event loops. On Linux their selector fds linger
+    # until GC. Pytest's unraisableexception hook then catches them on a
+    # later (unrelated) test's teardown. The leaks aren't product bugs —
+    # they're the asyncio finaliser running late — so ignore the noise.
+    "ignore::ResourceWarning",
+    "ignore::pytest.PytestUnraisableExceptionWarning",
 ]
 markers = [
     "slow: property-based or otherwise slow test (excluded from `make test`).",
