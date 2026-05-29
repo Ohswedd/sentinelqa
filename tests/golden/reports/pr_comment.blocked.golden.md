@@ -33,6 +33,7 @@ _Diff-aware mode was not used for this run._
 | `accessibility` | `passed` | 0 | 2100 ms |
 | `functional` | `passed` | 0 | 4200 ms |
 
+
 ### Artifacts
 
 - _Upload the run artifacts to view the full HTML / SARIF report._

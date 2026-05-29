@@ -77,6 +77,8 @@ def render_pr_comment(
     lines.append("")
     lines.extend(_render_module_summary(module_results, findings))
     lines.append("")
+    lines.extend(_render_llm_audit_section(findings))
+    lines.append("")
     lines.extend(_render_artifacts(artifact_url))
     lines.append("")
     lines.extend(_render_next_steps(release_decision, counts))
@@ -184,6 +186,35 @@ def _render_module_summary(
             f"| {counts_by_module.get(m.name, 0)} "
             f"| {m.duration_ms} ms |"
         )
+    return out
+
+
+def _render_llm_audit_section(findings: Sequence[Finding]) -> list[str]:
+    """Highlight LLM-Code audit findings — SentinelQA's marketing differentiator.
+
+    Renders only when at least one ``llm_audit`` finding is present so
+    clean runs don't litter PR comments with empty sections.
+    """
+
+    llm_findings = [f for f in findings if f.module == "llm_audit"]
+    if not llm_findings:
+        return []
+    by_category: dict[str, list[Finding]] = {}
+    for f in llm_findings:
+        by_category.setdefault(f.category, []).append(f)
+    out = ["### LLM-Code Audit", ""]
+    out.append("Detected defects characteristic of LLM-generated code (PRD §10.9).")
+    out.append("")
+    out.append("| Category | Findings | Highest severity |")
+    out.append("|---|---|---|")
+    for category in sorted(by_category):
+        bucket = by_category[category]
+        severities = {f.severity for f in bucket}
+        highest: Severity = next(
+            (s for s in SEVERITY_ORDER if s in severities),
+            "info",
+        )
+        out.append(f"| `{md_escape(category)}` | {len(bucket)} | {SEVERITY_LABEL[highest]} |")
     return out
 
 

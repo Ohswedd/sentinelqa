@@ -26,6 +26,7 @@ from sentinel_cli.commands import (
     functional_cmd,
     generate_cmd,
     init_cmd,
+    llm_audit_cmd,
     mcp_cmd,
     perf_cmd,
     plan_cmd,
@@ -44,7 +45,6 @@ _STUB_COMMANDS: Final[tuple[tuple[str, str, str], ...]] = (
     ("api", "22", "Run API contract + negative-case checks."),
     ("visual", "21", "Run visual-regression checks against baselines."),
     ("chaos", "23", "Run chaos checks (slow net, offline, session expiry)."),
-    ("llm-audit", "19", "Run LLM-code audit (dead buttons, fake routes, etc.)."),
     ("fix", "20", "Propose locator repairs and other safe self-healing fixes."),
 )
 
@@ -240,6 +240,16 @@ def build_app() -> typer.Typer:
             "loopback debug loop."
         ),
     )(mcp_cmd.run_mcp)
+    cli.command(
+        name="llm-audit",
+        help=(
+            "Run the LLM-code audit module (Phase 19, ADR-0024): dead "
+            "buttons, fake routes/endpoints, mock data shipped, missing "
+            "CRUD edges, UI-only auth, hardcoded credentials, localStorage "
+            "secrets, loading/error-state gaps, validation mismatch, "
+            "'coming soon' placeholders, console errors the UI ignores."
+        ),
+    )(llm_audit_cmd.run_llm_audit)
 
     for name, phase, summary in _STUB_COMMANDS:
         stubs.register_stub(cli, name=name, phase=phase, summary=summary)

@@ -31,6 +31,7 @@
 | `accessibility` | `passed` | 1 | 2100 ms |
 | `functional` | `passed` | 0 | 4200 ms |
 
+
 ### Artifacts
 
 - [Full report bundle](https://example.com/run-artifact)
