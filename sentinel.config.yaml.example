@@ -120,6 +120,20 @@ visual:
   baselines_dir: .sentinel/baselines
   threshold: 0.02
   mask_dynamic_content: true
+  # Phase 21 (ADR-0026) extensions. Defaults below match the loader so
+  # this block is purely illustrative.
+  viewports:
+    - { name: mobile, width: 375, height: 812 }
+    - { name: tablet, width: 768, height: 1024 }
+    - { name: desktop, width: 1280, height: 800 }
+  # Per-route masks. Each entry needs `selector` (TS capture hides the
+  # matched element before screenshot) OR `rect` (Python diff layer
+  # paints both images grey before comparison). Wildcard route "*"
+  # applies to every captured route.
+  masks: []
+  perceptual:
+    enabled: false
+    min_similarity: 0.98
 
 discovery:
   # Two backends ship (ADR-0010). `http` is the default lightweight
