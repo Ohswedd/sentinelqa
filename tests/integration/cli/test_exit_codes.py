@@ -82,9 +82,9 @@ def test_exit_7_internal_error_from_stub(
         "target:\n  base_url: http://localhost:3000\n  allowed_hosts: [localhost]\n",
         encoding="utf-8",
     )
-    # Any stub command (e.g. `api`, which lands in Phase 22) raises
-    # InternalError → exit 7. `report` is no longer a stub from Phase 15.
-    code = _invoke_main(["--config", str(cfg), "api"], monkeypatch)
+    # Any stub command (e.g. `chaos`, which lands in Phase 23) raises
+    # InternalError → exit 7. `api` is no longer a stub from Phase 22.
+    code = _invoke_main(["--config", str(cfg), "chaos"], monkeypatch)
     assert code == EXIT_INTERNAL_ERROR
 
 
