@@ -117,7 +117,7 @@ Every phase ends with a push → PR → CI → merge cycle handled by the loop p
 | 19 | feature/phase-19-llm-code-audit-module | https://github.com/Ohswedd/sentinelqa/pull/20 | https://github.com/Ohswedd/sentinelqa/actions/runs/26652890472 | 540d7135f289392362205cb85fd9e589d3e337e5 | 2026-05-29 |
 | 20 | feature/phase-20-healer-self-repair | https://github.com/Ohswedd/sentinelqa/pull/21 | https://github.com/Ohswedd/sentinelqa/actions/runs/26655437322 | bbeb36139d34a0a3f650b96c94acf83e6969b692 | 2026-05-29 |
 | 21 | feature/phase-21-visual-regression-module | https://github.com/Ohswedd/sentinelqa/pull/22 | https://github.com/Ohswedd/sentinelqa/actions/runs/26657270170 | 139f2cf861de5aba6862ad03b6dd1ecc65f01557 | 2026-05-29 |
-| 22 | — | — | — | — | — |
+| 22 | feature/phase-22-api-testing-module | https://github.com/Ohswedd/sentinelqa/pull/23 | https://github.com/Ohswedd/sentinelqa/actions/runs/26661013662 | 6ee1b24c669a6b1da7a28a88cb0e30fcf1467303 | 2026-05-29 |
 | 23 | — | — | — | — | — |
 | 24 | — | — | — | — | — |
 | 25 | — | — | — | — | — |
