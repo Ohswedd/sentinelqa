@@ -1262,6 +1262,22 @@ RepairSuggestion
 - Stable schema versions.
 - Error classes for agent handling.
 
+### 14.5 MVP delivery (Phase 16)
+
+The Phase-16 SDK ships:
+
+- **`Sentinel` facade** (`packages/python-sdk/src/sentinelqa/_facade.py`):
+  constructor takes `project_path=".", *, config=None, machine_readable=False, artifacts_root=None`. Class method `Sentinel.from_config(path)` pins to an explicit config path. Methods (sync): `discover(url)`, `plan(url|graph=…, risk_map=…)`, `generate_tests(plan, out_dir, *, discovery=…, base_url="", force=False)`, `audit(url, *, modules=None, safe_mode=True, module_options=…, dry_run=False, ci=None)`, `run_plan(plan, *, modules=("functional",), spec_root=None)`, `report(run_id=None, *, latest=False)`, `verify_fix(run_id, suggestion)`. Every method has an `async_<name>` counterpart; sync forms are `asyncio.run(self.async_<name>(...))` so the implementation lives exactly once.
+- **Public result models** (`sentinelqa._models`): `AuditResult` (Pydantic, frozen, `extra="forbid"`, `SCHEMA_VERSION` pinned to `RUN_SCHEMA_VERSION`) with derived views `passed` / `failures` / `blockers` / `findings_by_severity(...)` / `findings_by_module(...)` and `to_agent_messages()`; `QualityGate.from_config(policy)` and `Policy.from_config(root)` re-expose config posture as immutable views.
+- **Public surface modules** (only these are stable contract): `sentinelqa`, `sentinelqa.errors`, `sentinelqa.agent`. The `__all__` list is locked by `packages/python-sdk/api-snapshot.json`; CI gate `tests/unit/sdk/test_api_snapshot.py` fails on drift. Regenerate via `make sdk-api-snapshot` and follow `packages/python-sdk/__deprecation_policy.md` for any breaking change.
+- **Errors** (`sentinelqa.errors`): re-exports `SentinelError`, `ConfigError` (+ `ConfigFileNotFoundError` / `ConfigSchemaError` / `ConfigSecretInlineError`), `UnsafeTargetError` (+ `UnknownHostError` / `DestructiveWithoutProofError` / `ForbiddenFlagError`), `DependencyMissingError`, `TestExecutionError`, `QualityGateFailedError`. `from_dict(agent_message)` reconstructs the most specific subclass for a given code; round-trip preserves `code`, `exit_code`, `message`, `suggested_fix`, `context`.
+- **Agent messages** (`sentinelqa.agent`): `format(messages, *, format="ndjson"|"jsonl"|"list")` serializes a stream of dicts deterministically (sorted keys, no ASCII escapes). `Finding.to_agent_message()` and `RepairSuggestion.to_agent_message()` produce stable, redacted dicts (versioned by `AGENT_MESSAGE_SCHEMA_VERSION`). `AuditResult.to_agent_messages()` emits a fixed sequence: `run_summary` → one `finding` per finding → `blocker_summary` → `next_actions`.
+- **Lazy import**: `import sentinelqa` stays well under the 200 ms target (measured: ~80 ms) because heavy submodules (orchestrator, planner, discovery, generator, runner, reporter) are imported only when a facade method needs them.
+- **Internals**: `sentinelqa._internal/` and any `_`-prefixed name is non-public; it may change without a deprecation window.
+- **Deferred capability**: `Sentinel.verify_fix` raises `NotImplementedError` with a Phase-20 pointer until the Healer module ships. The signature is public so callers can write against it today (CLAUDE.md §37 permits `NotImplementedError` for interfaces awaiting concrete adapters).
+
+ADR-0021 owns the rationale and the surface gate.
+
 ---
 
 ## 15. TypeScript Runtime Specification
