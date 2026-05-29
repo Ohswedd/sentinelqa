@@ -199,12 +199,20 @@ jobs:
       - name: Build @sentinelqa/ts-runtime (sentinel-ts binary)
         run: pnpm --filter @sentinelqa/ts-runtime run build
 
+      - name: Expose sentinel-ts on PATH
+        run: |
+          mkdir -p "$HOME/.local/bin"
+          cat > "$HOME/.local/bin/sentinel-ts" <<'WRAPPER'
+          #!/usr/bin/env bash
+          exec node "$GITHUB_WORKSPACE/packages/ts-runtime/dist/cli.js" "$@"
+          WRAPPER
+          chmod +x "$HOME/.local/bin/sentinel-ts"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
       - name: Run gated Playwright discovery backend test
         env:
           SENTINELQA_HAS_CHROMIUM: '1'
         run: |
-          # Expose pnpm-installed `sentinel-ts` bin to subprocess callers.
-          export PATH="$PWD/node_modules/.bin:$PATH"
           uv run pytest tests/integration/discovery/test_playwright_backend_spa.py -q --no-cov
 
       - name: Upload run artifacts on failure

@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import pytest
 from engine.orchestrator.registry import default_registry
 from typer.testing import CliRunner
 
@@ -181,8 +182,25 @@ def test_ci_json_output(runner: CliRunner, cli, fresh_project: Path, tmp_path: P
 
 
 def test_ci_diff_is_persisted_in_metadata(
-    runner: CliRunner, cli, fresh_project: Path, tmp_path: Path
+    runner: CliRunner,
+    cli,
+    fresh_project: Path,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
+    """--diff is persisted into ci.json. Git is mocked so the test stays
+    hermetic and survives shallow CI clones (CLAUDE.md §39)."""
+
+    from engine.ci.diff_aware import select_from_files as _pure
+
+    def fake_git_select(*, diff_range: str, repo_root: Path):
+        return _pure(diff_range=diff_range, changed_files=["app/dashboard/page.tsx"])
+
+    monkeypatch.setattr(
+        "sentinel_cli.commands.ci_cmd.select_from_git",
+        fake_git_select,
+    )
+
     write_config(fresh_project)
     registry = default_registry()
     registry.clear()
