@@ -194,9 +194,33 @@ SAMPLE_EVENTS: list[dict[str, Any]] = [
         "code": "PW_INTERNAL",
         "message": "context closed unexpectedly",
     },
+    # Phase 17 task 07 — Playwright discovery backend (ADR-0010 follow-up).
+    # Discovery events fire BEFORE `run.end` so the existing
+    # "first event is run.start / last event is run.end" parity
+    # assertions still hold.
+    {
+        "type": "discovery.page",
+        **_envelope(19, 4900),
+        "url": "http://localhost:3000/",
+        "status_code": 200,
+        "content_type": "text/html",
+        "depth": 0,
+        "elapsed_ms": 42,
+        "html": '<html><body><a href="/login">Login</a></body></html>',
+        "discovered_links": ["http://localhost:3000/login"],
+        "discovered_script_srcs": ["/assets/index-abc.js"],
+    },
+    {
+        "type": "discovery.endpoint",
+        **_envelope(20, 4950),
+        "method": "GET",
+        "path": "/api/healthz",
+        "status_code": 200,
+        "source": "response",
+    },
     {
         "type": "run.end",
-        **_envelope(19, 5000),
+        **_envelope(21, 5000),
         "run_id": "run-parity-1",
         "finished_at": RUN_FINISHED,
         "status": "failed",

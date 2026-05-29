@@ -12,7 +12,15 @@
 import { stderr, stdout, argv, exit } from 'node:process';
 
 import { auditA11y, type AuditA11yLauncher } from './a11y/audit.js';
+import { runDiscover } from './discover.js';
+import {
+  DEFAULT_CONFIG_STDIN_TOKEN,
+  loadDiscoverConfig,
+  type DiscoverConfig,
+  type DiscoverLauncher,
+} from './discover_cli.js';
 import { auditPerf, type AuditPerfLauncher } from './perf/audit.js';
+import { EventEmitter } from './protocol.js';
 import { auditLocators, listTests, runPlaywright, validateHelpers } from './runner.js';
 import { PACKAGE_NAME, VERSION } from './version.js';
 
@@ -39,6 +47,11 @@ Commands:
                      against routes listed in a JSON config.
                        --input <path>      Run-config JSON (required). See
                                            perf/audit.ts for the schema.
+  discover           Playwright-driven crawl backend (PRD §9.1, ADR-0010).
+                       --config <path|->   Discovery-config JSON. Use a
+                                           dash to read from stdin (the
+                                           Python PlaywrightCrawlBackend
+                                           default).
   validate-helpers   Sanity-check that @sentinelqa/ts-runtime is wired in.
                        --json              Emit JSON instead of text.
 
@@ -74,6 +87,10 @@ export interface DispatchOptions {
   readonly auditA11yLauncher?: AuditA11yLauncher;
   readonly auditPerfFn?: typeof auditPerf;
   readonly auditPerfLauncher?: AuditPerfLauncher;
+  readonly discoverFn?: typeof runDiscover;
+  readonly discoverLauncher?: DiscoverLauncher;
+  readonly discoverEmitter?: EventEmitter;
+  readonly discoverConfigLoader?: (path: string) => Promise<DiscoverConfig>;
   readonly cwd?: string;
 }
 
@@ -104,6 +121,8 @@ export async function dispatchAsync(
       return await handleAuditA11y(rest, opts);
     case 'audit-perf':
       return await handleAuditPerf(rest, opts);
+    case 'discover':
+      return await handleDiscover(rest, opts);
     case 'validate-helpers':
       return await handleValidateHelpers(rest, opts);
     default:
@@ -314,6 +333,80 @@ async function handleAuditPerf(args: readonly string[], opts: DispatchOptions): 
   }
 }
 
+async function handleDiscover(args: readonly string[], opts: DispatchOptions): Promise<CliResult> {
+  const configPath = takeFlag(args, '--config');
+  if (configPath === undefined) {
+    return {
+      stdout: '',
+      stderr: 'sentinel-ts discover: --config <path|-> is required.\n',
+      exitCode: 2,
+    };
+  }
+  const loader = opts.discoverConfigLoader ?? loadDiscoverConfig;
+  const emitter = opts.discoverEmitter ?? new EventEmitter();
+  const launcher = opts.discoverLauncher ?? defaultDiscoverLauncher;
+  const fn = opts.discoverFn ?? runDiscover;
+  try {
+    const config = await loader(configPath);
+    const result = await fn(config, { emitter, launcher });
+    const summary = JSON.stringify({
+      pagesEmitted: result.pagesEmitted,
+      endpointsEmitted: result.endpointsEmitted,
+    });
+    return { stdout: '', stderr: `${summary}\n`, exitCode: 0 };
+  } catch (err) {
+    return {
+      stdout: '',
+      stderr: `sentinel-ts discover: ${(err as Error).message}\n`,
+      exitCode: 2,
+    };
+  }
+}
+
+const defaultDiscoverLauncher: DiscoverLauncher = async (_config) => {
+  const { chromium } = await import('@playwright/test');
+  const browser = await chromium.launch({ headless: true });
+  return {
+    newContext: async () => {
+      const context = await browser.newContext({
+        userAgent: _config.user_agent,
+        extraHTTPHeaders: { 'X-SentinelQA-Test-Run': _config.run_id },
+      });
+      if (Object.keys(_config.cookies).length > 0) {
+        await context.addCookies(
+          Object.entries(_config.cookies).map(([name, value]) => ({
+            name,
+            value,
+            url: _config.base_url,
+          })),
+        );
+      }
+      return {
+        newPage: async () => {
+          const page = await context.newPage();
+          return page as unknown as Awaited<ReturnType<DiscoverLauncher>> extends infer Br
+            ? Br extends { newContext: () => Promise<infer C> }
+              ? C extends { newPage: () => Promise<infer P> }
+                ? P
+                : never
+              : never
+            : never;
+        },
+        close: async () => {
+          await context.close();
+        },
+      };
+    },
+    close: async () => {
+      await browser.close();
+    },
+  };
+};
+
+// Silence unused-import lint if this is the only place DEFAULT_CONFIG_STDIN_TOKEN
+// is referenced (it lives in the loader module).
+void DEFAULT_CONFIG_STDIN_TOKEN;
+
 async function handleValidateHelpers(
   args: readonly string[],
   opts: DispatchOptions,
@@ -355,7 +448,8 @@ export function dispatch(args: readonly string[]): CliResult {
     command === 'validate-helpers' ||
     command === 'audit-locators' ||
     command === 'audit-a11y' ||
-    command === 'audit-perf'
+    command === 'audit-perf' ||
+    command === 'discover'
   ) {
     return {
       stdout: '',

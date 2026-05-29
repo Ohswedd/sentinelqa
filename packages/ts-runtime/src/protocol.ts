@@ -141,6 +141,27 @@ export interface ErrorEvent extends BaseEvent<'error'> {
   readonly stack?: string;
 }
 
+// Phase 17 task 07 — Playwright discovery backend (ADR-0010 follow-up).
+export type EndpointSource = 'request' | 'response' | 'introspection';
+
+export interface DiscoveryPageEvent extends BaseEvent<'discovery.page'> {
+  readonly url: string;
+  readonly status_code: number;
+  readonly content_type: string | null;
+  readonly depth: number;
+  readonly elapsed_ms: number;
+  readonly html: string;
+  readonly discovered_links: readonly string[];
+  readonly discovered_script_srcs: readonly string[];
+}
+
+export interface DiscoveryEndpointEvent extends BaseEvent<'discovery.endpoint'> {
+  readonly method: string;
+  readonly path: string;
+  readonly status_code: number | null;
+  readonly source: EndpointSource;
+}
+
 export interface SerializedError {
   readonly name: string;
   readonly message: string;
@@ -161,7 +182,9 @@ export type TsEvent =
   | DomSnapshotEvent
   | ModuleEventEvent
   | LogEvent
-  | ErrorEvent;
+  | ErrorEvent
+  | DiscoveryPageEvent
+  | DiscoveryEndpointEvent;
 
 // ---------------------------------------------------------------------
 // Emitter
@@ -272,6 +295,8 @@ const VALID_TYPES = new Set<string>([
   'module.event',
   'log',
   'error',
+  'discovery.page',
+  'discovery.endpoint',
 ]);
 
 export class ProtocolParseError extends Error {

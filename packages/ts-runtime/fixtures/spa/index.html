@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>SentinelQA — CSR SPA fixture</title>
+  </head>
+  <body>
+    <!-- Intentionally empty root: simulates a Vite+React SPA where the
+         HTTP-first crawler sees nothing because hydration writes the
+         DOM at runtime. The Phase-17 Playwright backend should still
+         observe `/` (and the rendered links) after script execution. -->
+    <div id="root"></div>
+    <script>
+      (function hydrate() {
+        const root = document.getElementById('root');
+        const nav = document.createElement('nav');
+        const links = [
+          ['/about', 'About'],
+          ['/contact', 'Contact'],
+        ];
+        for (const [href, label] of links) {
+          const a = document.createElement('a');
+          a.href = href;
+          a.textContent = label;
+          nav.appendChild(a);
+        }
+        root.appendChild(nav);
+      })();
+    </script>
+  </body>
+</html>

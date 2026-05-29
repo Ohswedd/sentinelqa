@@ -22,7 +22,9 @@
     { "$ref": "#/$defs/domSnapshot" },
     { "$ref": "#/$defs/moduleEvent" },
     { "$ref": "#/$defs/logEvent" },
-    { "$ref": "#/$defs/errorEvent" }
+    { "$ref": "#/$defs/errorEvent" },
+    { "$ref": "#/$defs/discoveryPage" },
+    { "$ref": "#/$defs/discoveryEndpoint" }
   ],
   "$defs": {
     "envelope": {
@@ -294,6 +296,55 @@
             "code": { "type": "string", "minLength": 1 },
             "message": { "type": "string" },
             "stack": { "type": "string" }
+          }
+        }
+      ]
+    },
+    "discoveryPage": {
+      "allOf": [
+        { "$ref": "#/$defs/envelope" },
+        {
+          "type": "object",
+          "required": ["type", "url", "status_code", "depth", "elapsed_ms"],
+          "properties": {
+            "type": { "const": "discovery.page" },
+            "url": { "type": "string", "minLength": 1, "maxLength": 4096 },
+            "status_code": { "type": "integer", "minimum": 0, "maximum": 600 },
+            "content_type": { "type": ["string", "null"] },
+            "depth": { "type": "integer", "minimum": 0, "maximum": 100 },
+            "elapsed_ms": { "type": "integer", "minimum": 0 },
+            "html": { "type": "string", "maxLength": 2000000 },
+            "discovered_links": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "discovered_script_srcs": {
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          }
+        }
+      ]
+    },
+    "discoveryEndpoint": {
+      "allOf": [
+        { "$ref": "#/$defs/envelope" },
+        {
+          "type": "object",
+          "required": ["type", "method", "path"],
+          "properties": {
+            "type": { "const": "discovery.endpoint" },
+            "method": { "type": "string", "minLength": 1, "maxLength": 10 },
+            "path": { "type": "string", "minLength": 1, "maxLength": 2048 },
+            "status_code": {
+              "type": ["integer", "null"],
+              "minimum": 0,
+              "maximum": 600
+            },
+            "source": {
+              "type": "string",
+              "enum": ["request", "response", "introspection"]
+            }
           }
         }
       ]
