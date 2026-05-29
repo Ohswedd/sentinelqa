@@ -567,6 +567,82 @@ Report must include:
 - Suggested fixes.
 - Trend if history exists.
 
+#### 9.7.1 MVP delivery (Phase 15)
+
+Phase 03 shipped the machine-readable envelopes
+(`run.json`/`findings.json`/`score.json`/`junit.xml`/`sarif.json`/`report.md`)
+and the dispatcher that ties them to `RunLifecycle.generate_reports`.
+Phase 15 ships the **human-readable** layer:
+
+- **HTML report (ADR-0020, §3.1).** `engine.reporter.html_writer.write_html`
+  renders a self-contained `report.html` from a Jinja2 template
+  (`engine/reporter/html/template.html.j2`) with inline CSS / JS
+  (≤ 30 KB each). Header (score badge + decision badge + run id +
+  target + duration), summary panel, critical-blocker section pinned
+  at top, full findings table with severity / module / search filters,
+  per-module result cards, lazy-loaded evidence drawer, audit-trail
+  view, optional trend overlay, footer with config digest + schema
+  versions + companion-artifact links. Theme: light + dark via
+  `prefers-color-scheme`. `HTML_REPORT_SCHEMA_VERSION="1"` locks the
+  envelope; bumps require an explicit golden update. **Offline by
+  design (CLAUDE §41):** no `<link>`/`<script>`/`<img>`/`<iframe>`
+  references an external host. The drift guard is
+  `tests/integration/reporter/test_html_self_contained.py`. The HTML
+  also passes our own structural a11y checks
+  (`tests/integration/reporter/test_html_self_a11y.py`).
+- **PR comment (ADR-0020, §3.2).** `engine.reporter.pr_comment.render_pr_comment`
+  returns GitHub-flavored Markdown that includes the score badge,
+  release decision, top-5 critical findings, changed flows (diff-aware
+  mode), module summary, artifact links, and suggested next steps.
+  All user-controlled strings flow through `md_escape`. The comment
+  begins with the literal HTML-comment anchor
+  `<!-- sentinelqa:pr-comment -->` so the Phase-17 GitHub Action can
+  upsert (edit-in-place) the same comment on every push instead of
+  spawning new ones. Output is capped at GitHub's 65 535-char comment
+  limit; the truncator appends a "report truncated" notice and a link
+  to `report.html`.
+- **Trends (ADR-0020, §3.4).** `engine.reporter.trends.compute_trends`
+  walks `.sentinel/runs/<id>/` newest-first, derives a total-score
+  series, per-module pass-rate series, and the top recurring finding
+  IDs across the last 10 runs (configurable via `history_depth`).
+  Sparklines are inline SVG (no JS chart library). The trends section
+  is hidden when fewer than two prior runs exist (PRD §9.7 — "trend
+  if history exists"). No external storage; cloud history is a
+  future-phase opt-in (PRD §41 — no telemetry).
+- **Audit-trail view (ADR-0020, §3.5).** `engine.reporter.audit_view`
+  normalizes the redacted `audit.log` JSONL into a typed
+  `AuditEntry` sequence; the HTML report embeds the entries inside a
+  collapsible section with level / module filters. Malformed lines
+  are dropped silently (the report is best-effort, never blocked by a
+  corrupted log).
+- **Slack summary (ADR-0020, §3.6).** `engine.reporter.slack.render_slack_payload`
+  returns a Slack Block Kit JSON dict (header, summary section with
+  six metadata fields, optional top-blockers section, context, optional
+  "open report" actions block). Phase 15 generates the payload only —
+  Phase 25 owns posting it. The output is validated against the
+  vendored subset schema at
+  `packages/shared-schema/external/slack-block-kit.schema.json`.
+- **`sentinel report` CLI (ADR-0020, §3.8).** Replaces the Phase-14
+  stub for non-explain calls. Subcommands: `sentinel report --latest`,
+  `sentinel report --run-id RUN-...`, `sentinel report --format
+  html,json,sarif,junit,md`, `sentinel report --open` (browser open,
+  skipped in CI), `sentinel report --explain-score` (Phase-14 path
+  preserved). Re-render reads the persisted artifacts and rewrites
+  the requested formats; the re-render is **idempotent** (same inputs
+  → byte-identical outputs) and never writes audit-log entries (the
+  audit log is a one-shot record of the original run's decisions per
+  CLAUDE §11). Exit codes: 0 success, 2 config error (missing run,
+  empty format filter), 7 reserved for internal errors.
+- **Wire-format additions:** `HTML_REPORT_SCHEMA_VERSION="1"` (HTML
+  template), Slack Block Kit subset schema (vendored upstream); both
+  are versioned per ADR-0020.
+- **Coverage gate:** `engine.reporter` package ≥ 85 % (ADR-0020 hits
+  96 % in CI).
+
+Phase 17 wires `sentinel report` into the GitHub Action (PR-comment
+posting); Phase 25 wires the Slack payload into the actual Slack
+client. Until then, both payloads ship as artifacts only.
+
 ---
 
 ## 10. Testing Capabilities

@@ -63,3 +63,4 @@ Use [`_template.md`](./_template.md). The required headings are validated by `sc
 | [0017](./0017-performance-module.md)                      | Performance module — synthetic page/API/CPU/leak budgets (`sentinel perf`)                    | `Accepted` | 12    |
 | [0018](./0018-security-module.md)                         | Security module — safe HTTP checks, gated probes, dep + SAST adapters (`sentinel security`)   | `Accepted` | 13    |
 | [0019](./0019-quality-scoring.md)                         | Quality scoring — reproducible 0..100 score + policy gate (`sentinel report --explain-score`) | `Accepted` | 14    |
+| [0020](./0020-html-pr-and-slack-reports.md)               | HTML, PR-comment, Slack, and trends reports (`sentinel report` re-render)                     | `Accepted` | 15    |
