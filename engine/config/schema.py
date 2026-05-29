@@ -444,6 +444,92 @@ class AccessibilityConfig(SentinelModel):
     request_timeout_seconds: float = Field(default=30.0, gt=0.0, le=300.0)
 
 
+class ApiAuthTestUser(SentinelModel):
+    """One entry in ``api.auth_test_users`` (Phase 22.05).
+
+    Names env vars holding bearer tokens for the auth-matrix check.
+    Secrets are NEVER inlined — only ``token_env`` is accepted, matching
+    :class:`AuthConfig` and CLAUDE.md §33. ``label`` identifies the user
+    in findings (``user_a``, ``admin``, etc.). ``role`` is informational
+    and tags findings so the report distinguishes "low-priv user got
+    200 on /admin" from "anonymous got 200 on /admin".
+    """
+
+    label: str = Field(min_length=1, max_length=64, pattern=r"^[A-Za-z0-9_-]+$")
+    token_env: str | None = Field(default=None, max_length=128)
+    role: str | None = Field(default=None, max_length=64)
+
+
+class ApiConfig(SentinelModel):
+    """`api:` block (Phase 22, PRD §10.3, CLAUDE.md §30).
+
+    Drives the ApiModule. Contract / negative / auth / latency /
+    pagination / error-shape / backward-compat checks are individually
+    gated through ``enabled_checks`` so operators can subset what runs
+    (PRD §10.3). Payload bounds are clamped so a misconfigured run
+    cannot turn into accidental fuzzing — ``negative_max_payload_kb``
+    is capped at 64 KB, ``negative_max_variants_per_endpoint`` at 16.
+    Aggressive fuzzing has **no** opt-in flag here, anywhere in the
+    schema, or in any CLI surface (CLAUDE.md §30 + the
+    ``tests/security/test_api_no_aggressive_flags.py`` guard).
+    """
+
+    enabled_checks: tuple[
+        Literal[
+            "contract",
+            "negative",
+            "auth",
+            "latency",
+            "pagination",
+            "error_shape",
+            "backward_compat",
+        ],
+        ...,
+    ] = (
+        "contract",
+        "negative",
+        "auth",
+        "latency",
+        "pagination",
+        "error_shape",
+        "backward_compat",
+    )
+    openapi_path: Path | None = None
+    graphql_path: Path | None = None
+    graphql_endpoint: str = Field(default="/graphql", max_length=2048)
+    request_timeout_seconds: float = Field(default=30.0, gt=0.0, le=300.0)
+    rate_per_second: float = Field(default=5.0, gt=0.0, le=100.0)
+    negative_max_payload_kb: int = Field(default=16, ge=1, le=64)
+    negative_max_variants_per_endpoint: int = Field(default=4, ge=1, le=16)
+    auth_test_users: tuple[ApiAuthTestUser, ...] = Field(default_factory=tuple, max_length=8)
+    pagination_max_pages: int = Field(default=10, ge=1, le=100)
+    latency_min_samples: int = Field(default=5, ge=1, le=200)
+    sample_endpoints_max: int = Field(default=50, ge=1, le=500)
+    routes: tuple[str, ...] = Field(default_factory=tuple, max_length=200)
+
+    @field_validator("enabled_checks")
+    @classmethod
+    def _enabled_checks_unique(cls, value: tuple[str, ...]) -> tuple[str, ...]:
+        seen: set[str] = set()
+        for item in value:
+            if item in seen:
+                raise ValueError(f"api.enabled_checks duplicate entry: {item!r}.")
+            seen.add(item)
+        return value
+
+    @field_validator("auth_test_users")
+    @classmethod
+    def _auth_users_unique_labels(
+        cls, value: tuple[ApiAuthTestUser, ...]
+    ) -> tuple[ApiAuthTestUser, ...]:
+        seen: set[str] = set()
+        for entry in value:
+            if entry.label in seen:
+                raise ValueError(f"api.auth_test_users duplicate label: {entry.label!r}.")
+            seen.add(entry.label)
+        return value
+
+
 class PolicyConfig(SentinelModel):
     """`policy:` block (PRD §17.1, §19.4).
 
@@ -576,6 +662,7 @@ class RootConfig(SentinelModel):
     planner: PlannerConfig = Field(default_factory=lambda: PlannerConfig())
     analyzer: AnalyzerConfig = Field(default_factory=lambda: AnalyzerConfig())
     accessibility: AccessibilityConfig = Field(default_factory=lambda: AccessibilityConfig())
+    api: ApiConfig = Field(default_factory=lambda: ApiConfig())
     policy: PolicyConfig = Field(default_factory=lambda: PolicyConfig())
     runner: RunnerConfig = Field(default_factory=lambda: RunnerConfig())
     healer: HealerConfig = Field(default_factory=lambda: HealerConfig())
@@ -621,6 +708,8 @@ __all__ = [
     "AnalyzerLlmConfig",
     "AccessibilityConfig",
     "AccessibilityAxeConfig",
+    "ApiAuthTestUser",
+    "ApiConfig",
     "PolicyConfig",
     "RunnerConfig",
     "RunnerRetriesConfig",
