@@ -1,0 +1,395 @@
+{
+  "modules": {
+    "sentinelqa": {
+      "AGENT_MESSAGE_SCHEMA_VERSION": {
+        "kind": "constant",
+        "value": "1"
+      },
+      "AuditResult": {
+        "kind": "class",
+        "model_fields": [
+          "config_digest",
+          "findings",
+          "finished_at",
+          "module_results",
+          "modules_run",
+          "quality_score",
+          "release_decision",
+          "run_dir",
+          "run_id",
+          "schema_version",
+          "started_at",
+          "status",
+          "target_url"
+        ],
+        "own_attributes": [
+          "SCHEMA_VERSION",
+          "blockers",
+          "failures",
+          "findings_by_module",
+          "findings_by_severity",
+          "model_config",
+          "passed",
+          "to_agent_messages"
+        ]
+      },
+      "ConfigError": {
+        "kind": "class",
+        "model_fields": [],
+        "own_attributes": [
+          "DEFAULT_CODE"
+        ]
+      },
+      "DependencyMissingError": {
+        "kind": "class",
+        "model_fields": [],
+        "own_attributes": [
+          "DEFAULT_CODE"
+        ]
+      },
+      "Evidence": {
+        "kind": "class",
+        "model_fields": [
+          "id",
+          "path",
+          "redacted",
+          "type"
+        ],
+        "own_attributes": [
+          "SCHEMA_VERSION",
+          "model_config"
+        ]
+      },
+      "FINDINGS_SCHEMA_VERSION": {
+        "kind": "constant",
+        "value": "1"
+      },
+      "Finding": {
+        "kind": "class",
+        "model_fields": [
+          "affected_target",
+          "category",
+          "confidence",
+          "created_at",
+          "description",
+          "evidence",
+          "id",
+          "location",
+          "module",
+          "recommendation",
+          "reproduction_steps",
+          "run_id",
+          "schema_version",
+          "severity",
+          "suggested_fix",
+          "title"
+        ],
+        "own_attributes": [
+          "SCHEMA_VERSION",
+          "model_config",
+          "to_agent_message"
+        ]
+      },
+      "Flow": {
+        "kind": "class",
+        "model_fields": [
+          "confidence",
+          "description",
+          "extractor",
+          "id",
+          "name",
+          "priority",
+          "required_auth_role",
+          "required_data_state",
+          "risk",
+          "source",
+          "steps",
+          "tags"
+        ],
+        "own_attributes": [
+          "SCHEMA_VERSION",
+          "model_config"
+        ]
+      },
+      "ModuleResult": {
+        "kind": "class",
+        "model_fields": [
+          "duration_ms",
+          "errors",
+          "findings",
+          "id",
+          "metrics",
+          "name",
+          "status"
+        ],
+        "own_attributes": [
+          "SCHEMA_VERSION",
+          "model_config",
+          "to_dict"
+        ]
+      },
+      "Policy": {
+        "kind": "class",
+        "model_fields": [
+          "allowed_hosts",
+          "base_url",
+          "mode",
+          "proof_of_authorization",
+          "quality_gate"
+        ],
+        "own_attributes": [
+          "from_config",
+          "model_config"
+        ]
+      },
+      "QualityGate": {
+        "kind": "class",
+        "model_fields": [
+          "allow_medium_a11y",
+          "block_on_critical",
+          "block_on_high_security",
+          "max_failed_p1_flows",
+          "max_flake_rate",
+          "min_quality_score",
+          "severity_penalty_high",
+          "severity_penalty_low",
+          "severity_penalty_medium"
+        ],
+        "own_attributes": [
+          "from_config",
+          "model_config"
+        ]
+      },
+      "QualityGateFailedError": {
+        "kind": "class",
+        "model_fields": [],
+        "own_attributes": [
+          "DEFAULT_CODE"
+        ]
+      },
+      "REPAIR_SUGGESTION_SCHEMA_VERSION": {
+        "kind": "constant",
+        "value": "1"
+      },
+      "RUN_SCHEMA_VERSION": {
+        "kind": "constant",
+        "value": "1"
+      },
+      "RepairSuggestion": {
+        "kind": "class",
+        "model_fields": [
+          "confidence",
+          "evidence",
+          "id",
+          "original",
+          "proposed",
+          "reason",
+          "requires_human_review",
+          "schema_version",
+          "target_test"
+        ],
+        "own_attributes": [
+          "SCHEMA_VERSION",
+          "model_config",
+          "to_agent_message"
+        ]
+      },
+      "RiskMap": {
+        "kind": "class",
+        "model_fields": [
+          "entries",
+          "id"
+        ],
+        "own_attributes": [
+          "SCHEMA_VERSION",
+          "model_config"
+        ]
+      },
+      "SCORE_SCHEMA_VERSION": {
+        "kind": "constant",
+        "value": "1"
+      },
+      "Sentinel": {
+        "kind": "class",
+        "model_fields": [],
+        "own_attributes": [
+          "async_audit",
+          "async_discover",
+          "async_generate_tests",
+          "async_plan",
+          "async_report",
+          "async_run_plan",
+          "async_verify_fix",
+          "audit",
+          "config_path",
+          "discover",
+          "from_config",
+          "generate_tests",
+          "machine_readable",
+          "plan",
+          "policy",
+          "project_path",
+          "report",
+          "run_plan",
+          "verify_fix"
+        ]
+      },
+      "SentinelError": {
+        "kind": "class",
+        "model_fields": [],
+        "own_attributes": [
+          "DEFAULT_CODE",
+          "to_agent_message"
+        ]
+      },
+      "TestExecutionError": {
+        "kind": "class",
+        "model_fields": [],
+        "own_attributes": [
+          "DEFAULT_CODE"
+        ]
+      },
+      "TestPlan": {
+        "kind": "class",
+        "model_fields": [
+          "coverage_estimate",
+          "discovery_graph_id",
+          "flows",
+          "id",
+          "risk_map_id",
+          "run_id",
+          "target_url",
+          "test_cases"
+        ],
+        "own_attributes": [
+          "SCHEMA_VERSION",
+          "model_config"
+        ]
+      },
+      "UnsafeTargetError": {
+        "kind": "class",
+        "model_fields": [],
+        "own_attributes": [
+          "DEFAULT_CODE"
+        ]
+      }
+    },
+    "sentinelqa.agent": {
+      "AGENT_MESSAGE_SCHEMA_VERSION": {
+        "kind": "constant",
+        "value": "1"
+      },
+      "Format": {
+        "kind": "_LiteralGenericAlias"
+      },
+      "audit_result_to_agent_messages": {
+        "kind": "function",
+        "signature": "(result: 'AuditResult') -> 'tuple[dict[str, Any], ...]'"
+      },
+      "finding_to_agent_message": {
+        "kind": "function",
+        "signature": "(finding: 'Finding') -> 'dict[str, Any]'"
+      },
+      "format": {
+        "kind": "function",
+        "signature": "(messages: 'Iterable[Mapping[str, Any]]', *, format: 'Format' = 'ndjson') -> 'str'"
+      },
+      "repair_suggestion_to_agent_message": {
+        "kind": "function",
+        "signature": "(suggestion: 'RepairSuggestion') -> 'dict[str, Any]'"
+      }
+    },
+    "sentinelqa.errors": {
+      "ConfigError": {
+        "kind": "class",
+        "model_fields": [],
+        "own_attributes": [
+          "DEFAULT_CODE"
+        ]
+      },
+      "ConfigFileNotFoundError": {
+        "kind": "class",
+        "model_fields": [],
+        "own_attributes": [
+          "DEFAULT_CODE"
+        ]
+      },
+      "ConfigSchemaError": {
+        "kind": "class",
+        "model_fields": [],
+        "own_attributes": [
+          "DEFAULT_CODE"
+        ]
+      },
+      "ConfigSecretInlineError": {
+        "kind": "class",
+        "model_fields": [],
+        "own_attributes": [
+          "DEFAULT_CODE"
+        ]
+      },
+      "DependencyMissingError": {
+        "kind": "class",
+        "model_fields": [],
+        "own_attributes": [
+          "DEFAULT_CODE"
+        ]
+      },
+      "DestructiveWithoutProofError": {
+        "kind": "class",
+        "model_fields": [],
+        "own_attributes": [
+          "DEFAULT_CODE"
+        ]
+      },
+      "ForbiddenFlagError": {
+        "kind": "class",
+        "model_fields": [],
+        "own_attributes": [
+          "DEFAULT_CODE"
+        ]
+      },
+      "QualityGateFailedError": {
+        "kind": "class",
+        "model_fields": [],
+        "own_attributes": [
+          "DEFAULT_CODE"
+        ]
+      },
+      "SentinelError": {
+        "kind": "class",
+        "model_fields": [],
+        "own_attributes": [
+          "DEFAULT_CODE",
+          "to_agent_message"
+        ]
+      },
+      "TestExecutionError": {
+        "kind": "class",
+        "model_fields": [],
+        "own_attributes": [
+          "DEFAULT_CODE"
+        ]
+      },
+      "UnknownHostError": {
+        "kind": "class",
+        "model_fields": [],
+        "own_attributes": [
+          "DEFAULT_CODE"
+        ]
+      },
+      "UnsafeTargetError": {
+        "kind": "class",
+        "model_fields": [],
+        "own_attributes": [
+          "DEFAULT_CODE"
+        ]
+      },
+      "from_dict": {
+        "kind": "function",
+        "signature": "(agent_message: 'Mapping[str, Any]') -> 'SentinelError'"
+      }
+    }
+  },
+  "schema_version": "1"
+}
