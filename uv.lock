@@ -1262,8 +1262,20 @@ wheels = [
 
 [[package]]
 name = "sentinelqa"
-version = "0.0.0"
+version = "0.1.0"
 source = { editable = "packages/python-sdk" }
+dependencies = [
+    { name = "pydantic" },
+    { name = "pyyaml" },
+    { name = "sentinelqa-engine" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "pydantic", specifier = ">=2.10" },
+    { name = "pyyaml", specifier = ">=6.0" },
+    { name = "sentinelqa-engine", editable = "engine" },
+]
 
 [[package]]
 name = "sentinelqa-cli"
