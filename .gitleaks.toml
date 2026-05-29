@@ -50,6 +50,15 @@ paths = [
   # Stripe-style key + password from the persisted audit log. The
   # literal needs to exist in the test source to assert the negative.
   '''^tests/integration/reporter/test_audit_view\.py$''',
+  # Phase 19 — LLM-Code audit module tests assert the hardcoded-
+  # credential scanner detects literal fake credentials. Tests then
+  # assert the values never survive into persisted findings.
+  '''^tests/unit/modules/test_llm_audit_helpers\.py$''',
+  '''^tests/integration/modules/llm_audit/test_hardcoded_creds\.py$''',
+  '''^tests/integration/modules/llm_audit/test_localstorage_secrets\.py$''',
+  '''^tests/integration/modules/llm_audit/test_broken_fixture_sweep\.py$''',
+  '''^tests/fixtures/llm_audit_broken/source_files\.json$''',
+  '''^tests/fixtures/llm_audit_broken/signals\.json$''',
 ]
 regexes = [
   # Canonical AWS example access-key from public AWS docs.

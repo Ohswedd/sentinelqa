@@ -180,6 +180,45 @@
   {% endif %}
 </section>
 
+{% if llm_audit %}
+<section class="report-section llm-audit-section" aria-labelledby="llm-audit-heading">
+  <h2 id="llm-audit-heading">LLM-Code Audit</h2>
+  <p class="section-lead">
+    Findings characteristic of LLM-generated code — dead buttons, fake routes,
+    mock data shipped, missing CRUD edges, UI-only auth, hardcoded credentials,
+    secrets in browser storage, missing loading / error UI, validation
+    mismatch, "coming soon" placeholders, console errors the UI ignores.
+  </p>
+  <p class="section-meta">Total LLM-audit findings: <strong>{{ llm_audit.total_findings }}</strong></p>
+  {% if llm_audit.rules %}
+  <table class="llm-audit-table">
+    <thead>
+      <tr>
+        <th scope="col">Category</th>
+        <th scope="col">Findings</th>
+        <th scope="col">Highest severity</th>
+        <th scope="col">Sample title</th>
+        <th scope="col">Sample route</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for rule in llm_audit.rules %}
+      <tr data-severity="{{ rule.highest_severity }}">
+        <td><code>{{ rule.category }}</code></td>
+        <td>{{ rule.count }}</td>
+        <td>{{ rule.highest_severity }}</td>
+        <td>{{ rule.sample_title }}</td>
+        <td>{{ rule.sample_route }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p class="empty">The LLM-audit module ran but produced no findings on this target.</p>
+  {% endif %}
+</section>
+{% endif %}
+
 {% if trends %}
 <section class="report-section" aria-labelledby="trends-heading">
   <h2 id="trends-heading">Trends</h2>

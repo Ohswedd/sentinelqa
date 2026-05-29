@@ -1,0 +1,111 @@
+{
+  "buttons": [
+    {
+      "route_url": "http://localhost:3000/",
+      "selector": "#save",
+      "label": "Save",
+      "has_static_handler": false,
+      "observed_network_within_2s": false,
+      "observed_navigation": false,
+      "observed_console_error": false,
+      "observed_dom_change": false
+    }
+  ],
+  "bundles": [
+    {
+      "path": "src/data.js",
+      "body": "export const mockData = [{name: 'John Doe'}, {name: 'Jane Doe'}];\n"
+    }
+  ],
+  "rendered_text": [
+    {
+      "route_url": "http://localhost:3000/dashboard",
+      "text": "Welcome John Doe!",
+      "is_authenticated_flow": true,
+      "priority": "p1"
+    },
+    {
+      "route_url": "http://localhost:3000/checkout",
+      "text": "Payment step — coming soon",
+      "is_authenticated_flow": true,
+      "priority": "p0"
+    }
+  ],
+  "form_exercises": {
+    "FRM-LLMBROKENA1B2": {
+      "exercised": false,
+      "produced_network_request": null
+    }
+  },
+  "resources": [
+    {
+      "resource": "orders",
+      "has_create": true,
+      "has_read": false,
+      "has_update": false,
+      "has_delete": false,
+      "ui_has_create_button": true,
+      "ui_has_edit_button": false,
+      "ui_has_delete_button": false,
+      "sample_endpoint": "POST /api/orders"
+    }
+  ],
+  "auth_route_probes": [
+    {
+      "route_path": "/admin",
+      "method": "GET",
+      "role": "user",
+      "ui_visible": false,
+      "backend_status_code": 200
+    }
+  ],
+  "storage_samples": [
+    {
+      "route_url": "http://localhost:3000/dashboard",
+      "store": "localStorage",
+      "entries": {
+        "access_token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjMifQ.abcdefghijklmnopqr"
+      }
+    }
+  ],
+  "loading_error_observations": [
+    {
+      "route_url": "http://localhost:3000/checkout",
+      "probed_endpoint": "/api/orders",
+      "delay_ms": 1500,
+      "forced_status": null,
+      "showed_loading_indicator": false,
+      "showed_error_state": false,
+      "ui_reported_success": false
+    },
+    {
+      "route_url": "http://localhost:3000/checkout",
+      "probed_endpoint": "/api/orders",
+      "delay_ms": 0,
+      "forced_status": 500,
+      "showed_loading_indicator": false,
+      "showed_error_state": false,
+      "ui_reported_success": true
+    }
+  ],
+  "validation_probes": [
+    {
+      "form_id": "FRM-LLMBROKENA1B2",
+      "route_url": "http://localhost:3000/signup",
+      "endpoint_path": "/api/users",
+      "field": "email",
+      "payload_kind": "missing",
+      "frontend_would_submit": false,
+      "backend_status_code": 201
+    }
+  ],
+  "console_entries": [
+    {
+      "route_url": "http://localhost:3000/dashboard",
+      "level": "error",
+      "text": "TypeError: cannot read property of undefined",
+      "ui_reported_success": true,
+      "is_unhandled_rejection": false
+    }
+  ]
+}

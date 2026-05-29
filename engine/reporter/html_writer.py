@@ -216,6 +216,8 @@ def build_template_context(inputs: HtmlReportInputs) -> dict[str, Any]:
     if inputs.trends is not None:
         trends_ctx = inputs.trends.to_template_context()
 
+    llm_audit_view = _build_llm_audit_view(findings, modules_sorted)
+
     return {
         "run": {
             "id": run.id,
@@ -238,6 +240,7 @@ def build_template_context(inputs: HtmlReportInputs) -> dict[str, Any]:
         "audit_levels": audit_levels,
         "audit_modules": audit_modules,
         "trends": trends_ctx,
+        "llm_audit": llm_audit_view,
         "schema_versions": {
             "run": "1",
             "findings": "1",
@@ -358,6 +361,47 @@ def iter_severity_buckets(findings: Iterable[Finding]) -> Sequence[Severity]:
 
     present = {f.severity for f in findings}
     return tuple(s for s in SEVERITY_ORDER if s in present)
+
+
+def _build_llm_audit_view(
+    findings: Sequence[Finding],
+    module_results: Sequence[ModuleResult],
+) -> dict[str, Any] | None:
+    """Build the LLM-audit section context (PRD §10.9, §28 — differentiator).
+
+    Returns ``None`` when the LLM-audit module did not run AND there are
+    no LLM-audit findings, so the template hides the section silently.
+    """
+
+    llm_findings = [f for f in findings if f.module == "llm_audit"]
+    has_module = any(m.name == "llm_audit" for m in module_results)
+    if not llm_findings and not has_module:
+        return None
+    by_category: dict[str, list[Finding]] = {}
+    for finding in llm_findings:
+        by_category.setdefault(finding.category, []).append(finding)
+    rule_rows: list[dict[str, Any]] = []
+    for category in sorted(by_category):
+        bucket = by_category[category]
+        severities = {f.severity for f in bucket}
+        highest = next(
+            (s for s in SEVERITY_ORDER if s in severities),
+            "info",
+        )
+        sample = bucket[0]
+        rule_rows.append(
+            {
+                "category": category,
+                "count": len(bucket),
+                "highest_severity": highest,
+                "sample_title": sample.title,
+                "sample_route": (sample.location.route if sample.location else None) or "",
+            }
+        )
+    return {
+        "total_findings": len(llm_findings),
+        "rules": rule_rows,
+    }
 
 
 __all__ = [

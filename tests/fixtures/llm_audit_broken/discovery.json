@@ -1,0 +1,22 @@
+{
+  "schema_version": "1",
+  "crawl": {
+    "pages": [
+      {
+        "url": "http://localhost:3000/",
+        "status_code": 200,
+        "discovered_links": ["/dashboard", "/feature-x"]
+      },
+      {
+        "url": "http://localhost:3000/dashboard",
+        "status_code": 200,
+        "discovered_links": []
+      },
+      {
+        "url": "http://localhost:3000/feature-x",
+        "status_code": 404,
+        "discovered_links": []
+      }
+    ]
+  }
+}

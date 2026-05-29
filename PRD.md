@@ -942,6 +942,89 @@ Checks:
 - Hardcoded demo credentials.
 - Insecure localStorage secrets.
 
+#### 10.9.1 MVP delivery (Phase 19, ADR-0024)
+
+`modules.llm_audit.LlmAuditModule` is the fifth concrete
+`SentinelModule` (CLAUDE §9, ADR-0015) and the first that ships
+without its own runner Protocol — every check runs as a pure Python
+function over already-captured signals. The module loads its inputs
+from disk via `modules.llm_audit.inputs.load_inputs`:
+`discovery.json` / `api.json` / `forms.json` next to the discovery
+artifact root, plus optional `signals.json` and `source_files.json`
+under `--signals <root>`. Malformed JSON or unexpected shapes are
+dropped silently, so the audit never crashes on user input.
+
+Sixteen stable rule IDs are owned by `modules.llm_audit.rules`:
+
+- `LLM-DEAD-BTN` (high, 0.8) — interactive button observed no static
+  handler and no runtime effect within 2 s.
+- `LLM-FAKE-ROUTE` (high, 0.85) — internal link resolves to a 4xx
+  route or to a route never reached by discovery.
+- `LLM-FAKE-ENDPOINT` (high, 0.75) — frontend references an endpoint
+  neither observed nor declared in OpenAPI / GraphQL.
+- `LLM-MOCK-DATA-SHIPPED` (high, 0.85) — bundle / rendered text
+  contains `mockData`, `__MOCK__`, faker patterns, "John Doe",
+  `*@example.com`, or hardcoded mock imports.
+- `LLM-FORM-NO-SUBMIT` (high, 0.9) — form lacks `action`/`onsubmit`,
+  or planner exercised it and saw no network request.
+- `LLM-INCOMPLETE-CRUD` (medium, 0.7) — resource exposes create
+  affordance but read / update / delete missing; UI-only-create bumps
+  to `high`.
+- `LLM-UI-ONLY-AUTH` (critical, 0.9) — UI hides a route the backend
+  serves 2xx to a low-priv user.
+- `LLM-HARDCODED-CRED` (high, 0.85) — source file embeds a literal
+  JWT / OpenAI / Stripe / AWS / db-connection / demo-admin
+  credential. The matched span is replaced with
+  `[REDACTED:hardcoded_credential]` before the snippet is double-
+  redacted through `engine.policy.redaction.redact` (CLAUDE.md §33).
+- `LLM-CLIENT-SECRET-STORAGE` (medium, 0.75) — browser-storage entry
+  matches the redactor's secret detection, looks like a JWT, or has
+  a token-shaped key name.
+- `LLM-NO-LOADING-STATE` (medium, 0.7) — runner delayed a target API
+  call and observed no loading indicator.
+- `LLM-NO-ERROR-STATE` (high, 0.85) — runner forced a 5xx and the UI
+  showed no error state; `ui_reported_success` bumps severity.
+- `LLM-VALIDATION-MISMATCH-BACKEND-ACCEPTS` (high, 0.9) — frontend
+  refused a malformed payload the backend accepted (server-side
+  validation gap).
+- `LLM-VALIDATION-MISMATCH-FRONTEND-MISSING` (medium, 0.85) —
+  backend rejects a payload the frontend would submit as-is.
+- `LLM-PLACEHOLDER-TEXT` (low, 0.95) — placeholder text leaked into a
+  user-facing flow; bumps to `medium` on authenticated / P1 flows
+  and `high` on P0 flows.
+- `LLM-CONSOLE-ERROR-IGNORED` (medium, 0.8) — console error captured
+  while the UI reported success on the same route.
+- `LLM-UNHANDLED-PROMISE` (medium, 0.85) — unhandled promise
+  rejection observed. Third-party hosts are filtered via
+  `--third-party-hosts <suffix-list>`.
+
+The module persists `<run-dir>/llm_audit/index.json` summarising
+which checks ran, which had signals, and how many findings each
+produced. Status policy: `skipped` when no check had any signal,
+`failed` when any high/critical finding fires, otherwise `passed`.
+
+CLI: `sentinel llm-audit` replaces the Phase-02 stub with options
+`--url / --discovery / --signals / --checks / --third-party-hosts`
+and the canonical exit-code grid (0 success or skipped, 1 quality
+gate failed, 2 invalid CLI / config, 4 unsafe target, 6 module
+error). The lifecycle, safety policy, reporter dispatch, and audit
+log are unchanged.
+
+Report differentiator: `engine.reporter.html_writer` adds an
+`llm_audit` context block, and the HTML template renders a dedicated
+"LLM-Code Audit" section listing every fired rule with severity and
+count. `engine.reporter.pr_comment._render_llm_audit_section` emits
+the matching Markdown table. Both renderers stay silent on runs
+without `llm_audit` activity so non-LLM workflows don't see an empty
+differentiator block.
+
+Test surface: 13 per-check integration tests, a broken-fixture sweep
+under `tests/fixtures/llm_audit_broken/` that exercises ≥ 11 of the
+13 checks end-to-end, CLI integration tests covering every exit-code
+branch, and reporter integration tests asserting the HTML + PR
+sections render only when the module ran. Coverage on
+`modules/llm_audit/` is ≥ 94 % per file (floor 90 %).
+
 ---
 
 ## 11. System Architecture

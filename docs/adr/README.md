@@ -67,3 +67,4 @@ Use [`_template.md`](./_template.md). The required headings are validated by `sc
 | [0021](./0021-public-sdk-surface.md)                      | Public SDK surface — `sentinelqa` / `sentinelqa.errors` / `sentinelqa.agent` + snapshot gate  | `Accepted` | 16    |
 | [0022](./0022-ci-integration.md)                          | CI integration — modes, diff-aware selection, posters, Action                                 | `Accepted` | 17    |
 | [0023](./0023-mcp-agent-interface.md)                     | MCP & agent interface — stdlib JSON-RPC server, twelve sentinel.\* tools, envelope contract   | `Accepted` | 18    |
+| [0024](./0024-llm-code-audit-module.md)                   | LLM-Code audit module — heuristics, signal contract, report differentiator                    | `Accepted` | 19    |
