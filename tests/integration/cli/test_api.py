@@ -141,10 +141,17 @@ def test_api_unsafe_target_returns_exit_four(
 
 
 def test_api_help_lists_supported_flags_and_no_forbidden_ones(cli_app, runner: CliRunner) -> None:
+    import re
+
     result = runner.invoke(cli_app, ["api", "--help"])
     assert result.exit_code == 0
-    help_text = result.stdout
+    # Typer's rich help wraps long lines mid-option and adds ANSI box-
+    # drawing characters under CI's narrower terminal width. Strip the
+    # ANSI escapes and collapse whitespace so the option-name probe is
+    # robust to formatting.
+    ansi = re.compile(r"\x1b\[[0-9;]*m")
+    flat = re.sub(r"\s+", " ", ansi.sub("", result.stdout))
     for expected in ("--url", "--openapi", "--graphql", "--checks", "--diff-since"):
-        assert expected in help_text, f"missing {expected!r} in --help"
+        assert expected in flat, f"missing {expected!r} in --help"
     for forbidden in ("--aggressive", "--fuzz", "--brute", "--unbounded"):
-        assert forbidden not in help_text, f"forbidden flag {forbidden!r} surfaced"
+        assert forbidden not in flat, f"forbidden flag {forbidden!r} surfaced"
