@@ -208,6 +208,7 @@ source = [
     "engine/runner",
     "engine/analyzer",
     "engine/modules",
+    "engine/ci",
     "modules/functional",
     "apps/cli/src/sentinel_cli",
     "packages/python-sdk/src/sentinelqa",

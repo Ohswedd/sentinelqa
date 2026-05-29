@@ -212,6 +212,40 @@ class ErrorEvent(_EventBase):
     stack: str | None = None
 
 
+# ---------------------------------------------------------------------------
+# Phase-17 discovery events (PRD §9.1, task 17.07 + ADR-0010 follow-up)
+# ---------------------------------------------------------------------------
+
+
+class DiscoveryPageEvent(_EventBase):
+    """A page reached by the Playwright discovery backend.
+
+    The fields mirror :class:`engine.discovery.crawler.CrawlPage` so the
+    Python adapter can translate one event into one ``CrawlPage`` with
+    no domain-shape drift (CLAUDE.md §8).
+    """
+
+    type: Literal["discovery.page"]
+    url: str = Field(min_length=1, max_length=4096)
+    status_code: int = Field(ge=0, le=600)
+    content_type: str | None = None
+    depth: int = Field(ge=0, le=100)
+    elapsed_ms: int = Field(ge=0)
+    html: str = Field(default="", max_length=2_000_000)
+    discovered_links: tuple[str, ...] = Field(default_factory=tuple)
+    discovered_script_srcs: tuple[str, ...] = Field(default_factory=tuple)
+
+
+class DiscoveryEndpointEvent(_EventBase):
+    """An API endpoint observed by the Playwright discovery backend."""
+
+    type: Literal["discovery.endpoint"]
+    method: str = Field(min_length=1, max_length=10)
+    path: str = Field(min_length=1, max_length=2048)
+    status_code: int | None = Field(default=None, ge=0, le=600)
+    source: Literal["request", "response", "introspection"] = "request"
+
+
 TsEvent = Annotated[
     RunStartEvent
     | RunEndEvent
@@ -226,7 +260,9 @@ TsEvent = Annotated[
     | DomSnapshotEvent
     | ModuleEventEvent
     | LogEvent
-    | ErrorEvent,
+    | ErrorEvent
+    | DiscoveryPageEvent
+    | DiscoveryEndpointEvent,
     Field(discriminator="type"),
 ]
 
@@ -251,6 +287,8 @@ _EVENT_REGISTRY: dict[str, type[_EventBase]] = {
     "module.event": ModuleEventEvent,
     "log": LogEvent,
     "error": ErrorEvent,
+    "discovery.page": DiscoveryPageEvent,
+    "discovery.endpoint": DiscoveryEndpointEvent,
 }
 
 

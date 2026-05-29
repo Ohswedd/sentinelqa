@@ -65,3 +65,4 @@ Use [`_template.md`](./_template.md). The required headings are validated by `sc
 | [0019](./0019-quality-scoring.md)                         | Quality scoring — reproducible 0..100 score + policy gate (`sentinel report --explain-score`) | `Accepted` | 14    |
 | [0020](./0020-html-pr-and-slack-reports.md)               | HTML, PR-comment, Slack, and trends reports (`sentinel report` re-render)                     | `Accepted` | 15    |
 | [0021](./0021-public-sdk-surface.md)                      | Public SDK surface — `sentinelqa` / `sentinelqa.errors` / `sentinelqa.agent` + snapshot gate  | `Accepted` | 16    |
+| [0022](./0022-ci-integration.md)                          | CI integration — modes, diff-aware selection, posters, Action                                 | `Accepted` | 17    |

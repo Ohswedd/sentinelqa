@@ -103,6 +103,14 @@ backends produce equivalent `DiscoveryGraph` shapes against a fixture SPA.
 - **Follow-up obligations:**
   1. Phase 17 must deliver task 07 (Playwright discovery backend) before
      the LLM-code audit phase (Phase 19) can fairly run against CSR SPAs.
+     **Resolved by Phase 17 task 07 (see `plans/phase-17-ci-integration/07-playwright-discovery-backend.md`):**
+     `engine/discovery/backends/playwright_backend.py` ships the
+     `PlaywrightCrawlBackend`; the new `sentinel-ts discover` subcommand
+     drives Chromium; `discovery.page` + `discovery.endpoint` event
+     kinds are added to `ts-events.schema.json` and parsed by
+     `engine.orchestrator.ts_bridge`; the CSR-SPA gate test runs under
+     the new GitHub Actions lane `discovery-playwright (gated)` behind
+     `SENTINELQA_HAS_CHROMIUM=1`.
   2. PRD §9.1 is updated in this PR to reflect the HTTP-first MVP and the
      Phase 17 backend roadmap.
   3. The `discovery.engine` config key is reserved in the loader so the

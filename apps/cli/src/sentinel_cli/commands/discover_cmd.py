@@ -17,7 +17,11 @@ import typer
 from engine.config.loader import load_config
 from engine.config.schema import RootConfig
 from engine.discovery.auth_boundary import AuthCredentials
-from engine.discovery.crawler import CrawlPolicy
+from engine.discovery.backends import (
+    PlaywrightCrawlBackend,
+    SentinelTsNotInstalledError,
+)
+from engine.discovery.crawler import Crawler, CrawlPolicy
 from engine.discovery.pipeline import DiscoveryInputs, DiscoveryPipeline
 from engine.discovery.writer import write_discovery_artifacts
 from engine.domain.ids import IdGenerator
@@ -113,7 +117,18 @@ def run_discover(
     )
 
     credentials = _resolve_credentials(config)
-    pipeline = DiscoveryPipeline(id_generator=ids)
+
+    # Phase 17 task 07 — `discovery.engine` selects the crawl backend.
+    # HTTP is the Phase 05 default; `playwright` lights up Chromium-driven
+    # SPA crawling (ADR-0010). Construction is intentionally lazy: the
+    # Playwright backend only resolves `sentinel-ts` when `.crawl()` runs,
+    # so HTTP runs never pay a startup cost.
+    crawler: Crawler
+    if config.discovery.engine == "playwright":
+        crawler = Crawler(backend=PlaywrightCrawlBackend())
+    else:
+        crawler = Crawler()
+    pipeline = DiscoveryPipeline(crawler=crawler, id_generator=ids)
     inputs = DiscoveryInputs(
         base_url=str(config.target.base_url),
         run_id=run_id,
@@ -125,7 +140,16 @@ def run_discover(
         graphql_endpoint_url=config.discovery.graphql.url,
     )
 
-    result = pipeline.run(inputs)
+    try:
+        result = pipeline.run(inputs)
+    except SentinelTsNotInstalledError as exc:
+        from engine.errors.base import DependencyMissingError
+
+        raise DependencyMissingError(
+            f"sentinel-ts is required for `discovery.engine: playwright` "
+            f"but was not found: {exc}",
+            technical_context={"engine": "playwright"},
+        ) from exc
     written = write_discovery_artifacts(result=result, out_dir=run_dir)
 
     write_audit_entry(

@@ -256,9 +256,15 @@ class DiscoveryGraphQLConfig(SentinelModel):
 class DiscoveryConfig(SentinelModel):
     """`discovery:` block (PRD §9.1, ADR-0010).
 
-    The MVP `engine: "http"` backend is the only one shipped in Phase 05;
-    `engine: "playwright"` is reserved for Phase 17 (see
-    `plans/phase-17-ci-integration/07-playwright-discovery-backend.md`).
+    Two backends ship:
+
+    - ``engine: "http"`` (default) — the Phase 05 HTTP-first crawler.
+      Lightweight; works for SSR apps; produces an empty graph for
+      client-rendered SPAs.
+    - ``engine: "playwright"`` (Phase 17 task 07) — drives Chromium via
+      ``sentinel-ts discover`` and consumes ``discovery.page`` /
+      ``discovery.endpoint`` JSONL events. Requires the Phase 04 TS
+      runtime to be installed (``pnpm install`` + browser provisioning).
     """
 
     engine: Literal["http", "playwright"] = "http"

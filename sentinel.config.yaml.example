@@ -121,6 +121,19 @@ visual:
   threshold: 0.02
   mask_dynamic_content: true
 
+discovery:
+  # Two backends ship (ADR-0010). `http` is the default lightweight
+  # crawler; switch to `playwright` for client-rendered SPAs where the
+  # landing HTML doesn't contain `<a href>` until hydration.
+  engine: "http"
+  # `playwright` requires the Phase 04 TS runtime + Chromium installed.
+  # engine: "playwright"
+  max_depth: 3
+  max_pages: 50
+  rate_limit_rps: 5.0
+  respect_robots: true
+  same_host_only: true
+
 planner:
   # Deterministic core ships in Phase 06. The LLM adapter is opt-in
   # behind the `enabled` flag (ADR-0011). Provider keys are read from the
