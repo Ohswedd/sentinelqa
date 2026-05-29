@@ -215,6 +215,15 @@ runner:
     path: tests/sentinel/.quarantine.yaml
     max_age_days: 14
 
+healer:
+  # Phase 20 self-repair (ADR-0025). Default is `off` so no proposal
+  # auto-applies — `sentinel fix` runs in review-only mode unless the
+  # operator switches to `safe` (locator + wait repairs at or above the
+  # threshold) or `aggressive` (also fixture + assertion repairs; the
+  # latter still require --allow-weaken per CLAUDE.md §23).
+  auto_apply: "off"
+  auto_apply_threshold: 0.9
+
 report:
   output_dir: .sentinel/reports
   formats:

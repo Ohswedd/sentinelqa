@@ -68,3 +68,4 @@ Use [`_template.md`](./_template.md). The required headings are validated by `sc
 | [0022](./0022-ci-integration.md)                          | CI integration — modes, diff-aware selection, posters, Action                                 | `Accepted` | 17    |
 | [0023](./0023-mcp-agent-interface.md)                     | MCP & agent interface — stdlib JSON-RPC server, twelve sentinel.\* tools, envelope contract   | `Accepted` | 18    |
 | [0024](./0024-llm-code-audit-module.md)                   | LLM-Code audit module — heuristics, signal contract, report differentiator                    | `Accepted` | 19    |
+| [0025](./0025-healer-self-repair.md)                      | Healer / self-repair — deterministic proposals, banner-aware apply, assertion-weakening guard | `Accepted` | 20    |

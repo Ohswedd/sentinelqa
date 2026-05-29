@@ -436,6 +436,29 @@ class RunnerConfig(SentinelModel):
         return self
 
 
+class HealerConfig(SentinelModel):
+    """`healer:` block (Phase 20, ADR-0025, CLAUDE.md §23).
+
+    Drives the self-repair pipeline. ``auto_apply`` is the operator's
+    posture toward applying healer proposals without review:
+
+    - ``off``: never auto-apply; every proposal goes to the human
+      review queue (default).
+    - ``safe``: auto-apply ``locator`` and ``wait`` repairs at or above
+      ``auto_apply_threshold``. Never assertion-stabilization repairs.
+    - ``aggressive``: also auto-apply ``fixture`` repairs and
+      ``assertion`` repairs (the latter still require
+      ``sentinel fix --allow-weaken``).
+
+    ``auto_apply_threshold`` is the minimum confidence a proposal must
+    carry to be eligible for auto-apply. Anything below the threshold
+    is review-only regardless of mode.
+    """
+
+    auto_apply: Literal["off", "safe", "aggressive"] = "off"
+    auto_apply_threshold: float = Field(default=0.9, ge=0.5, le=1.0)
+
+
 class ReportConfig(SentinelModel):
     """`report:` block."""
 
@@ -473,6 +496,7 @@ class RootConfig(SentinelModel):
     accessibility: AccessibilityConfig = Field(default_factory=lambda: AccessibilityConfig())
     policy: PolicyConfig = Field(default_factory=lambda: PolicyConfig())
     runner: RunnerConfig = Field(default_factory=lambda: RunnerConfig())
+    healer: HealerConfig = Field(default_factory=lambda: HealerConfig())
     report: ReportConfig = Field(default_factory=lambda: ReportConfig())
     schema_version: str = Field(default=CONFIG_SCHEMA_VERSION)
 
@@ -516,5 +540,6 @@ __all__ = [
     "RunnerConfig",
     "RunnerRetriesConfig",
     "RunnerQuarantineConfig",
+    "HealerConfig",
     "ReportConfig",
 ]
