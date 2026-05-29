@@ -5,11 +5,11 @@ Update this file on every commit that advances or completes work. Do not advance
 ## Active pointer
 
 - **Phase:** 14 — Quality Scoring
-- **Sub-phase:** _to be determined from `plans/phase-14-quality-scoring/README.md`_
-- **Active task:** first task in `plans/phase-14-quality-scoring/` (Phase 13 merged via PR #14).
-- **Branch:** to be created on next phase start; Phase 13 branch deleted on merge.
-- **Blockers:** none. Phase 13 closed today. `make ci` green (1454 Python + 228 TS = 1682), `make coverage` 95.05 % (floor 95 %), `modules.security` package coverage 91.17 % (floor 90 %), TS coverage 91.46 % lines / 80.27 % branches (floors 85 / 75). ADR-0018 accepted. PRD §10.7 expanded with §10.7.1.
-- **Last updated:** 2026-05-28 by ohswedd
+- **Sub-phase:** all tasks complete; phase ready for close-out (push → PR → CI → merge).
+- **Active task:** none — Phase Gate Review next, then merge.
+- **Branch:** `feature/phase-14-quality-scoring` (pending push).
+- **Blockers:** none. `make ci` green (1509 Python + 228 TS = 1737), `make coverage` 95.17 % (floor 95 %), `engine.scoring` package coverage 96.62 % (floor 95 %), TS coverage 91.46 % lines / 80.27 % branches (floors 85 / 75). ADR-0019 accepted. PRD §19 expanded with §19.5.
+- **Last updated:** 2026-05-29 by ohswedd
 
 ---
 
@@ -31,7 +31,7 @@ Legend: `[ ]` not started · `[~]` in progress · `[x]` done · `[!]` blocked
 - [x] Phase 11 — Accessibility Module
 - [x] Phase 12 — Performance Module
 - [x] Phase 13 — Security (Safe) Module
-- [ ] Phase 14 — Quality Scoring
+- [~] Phase 14 — Quality Scoring
 - [ ] Phase 15 — HTML & JSON Reports
 - [ ] Phase 16 — Python SDK
 - [ ] Phase 17 — CI Integration

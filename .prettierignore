@@ -36,3 +36,7 @@ packages/shared-schema/redaction-rules.json
 # them; the byte-for-byte comparison is the contract that detects schema
 # drift. `make update-goldens` is the only sanctioned way to regenerate.
 tests/golden/
+
+# Phase 14 — `tests/integration/scoring/expected/` holds byte-locked
+# replay goldens for the scoring pipeline. Same contract as tests/golden/.
+tests/integration/scoring/expected/

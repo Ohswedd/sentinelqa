@@ -1,0 +1,41 @@
+{
+  "blockers": [],
+  "components": {
+    "accessibility": 100.0,
+    "api": 100.0,
+    "flake_risk": 100.0,
+    "functional": 100.0,
+    "llm_audit": 100.0,
+    "performance": 100.0,
+    "security": 100.0,
+    "visual": 100.0
+  },
+  "policy": {
+    "block_on_critical": true,
+    "block_on_high_security": true,
+    "max_failed_p1_flows": 0,
+    "max_flake_rate": 0.03,
+    "min_quality_score": 85.0
+  },
+  "release_decision": "pass",
+  "run_id": "RUN-REPLAYAAAAAA",
+  "schema_version": "1",
+  "severity_penalties": {
+    "critical": 0.0,
+    "high": 0.0,
+    "info": 0.0,
+    "low": 0.0,
+    "medium": 0.0
+  },
+  "total": 100.0,
+  "weights": {
+    "accessibility": 0.1,
+    "api": 0.1,
+    "flake_risk": 0.05,
+    "functional": 0.3,
+    "llm_audit": 0.05,
+    "performance": 0.15,
+    "security": 0.2,
+    "visual": 0.05
+  }
+}

@@ -27,6 +27,7 @@ from sentinel_cli.commands import (
     init_cmd,
     perf_cmd,
     plan_cmd,
+    report_cmd,
     security_cmd,
     stubs,
     test_cmd,
@@ -43,7 +44,6 @@ _STUB_COMMANDS: Final[tuple[tuple[str, str, str], ...]] = (
     ("chaos", "23", "Run chaos checks (slow net, offline, session expiry)."),
     ("llm-audit", "19", "Run LLM-code audit (dead buttons, fake routes, etc.)."),
     ("fix", "20", "Propose locator repairs and other safe self-healing fixes."),
-    ("report", "15", "Render HTML / JSON / SARIF / JUnit reports."),
     ("ci", "17", "Run the audit in CI mode (fail-fast, deterministic, JSON)."),
     ("mcp", "18", "Run the SentinelQA MCP server (sentinel.* tools)."),
 )
@@ -216,6 +216,13 @@ def build_app() -> typer.Typer:
             "probes require --mode authorized_destructive + --proof-of-authorization."
         ),
     )(security_cmd.run_security)
+    cli.command(
+        name="report",
+        help=(
+            "Explain the Phase-14 quality score for a completed run "
+            "(`--explain-score`). Broader render modes land in Phase 15."
+        ),
+    )(report_cmd.run_report)
 
     for name, phase, summary in _STUB_COMMANDS:
         stubs.register_stub(cli, name=name, phase=phase, summary=summary)

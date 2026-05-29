@@ -126,19 +126,23 @@ class RunLifecycle:
         self._last_context: LifecycleContext | None = None
 
     def _ensure_default_hooks(self) -> None:
-        """Register Phase-03 reporter hook on first use (idempotent).
+        """Register the Phase-03 reporter + Phase-14 scoring hooks.
 
-        Imported locally to avoid the orchestrator <-> reporter circular
-        dependency. A sentinel flag on the registry keeps registration
-        idempotent so tests that build fresh lifecycles don't double-register.
+        Imported locally to avoid the orchestrator <-> reporter / scoring
+        circular dependency. A sentinel flag on the registry keeps
+        registration idempotent so tests that build fresh lifecycles
+        don't double-register.
         """
 
-        if getattr(self._registry, "_reporter_hook_registered", False):
-            return
-        from engine.reporter.dispatcher import register_reporter_hook
+        if not getattr(self._registry, "_reporter_hook_registered", False):
+            from engine.reporter.dispatcher import register_reporter_hook
 
-        register_reporter_hook(self._registry)
-        self._registry._reporter_hook_registered = True  # type: ignore[attr-defined]
+            register_reporter_hook(self._registry)
+            self._registry._reporter_hook_registered = True  # type: ignore[attr-defined]
+        if not getattr(self._registry, "_scoring_hooks_registered", False):
+            from engine.scoring import register_scoring_hooks
+
+            register_scoring_hooks(self._registry)
 
     # ------------------------------------------------------------------
     # Public entry point
