@@ -1,0 +1,10 @@
+{
+  "code": "E-RUN-001",
+  "context": {
+    "detail": "Playwright timeout"
+  },
+  "exit_code": 6,
+  "message": "Test execution failed: Playwright timeout",
+  "suggested_fix": "Inspect the Playwright trace and stdout under `.sentinel/runs/<run-id>/` for the failing step.",
+  "type": "error"
+}

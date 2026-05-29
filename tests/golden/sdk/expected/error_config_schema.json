@@ -1,0 +1,10 @@
+{
+  "code": "E-CFG-002",
+  "context": {
+    "detail": "missing target.base_url"
+  },
+  "exit_code": 2,
+  "message": "Configuration failed schema validation: missing target.base_url",
+  "suggested_fix": "Run `sentinel doctor` for a precise diff against the expected schema (PRD §17.1).",
+  "type": "error"
+}

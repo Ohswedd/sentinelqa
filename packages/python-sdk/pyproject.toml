@@ -1,16 +1,26 @@
 [project]
 name = "sentinelqa"
-version = "0.0.0"
-description = "SentinelQA Python SDK (placeholder; real surface lands in Phase 16)."
+version = "0.1.0"
+description = "SentinelQA Python SDK — typed facade for embedding SentinelQA in scripts and AI-agent flows (PRD §14)."
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "Apache-2.0" }
 authors = [{ name = "ohswedd" }]
-dependencies = []
+dependencies = [
+    "sentinelqa-engine",
+    "pydantic>=2.10",
+    "pyyaml>=6.0",
+]
+
+[project.urls]
+Repository = "https://github.com/Ohswedd/sentinelqa"
 
 [build-system]
 requires = ["hatchling>=1.25"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/sentinel"]
+packages = ["src/sentinelqa"]
+
+[tool.uv.sources]
+sentinelqa-engine = { workspace = true }

@@ -1,0 +1,10 @@
+{
+  "code": "E-SAFE-003",
+  "context": {
+    "flag": "--forbidden-example"
+  },
+  "exit_code": 4,
+  "message": "Forbidden CLI flag '--forbidden-example' requested; stealth/evasion/bypass features are not part of SentinelQA.",
+  "suggested_fix": "Remove the flag. See PRD §2.1 and CLAUDE.md §6 for the full list of forbidden capabilities.",
+  "type": "error"
+}

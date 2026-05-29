@@ -15,6 +15,7 @@ UV ?= uv
         coverage \
         adr-check \
         schemas update-goldens \
+        sdk-api-snapshot \
         build-runner-image \
         clean ci
 
@@ -32,6 +33,7 @@ help:
 	@echo "  adr-check     Validate ADR template adherence"
 	@echo "  schemas       Emit JSON Schemas for every engine.domain model"
 	@echo "  update-goldens  Regenerate report goldens (Phase 03+); commit the diff"
+	@echo "  sdk-api-snapshot  Regenerate the SDK public-API snapshot (Phase 16)"
 	@echo "  ci            format-check + lint + typecheck + adr-check + test"
 	@echo "  clean         Remove caches and build artifacts"
 
@@ -144,6 +146,14 @@ update-goldens:
 		case "$$ans" in y|Y|yes|YES) ;; *) echo "aborted."; exit 1 ;; esac; \
 	fi
 	SENTINELQA_UPDATE_GOLDENS=1 $(UV) run pytest tests/golden -p no:cacheprovider
+
+# --- sdk-api-snapshot ------------------------------------------------------
+# Phase 16.06 — regenerate `packages/python-sdk/api-snapshot.json`. CI runs
+# `tests/unit/sdk/test_api_snapshot.py` to diff this snapshot against the
+# live public surface; drift requires regenerating + an ADR per
+# `packages/python-sdk/__deprecation_policy.md`.
+sdk-api-snapshot:
+	$(UV) run python scripts/dump-sdk-api-snapshot.py
 
 # --- adr-check -------------------------------------------------------------
 adr-check:

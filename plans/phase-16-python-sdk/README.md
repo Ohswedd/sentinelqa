@@ -24,7 +24,7 @@ Implement the **Python SDK** (PRD §14, §32): first-class typed API for embeddi
 - `from sentinelqa import Sentinel, AuditResult, Finding, ...` works.
 - Sync and async APIs verified against fixture.
 - Agent-message round-trips for every public exception and every finding.
-- ADR-0015 (Public SDK surface) committed.
+- ADR-0021 (Public SDK surface) committed. (Phase-16 README originally pointed at ADR-0015; that slot was taken by Phase 10's module-contract ADR. Phase 16 lands as ADR-0021 instead.)
 
 ## Phase Gate Review
 

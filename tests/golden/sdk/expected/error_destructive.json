@@ -1,0 +1,10 @@
+{
+  "code": "E-SAFE-002",
+  "context": {
+    "host": "staging.example.com"
+  },
+  "exit_code": 4,
+  "message": "Destructive mode requested for 'staging.example.com' without a valid proof-of-authorization document.",
+  "suggested_fix": "Provide `target.proof_of_authorization` pointing at a signed doc that covers this host, actor, and scope, and is not expired.",
+  "type": "error"
+}

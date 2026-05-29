@@ -77,3 +77,22 @@ The same registry powers `error.to_agent_message()` for SDK and MCP consumers:
 ```
 
 All fields are redacted before serialization (CLAUDE.md §33), so passing a `SentinelError` through `to_agent_message()` is safe in any logging or telemetry path.
+
+## Python SDK round-trip
+
+The Python SDK (Phase 16, ADR-0021) re-exports the user-facing exception classes from `sentinelqa.errors` and adds a `from_dict` helper for reconstructing an exception from an agent message:
+
+```python
+from sentinelqa import UnsafeTargetError
+from sentinelqa.errors import from_dict
+
+try:
+    qa.audit(url="http://example.com")
+except UnsafeTargetError as err:
+    msg = err.to_agent_message()         # safe to send to an LLM
+    rebuilt = from_dict(msg)             # reconstruct on the other side
+    assert rebuilt.code == err.code      # round-trip preserves code…
+    assert rebuilt.exit_code == err.exit_code  # …and the CLI exit code.
+```
+
+The reconstructed exception is an instance of the most specific subclass registered for the code (e.g. `E-SAFE-001` → `UnknownHostError`). Unknown codes are preserved verbatim on a generic `SentinelError` so downstream tooling can still log / route on them.
