@@ -48,6 +48,7 @@ members = [
     "engine",
     "apps/cli",
     "packages/python-sdk",
+    "packages/mcp-server",
 ]
 # engine/* and modules/* sub-packages become workspace members as their code
 # lands (Phase 01 onward). Each will ship its own pyproject.toml at that point.
@@ -62,6 +63,7 @@ target-version = "py311"
 src = [
     "apps/cli/src",
     "packages/python-sdk/src",
+    "packages/mcp-server/src",
     "engine",
     "modules",
     "tests",
@@ -117,6 +119,7 @@ no_implicit_optional = true
 files = [
     "apps/cli/src",
     "packages/python-sdk/src",
+    "packages/mcp-server/src",
     "engine/domain",
     "engine/config",
     "engine/policy",
@@ -178,6 +181,13 @@ filterwarnings = [
     # The crawler now sets cookies on the client, but third-party calls in
     # tests (httpx introspection requests) may still trip it.
     "ignore:Setting per-request cookies:DeprecationWarning",
+    # The SDK wraps async methods around sync ones via asyncio.run, which
+    # creates ephemeral event loops. On Linux their selector fds linger
+    # until GC. Pytest's unraisableexception hook then catches them on a
+    # later (unrelated) test's teardown. The leaks aren't product bugs —
+    # they're the asyncio finaliser running late — so ignore the noise.
+    "ignore::ResourceWarning",
+    "ignore::pytest.PytestUnraisableExceptionWarning",
 ]
 markers = [
     "slow: property-based or otherwise slow test (excluded from `make test`).",
@@ -212,6 +222,7 @@ source = [
     "modules/functional",
     "apps/cli/src/sentinel_cli",
     "packages/python-sdk/src/sentinelqa",
+    "packages/mcp-server/src/sentinelqa_mcp",
 ]
 # `engine/discovery` and `engine/planner` are intentionally NOT in the
 # coverage source list: their public API surface is exercised

@@ -1420,6 +1420,66 @@ Any future Python ↔ TS consumer that needs to *compare* URLs across the bounda
 }
 ```
 
+### 16.4 MVP delivery (Phase 18)
+
+Phase 18 ships the production MCP surface (PRD §16, ADR-0023).
+
+- **Package:** `packages/mcp-server/` (`sentinelqa-mcp` on PyPI). Pure
+  Python; no runtime dependencies beyond `sentinelqa`, `sentinelqa-engine`,
+  and Pydantic 2.10.x. The package implements the MCP JSON-RPC 2.0
+  base transport in stdlib so the Pydantic pin and the Phase-01..16
+  schema set stay byte-identical (CLAUDE.md §35, see ADR-0023 for the
+  full rationale).
+- **Wire protocol:** JSON-RPC 2.0 over NDJSON-framed stdio. MCP
+  protocol version `2024-11-05` only — newer versions are rejected at
+  `initialize`. Implemented methods: `initialize`, `notifications/initialized`,
+  `tools/list`, `tools/call`, `ping`. `notifications/cancelled` is
+  observed.
+- **Tools:** every PRD §16.1 tool registered (`discover`, `plan`,
+  `generate_tests`, `run_tests`, `audit`, `security_audit`,
+  `performance_audit`, `accessibility_audit`, `read_report`,
+  `explain_failure`, `suggest_fix`, `verify_fix`) plus a `ping` health
+  check. Each tool's args are validated against a Draft 2020-12 JSON
+  Schema declared in its `ToolSpec`; read-only tools advertise
+  `_meta.read_only=true` in `tools/list`.
+- **AgentEnvelope:** every tool response — success or failure — uses
+  the shape `{ schema_version, tool, result, errors, evidence_refs }`.
+  Locked by `packages/shared-schema/agent-envelope.schema.json` and the
+  byte-stable golden under `tests/golden/mcp/expected/ping_success.json`.
+  `AGENT_ENVELOPE_SCHEMA_VERSION="1"`.
+- **Safety contract (CLAUDE.md §6, §15):** every URL-bearing tool runs
+  `SafetyPolicy.enforce` via `sentinelqa_mcp.tools._safety.enforce_url`
+  before any SDK call. An AST guard at
+  `tests/security/test_mcp_safety.py` enforces this on every CI run.
+  Unsafe targets surface as envelope errors (`code=UNSAFE_TARGET`,
+  `exit_code=4`); there is no MCP argument that disables the safety
+  boundary. Destructive checks require the loaded config to opt in
+  AND supply a valid `target.proof_of_authorization`.
+- **`sentinel.verify_fix` decision matrix** (ADR-0023): re-runs the
+  prior run's audit against the current working tree and diffs findings
+  by stable fingerprint (`module`|`category`|`title`|`location.file`|`location.selector`).
+  Decisions: `fix_verified` (target gone + no findings),
+  `still_failing` (target still present + no regressions),
+  `regressed` (target still present + new regressions), or `partial`
+  (any other outcome — e.g. target gone but other findings linger).
+- **CLI:** `sentinel mcp` replaces the Phase 02 stub.
+  Options: `--stdio` (default), `--http <PORT>` (loopback only — refuses
+  non-loopback binds with exit 4), `--config <PATH>`, `--log-level
+  <LEVEL>`. Exit codes 0 / 2 / 4 / 7.
+- **Read-only file access:** `sentinel.read_report` reads a single
+  top-level artifact under a run directory. Path traversal (`..`,
+  multi-segment paths) is rejected with exit code 2. Files larger than
+  256 KiB are truncated. Binary files are returned as hex
+  (`encoding: "hex"`).
+- **Logs go to stderr only** for the lifetime of the server — stdout is
+  reserved for MCP wire bytes (CLAUDE.md §13).
+
+The `sentinel.verify_fix` MCP tool's _agent-observable_ loop is
+complete in Phase 18. The Phase-16 `Sentinel.verify_fix` SDK method
+still raises `NotImplementedError` (CLAUDE.md §37) because the
+Healer's apply-fix logic lands in Phase 20. The Phase-18 contract is
+agent-first: the agent applies the fix; the MCP tool verifies.
+
 ---
 
 ## 17. Configuration Specification

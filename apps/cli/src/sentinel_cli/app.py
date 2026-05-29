@@ -26,6 +26,7 @@ from sentinel_cli.commands import (
     functional_cmd,
     generate_cmd,
     init_cmd,
+    mcp_cmd,
     perf_cmd,
     plan_cmd,
     report_cmd,
@@ -45,7 +46,6 @@ _STUB_COMMANDS: Final[tuple[tuple[str, str, str], ...]] = (
     ("chaos", "23", "Run chaos checks (slow net, offline, session expiry)."),
     ("llm-audit", "19", "Run LLM-code audit (dead buttons, fake routes, etc.)."),
     ("fix", "20", "Propose locator repairs and other safe self-healing fixes."),
-    ("mcp", "18", "Run the SentinelQA MCP server (sentinel.* tools)."),
 )
 
 
@@ -232,6 +232,14 @@ def build_app() -> typer.Typer:
             "(fast/standard/full/nightly/release)."
         ),
     )(ci_cmd.run_ci)
+    cli.command(
+        name="mcp",
+        help=(
+            "Start the SentinelQA MCP server (ADR-0023). Speaks the MCP "
+            "stdio transport by default; pass --http <PORT> for a local "
+            "loopback debug loop."
+        ),
+    )(mcp_cmd.run_mcp)
 
     for name, phase, summary in _STUB_COMMANDS:
         stubs.register_stub(cli, name=name, phase=phase, summary=summary)
