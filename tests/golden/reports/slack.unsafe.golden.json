@@ -1,0 +1,51 @@
+{
+  "blocks": [
+    {
+      "text": {
+        "emoji": false,
+        "text": "SentinelQA \u2014 UNSAFE TARGET \u2014 BLOCKED",
+        "type": "plain_text"
+      },
+      "type": "header"
+    },
+    {
+      "fields": [
+        {
+          "text": "*Run id:* `RUN-UNSAFEAAAAAA`",
+          "type": "mrkdwn"
+        },
+        {
+          "text": "*Status:* `unsafe_blocked`",
+          "type": "mrkdwn"
+        },
+        {
+          "text": "*Score:* n/a",
+          "type": "mrkdwn"
+        },
+        {
+          "text": "*Decision:* UNSAFE TARGET \u2014 BLOCKED",
+          "type": "mrkdwn"
+        },
+        {
+          "text": "*Target:* `https://localhost:8080/`",
+          "type": "mrkdwn"
+        },
+        {
+          "text": "*Mode:* `safe`",
+          "type": "mrkdwn"
+        }
+      ],
+      "type": "section"
+    },
+    {
+      "elements": [
+        {
+          "text": "Findings: 0 findings",
+          "type": "mrkdwn"
+        }
+      ],
+      "type": "context"
+    }
+  ],
+  "text": "SentinelQA UNSAFE TARGET \u2014 BLOCKED for RUN-UNSAFEAAAAAA; score n/a; 0 findings."
+}

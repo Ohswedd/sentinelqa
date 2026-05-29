@@ -71,7 +71,7 @@ def test_emit_passing_run_writes_every_requested_format(
         formats=SUPPORTED_FORMATS,
         audit_log_path=audit_log,
     )
-    expected = {"run", "findings", "score", "junit", "sarif", "markdown"}
+    expected = {"run", "findings", "score", "junit", "sarif", "markdown", "html"}
     assert set(outputs.keys()) == expected
     for fmt, path in outputs.items():
         assert path.exists(), f"{fmt} writer produced no file"
@@ -158,12 +158,12 @@ def test_emit_json_alias_expands_to_trio(
     assert set(outputs.keys()) == {"run", "findings", "score"}
 
 
-def test_emit_html_alias_currently_only_writes_run(
+def test_emit_html_writes_self_contained_report(
     tmp_path: Path,
     fixture_test_run_passed: TestRun,
 ) -> None:
-    """`html` is a Phase-15 placeholder. Requesting only `html` still
-    produces `run.json` because it's the canonical lifecycle artifact."""
+    """Phase 15: `html` is a real format. Requesting only `html` still
+    writes `run.json` (canonical lifecycle artifact) plus `report.html`."""
     artifacts = ArtifactDirectory.create(tmp_path, fixture_test_run_passed.id)
     reporter = Reporter()
     outputs = reporter.emit(
@@ -171,7 +171,12 @@ def test_emit_html_alias_currently_only_writes_run(
         artifacts,
         formats=["html"],
     )
-    assert set(outputs.keys()) == {"run"}
+    assert set(outputs.keys()) == {"run", "html"}
+    html_path = outputs["html"]
+    assert html_path.name == "report.html"
+    body = html_path.read_text(encoding="utf-8")
+    assert "<!doctype html>" in body
+    assert "</html>" in body.lower()
 
 
 def test_emit_skips_findings_when_no_findings(
@@ -226,5 +231,5 @@ def test_run_json_artifact_paths_match_requested_formats(
     assert paths["report_md"] == "report.md"
     # SARIF was not requested → null.
     assert paths["sarif"] is None
-    # HTML not in Phase 03.
+    # HTML was not requested → null.
     assert paths["report_html"] is None

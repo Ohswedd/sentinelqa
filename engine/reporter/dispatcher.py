@@ -29,13 +29,20 @@ from engine.domain.quality_score import QualityScore
 from engine.domain.test_run import TestRun
 from engine.orchestrator.artifacts import ArtifactDirectory
 from engine.policy.audit_log import write_audit_entry
+from engine.reporter.audit_view import load_audit_entries
 from engine.reporter.findings_writer import write_findings
+from engine.reporter.html_writer import (
+    HtmlReportInputs,
+    collect_artifact_links,
+    write_html,
+)
 from engine.reporter.junit_writer import write_junit
 from engine.reporter.markdown_writer import write_markdown
-from engine.reporter.run_writer import write_run
+from engine.reporter.run_writer import canonical_config_digest, write_run
 from engine.reporter.sarif_rules import SarifRuleRegistry
 from engine.reporter.sarif_writer import write_sarif
 from engine.reporter.score_writer import write_score
+from engine.reporter.trends import compute_trends
 
 ReportFormat = Literal[
     "html",
@@ -55,12 +62,12 @@ SUPPORTED_FORMATS: Final[tuple[str, ...]] = (
     "junit",
     "sarif",
     "markdown",
+    "html",
 )
 
 # Config-level aliases (PRD §17.1 `report.formats`).
 _FORMAT_ALIASES: Final[dict[str, tuple[str, ...]]] = {
     "json": ("run", "findings", "score"),
-    "html": (),  # placeholder until Phase 15
 }
 
 
@@ -193,10 +200,47 @@ class Reporter:
                 policy=inputs.policy,
             )
 
+        if "html" in expanded:
+            outputs["html"] = self._emit_html(
+                artifact_dir,
+                inputs,
+                produced=outputs,
+                audit_log_path=audit_log_path,
+            )
+
         if audit_log_path is not None:
             self._write_audit_entries(audit_log_path, outputs)
 
         return outputs
+
+    def _emit_html(
+        self,
+        artifact_dir: ArtifactDirectory,
+        inputs: ReportInputs,
+        *,
+        produced: Mapping[str, Path],
+        audit_log_path: Path | None,
+    ) -> Path:
+        audit_entries: tuple[Any, ...] = ()
+        if audit_log_path is not None:
+            audit_entries = load_audit_entries(audit_log_path)
+        runs_root = artifact_dir.root.parent
+        trends = compute_trends(runs_root, current_run_id=inputs.run.id)
+        artifact_links = collect_artifact_links(produced)
+        html_inputs = HtmlReportInputs(
+            run=inputs.run,
+            findings=tuple(inputs.findings),
+            module_results=tuple(inputs.module_results),
+            score=inputs.score,
+            policy=inputs.policy,
+            config_digest=canonical_config_digest(inputs.config_snapshot)
+            if inputs.config_snapshot
+            else "",
+            audit_entries=audit_entries,
+            trends=trends if trends.is_visible() else None,
+            artifact_links=artifact_links,
+        )
+        return write_html(artifact_dir, html_inputs)
 
     # ------------------------------------------------------------------
     # Helpers
@@ -224,7 +268,7 @@ class Reporter:
             "score": "score.json" if "score" in expanded else None,
             "junit": "junit.xml" if "junit" in expanded else None,
             "sarif": "sarif.json" if "sarif" in expanded else None,
-            "report_html": None,  # Phase 15
+            "report_html": "report.html" if "html" in expanded else None,
             "report_md": "report.md" if "markdown" in expanded else None,
             "audit_log": "audit.log",
         }

@@ -1,0 +1,61 @@
+{
+  "blocks": [
+    {
+      "text": {
+        "emoji": false,
+        "text": "SentinelQA \u2014 BLOCKED",
+        "type": "plain_text"
+      },
+      "type": "header"
+    },
+    {
+      "fields": [
+        {
+          "text": "*Run id:* `RUN-PASSEDAAAAAA`",
+          "type": "mrkdwn"
+        },
+        {
+          "text": "*Status:* `passed`",
+          "type": "mrkdwn"
+        },
+        {
+          "text": "*Score:* 42.5 / 100",
+          "type": "mrkdwn"
+        },
+        {
+          "text": "*Decision:* BLOCKED",
+          "type": "mrkdwn"
+        },
+        {
+          "text": "*Target:* `https://localhost:8080/`",
+          "type": "mrkdwn"
+        },
+        {
+          "text": "*Mode:* `safe`",
+          "type": "mrkdwn"
+        }
+      ],
+      "type": "section"
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "text": {
+        "text": "*Top blockers*\n\u2022 [Critical] `security` \u2014 Session cookie missing Secure flag",
+        "type": "mrkdwn"
+      },
+      "type": "section"
+    },
+    {
+      "elements": [
+        {
+          "text": "Findings: 1 critical",
+          "type": "mrkdwn"
+        }
+      ],
+      "type": "context"
+    }
+  ],
+  "text": "SentinelQA BLOCKED for RUN-PASSEDAAAAAA; score 42.5 / 100; 1 critical."
+}

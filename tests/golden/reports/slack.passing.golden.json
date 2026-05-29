@@ -1,0 +1,75 @@
+{
+  "blocks": [
+    {
+      "text": {
+        "emoji": false,
+        "text": "SentinelQA \u2014 PASS",
+        "type": "plain_text"
+      },
+      "type": "header"
+    },
+    {
+      "fields": [
+        {
+          "text": "*Run id:* `RUN-PASSEDAAAAAA`",
+          "type": "mrkdwn"
+        },
+        {
+          "text": "*Status:* `passed`",
+          "type": "mrkdwn"
+        },
+        {
+          "text": "*Score:* 87.25 / 100",
+          "type": "mrkdwn"
+        },
+        {
+          "text": "*Decision:* PASS",
+          "type": "mrkdwn"
+        },
+        {
+          "text": "*Target:* `https://localhost:8080/`",
+          "type": "mrkdwn"
+        },
+        {
+          "text": "*Mode:* `safe`",
+          "type": "mrkdwn"
+        }
+      ],
+      "type": "section"
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "text": {
+        "text": "*Top blockers*\n\u2022 [High] `security` \u2014 Session cookie missing HttpOnly attribute",
+        "type": "mrkdwn"
+      },
+      "type": "section"
+    },
+    {
+      "elements": [
+        {
+          "text": "Findings: 1 high, 1 medium, 1 info",
+          "type": "mrkdwn"
+        }
+      ],
+      "type": "context"
+    },
+    {
+      "elements": [
+        {
+          "action_id": "sentinelqa_open_report",
+          "text": {
+            "text": "Open report",
+            "type": "plain_text"
+          },
+          "type": "button",
+          "url": "https://example.com/report"
+        }
+      ],
+      "type": "actions"
+    }
+  ],
+  "text": "SentinelQA PASS for RUN-PASSEDAAAAAA; score 87.25 / 100; 1 high, 1 medium, 1 info."
+}
