@@ -69,10 +69,21 @@ class ModuleRegistry:
         self.phase_hooks.setdefault(phase, []).append(hook)
 
     def clear(self) -> None:
-        """Test helper: drop everything."""
+        """Test helper: drop everything.
+
+        Also clears the per-hook sentinel flags (``_reporter_hook_registered``,
+        ``_scoring_hooks_registered``) so the next ``RunLifecycle``
+        constructor re-registers the default hooks. Without this, a
+        ``clear()`` between tests strips the hooks from ``phase_hooks``
+        but leaves the flags set, and downstream test runs silently lose
+        the reporter / scoring pipeline.
+        """
 
         self.modules.clear()
         self.phase_hooks.clear()
+        for flag in ("_reporter_hook_registered", "_scoring_hooks_registered"):
+            if hasattr(self, flag):
+                delattr(self, flag)
 
 
 _DEFAULT_REGISTRY = ModuleRegistry()

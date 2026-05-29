@@ -357,7 +357,14 @@ class AccessibilityConfig(SentinelModel):
 
 
 class PolicyConfig(SentinelModel):
-    """`policy:` block."""
+    """`policy:` block (PRD §17.1, §19.4).
+
+    The severity-penalty fields default to the midpoint of the
+    PRD §19.2 / CLAUDE.md §25 ranges (high 10..25 -> 17.5; medium 3..10
+    -> 6.5; low 1..3 -> 2.0). Critical findings always carry a fixed
+    penalty of 30 so the numeric score still reflects severity even
+    when the run is otherwise blocked by `block_on_critical`.
+    """
 
     min_quality_score: int = Field(default=85, ge=0, le=100)
     block_on_critical: bool = True
@@ -365,6 +372,9 @@ class PolicyConfig(SentinelModel):
     max_flake_rate: float = Field(default=0.03, ge=0.0, le=1.0)
     allow_medium_a11y: bool = False
     max_failed_p1_flows: int = Field(default=0, ge=0)
+    severity_penalty_high: float = Field(default=17.5, ge=10.0, le=25.0)
+    severity_penalty_medium: float = Field(default=6.5, ge=3.0, le=10.0)
+    severity_penalty_low: float = Field(default=2.0, ge=1.0, le=3.0)
 
 
 class RunnerRetriesConfig(SentinelModel):

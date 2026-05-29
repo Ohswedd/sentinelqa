@@ -1496,6 +1496,76 @@ policy:
   max_failed_p1_flows: 0
 ```
 
+### 19.5 MVP delivery (Phase 14)
+
+Status: **Stable**.
+
+Phase 14 ships the canonical scoring pipeline behind ADR-0019. The
+implementation lives in `engine/scoring/` and runs as two lifecycle
+hooks the orchestrator registers automatically:
+
+- `engine.scoring.model.compute_score(...)` — pure function from
+  `(findings, module_results, policy)` to
+  `engine.domain.quality_score.QualityScore`. Per-axis component
+  scores are `max(0, 100 - Σ severity_penalty(finding))`; the
+  `flake_risk` axis is derived from `ModuleResult.metrics["flake_rate"]`
+  via `100 * (1 - min(1, avg / policy.max_flake_rate))`. The
+  aggregate `total` is the weighted average of the eight PRD §19.1
+  axes clamped to `[0, 100]` and rounded half-to-even to 2 decimals
+  for byte-stable JSON.
+- `engine.scoring.blockers.compute_blockers(...)` — applies the
+  CLAUDE.md §25 blocker rules (`critical_finding`, `security_high`,
+  `p0_flow_failed`, `too_many_p1_failures`). P0 / P1 detection
+  parses the `@p0..p3` tag out of the finding title (Phase 10
+  generated specs embed it there); the helper falls back to the
+  description if the title doesn't carry the tag.
+- `engine.scoring.decision.decide(...)` — produces the typed
+  `engine.domain.policy_decision.PolicyDecision`. Priority: unsafe
+  → incomplete/dry-run (`inconclusive`) → blockers (`blocked`) →
+  score < `min_quality_score` (`blocked`) → any medium finding
+  (`pass_with_warnings`) → otherwise `pass`.
+- `engine.scoring.policy_gate.register_scoring_hooks(...)` — wires
+  the two hooks onto `LifecyclePhase.CALCULATE_QUALITY_SCORE` and
+  `LifecyclePhase.APPLY_QUALITY_GATES`. The gate hook flips
+  `quality_gate_passed = False` only when the decision is `blocked`;
+  `_finalize_status` then stamps the run as `failed`, which the CLI
+  maps to exit code 1 (`EXIT_QUALITY_GATE_FAILED`).
+
+New config fields under `policy:` expose the severity-penalty
+midpoints so projects can be stricter or looser without forking the
+scoring code:
+
+- `severity_penalty_high: float` (default 17.5, range 10..25).
+- `severity_penalty_medium: float` (default 6.5, range 3..10).
+- `severity_penalty_low: float` (default 2.0, range 1..3).
+
+Critical findings always carry a fixed penalty of 30 so the numeric
+score still reflects severity even when `block_on_critical` is the
+dominant gating signal.
+
+The Phase-15 stub for `sentinel report` is replaced by a real command
+that implements the **explain path only**: `sentinel report
+--explain-score [--run-id RUN-…] [--latest] [--runs-root .sentinel/runs]`
+prints the per-axis math + severity penalties + blockers + policy
+thresholds to stdout (human or JSON), and writes a deterministic
+`score-explanation.md` next to the source `score.json`. Calling
+`sentinel report` without `--explain-score` still surfaces a
+"lands in Phase 15" error (exit 7) — no fake completion.
+
+Reproducibility is guarded by two complementary tests:
+
+- `tests/property/scoring/test_reproducibility.py` (hypothesis, slow
+  tier, 5000 examples) — random findings + module results + policy
+  must always produce byte-identical `score.json`.
+- `tests/integration/scoring/test_replay.py` — three canonical
+  scenarios (`clean`, `mixed`, `blocked`) are byte-compared against
+  committed expected files under
+  `tests/integration/scoring/expected/`.
+
+ADR-0019 records the rationale, including the P0 / P1 tag-based MVP
+shortcut and the plan to retire it when a future phase adds a
+`priority` field to the Finding model.
+
 ---
 
 ## 20. Evidence and Reporting Requirements
