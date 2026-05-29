@@ -826,6 +826,97 @@ Capabilities:
 - Error-shape validation.
 - Backward compatibility checks.
 
+#### 10.3.1 MVP delivery (Phase 22, ADR-0027)
+
+The `modules/api/` package ships seven check kinds, each addressable
+individually via `api.enabled_checks` and via `sentinel api --checks`.
+All HTTP traffic is Python-driven through `httpx` and goes through
+`engine.policy.safety.SafetyPolicy.enforce` before the first request:
+
+- **`contract`** — for each operation in the supplied OpenAPI 3.x doc,
+  send a safe-method probe (GET / HEAD / OPTIONS only) and validate
+  the response status, content-type, and JSON body against the
+  documented schema. Findings: `CONTRACT-STATUS`,
+  `CONTRACT-CONTENT-TYPE`, `CONTRACT-INVALID-JSON`,
+  `CONTRACT-MISSING-FIELD`, `CONTRACT-SCHEMA`, `CONTRACT-NETWORK`.
+  GraphQL contract validation runs in the same check via
+  `POST <api.graphql_endpoint>` and emits `GRAPHQL-STATUS`,
+  `GRAPHQL-CONTENT-TYPE`, `GRAPHQL-INVALID-JSON`, `GRAPHQL-SHAPE`,
+  `GRAPHQL-RESOLVER-ERROR`, `GRAPHQL-NULL-NON-NULL`,
+  `GRAPHQL-MISSING-FIELD`, `GRAPHQL-NETWORK`. GraphQL subscriptions
+  are detected in the SDL but not probed (deferred to Phase 23).
+- **`negative`** — for each request body schema, generate a small,
+  bounded variant catalogue: missing-required field, wrong-type,
+  out-of-range integer, and oversized-string (≤
+  `api.negative_max_payload_kb - 1` KB). Findings:
+  `NEGATIVE-VALIDATION-GAP` (high — server accepted bad input),
+  `NEGATIVE-SERVER-ERROR` (high — 5xx on bad input).
+- **`auth`** — for each authenticated operation (or each
+  `api.routes` entry when no OpenAPI doc is loaded), send three
+  probes: anonymous, expired-token sentinel
+  (`Bearer expired-token-sentinelqa-probe`), and cross-user (one
+  per `api.auth_test_users` entry whose `token_env` is set).
+  Findings: `AUTH-UNAUTHORIZED-ANONYMOUS` (critical),
+  `AUTH-UNAUTHORIZED-EXPIRED_TOKEN` (high),
+  `AUTH-UNAUTHORIZED-CROSS_USER:<label>` (high).
+- **`latency`** — dedup-only. Phase 12 perf owns
+  `performance.budgets.api_p95_ms` enforcement (category
+  `perf/api_latency`). The API module's latency check therefore
+  always returns `skipped=True` with a `skip_reason` naming the
+  perf category + budget. This avoids duplicate findings when both
+  modules run.
+- **`pagination`** — for each paginated GET (detected via
+  `page` / `cursor` / `offset` / `limit` / `per_page` parameter or a
+  `Link: rel="next"` header), walk pages up to
+  `api.pagination_max_pages` and emit
+  `PAGINATION-EMPTY-PAGE-ERROR` (4xx during the walk),
+  `PAGINATION-CONTENT-TYPE-DRIFT` (content-type changed across
+  pages), `PAGINATION-ENVELOPE-DRIFT` (JSON envelope changed across
+  pages).
+- **`error_shape`** — post-processes the issue catalogues emitted by
+  the contract / negative / pagination checks and emits
+  `ERROR-SHAPE-DRIFT` (medium) when the same endpoint surfaced more
+  than one distinct error rule_id within a single run.
+- **`backward_compat`** — diffs the current run's
+  `<run-dir>/api/api-schema.json` snapshot against either the
+  snapshot at `--diff-since <run-id>` or the alphabetically last
+  sibling snapshot under `.sentinel/runs/`. Findings:
+  `COMPAT-REMOVED-ENDPOINT` (high), `COMPAT-REMOVED-REQUIRED-RESPONSE-FIELD`,
+  `COMPAT-ADDED-REQUIRED-REQUEST-FIELD`, `COMPAT-CHANGED-RESPONSE-TYPE`.
+
+Persisted artifacts (CLAUDE §11):
+
+```
+<run-dir>/api/
+  index.json                          # ApiRunOutcome (sum of all checks)
+  contract.json                       # ApiCheckResult (when contract ran)
+  negative.json
+  auth.json
+  pagination.json
+  error_shape.json
+  latency.json
+  backward_compat.json
+  api-schema.json                     # ApiSchemaSnapshot (for next run's diff)
+```
+
+**Safety boundary (CLAUDE §30):** aggressive fuzzing is forbidden.
+
+- `api.negative_max_payload_kb` is clamped at the config-schema
+  layer to `[1, 64]` KB; `api.negative_max_variants_per_endpoint`
+  is clamped to `[1, 16]`.
+- `modules.api.http_client.safe_request` enforces an absolute
+  `ABSOLUTE_MAX_REQUEST_BYTES = 64 KB` cap regardless of config.
+  Bodies above the cap raise `RequestTooLargeError` **before** the
+  request is issued.
+- The negative variant catalogue is a fixed, named list. The module
+  does not call into any fuzz library.
+- No CLI flag named `--aggressive`, `--fuzz`, `--brute`, `--stress`,
+  `--unbounded`, or `--no-rate-limit` exists.
+- The forbidden-literal guard
+  `tests/security/test_api_no_aggressive_flags.py` greps
+  `modules/api/` + the `sentinel api` CLI and fails CI on
+  re-introduction.
+
 ### 10.4 Accessibility testing
 
 Capabilities:

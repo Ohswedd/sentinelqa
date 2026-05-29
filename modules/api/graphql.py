@@ -29,6 +29,7 @@ from graphql import (
     GraphQLObjectType,
     GraphQLScalarType,
     GraphQLSchema,
+    Undefined,
     build_schema,
 )
 
@@ -118,7 +119,12 @@ def _extract_ops(obj_type: GraphQLObjectType, kind: str) -> list[GraphqlOperatio
 
 def _has_required_arguments(field: GraphQLField) -> bool:
     for arg in field.args.values():
-        if isinstance(arg.type, GraphQLNonNull) and arg.default_value is None:
+        # graphql-core uses the `Undefined` sentinel (not Python None) when
+        # an argument was declared without a default. Treat absent or
+        # explicit-Undefined as "no default" so we never probe a field
+        # that requires the caller to supply a value.
+        no_default = arg.default_value is Undefined or arg.default_value is None
+        if isinstance(arg.type, GraphQLNonNull) and no_default:
             return True
     return False
 
