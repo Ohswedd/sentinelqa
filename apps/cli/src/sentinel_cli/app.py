@@ -219,8 +219,9 @@ def build_app() -> typer.Typer:
     cli.command(
         name="report",
         help=(
-            "Explain the Phase-14 quality score for a completed run "
-            "(`--explain-score`). Broader render modes land in Phase 15."
+            "Re-render reports for a completed run (HTML / JSON / SARIF / "
+            "JUnit / Markdown) or explain its quality score (--explain-score). "
+            "Reads from `.sentinel/runs/<run-id>/`; no module re-execution."
         ),
     )(report_cmd.run_report)
 

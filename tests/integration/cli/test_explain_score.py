@@ -129,8 +129,8 @@ def test_explain_score_missing_run_id_errors(tmp_path: Path) -> None:
     assert result.exit_code == 2, result.output  # EXIT_CONFIG_ERROR
 
 
-def test_explain_score_without_flag_is_phase_15_error(tmp_path: Path) -> None:
-    runner = CliRunner()
+def test_explain_score_without_flag_missing_run_is_config_error(tmp_path: Path) -> None:
+    runner = CliRunner(mix_stderr=False)
     result = runner.invoke(
         build_app(),
         [
@@ -141,9 +141,10 @@ def test_explain_score_without_flag_is_phase_15_error(tmp_path: Path) -> None:
             str(tmp_path / ".sentinel" / "runs"),
         ],
     )
-    # Without --explain-score we surface the Phase-15 not-yet-implemented
-    # error (exit code 7), not a silent success.
-    assert result.exit_code == 7, result.output
+    # Phase 15 added re-rendering; missing run-id is a config error
+    # (exit 2) instead of the Phase-14 placeholder exit 7.
+    assert result.exit_code == 2, result.output
+    assert "run directory not found" in result.stderr
 
 
 def test_explain_score_latest_fallback(tmp_path: Path) -> None:
