@@ -19,6 +19,7 @@ import typer
 
 from sentinel_cli.commands import (
     a11y_cmd,
+    api_cmd,
     audit_cmd,
     ci_cmd,
     discover_cmd,
@@ -44,7 +45,6 @@ from sentinel_cli.state import GlobalState, detect_ci_default
 # something in Phase 02 (`init`, `doctor`, `audit`) are NOT here. Phase 05
 # replaces the `discover` stub.
 _STUB_COMMANDS: Final[tuple[tuple[str, str, str], ...]] = (
-    ("api", "22", "Run API contract + negative-case checks."),
     ("chaos", "23", "Run chaos checks (slow net, offline, session expiry)."),
 )
 
@@ -216,6 +216,15 @@ def build_app() -> typer.Typer:
             "probes require --mode authorized_destructive + --proof-of-authorization."
         ),
     )(security_cmd.run_security)
+    cli.command(
+        name="api",
+        help=(
+            "Run API contract / negative / auth / pagination / error-shape / "
+            "backward-compat checks (Phase 22, PRD §10.3). Aggressive fuzzing "
+            "is forbidden (CLAUDE.md §30); payload sizes are clamped at the "
+            "I/O layer regardless of config."
+        ),
+    )(api_cmd.run_api)
     cli.command(
         name="report",
         help=(
