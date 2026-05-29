@@ -357,6 +357,17 @@ The MVP ships in Phase 05 as an HTTP-first pipeline (`engine.discovery`):
 
 Safety boundary: credentials are read from env vars by name (never inlined in artifacts), the login POST body is never persisted, and `target.allowed_hosts` enforcement runs before any HTTP request.
 
+#### 9.1.2 Playwright backend delivery (Phase 17 task 07)
+
+Phase 17 task 07 lights up the second discovery backend (ADR-0010 follow-up resolved):
+
+- **TS subcommand** — `sentinel-ts discover --config <path|->` (where `-` means stdin) drives Chromium against the target URL. Reads a JSON config describing the crawl shape (base URL, max depth/pages, rate limit, cookies, UA, X-SentinelQA-Test-Run header).
+- **JSONL event additions** — `discovery.page` (one per crawled URL with status, content-type, depth, elapsed_ms, html, discovered_links/scripts) and `discovery.endpoint` (one per observed `/api/*` request) added to `packages/shared-schema/ts-events.schema.json` and to the Python parser registry. Existing event ordering preserved (`run.start` first, `run.end` last; the parity fixture asserts this).
+- **Python adapter** — `engine.discovery.backends.playwright_backend.PlaywrightCrawlBackend` implements the `CrawlBackend` Protocol. Translation is one-to-one: every `discovery.page` event becomes one `CrawlPage` so downstream detectors (DOM map, forms, API detector) see an identical shape regardless of which backend ran. A pluggable `PlaywrightRunner` Protocol mirrors the Phase 11/12 runner-injection pattern; `SubprocessPlaywrightRunner` is the production driver. Failures bubble up as `SentinelTsNotInstalledError` (mapped to exit code 5) or `PlaywrightDiscoveryError`.
+- **Config integration** — `discovery.engine: "playwright"` is now live (no longer reserved). The discover CLI constructs the backend lazily so HTTP-engine runs pay no startup cost; missing-binary errors surface as the typed dependency error.
+- **CI lane** — `.github/workflows/ci.yml` adds the `discovery-playwright (gated)` lane, behind `SENTINELQA_HAS_CHROMIUM=1`, that runs `tests/integration/discovery/test_playwright_backend_spa.py` against the CSR SPA fixture at `packages/ts-runtime/fixtures/spa/`.
+- **Backend parity test** — `tests/integration/discovery/test_backend_parity.py` runs both backends against the same SSR fixture (served by `pytest_httpserver`) and asserts the produced `CrawlResult` shape is equivalent. The HTTP backend talks to the real httpx-served pages; the Playwright backend consumes a canned JSONL stream representing the same pages so the parity assertion runs without Chromium in the default lane.
+
 ### 9.2 Planner module
 
 Purpose: Convert discovery into a test plan.
@@ -1315,19 +1326,23 @@ test("user can create a project", async ({ page, sentinel }) => {
 
 Python orchestrates `sentinel-ts` (resolved to `dist/cli.js`) over stdout as the canonical Playwright launcher. Surfaces shipped in Phase 04:
 
-| Command            | Purpose                                                                                      |
-| ------------------ | -------------------------------------------------------------------------------------------- |
-| `--help` / `-h`    | Print the usage block.                                                                       |
-| `--version` / `-V` | Print `@sentinelqa/ts-runtime <semver>`.                                                     |
-| `run`              | `--input <run-config.json>` invokes Playwright with the custom reporter and streams JSONL.   |
-| `list-tests`       | `--pattern <glob>` lists spec files; skips `node_modules` / `dist` / `.git` in every result. |
-| `validate-helpers` | Sanity-check that the package loads, the redaction ruleset is readable, and helpers export.  |
+| Command            | Purpose                                                                                                                                                                                                                                                                                |
+| ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--help` / `-h`    | Print the usage block.                                                                                                                                                                                                                                                                 |
+| `--version` / `-V` | Print `@sentinelqa/ts-runtime <semver>`.                                                                                                                                                                                                                                               |
+| `run`              | `--input <run-config.json>` invokes Playwright with the custom reporter and streams JSONL.                                                                                                                                                                                             |
+| `list-tests`       | `--pattern <glob>` lists spec files; skips `node_modules` / `dist` / `.git` in every result.                                                                                                                                                                                           |
+| `audit-locators`   | `--file <path>` runs the brittleness audit on a generated spec.                                                                                                                                                                                                                        |
+| `audit-a11y`       | `--input <run-config.json>` runs axe-core + keyboard + landmark + accessible-name checks per route.                                                                                                                                                                                    |
+| `audit-perf`       | `--input <run-config.json>` runs synthetic perf checks (LCP/CLS/INP/TTFB + API latency + bundle/CPU + nav stability).                                                                                                                                                                  |
+| `discover`         | `--config <path|->` Playwright-driven crawl backend (Phase 17 task 07, ADR-0010). Emits `discovery.page` / `discovery.endpoint` events.                                                                                                                                                |
+| `validate-helpers` | Sanity-check that the package loads, the redaction ruleset is readable, and helpers export.                                                                                                                                                                                            |
 
 Deterministic exit codes: `0` all pass, `1` ≥1 test failed/timed out, `2` Playwright crashed / config invalid / spawn failed / unknown command or flag, `7` programmer error (sync dispatch hit an async command). These map onto PRD §13.2 / CLAUDE §13.
 
 ### 15.4 JSONL event protocol
 
-The runtime emits one JSON event per stdout line, parsed by Python's `engine/orchestrator/ts_bridge.py`. Every event carries the envelope `{type, schema_version, seq, ts}`; the discriminator is `type` and the schema covers fourteen kinds: `run.start`, `run.end`, `test.start`, `test.end`, `step.start`, `step.end`, `evidence`, `network.request`, `network.response`, `console`, `dom.snapshot`, `module.event`, `log`, `error`. The wire format is locked by `packages/shared-schema/ts-events.schema.json` (Draft 2020-12). A canonical fixture (`tests/golden/ts-events/sample.jsonl`) drives the cross-language parity tests; schema bumps require a successor ADR (ADR-0009 owns the rules).
+The runtime emits one JSON event per stdout line, parsed by Python's `engine/orchestrator/ts_bridge.py`. Every event carries the envelope `{type, schema_version, seq, ts}`; the discriminator is `type` and the schema covers sixteen kinds: `run.start`, `run.end`, `test.start`, `test.end`, `step.start`, `step.end`, `evidence`, `network.request`, `network.response`, `console`, `dom.snapshot`, `module.event`, `log`, `error`, plus the Phase 17 task 07 additions `discovery.page` and `discovery.endpoint` (Playwright discovery backend). The wire format is locked by `packages/shared-schema/ts-events.schema.json` (Draft 2020-12). A canonical fixture (`tests/golden/ts-events/sample.jsonl`) drives the cross-language parity tests; schema bumps require a successor ADR (ADR-0009 owns the rules).
 
 ### 15.5 Evidence capture defaults
 
@@ -1775,7 +1790,16 @@ The PR comment should include:
 - `nightly`: full + chaos + extended security.
 - `release`: full + strict policy.
 
----
+### 21.4 MVP delivery (Phase 17)
+
+Phase 17 lights up the CI surface as a thin preset layer over the existing lifecycle (ADR-0022):
+
+- **`engine/ci/modes.py`** — `apply_mode(config, mode, fail_under=None)` returns `(effective_config, ModePlan)`. Each mode is a recipe over `modules`, `grep` (Playwright tag filter), and `policy_overrides`. `release` raises `policy.min_quality_score` to `max(config, 90)`; `--fail-under` always wins over the mode default. Modes intersect with the user's enabled module set so the config remains authoritative for the safety boundary.
+- **`engine/ci/diff_aware.py`** — `select_from_files(diff_range, changed_files)` is a pure helper that walks the file list with deterministic framework-shape heuristics (Next.js App Router / Pages Router, Vite `src/routes/` and `src/pages/`, OpenAPI / GraphQL schemas, API routes). Broad-impact files (`pnpm-lock.yaml`, `next.config.ts`, `Dockerfile`, etc.) and high-volume diffs (> 50 files) force fallback to full mode. The smoke tag (`@p0`) is always present in `grep()`. `select_from_git` shells out to `git diff --name-only <range>` for the CLI path; the function is testable without git via the `runner` injection point.
+- **`sentinel ci`** — the Phase-02 stub is replaced. Options: `--url`, `--mode` (default `standard`), `--diff` (e.g. `origin/main...HEAD`), `--fail-under`, `--grep`, `--output`. The command always forces `--ci=True`, writes a deterministic `<run-dir>/ci.json` sidecar with the mode, diff range, resolved selection, and policy overrides, and threads the resolved grep into `module_options["functional"]["grep"]`. Exit codes follow PRD §13.2 (0 passed, 1 quality gate failed, 2 config / invalid mode, 4 unsafe target, 5 git missing for `--diff`, 6 incomplete).
+- **GitHub composite Action** — `integrations/github/action.yml` ships the composite Action with inputs `url` (required), `config`, `mode`, `fail-under`, `diff`, `python-version`, `node-version`, `sentinelqa-version`, `install-playwright`, `upload-artifacts`, `upload-sarif`, `artifact-name`, `artifact-retention-days`, `working-directory`. Outputs: `quality-score`, `release-decision`, `report-html-url` (all read from the latest `score.json`). Uses `actions/upload-artifact@v4` for the run artifacts and `github/codeql-action/upload-sarif@v3` for code-scanning ingest. A reusable workflow `integrations/github/workflows/sentinel-pr.yml` calls the Action and posts the PR comment.
+- **GitLab template** — `integrations/gitlab/.gitlab-ci.sentinel.yml` declares a `.sentinelqa` job template extendable via `extends: .sentinelqa`. Variables: `SENTINELQA_URL` (required), `SENTINELQA_MODE`, `SENTINELQA_DIFF`, `SENTINELQA_FAIL_UNDER`, `SENTINELQA_VERSION`, `PYTHON_VERSION`, `NODE_VERSION`. Caches pip + pnpm + node_modules. Refuses to audit an empty URL (exits 4). Uploads `run.json`, `findings.json`, `score.json`, `report.html`, `report.md`, `sarif.json`, `junit.xml`, traces / screenshots / videos for 14 days; JUnit XML drives GitLab's native test reporting; `findings.json` is consumed as a Code Quality report.
+- **PR / MR comment posters** — `integrations/github/post_pr_comment.py` and `integrations/gitlab/post_mr_note.py`. Both use `urllib` (no `requests` dep, per CLAUDE.md §35), upsert via the `<!-- sentinelqa:pr-comment -->` anchor (shared with the Phase 15 reporter), read tokens from env vars only (never logged), and retry with exponential backoff on 429 / 5xx (honors `Retry-After`). Refuses to post a body that doesn't begin with the SentinelQA anchor — defense against accidental empty / mis-routed posts.
 
 ## 22. Plugin Architecture
 
