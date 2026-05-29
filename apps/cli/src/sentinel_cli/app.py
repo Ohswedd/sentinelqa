@@ -20,6 +20,7 @@ import typer
 from sentinel_cli.commands import (
     a11y_cmd,
     audit_cmd,
+    ci_cmd,
     discover_cmd,
     doctor_cmd,
     functional_cmd,
@@ -44,7 +45,6 @@ _STUB_COMMANDS: Final[tuple[tuple[str, str, str], ...]] = (
     ("chaos", "23", "Run chaos checks (slow net, offline, session expiry)."),
     ("llm-audit", "19", "Run LLM-code audit (dead buttons, fake routes, etc.)."),
     ("fix", "20", "Propose locator repairs and other safe self-healing fixes."),
-    ("ci", "17", "Run the audit in CI mode (fail-fast, deterministic, JSON)."),
     ("mcp", "18", "Run the SentinelQA MCP server (sentinel.* tools)."),
 )
 
@@ -224,6 +224,14 @@ def build_app() -> typer.Typer:
             "Reads from `.sentinel/runs/<run-id>/`; no module re-execution."
         ),
     )(report_cmd.run_report)
+    cli.command(
+        name="ci",
+        help=(
+            "Run the audit in CI mode (PRD §21): preset modules + tag "
+            "filter + policy overrides per --mode "
+            "(fast/standard/full/nightly/release)."
+        ),
+    )(ci_cmd.run_ci)
 
     for name, phase, summary in _STUB_COMMANDS:
         stubs.register_stub(cli, name=name, phase=phase, summary=summary)
