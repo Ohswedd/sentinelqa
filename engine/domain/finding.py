@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from datetime import UTC, datetime
-from typing import ClassVar, Literal
+from typing import Any, ClassVar, Literal
 
 from pydantic import Field, field_validator
 
@@ -69,6 +69,18 @@ class Finding(SentinelModel):
                 "Finding.created_at must be timezone-aware " "(use datetime.now(timezone.utc))."
             )
         return value.astimezone(UTC)
+
+    def to_agent_message(self) -> dict[str, Any]:
+        """Return the canonical agent-message dict (PRD §14.2, CLAUDE.md §15).
+
+        Delegates to :func:`sentinelqa._agent_messages.finding_to_agent_message`
+        so the SDK and the domain entity emit byte-equal dicts. Redaction
+        is applied at the SDK layer.
+        """
+
+        from sentinelqa._agent_messages import finding_to_agent_message
+
+        return finding_to_agent_message(self)
 
 
 __all__ = ["Finding", "FindingLocation", "Severity"]
