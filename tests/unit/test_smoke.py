@@ -2,8 +2,8 @@
 
 Proves the test harness (pytest + pytest-asyncio + the strict pyproject config)
 runs to completion before any product code exists. Extended in Phase 02 once
-the real Typer app shipped — `sentinel_cli` now exposes the app, so we just
-check the import works rather than asserting `__all__` is empty.
+the real Typer app shipped (`sentinel_cli` exports the app) and in Phase 16
+once the real SDK shipped (`sentinelqa` is now non-empty).
 """
 
 
@@ -12,13 +12,14 @@ def test_arithmetic_smoke() -> None:
     assert 1 + 1 == 2
 
 
-def test_placeholder_packages_importable() -> None:
-    """The placeholder + Phase-02 CLI packages must import cleanly."""
-    import sentinel
+def test_packages_importable() -> None:
+    """The CLI + Phase-16 SDK packages must import cleanly."""
     import sentinel_cli
+    import sentinelqa
 
-    # python-sdk (`sentinel`) stays empty until Phase 16.
-    assert sentinel.__all__ == []
-    # `sentinel_cli` now exports the Typer app (Phase 02).
+    # `sentinel_cli` exports the Typer app (Phase 02).
     assert "app" in sentinel_cli.__all__
     assert "build_app" in sentinel_cli.__all__
+    # `sentinelqa` exports the Phase-16 SDK surface (ADR-0021).
+    assert "Sentinel" in sentinelqa.__all__
+    assert "AuditResult" in sentinelqa.__all__

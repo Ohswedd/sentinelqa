@@ -1,0 +1,10 @@
+{
+  "code": "E-SAFE-001",
+  "context": {
+    "host": "evil.example.com"
+  },
+  "exit_code": 4,
+  "message": "Host 'evil.example.com' is not in target.allowed_hosts and is not local.",
+  "suggested_fix": "Add the host to `target.allowed_hosts` only if you own or are authorized to test it. SentinelQA never permits unauthorized scans (PRD §2, CLAUDE.md §6).",
+  "type": "error"
+}

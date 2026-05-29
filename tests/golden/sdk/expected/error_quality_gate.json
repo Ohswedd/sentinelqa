@@ -1,0 +1,10 @@
+{
+  "code": "E-QGATE-001",
+  "context": {
+    "detail": "score 73 < 85"
+  },
+  "exit_code": 1,
+  "message": "Quality gate failed: score 73 < 85",
+  "suggested_fix": "Either fix the underlying findings or adjust `policy` in `sentinel.config.yaml` if the gate is genuinely too strict.",
+  "type": "error"
+}

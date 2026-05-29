@@ -1,0 +1,15 @@
+{
+  "agent_message_schema_version": "1",
+  "confidence": 0.85,
+  "evidence_paths": [
+    "screenshots/login.png"
+  ],
+  "id": "RPR-AAAAAAAAAAAA",
+  "original": "page.locator('button.signin')",
+  "proposed": "page.getByRole('button', { name: /sign in/i })",
+  "reason": "Class-based selector is brittle; semantic role + name is stable.",
+  "requires_human_review": true,
+  "schema_version": "1",
+  "target_test": "tests/sentinel/login.spec.ts",
+  "type": "repair_suggestion"
+}

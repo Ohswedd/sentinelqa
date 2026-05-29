@@ -1,0 +1,71 @@
+[
+  {
+    "agent_message_schema_version": "1",
+    "finding_counts": {
+      "critical": 0,
+      "high": 1,
+      "info": 0,
+      "low": 0,
+      "medium": 0
+    },
+    "finished_at": "2026-05-29T12:00:00+00:00",
+    "modules_run": [
+      "functional",
+      "security"
+    ],
+    "passed": false,
+    "quality_score": null,
+    "release_decision": "blocked",
+    "run_dir": "/runs/RUN-AAAAAAAAAAAA",
+    "run_id": "RUN-AAAAAAAAAAAA",
+    "schema_version": "1",
+    "started_at": "2026-05-29T12:00:00+00:00",
+    "status": "failed",
+    "target_url": "http://localhost:3000/",
+    "type": "run_summary"
+  },
+  {
+    "affected_target": "http://localhost:3000",
+    "agent_message_schema_version": "1",
+    "category": "security/headers",
+    "confidence": 0.9,
+    "description": "Session cookie on /login does not set HttpOnly.",
+    "evidence_paths": [
+      "traces/login.har"
+    ],
+    "id": "FND-AAAAAAAAAAAA",
+    "location": {
+      "file": null,
+      "line": null,
+      "route": "/login",
+      "selector": null
+    },
+    "module": "security",
+    "recommendation": "Set HttpOnly on the session cookie.",
+    "run_id": "RUN-AAAAAAAAAAAA",
+    "schema_version": "1",
+    "severity": "high",
+    "suggested_fix": "Add `HttpOnly` to the Set-Cookie header.",
+    "title": "Cookie missing HttpOnly",
+    "type": "finding"
+  },
+  {
+    "agent_message_schema_version": "1",
+    "blocking_count": 0,
+    "blocking_ids": [],
+    "failing_count": 1,
+    "failing_ids": [
+      "FND-AAAAAAAAAAAA"
+    ],
+    "run_id": "RUN-AAAAAAAAAAAA",
+    "type": "blocker_summary"
+  },
+  {
+    "actions": [
+      "Investigate 1 high/critical finding(s) — they may be promoted to blockers by your policy gate."
+    ],
+    "agent_message_schema_version": "1",
+    "run_id": "RUN-AAAAAAAAAAAA",
+    "type": "next_actions"
+  }
+]

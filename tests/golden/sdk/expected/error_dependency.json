@@ -1,0 +1,10 @@
+{
+  "code": "E-DEP-001",
+  "context": {
+    "dependency": "playwright"
+  },
+  "exit_code": 5,
+  "message": "Required dependency is missing: playwright",
+  "suggested_fix": "Run `make install` (or `uv sync --frozen --all-packages` and `pnpm install --frozen-lockfile`) and retry.",
+  "type": "error"
+}
