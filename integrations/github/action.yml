@@ -1,0 +1,200 @@
+name: SentinelQA
+description: |
+  Run SentinelQA against a preview deployment, upload artifacts, and publish
+  SARIF to GitHub code scanning. Wraps `sentinel ci` (PRD §21).
+author: SentinelQA
+branding:
+  icon: shield
+  color: blue
+
+inputs:
+  url:
+    description: |
+      Target preview URL the audit runs against. Must be local, staging, or
+      explicitly allowlisted in `sentinel.config.yaml` (CLAUDE.md §6, PRD §2).
+    required: true
+  config:
+    description: Path to `sentinel.config.yaml` (PRD §17).
+    required: false
+    default: sentinel.config.yaml
+  mode:
+    description: |
+      CI mode preset (PRD §21.3): `fast` | `standard` | `full` | `nightly` |
+      `release`. Selects modules, tag filters, and policy overrides.
+    required: false
+    default: standard
+  fail-under:
+    description: |
+      Override `policy.min_quality_score` for the run (CLAUDE.md §17).
+      Empty string means inherit from config.
+    required: false
+    default: ''
+  diff:
+    description: |
+      Git diff range for impacted-tests mode (e.g. `origin/main...HEAD`).
+      Empty string disables diff-aware selection.
+    required: false
+    default: ''
+  python-version:
+    description: Python version to install via `actions/setup-python`.
+    required: false
+    default: '3.12'
+  node-version:
+    description: Node.js version to install via `actions/setup-node`.
+    required: false
+    default: '20'
+  sentinelqa-version:
+    description: |
+      Version specifier for the `sentinelqa` PyPI package. Defaults to the
+      currently-pinned wheel. Use `''` to skip the install step (when the
+      caller has already installed it).
+    required: false
+    default: ''
+  install-playwright:
+    description: |
+      Whether to run `npx playwright install --with-deps chromium`. Set to
+      `false` when the caller has pre-installed browsers.
+    required: false
+    default: 'true'
+  upload-artifacts:
+    description: Upload `report.html`, `findings.json`, `sarif.json`, traces.
+    required: false
+    default: 'true'
+  upload-sarif:
+    description: Upload `sarif.json` to GitHub code scanning.
+    required: false
+    default: 'true'
+  artifact-name:
+    description: Name used by `actions/upload-artifact`.
+    required: false
+    default: sentinelqa-report
+  artifact-retention-days:
+    description: Retention for uploaded artifacts (days).
+    required: false
+    default: '14'
+  working-directory:
+    description: Working directory in which to run the audit.
+    required: false
+    default: .
+
+outputs:
+  quality-score:
+    description: Final quality score (0..100) read from `score.json`.
+    value: ${{ steps.read-score.outputs.quality-score }}
+  release-decision:
+    description: |
+      Release decision read from `score.json` (`pass`, `pass_with_warnings`,
+      `blocked`, `inconclusive`, or `unsafe_target_rejected`).
+    value: ${{ steps.read-score.outputs.release-decision }}
+  report-html-url:
+    description: |
+      Path to the rendered HTML report relative to the working directory.
+      For a real public URL, consume the artifact uploaded by this Action.
+    value: ${{ steps.read-score.outputs.report-html-url }}
+
+runs:
+  using: composite
+  steps:
+    - name: Set up Python ${{ inputs.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ inputs.python-version }}
+        cache: pip
+
+    - name: Set up Node ${{ inputs.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version }}
+
+    - name: Install SentinelQA
+      if: inputs.sentinelqa-version != ''
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install "sentinelqa==${{ inputs.sentinelqa-version }}"
+
+    - name: Install Playwright (chromium + deps)
+      if: inputs.install-playwright == 'true'
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: npx --yes playwright install --with-deps chromium
+
+    - name: Run `sentinel ci`
+      id: run
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      env:
+        SENTINELQA_CI: '1'
+      run: |
+        set -euo pipefail
+        args=( --config "${{ inputs.config }}" --ci --mode "${{ inputs.mode }}" --url "${{ inputs.url }}" )
+        if [ -n "${{ inputs.diff }}" ]; then
+          args+=( --diff "${{ inputs.diff }}" )
+        fi
+        if [ -n "${{ inputs.fail-under }}" ]; then
+          args+=( --fail-under "${{ inputs.fail-under }}" )
+        fi
+        sentinel ci "${args[@]}"
+
+    - name: Read SentinelQA outputs
+      id: read-score
+      if: always()
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        set -euo pipefail
+        runs_root=".sentinel/runs"
+        if [ ! -d "$runs_root" ]; then
+          echo "no run directory at $runs_root; skipping output capture"
+          exit 0
+        fi
+        latest="$runs_root/latest"
+        if [ ! -d "$latest" ] && [ ! -L "$latest" ]; then
+          latest="$(ls -1dt "$runs_root"/*/ 2>/dev/null | head -n1 || true)"
+          latest="${latest%/}"
+        fi
+        if [ -z "$latest" ] || [ ! -d "$latest" ]; then
+          echo "no completed run found under $runs_root"
+          exit 0
+        fi
+        echo "latest-run=$latest" >> "$GITHUB_OUTPUT"
+        if [ -f "$latest/score.json" ]; then
+          export SENTINELQA_LATEST_RUN="$latest"
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+        import json, os, pathlib
+        run = pathlib.Path(os.environ["SENTINELQA_LATEST_RUN"])
+        score = json.loads((run / "score.json").read_text())
+        print(f"quality-score={score.get('quality_score', '')}")
+        print(f"release-decision={score.get('release_decision', '')}")
+        PY
+        fi
+        if [ -f "$latest/report.html" ]; then
+          echo "report-html-url=$latest/report.html" >> "$GITHUB_OUTPUT"
+        fi
+
+    - name: Upload SentinelQA artifacts
+      if: always() && inputs.upload-artifacts == 'true' && steps.read-score.outputs.latest-run != ''
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ inputs.artifact-name }}
+        retention-days: ${{ inputs.artifact-retention-days }}
+        if-no-files-found: warn
+        path: |
+          ${{ steps.read-score.outputs.latest-run }}/report.html
+          ${{ steps.read-score.outputs.latest-run }}/report.md
+          ${{ steps.read-score.outputs.latest-run }}/run.json
+          ${{ steps.read-score.outputs.latest-run }}/findings.json
+          ${{ steps.read-score.outputs.latest-run }}/score.json
+          ${{ steps.read-score.outputs.latest-run }}/sarif.json
+          ${{ steps.read-score.outputs.latest-run }}/junit.xml
+          ${{ steps.read-score.outputs.latest-run }}/traces/**
+          ${{ steps.read-score.outputs.latest-run }}/screenshots/**
+          ${{ steps.read-score.outputs.latest-run }}/videos/**
+
+    - name: Upload SARIF to GitHub code scanning
+      if: always() && inputs.upload-sarif == 'true' && steps.read-score.outputs.latest-run != ''
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: ${{ steps.read-score.outputs.latest-run }}/sarif.json
+        category: sentinelqa

@@ -1,0 +1,111 @@
+# SentinelQA — drop-in GitLab CI template (PRD §21.1, CLAUDE.md §39).
+#
+# Usage (in the project's `.gitlab-ci.yml`):
+#
+#   include:
+#     - project: 'sentinelqa/sentinelqa'
+#       file: '/integrations/gitlab/.gitlab-ci.sentinel.yml'
+#
+#   sentinelqa:
+#     extends: .sentinelqa
+#     variables:
+#       SENTINELQA_URL: "https://preview-${CI_COMMIT_SHORT_SHA}.example.com"
+#       SENTINELQA_MODE: "standard"
+#
+# Or, more simply, define a job that uses `.sentinelqa` directly via
+# `extends` and override the `variables:` block. See
+# `integrations/gitlab/README.md` for the full guide.
+
+variables:
+  SENTINELQA_MODE: 'standard'
+  SENTINELQA_DIFF: ''
+  SENTINELQA_FAIL_UNDER: ''
+  SENTINELQA_VERSION: ''
+  SENTINELQA_URL: ''
+  PYTHON_VERSION: '3.12'
+  NODE_VERSION: '20'
+
+.sentinelqa:
+  image: python:${PYTHON_VERSION}
+  variables:
+    PIP_CACHE_DIR: '$CI_PROJECT_DIR/.cache/pip'
+    npm_config_cache: '$CI_PROJECT_DIR/.cache/npm'
+    PNPM_HOME: '$CI_PROJECT_DIR/.cache/pnpm'
+    SENTINELQA_CI: '1'
+  cache:
+    key:
+      files:
+        - pyproject.toml
+        - uv.lock
+        - pnpm-lock.yaml
+    paths:
+      - .cache/pip
+      - .cache/npm
+      - .cache/pnpm
+      - node_modules/
+  before_script:
+    # Node — required for Playwright bootstrap.
+    - apt-get update -y && apt-get install -y --no-install-recommends curl ca-certificates git
+    - curl -fsSL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash -
+    - apt-get install -y --no-install-recommends nodejs
+    # Optional installer: the calling project may have already vendored sentinelqa
+    # via a wheel; in that case set SENTINELQA_VERSION="" to skip pip install.
+    - |
+      if [ -n "${SENTINELQA_VERSION}" ]; then
+        python -m pip install --upgrade pip
+        python -m pip install "sentinelqa==${SENTINELQA_VERSION}"
+      fi
+    - npx --yes playwright install --with-deps chromium
+  script:
+    - |
+      if [ -z "${SENTINELQA_URL}" ]; then
+        echo "SENTINELQA_URL must be set; refusing to audit an empty target (PRD §2)."
+        exit 4
+      fi
+      args="--config sentinel.config.yaml --ci --mode ${SENTINELQA_MODE} --url ${SENTINELQA_URL}"
+      if [ -n "${SENTINELQA_DIFF}" ]; then
+        args="${args} --diff ${SENTINELQA_DIFF}"
+      fi
+      if [ -n "${SENTINELQA_FAIL_UNDER}" ]; then
+        args="${args} --fail-under ${SENTINELQA_FAIL_UNDER}"
+      fi
+      sentinel ci ${args}
+  after_script:
+    # Post the SentinelQA markdown summary back to the merge request. The
+    # poster reads $CI_API_V4_URL, $CI_PROJECT_ID, $CI_MERGE_REQUEST_IID,
+    # and $SENTINELQA_GITLAB_TOKEN (project access token with `api` scope).
+    - |
+      if [ -n "${CI_MERGE_REQUEST_IID:-}" ] && [ -n "${SENTINELQA_GITLAB_TOKEN:-}" ]; then
+        runs_root=".sentinel/runs"
+        latest="$(ls -1dt ${runs_root}/*/ 2>/dev/null | head -n1 || true)"
+        latest="${latest%/}"
+        if [ -n "${latest}" ] && [ -f "${latest}/report.md" ]; then
+          python integrations/gitlab/post_mr_note.py \
+            --report-markdown "${latest}/report.md" \
+            --api-url "${CI_API_V4_URL}" \
+            --project-id "${CI_PROJECT_ID}" \
+            --mr "${CI_MERGE_REQUEST_IID}" || true
+        fi
+      fi
+  artifacts:
+    when: always
+    expire_in: 14 days
+    paths:
+      - .sentinel/runs/*/run.json
+      - .sentinel/runs/*/findings.json
+      - .sentinel/runs/*/score.json
+      - .sentinel/runs/*/report.html
+      - .sentinel/runs/*/report.md
+      - .sentinel/runs/*/sarif.json
+      - .sentinel/runs/*/junit.xml
+      - .sentinel/runs/*/traces/**
+      - .sentinel/runs/*/screenshots/**
+      - .sentinel/runs/*/videos/**
+    reports:
+      junit:
+        - .sentinel/runs/*/junit.xml
+      codequality:
+        - .sentinel/runs/*/findings.json
+  rules:
+    - if: $CI_MERGE_REQUEST_IID
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH

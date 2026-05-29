@@ -1,0 +1,84 @@
+name: SentinelQA PR audit
+
+# Reusable workflow that calls the SentinelQA composite action against a
+# preview deployment URL. Drop it into a caller workflow with `uses:`
+# (see `integrations/github/README.md`).
+
+on:
+  workflow_call:
+    inputs:
+      url:
+        description: Preview URL to audit (must be allowlisted in sentinel.config.yaml).
+        required: true
+        type: string
+      config:
+        description: Path to sentinel.config.yaml.
+        required: false
+        type: string
+        default: sentinel.config.yaml
+      mode:
+        description: CI mode preset (fast / standard / full / nightly / release).
+        required: false
+        type: string
+        default: standard
+      fail-under:
+        description: Override policy.min_quality_score.
+        required: false
+        type: string
+        default: ''
+      diff:
+        description: Git diff range for impacted-tests mode.
+        required: false
+        type: string
+        default: origin/main...HEAD
+      sentinelqa-version:
+        description: PyPI version specifier for sentinelqa (empty means caller-installed).
+        required: false
+        type: string
+        default: ''
+    secrets:
+      PREVIEW_URL:
+        description: Optional secret containing the preview URL when caller cannot pass it as input.
+        required: false
+
+permissions:
+  contents: read
+  pull-requests: write
+  security-events: write
+
+jobs:
+  sentinelqa:
+    name: SentinelQA (${{ inputs.mode }})
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run SentinelQA audit
+        id: audit
+        uses: ./integrations/github
+        with:
+          url: ${{ inputs.url }}
+          config: ${{ inputs.config }}
+          mode: ${{ inputs.mode }}
+          fail-under: ${{ inputs.fail-under }}
+          diff: ${{ inputs.diff }}
+          sentinelqa-version: ${{ inputs.sentinelqa-version }}
+
+      - name: Post PR comment
+        if: always() && github.event_name == 'pull_request'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SENTINELQA_LATEST_RUN: ${{ steps.audit.outputs.report-html-url }}
+        run: |
+          if [ -z "${SENTINELQA_LATEST_RUN}" ]; then
+            echo "no run output; skipping PR comment"
+            exit 0
+          fi
+          report_dir="$(dirname "${SENTINELQA_LATEST_RUN}")"
+          python integrations/github/post_pr_comment.py \
+            --report-markdown "${report_dir}/report.md" \
+            --repo "${GITHUB_REPOSITORY}" \
+            --pr "${{ github.event.pull_request.number }}"
