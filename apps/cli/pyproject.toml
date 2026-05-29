@@ -8,6 +8,8 @@ license = { text = "Apache-2.0" }
 authors = [{ name = "ohswedd" }]
 dependencies = [
     "sentinelqa-engine",
+    "sentinelqa",
+    "sentinelqa-mcp",
     "typer==0.15.1",
     "click==8.1.8",
     "pydantic==2.10.3",
@@ -17,6 +19,8 @@ dependencies = [
 
 [tool.uv.sources]
 sentinelqa-engine = { workspace = true }
+sentinelqa = { workspace = true }
+sentinelqa-mcp = { workspace = true }
 
 [project.scripts]
 sentinel = "sentinel_cli.main:_entry"
