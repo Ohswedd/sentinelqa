@@ -23,6 +23,7 @@ from sentinel_cli.commands import (
     ci_cmd,
     discover_cmd,
     doctor_cmd,
+    fix_cmd,
     functional_cmd,
     generate_cmd,
     init_cmd,
@@ -45,7 +46,6 @@ _STUB_COMMANDS: Final[tuple[tuple[str, str, str], ...]] = (
     ("api", "22", "Run API contract + negative-case checks."),
     ("visual", "21", "Run visual-regression checks against baselines."),
     ("chaos", "23", "Run chaos checks (slow net, offline, session expiry)."),
-    ("fix", "20", "Propose locator repairs and other safe self-healing fixes."),
 )
 
 
@@ -250,6 +250,14 @@ def build_app() -> typer.Typer:
             "'coming soon' placeholders, console errors the UI ignores."
         ),
     )(llm_audit_cmd.run_llm_audit)
+    cli.command(
+        name="fix",
+        help=(
+            "Apply or surface healer-proposed repairs from a completed "
+            "run (Phase 20, ADR-0025). Default is review-only; use "
+            "--apply safe|aggressive to apply approved proposals."
+        ),
+    )(fix_cmd.run_fix)
 
     for name, phase, summary in _STUB_COMMANDS:
         stubs.register_stub(cli, name=name, phase=phase, summary=summary)

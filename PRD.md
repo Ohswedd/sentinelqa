@@ -552,6 +552,118 @@ Not allowed automatically:
 - Disabling security checks.
 - Changing production code unless explicitly requested.
 
+#### 9.6.1 MVP delivery (Phase 20)
+
+Phase 20 ships the conservative MVP (ADR-0025) backed by three
+deterministic proposers and a banner-aware apply gate. The Healer is
+signal-driven — it consumes the Phase-04 locator descriptor, the
+Phase-05 discovery DOM map, and the spec source on disk; no new
+runner harness is required.
+
+- **Module package.** `engine/healer/` with:
+  - `engine.healer.Healer.propose(failure, inputs, *, context)` —
+    facade returning a tuple of typed `RepairProposal` records,
+    sorted by `(kind, id)` for determinism.
+  - `engine.healer.locator_repair.propose_locator_repair` — scores
+    `DomCandidate` records against a `LocatorDescriptor`. Exact
+    role + name + landmark → confidence `0.95`; same role + name
+    (different landmark) → `0.9`; fuzzy name match (similarity ≥
+    0.8) in same landmark → `0.75` (different landmark → `0.7`);
+    role-only → `0.5`. Anything below the configured
+    `auto_apply_threshold` (default `0.9`) carries
+    `requires_human_review=True`.
+  - `engine.healer.wait_repair.propose_wait_repair` — replaces
+    `await page.waitForTimeout(...)` with reliance on the following
+    `await expect(...).toBe* / toHave* / toEqual / toMatch / toContain`
+    Playwright assertion. Confidence `0.9` for `toBeVisible` /
+    `toHaveText`; `0.6` for other matchers; `0.3` when no following
+    assertion is found and the proposal degrades to a documented
+    removal.
+  - `engine.healer.fixture_repair.propose_fixture_repair` — for
+    `seededRecord` failures of kind `missing_entity` (confidence
+    `0.85`) emits a structured re-seed proposal; for
+    `contract_drift` (confidence `0.7`) emits a
+    `sentinel generate --from-discovery` proposal. The Healer
+    never mutates a database.
+
+- **Wire format.** `RepairProposal` is a strict superset of the
+  Phase-01 `RepairSuggestion` (`id`, `target_test`, `original`,
+  `proposed`, `confidence`, `reason`, `evidence`,
+  `requires_human_review`, `schema_version`) plus
+  `kind ∈ {locator, wait, fixture, assertion}`, `target_test_line`,
+  `unified_diff`, and an optional `descriptor`. Locked at
+  `packages/shared-schema/repair-proposal.schema.json` (Draft
+  2020-12, `x-sentinelqa-schema-version: "1"`). Persisted under
+  `<run-dir>/healer/<id>.json` plus an aggregate
+  `<run-dir>/healer/index.json` summarizing counts by kind and the
+  per-proposal `id / kind / confidence / target_test /
+  requires_human_review`.
+
+- **Assertion-weakening guard.** `engine.healer.diff.assert_no_assertion_weakening`
+  counts structural Playwright assertions (`expect(`, `.toBe*`,
+  `.toHave*`, `.toEqual`, `.toMatch`, `.toContain`) after stripping
+  `//` line comments and `/* ... */` block comments. Any decrease
+  raises `AssertionWeakeningError` unless `allow_weaken=True`. Every
+  proposer calls the guard unconditionally; a future assertion-
+  stabilization proposer must pass `allow_weaken=True` AND the CLI
+  must require `--allow-weaken` to apply such a proposal (CLAUDE.md
+  §23).
+
+- **Banner-aware apply.** `engine.healer.banner.detect_banner_status`
+  inspects the head of a spec for the Phase-07 banner
+  (`// SENTINELQA AUTO-GENERATED`) and a `// generated_at: <ISO>`
+  timestamp. Missing banner → hand-edited. Banner present but file
+  mtime is more than 5 seconds after the recorded `generated_at` →
+  hand-edited. Hand-edited specs are refused regardless of
+  `auto_apply` mode.
+
+- **Auto-apply gating.** `engine.healer.gating.decide_auto_apply`
+  returns the typed `AutoApplyDecision`. `off` (default) never
+  applies; `safe` applies `locator` and `wait` repairs at or above
+  threshold; `aggressive` adds `fixture` and `assertion` repairs
+  (the latter still require `--allow-weaken`). The decision's
+  one-sentence `reason` is logged verbatim to the run's
+  `audit.log` on apply and on skip (CLAUDE.md §11).
+
+- **`sentinel fix` CLI** (replaces the Phase-02 stub).
+  Options: `--latest / --no-latest`, `--run RUN-...`,
+  `--apply none|safe|aggressive`, `--dry-run`, `--allow-weaken`,
+  `--review-only`, `--threshold 0.5..1.0`. Default behavior is
+  review-only (`--apply none` prints each proposal as a unified
+  diff). Exit codes 0 / 2 (config or CLI usage error, including
+  unknown `--run` id or unknown `--apply` value) / 6 (one or more
+  proposed diffs failed to apply cleanly). JSON mode (`--json`)
+  emits a single-line summary `{run_dir, count, applied, reviewed,
+  skipped, errors}` and remains stdout-pure (CLAUDE.md §13).
+
+- **MCP integration.** `sentinel.suggest_fix` (Phase 18) now
+  surfaces persisted healer proposals for the finding's target file
+  alongside the module's deterministic `recommendation` /
+  `suggested_fix`. `sentinel.verify_fix` (PRD §16.4) already
+  confirms the agent's apply via re-running the audit — Phase 20
+  wires the loop end-to-end without changing the agent-envelope
+  wire format. The SDK's `Sentinel.verify_fix` method still defers
+  apply-fix to the agent; SentinelQA is the verifier.
+
+- **Config block.** New `healer:` section in
+  `sentinel.config.yaml`:
+
+  ```yaml
+  healer:
+    auto_apply: "off"            # off | safe | aggressive
+    auto_apply_threshold: 0.9     # 0.5..1.0
+  ```
+
+- **Analyzer ↔ Healer routing.** `engine.analyzer.pipeline.is_healer_candidate(result)`
+  returns `True` only for `classification.category == "test_bug"`
+  with confidence ≥ `0.5`. Callers (CLI / SDK / orchestrator) read
+  the analyzer's published `AnalyzerResult` and invoke the Healer
+  for the test_bug candidates; the Analyzer itself stays a
+  pure-function pipeline.
+
+CLI / SDK contracts in §13 / §14 are unchanged beyond the
+`sentinel fix` command landing. ADR-0025 owns the rationale.
+
 ### 9.7 Reporter module
 
 Purpose: Generate human and machine-readable reports.

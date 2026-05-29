@@ -1,10 +1,13 @@
-"""``sentinel.suggest_fix`` — return the deterministic remediation for a finding.
+"""``sentinel.suggest_fix`` — return remediation for a finding.
 
-The Healer module (Phase 20) supplies its own concrete patch
-proposals. Until then, this tool returns the deterministic
-``recommendation`` + ``suggested_fix`` already attached to the finding
-by its emitting module. This is honest: SentinelQA is the *verifier*;
-the agent applies the fix; ``sentinel.verify_fix`` confirms.
+When the Healer module (Phase 20) has persisted a concrete repair
+proposal for the run, this tool returns its full :class:`RepairProposal`
+payload (kind, confidence, unified_diff, requires_human_review). When no
+healer artifacts are present, it falls back to the finding's
+``recommendation`` + ``suggested_fix`` from the emitting module — the
+Phase-18 contract. Either way, the agent applies the fix and
+``sentinel.verify_fix`` confirms; SentinelQA never mutates source from
+the MCP tool surface.
 """
 
 from __future__ import annotations
@@ -76,13 +79,36 @@ class SuggestFixTool:
                 exit_code=3,
                 suggested_fix="List findings via sentinel.read_report.",
             )
+        # Phase 20 — if the Healer persisted proposals for this run, surface
+        # the ones whose target_test matches the finding's location.file.
+        from engine.healer.writer import iter_proposals  # local import keeps startup cheap
+
+        location = target.get("location") or {}
+        target_file = str(location.get("file") or "")
+        healer_proposals: list[dict[str, object]] = []
+        for proposal_doc in iter_proposals(run_dir):
+            test_path = str(proposal_doc.get("target_test", ""))
+            if target_file and target_file in test_path:
+                healer_proposals.append(
+                    {
+                        "id": proposal_doc.get("id"),
+                        "kind": proposal_doc.get("kind"),
+                        "confidence": proposal_doc.get("confidence"),
+                        "target_test": test_path,
+                        "unified_diff": proposal_doc.get("unified_diff"),
+                        "requires_human_review": proposal_doc.get("requires_human_review"),
+                        "reason": proposal_doc.get("reason"),
+                    }
+                )
+
         suggestion = {
             "finding_id": finding_id,
             "recommendation": target.get("recommendation") or "",
             "suggested_fix": target.get("suggested_fix") or "",
             "requires_human_review": True,
+            "healer_proposals": healer_proposals,
             "next_steps": [
-                "Apply the recommendation locally.",
+                "Apply one of the healer_proposals (preferred) or the suggested_fix.",
                 "Call sentinel.verify_fix with this finding_id to confirm.",
             ],
         }

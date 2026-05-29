@@ -106,4 +106,26 @@ def sort_results(results: Sequence[AnalyzerResult]) -> tuple[AnalyzerResult, ...
     return tuple(sorted(results, key=lambda r: r.test_id))
 
 
-__all__ = ["Analyzer", "AnalyzerContext", "sort_results"]
+def is_healer_candidate(result: AnalyzerResult) -> bool:
+    """Return ``True`` if Phase 20 Healer should attempt a repair (PRD §9.6).
+
+    The Healer is intentionally narrow: it operates only on
+    ``test_bug``-categorized failures. App bugs, environment failures,
+    flake, security/perf/a11y findings are out of scope (the Healer
+    must not paper over them). Confidence below 0.5 is also out of
+    scope — at that point the classifier itself isn't sure the failure
+    is a test bug, and the Healer should not invent test changes from
+    a guess.
+    """
+
+    if result.classification.category != "test_bug":
+        return False
+    return result.classification.confidence >= 0.5
+
+
+__all__ = [
+    "Analyzer",
+    "AnalyzerContext",
+    "is_healer_candidate",
+    "sort_results",
+]
