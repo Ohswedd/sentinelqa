@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sentinelqa.dev/external/slack-block-kit.schema.json",
+  "title": "Slack Block Kit (sentinelqa minimal subset)",
+  "description": "A permissive subset of Slack's Block Kit JSON used by `engine.reporter.slack`. The official upstream is documented at https://api.slack.com/block-kit. We only encode the surface we generate today; the Slack API itself validates the full envelope at post time.",
+  "type": "object",
+  "required": ["blocks"],
+  "additionalProperties": true,
+  "properties": {
+    "text": {
+      "description": "Fallback plain-text summary (Slack notifications).",
+      "type": "string",
+      "minLength": 1
+    },
+    "blocks": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 50,
+      "items": {
+        "$ref": "#/$defs/block"
+      }
+    }
+  },
+  "$defs": {
+    "block": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["header", "section", "divider", "context", "actions"]
+        },
+        "block_id": { "type": "string" },
+        "text": { "$ref": "#/$defs/textElement" },
+        "fields": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/textElement" }
+        },
+        "accessory": { "$ref": "#/$defs/accessory" },
+        "elements": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/contextOrButtonElement" }
+        }
+      },
+      "additionalProperties": true
+    },
+    "textElement": {
+      "type": "object",
+      "required": ["type", "text"],
+      "properties": {
+        "type": { "type": "string", "enum": ["plain_text", "mrkdwn"] },
+        "text": { "type": "string", "minLength": 1 },
+        "emoji": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    },
+    "contextOrButtonElement": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["plain_text", "mrkdwn", "image", "button"]
+        },
+        "text": {
+          "oneOf": [{ "type": "string" }, { "$ref": "#/$defs/textElement" }]
+        },
+        "image_url": { "type": "string" },
+        "alt_text": { "type": "string" },
+        "url": { "type": "string" },
+        "value": { "type": "string" },
+        "action_id": { "type": "string" },
+        "style": { "type": "string", "enum": ["primary", "danger"] }
+      },
+      "additionalProperties": true
+    },
+    "accessory": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": { "type": "string" },
+        "text": { "$ref": "#/$defs/textElement" },
+        "url": { "type": "string" },
+        "value": { "type": "string" },
+        "action_id": { "type": "string" }
+      },
+      "additionalProperties": true
+    }
+  }
+}
