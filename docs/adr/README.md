@@ -71,3 +71,4 @@ Use [`_template.md`](./_template.md). The required headings are validated by `sc
 | [0025](./0025-healer-self-repair.md)                      | Healer / self-repair — deterministic proposals, banner-aware apply, assertion-weakening guard | `Accepted` | 20    |
 | [0026](./0026-visual-regression-module.md)                | Visual regression — Pillow diff, signal-side capture, hard CI-acceptance guard                | `Accepted` | 21    |
 | [0027](./0027-api-testing-module.md)                      | API testing module — Python `httpx` with layered no-fuzz guards + perf-dedup latency          | `Accepted` | 22    |
+| [0028](./0028-chaos-module.md)                            | Chaos module — Playwright-injected scenarios with JSONL bridge + bounded scenario catalog     | `Accepted` | 23    |

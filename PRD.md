@@ -1176,6 +1176,75 @@ Safe chaos tests:
 - Empty dataset.
 - Browser storage corruption.
 
+#### 10.8.1 MVP delivery (Phase 23)
+
+Phase 23 ships the chaos module as a Python `ChaosModule(SentinelModule)`
+backed by a TypeScript chaos helper surface (ADR-0028). The bridge is the
+same JSONL pattern Phase 11 (a11y) and Phase 12 (perf) already use:
+
+- **Scenario catalog (13 entries, all four PRD §10.8 categories).**
+  `modules.chaos.scenarios.CATALOG` is the canonical source of truth
+  for both runtimes — `network.{slow_3g, offline, api_500, api_timeout}`,
+  `session.{expired_token, missing_permissions}`, `ux.{duplicate_submit,
+  double_click_race, back_forward, refresh_mid_flow}`,
+  `data.{empty_dataset, large_dataset, storage_corruption}`.
+- **TS chaos helpers** live in `@sentinelqa/ts-runtime/chaos`:
+  `chaosNetwork(page, scenario)`, `chaosSession(page, scenario)`,
+  `chaosDuplicateSubmit(locator)` /
+  `chaosDoubleClickRace(locator)` /
+  `chaosBackForward(page)` /
+  `chaosRefreshMidFlow(page)`, plus
+  `chaosEmptyDataset(page, …)` /
+  `chaosLargeDataset(page, …)` /
+  `chaosCorruptStorage(storage, keys)`. Every helper installs
+  `page.route()` handlers; none re-signs production JWTs, rotates
+  proxies, or attempts detection bypass.
+- **Wire format.** TS helpers append `ChaosEvent` records (one JSON
+  object per line) to `<run-dir>/chaos/events.jsonl`. Each event names
+  the `scenario_id`, `category`, `flow`, `observation` (one of ten
+  enums including the positive `handled_gracefully`), and optional
+  `route` / `detail` / `evidence` (flat `str -> str` map). The Python
+  ingestion layer (`modules.chaos.ingestion`) parses each line through
+  Pydantic with `extra="forbid"`, caps the file at 8 MiB, and groups
+  events into `ChaosScenarioResult` records.
+- **Bounded knobs (CLAUDE.md §6).** The `chaos:` config block clamps:
+  `slow_3g_kbps ∈ [100, 10_000]`, `slow_3g_rtt_ms ∈ [50, 5_000]`,
+  `api_timeout_abort_ms ∈ [1_000, 120_000]`,
+  `large_dataset_items ∈ [100, 10_000]`. Below-floor values for
+  `slow_3g_kbps` would turn the scenario into a denial-of-service
+  amplifier; above-ceiling values for `api_timeout_abort_ms` would
+  let the helper hang the runner indefinitely.
+- **Default OFF (CLAUDE.md §6).** `modules.chaos` defaults `false`.
+  The PRD §21.3 CI `nightly` preset flips it on; `fast` / `standard`
+  / `full` / `release` do not. Operators may also run the module ad
+  hoc via `sentinel chaos`, which always honors the standard
+  `SafetyPolicy` (no destructive scenarios escape `safe` mode).
+- **Artifacts.** `<run-dir>/chaos/<category>.json` per category +
+  `<run-dir>/chaos/index.json` aggregate, both stamped with
+  `CHAOS_RESULT_SCHEMA_VERSION = "1"`. The raw `events.jsonl` remains
+  the canonical event log; chaos artifacts never re-copy it.
+- **Findings.** Each "bad" observation maps to one of nine rule IDs
+  (`chaos-uncaught-error`, `chaos-no-error-state`,
+  `chaos-session-expired-no-redirect`, `chaos-permission-missing-bad-ux`,
+  `chaos-duplicate-submit-accepted`, `chaos-lost-form-state`,
+  `chaos-white-screen-on-refresh`, `chaos-missing-empty-state`,
+  `chaos-dom-explosion`, `chaos-crash-on-corrupted-storage`).
+  Severities mirror UX impact: a missing empty state is high, a lost
+  form value is medium. `handled_gracefully` never raises a finding.
+- **CLI.** `sentinel chaos` replaces the Phase 02 stub. Flags:
+  `--url`, `--scenarios <csv of scenario_ids>`, `--categories <csv>`,
+  `--flows <csv>`, `--events <path>` (defaults to
+  `<run-dir>/chaos/events.jsonl`). Exit codes follow PRD §13.2:
+  0 (no high/critical), 1 (high/critical or incomplete), 2 (config),
+  4 (unsafe target), 6 (runner failure).
+- **Safety guard.** `tests/security/test_chaos_no_evasion_flags.py`
+  greps the chaos package + CLI source for compound forbidden
+  literals (`stealth_mode`, `bot_detection_bypass`, `proxy_rotation`,
+  `captcha_bypass`, …) and introspects the Typer parameters to
+  refuse any `--aggressive` / `--bypass` / `--stealth` /
+  `--undetectable` / `--unbounded` / `--no-rate-limit` /
+  `--ignore-robots` / `--evade*` flag.
+
 ### 10.9 LLM-code-specific audits
 
 This is SentinelQA’s strongest differentiator.

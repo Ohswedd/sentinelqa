@@ -21,6 +21,7 @@ from sentinel_cli.commands import (
     a11y_cmd,
     api_cmd,
     audit_cmd,
+    chaos_cmd,
     ci_cmd,
     discover_cmd,
     doctor_cmd,
@@ -43,10 +44,8 @@ from sentinel_cli.state import GlobalState, detect_ci_default
 # Commands stubbed-out in Phase 02. Each entry binds (command_name,
 # future_phase, one_line_help). Lifecycle commands that actually do
 # something in Phase 02 (`init`, `doctor`, `audit`) are NOT here. Phase 05
-# replaces the `discover` stub.
-_STUB_COMMANDS: Final[tuple[tuple[str, str, str], ...]] = (
-    ("chaos", "23", "Run chaos checks (slow net, offline, session expiry)."),
-)
+# replaces the `discover` stub. Phase 23 replaces the `chaos` stub.
+_STUB_COMMANDS: Final[tuple[tuple[str, str, str], ...]] = ()
 
 
 def _version_string() -> str:
@@ -225,6 +224,18 @@ def build_app() -> typer.Typer:
             "I/O layer regardless of config."
         ),
     )(api_cmd.run_api)
+    cli.command(
+        name="chaos",
+        help=(
+            "Run safe chaos / adversarial scenarios (Phase 23, PRD §10.8): "
+            "network (slow_3g / offline / api_500 / api_timeout), session "
+            "(expired token / missing permissions), UX (duplicate submit, "
+            "double-click race, back-forward, refresh mid-flow), data "
+            "(empty / large datasets, storage corruption). The module is "
+            "off by default; --scenarios / --categories subset the run. "
+            "No aggressive / evasion flags exist (CLAUDE.md §6)."
+        ),
+    )(chaos_cmd.run_chaos)
     cli.command(
         name="report",
         help=(

@@ -30,9 +30,9 @@ Safety boundary (CLAUDE.md §6, §39):
 - Every CLI invocation honors the standard SafetyPolicy mode (no
   destructive scenarios escape "safe"). Session-claim manipulation is
   Playwright-side only: the TS helpers never re-sign real JWTs.
-- The module never reads CLI flags named ``--aggressive`` /
-  ``--bypass`` / ``--stealth``; the ``tests/security`` guard greps
-  the package + CLI to keep that property.
+- The module never reads CLI flags from the aggressive / evasion /
+  detection-bypass family; the ``tests/security`` guard greps the
+  package + CLI for compound forbidden literals to keep that property.
 """
 
 from __future__ import annotations
@@ -265,10 +265,12 @@ class ChaosModule(SentinelModule):
         metrics: Mapping[str, float | int],
     ) -> ModuleResult:
         run_outcome = self._last_outcome
-        if run_outcome is None or all(c.skipped for c in run_outcome.categories):
+        if run_outcome is None:
             status: ModuleStatus = "skipped"
         elif run_outcome.incomplete:
             status = "incomplete"
+        elif all(c.skipped for c in run_outcome.categories):
+            status = "skipped"
         elif any(f.severity in {"critical", "high"} for f in findings):
             status = "failed"
         else:

@@ -18,9 +18,11 @@ Safety boundary (CLAUDE.md §6):
   ``nightly`` preset (PRD §21.3).
 - Session-claim manipulation runs Playwright-side only; the helpers
   never re-sign or forge production JWTs.
-- No CLI flag named ``--aggressive`` / ``--bypass`` / ``--stealth`` /
-  ``--undetectable`` exists; ``tests/security/test_chaos_no_evasion_flags.py``
-  greps the package + CLI to keep that property.
+- No aggressive / evasion / detection-bypass knob exists on the CLI
+  or in :class:`engine.config.schema.ChaosConfig`;
+  ``tests/security/test_chaos_no_evasion_flags.py`` greps the package
+  + CLI for compound forbidden literals and introspects the Typer
+  parameters to keep that property.
 """
 
 from __future__ import annotations

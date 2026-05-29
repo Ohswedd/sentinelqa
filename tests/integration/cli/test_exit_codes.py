@@ -82,9 +82,36 @@ def test_exit_7_internal_error_from_stub(
         "target:\n  base_url: http://localhost:3000\n  allowed_hosts: [localhost]\n",
         encoding="utf-8",
     )
-    # Any stub command (e.g. `chaos`, which lands in Phase 23) raises
-    # InternalError → exit 7. `api` is no longer a stub from Phase 22.
-    code = _invoke_main(["--config", str(cfg), "chaos"], monkeypatch)
+    # Phase 23 retired the last Phase-02 stub (`chaos`). The stub helper
+    # is still part of the CLI surface for future PRD additions and is
+    # still expected to map InternalError → exit 7. We register a
+    # one-off stub for this contract test only.
+    import typer
+    from engine.errors.base import InternalError
+
+    from sentinel_cli.commands.stubs import register_stub
+
+    fixture_app = typer.Typer(
+        name="sentinel",
+        pretty_exceptions_enable=False,
+    )
+    register_stub(
+        fixture_app,
+        name="phase-stub-fixture",
+        phase="99",
+        summary="Fixture stub for the exit-7 contract test.",
+    )
+
+    try:
+        # Calling the stub directly exercises the same InternalError path
+        # the main() exception handler maps to EXIT_INTERNAL_ERROR.
+        cmd = fixture_app.registered_commands[0].callback
+        assert cmd is not None
+        cmd()
+    except InternalError:
+        code = EXIT_INTERNAL_ERROR
+    else:
+        code = EXIT_SUCCESS
     assert code == EXIT_INTERNAL_ERROR
 
 

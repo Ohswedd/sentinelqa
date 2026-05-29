@@ -87,7 +87,7 @@ def test_module_off_by_default_in_modules_config() -> None:
 
 def test_chaos_config_rejects_duplicate_categories() -> None:
     with pytest.raises(ValidationError):
-        ChaosConfig(enabled_categories=("network", "network"))  # type: ignore[arg-type]
+        ChaosConfig(enabled_categories=("network", "network"))
 
 
 def test_chaos_config_rejects_duplicate_scenarios() -> None:
