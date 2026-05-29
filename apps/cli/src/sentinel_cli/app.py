@@ -35,6 +35,7 @@ from sentinel_cli.commands import (
     security_cmd,
     stubs,
     test_cmd,
+    visual_cmd,
 )
 from sentinel_cli.state import GlobalState, detect_ci_default
 
@@ -44,7 +45,6 @@ from sentinel_cli.state import GlobalState, detect_ci_default
 # replaces the `discover` stub.
 _STUB_COMMANDS: Final[tuple[tuple[str, str, str], ...]] = (
     ("api", "22", "Run API contract + negative-case checks."),
-    ("visual", "21", "Run visual-regression checks against baselines."),
     ("chaos", "23", "Run chaos checks (slow net, offline, session expiry)."),
 )
 
@@ -258,6 +258,16 @@ def build_app() -> typer.Typer:
             "--apply safe|aggressive to apply approved proposals."
         ),
     )(fix_cmd.run_fix)
+    cli.add_typer(
+        visual_cmd.visual_app,
+        name="visual",
+        help=(
+            "Visual-regression checks (Phase 21, PRD §10.6). `visual diff` "
+            "compares captured PNGs against baselines; `visual accept` "
+            "promotes captures into the baseline tree (refused in CI); "
+            "`visual capture` stages an external PNG tree."
+        ),
+    )
 
     for name, phase, summary in _STUB_COMMANDS:
         stubs.register_stub(cli, name=name, phase=phase, summary=summary)

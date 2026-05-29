@@ -38,6 +38,7 @@ dev = [
     "graphql-core==3.2.5",
     "pytest-httpserver==1.1.0",
     "jinja2==3.1.4",
+    "pillow==11.0.0",
 ]
 
 [tool.uv]
@@ -134,6 +135,7 @@ files = [
     "engine/healer",
     "engine/modules",
     "modules/functional",
+    "modules/visual",
     "tests",
 ]
 exclude = [
@@ -222,6 +224,7 @@ source = [
     "engine/modules",
     "engine/ci",
     "modules/functional",
+    "modules/visual",
     "apps/cli/src/sentinel_cli",
     "packages/python-sdk/src/sentinelqa",
     "packages/mcp-server/src/sentinelqa_mcp",

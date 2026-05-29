@@ -894,6 +894,60 @@ Capabilities:
 - Ignore regions.
 - Dynamic content masking.
 
+#### 10.6.1 Phase 21 — MVP delivery
+
+Phase 21 (ADR-0026) ships the diff + acceptance pipeline as the
+release-ready slice of §10.6. Concrete behaviour:
+
+- **Module.** `modules/visual.VisualModule` follows the standard
+  SentinelQA module lifecycle (`validate_prerequisites` → `plan` →
+  `execute` → `emit_findings` → `emit_metrics` → `summarize`). It
+  consumes PNGs already on disk; the Playwright TS capture step is
+  a follow-up wire and is *not* a Phase 21 deliverable.
+- **Diff math.** Pure-Python via Pillow. `pixel_diff` returns a
+  differing-pixel count plus a red-highlighted overlay PNG. `ssim`
+  (single-scale Wang et al., luminance channel, no Gaussian window
+  so the value is platform-stable) is the optional perceptual
+  filter; when enabled, findings fire only when BOTH the pixel
+  threshold AND the SSIM threshold cross.
+- **Storage layout.** Baselines live at
+  `.sentinel/baselines/<viewport>/<route-slug>.png` with an
+  `index.json` carrying sha256, captured-at, captured-by-run-id,
+  and the applied masks per row. Run artifacts land under
+  `<run-dir>/visual/`: `current/` for captures, `diff/` for
+  overlays, `index.json` for the per-pair status summary.
+- **Masking.** `visual.masks` accepts either a `selector` (the TS
+  capture helper hides the element before screenshot — contract
+  documented, capture-side wire ships with the future capture
+  task) or a static `rect` (the Python diff layer paints both
+  images grey before comparison). Wildcard route `*` matches every
+  route; prefix glob `admin*` matches every route that begins with
+  `admin`.
+- **Viewports.** Defaults: `mobile (375×812)`, `tablet (768×1024)`,
+  `desktop (1280×800)`. Viewport names must match `^[a-z0-9_-]+$`
+  and are unique per configuration.
+- **CLI.** `sentinel visual` exposes three subcommands:
+  `diff` (default — runs the lifecycle restricted to the visual
+  module), `accept` (promotes captures into the baseline tree —
+  refused under CI), and `capture` (stages an external PNG tree
+  as the run's `current/`).
+- **CI-acceptance guard.** `sentinel visual accept` refuses to
+  promote whenever the CLI is in CI mode (`--ci` flag OR `CI` /
+  `SENTINEL_CI` truthy in the env), exiting with code `4`
+  (unsafe target). Every refusal writes a
+  `visual.accept.refused_ci` audit-log entry under the supplied
+  current root so operators have a paper trail.
+- **Findings.** Three categories ship: `visual_pixel_diff`
+  (medium), `visual_size_mismatch` (high — different pixel
+  dimensions are almost never a noise event), and
+  `visual_missing_current` (medium — baseline present, capture
+  missing). `missing_baseline` is the operator's signal to run
+  `sentinel visual accept` and does NOT emit a finding.
+- **Exit codes.** `0` no findings, `1` quality gate failed
+  (findings present), `2` invalid config / CLI usage, `4` safety
+  policy blocked OR CI-mode accept refused, `6` module failed,
+  `7` internal error.
+
 ### 10.7 Security testing
 
 Safe checks:

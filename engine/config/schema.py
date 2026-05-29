@@ -231,12 +231,94 @@ class PerformanceConfig(SentinelModel):
     api_path_allowlist: tuple[str, ...] = Field(default_factory=tuple, max_length=200)
 
 
+class VisualViewportConfig(SentinelModel):
+    """One entry in ``visual.viewports`` (Phase 21.05).
+
+    The viewport ``name`` is also the directory segment under
+    ``baselines_dir`` and the file segment in the run's ``visual/``
+    artifact tree (``current/<viewport>/<route-slug>.png``).
+    """
+
+    name: str = Field(min_length=1, max_length=32, pattern=r"^[a-z0-9_-]+$")
+    width: int = Field(gt=0, le=10000)
+    height: int = Field(gt=0, le=10000)
+
+
+class VisualMaskConfig(SentinelModel):
+    """One entry in ``visual.masks`` (Phase 21.04).
+
+    ``route`` matches the captured route slug (the same value used by
+    the baseline filename); ``selector`` is the CSS selector the TS
+    capture helper hides before screenshot. The Python diff layer ALSO
+    accepts a static rectangle (``rect``) so test fixtures can verify
+    masking without driving Playwright (PRD §10.6 + CLAUDE §29).
+    """
+
+    route: str = Field(min_length=1, max_length=512)
+    selector: str | None = Field(default=None, max_length=2048)
+    rect: tuple[int, int, int, int] | None = None
+    reason: str = Field(min_length=1, max_length=256)
+
+    @model_validator(mode="after")
+    def _selector_or_rect(self) -> VisualMaskConfig:
+        if self.selector is None and self.rect is None:
+            raise ValueError(
+                "visual.masks entry must define either 'selector' (captured at "
+                "screenshot time) or 'rect' (applied by the diff layer)."
+            )
+        return self
+
+
+class VisualPerceptualConfig(SentinelModel):
+    """`visual.perceptual:` block (Phase 21.03).
+
+    SSIM-based perceptual diff. When enabled, a finding only fires when
+    BOTH the pixel threshold AND the SSIM threshold are exceeded — the
+    perceptual layer is a noise filter, not a second alarm.
+    """
+
+    enabled: bool = False
+    min_similarity: float = Field(default=0.98, ge=0.0, le=1.0)
+
+
+_DEFAULT_VIEWPORTS: tuple[VisualViewportConfig, ...] = (
+    VisualViewportConfig(name="mobile", width=375, height=812),
+    VisualViewportConfig(name="tablet", width=768, height=1024),
+    VisualViewportConfig(name="desktop", width=1280, height=800),
+)
+
+
 class VisualConfig(SentinelModel):
-    """`visual:` block."""
+    """`visual:` block (PRD §10.6, CLAUDE §29).
+
+    The visual module consumes already-captured PNGs from a run's
+    ``visual/current/`` tree and diffs them against the baselines under
+    ``baselines_dir``. Baselines never auto-accept in CI: the CLI
+    refuses ``--accept`` when ``--ci`` (or the ``CI`` / ``SENTINEL_CI``
+    env var) is set.
+    """
 
     baselines_dir: Path = Path(".sentinel/baselines")
     threshold: float = Field(default=0.02, ge=0.0, le=1.0)
     mask_dynamic_content: bool = True
+    viewports: tuple[VisualViewportConfig, ...] = Field(
+        default_factory=lambda: _DEFAULT_VIEWPORTS,
+        max_length=16,
+    )
+    masks: tuple[VisualMaskConfig, ...] = Field(default_factory=tuple, max_length=256)
+    perceptual: VisualPerceptualConfig = Field(default_factory=lambda: VisualPerceptualConfig())
+
+    @field_validator("viewports")
+    @classmethod
+    def _unique_viewport_names(
+        cls, value: tuple[VisualViewportConfig, ...]
+    ) -> tuple[VisualViewportConfig, ...]:
+        seen: set[str] = set()
+        for vp in value:
+            if vp.name in seen:
+                raise ValueError(f"Duplicate visual.viewports.name: {vp.name!r}.")
+            seen.add(vp.name)
+        return value
 
 
 class DiscoveryOpenAPIConfig(SentinelModel):
@@ -527,6 +609,9 @@ __all__ = [
     "PerformanceConfig",
     "PerformanceBudgets",
     "VisualConfig",
+    "VisualMaskConfig",
+    "VisualPerceptualConfig",
+    "VisualViewportConfig",
     "DiscoveryConfig",
     "DiscoveryOpenAPIConfig",
     "DiscoveryGraphQLConfig",
