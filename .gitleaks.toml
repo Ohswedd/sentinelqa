@@ -46,6 +46,10 @@ paths = [
   '''^tests/integration/modules/security/test_frontend_secrets_integration\.py$''',
   '''^tests/integration/modules/security/test_e2e\.py$''',
   '''^tests/integration/cli/test_security\.py$''',
+  # Phase 15 — audit-view test proves the redacter strips a fake
+  # Stripe-style key + password from the persisted audit log. The
+  # literal needs to exist in the test source to assert the negative.
+  '''^tests/integration/reporter/test_audit_view\.py$''',
 ]
 regexes = [
   # Canonical AWS example access-key from public AWS docs.

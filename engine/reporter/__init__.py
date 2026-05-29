@@ -14,6 +14,11 @@ task by task as each writer is added.
 
 from __future__ import annotations
 
+from engine.reporter.audit_view import (
+    AuditEntry,
+    load_audit_entries,
+    normalize_audit_entries,
+)
 from engine.reporter.dispatcher import (
     SUPPORTED_FORMATS,
     Reporter,
@@ -33,6 +38,14 @@ from engine.reporter.findings_writer import (
     collect_linter_warnings,
     write_findings,
 )
+from engine.reporter.html_writer import (
+    HTML_REPORT_SCHEMA_VERSION,
+    HtmlReportInputs,
+    build_template_context,
+    collect_artifact_links,
+    render_html_report,
+    write_html,
+)
 from engine.reporter.junit_writer import (
     FAILURE_SEVERITIES,
     render_junit_xml,
@@ -45,6 +58,11 @@ from engine.reporter.markdown_writer import (
     md_escape,
     render_markdown,
     write_markdown,
+)
+from engine.reporter.pr_comment import (
+    PR_COMMENT_ANCHOR,
+    PR_COMMENT_MAX_CHARS,
+    render_pr_comment,
 )
 from engine.reporter.run_writer import (
     ARTIFACT_SLOTS,
@@ -75,18 +93,52 @@ from engine.reporter.score_writer import (
     SEVERITY_BUCKETS,
     write_score,
 )
+from engine.reporter.slack import (
+    SLACK_PAYLOAD_SCHEMA_PATH,
+    load_block_kit_schema,
+    render_slack_payload,
+    write_slack_payload,
+)
+from engine.reporter.trends import (
+    ModulePassRateSeries,
+    TopRecurring,
+    TrendData,
+    TrendPoint,
+    compute_trends,
+)
 
 __all__ = [
     "ARTIFACT_SLOTS",
+    "AuditEntry",
     "COMPONENT_AXES",
     "DEFAULT_POLICY",
     "FAILURE_SEVERITIES",
+    "HTML_REPORT_SCHEMA_VERSION",
+    "HtmlReportInputs",
+    "ModulePassRateSeries",
+    "PR_COMMENT_ANCHOR",
+    "PR_COMMENT_MAX_CHARS",
+    "SLACK_PAYLOAD_SCHEMA_PATH",
     "SUPPORTED_FORMATS",
     "Reporter",
     "ReporterPlugin",
     "ReportFormat",
     "ReportInputs",
+    "TopRecurring",
+    "TrendData",
+    "TrendPoint",
+    "build_template_context",
+    "collect_artifact_links",
+    "compute_trends",
+    "load_audit_entries",
+    "load_block_kit_schema",
+    "normalize_audit_entries",
     "register_reporter_hook",
+    "render_html_report",
+    "render_pr_comment",
+    "render_slack_payload",
+    "write_html",
+    "write_slack_payload",
     "FINDINGS_ENVELOPE_SCHEMA_VERSION",
     "FindingsLinterWarning",
     "RELEASE_DECISION_LABEL",

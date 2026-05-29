@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SentinelQA report — {{ run.id }}</title>
+<meta name="generator" content="SentinelQA Reporter (Phase 15)">
+<style>{{ inline_css }}</style>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to main content</a>
+<main id="main-content">
+<header class="report-header">
+  <h1 class="report-title">SentinelQA report</h1>
+  <p class="report-target">
+    <span class="report-target-label">Target:</span>
+    <span class="report-target-value">{{ target_display }}</span>
+  </p>
+  <div class="badge-row" role="group" aria-label="Run summary">
+    <span class="badge score" aria-label="Quality score">{{ score_display }}</span>
+    <span class="badge decision-{{ decision_class }}" aria-label="Release decision">{{ decision_label }}</span>
+  </div>
+</header>
+
+<section class="report-section" aria-labelledby="summary-heading">
+  <h2 id="summary-heading">Summary</h2>
+  <dl class="summary-grid">
+    <div class="summary-cell">
+      <dt class="label">Run id</dt>
+      <dd class="value">{{ run.id }}</dd>
+    </div>
+    <div class="summary-cell">
+      <dt class="label">Status</dt>
+      <dd class="value">{{ run.status }}</dd>
+    </div>
+    <div class="summary-cell">
+      <dt class="label">Duration</dt>
+      <dd class="value">{{ duration_display }}</dd>
+    </div>
+    <div class="summary-cell">
+      <dt class="label">Target mode</dt>
+      <dd class="value">{{ target_mode }}</dd>
+    </div>
+    <div class="summary-cell">
+      <dt class="label">Findings</dt>
+      <dd class="value">{{ counts_summary }}</dd>
+    </div>
+    <div class="summary-cell">
+      <dt class="label">Modules</dt>
+      <dd class="value">{{ module_summary }}</dd>
+    </div>
+  </dl>
+</section>
+
+<section class="report-section" aria-labelledby="blockers-heading">
+  <h2 id="blockers-heading">Critical blockers</h2>
+  {% if blockers %}
+  <ul class="blockers-list">
+    {% for b in blockers %}
+    <li>
+      <p class="meta">
+        <span class="badge sev-{{ b.severity }}">{{ b.severity_label }}</span>
+        <span>{{ b.module }} / {{ b.category }}</span>
+        <span>id={{ b.id }}</span>
+      </p>
+      <p><strong>{{ b.title }}</strong></p>
+      <p>{{ b.description }}</p>
+      <p><em>Recommendation:</em> {{ b.recommendation }}</p>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p class="empty">No critical blockers were reported for this run.</p>
+  {% endif %}
+</section>
+
+<section class="report-section" aria-labelledby="findings-heading">
+  <h2 id="findings-heading">All findings</h2>
+  {% if findings %}
+  <div class="findings-controls" role="group" aria-label="Findings filters">
+    <label>
+      <span>Severity</span>
+      <select data-filter="severity">
+        <option value="">All severities</option>
+        {% for sev in severity_options %}
+        <option value="{{ sev.value }}">{{ sev.label }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label>
+      <span>Module</span>
+      <select data-filter="module">
+        <option value="">All modules</option>
+        {% for mod in module_options %}
+        <option value="{{ mod }}">{{ mod }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label>
+      <span>Search</span>
+      <input type="text" data-filter="query" placeholder="title or id" autocomplete="off">
+    </label>
+  </div>
+  <table class="findings-table">
+    <thead>
+      <tr>
+        <th scope="col">Severity</th>
+        <th scope="col">Module</th>
+        <th scope="col">Title</th>
+        <th scope="col">Location</th>
+        <th scope="col">Evidence</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for f in findings %}
+      <tr class="finding-row"
+          data-severity="{{ f.severity }}"
+          data-module="{{ f.module }}"
+          data-search="{{ f.search_text }}">
+        <td><span class="badge sev-{{ f.severity }}">{{ f.severity_label }}</span></td>
+        <td>{{ f.module }}</td>
+        <td>
+          <strong>{{ f.title }}</strong>
+          <div class="finding-desc">{{ f.description }}</div>
+          {% if f.recommendation %}
+          <div class="finding-rec"><em>Recommendation:</em> {{ f.recommendation }}</div>
+          {% endif %}
+          <div class="finding-meta">id={{ f.id }} category={{ f.category }} confidence={{ f.confidence }}</div>
+        </td>
+        <td>{{ f.location_display }}</td>
+        <td>
+          {% if f.evidence %}
+          <details class="evidence-drawer">
+            <summary>{{ f.evidence|length }} evidence item{% if f.evidence|length != 1 %}s{% endif %}</summary>
+            <ul>
+              {% for ev in f.evidence %}
+              <li>
+                <a href="{{ ev.href }}" rel="noopener">{{ ev.type }}</a>
+                <span class="evidence-meta">({{ ev.id }})</span>
+                {% if ev.is_image %}
+                <img src="{{ ev.href }}" alt="Evidence image {{ ev.id }} ({{ ev.type }})" loading="lazy">
+                {% endif %}
+              </li>
+              {% endfor %}
+            </ul>
+          </details>
+          {% else %}
+          <span class="empty">none</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p class="empty">This run reported no findings.</p>
+  {% endif %}
+</section>
+
+<section class="report-section" aria-labelledby="modules-heading">
+  <h2 id="modules-heading">Per-module results</h2>
+  {% if module_results %}
+  <div class="modules-grid">
+    {% for m in module_results %}
+    <article class="module-card">
+      <h3>{{ m.name }}</h3>
+      <p class="status"><span class="badge">{{ m.status_label }}</span></p>
+      <dl class="kv">
+        <dt>Duration</dt><dd>{{ m.duration_display }}</dd>
+        <dt>Findings</dt><dd>{{ m.finding_count }}</dd>
+        {% if m.flake_rate is not none %}
+        <dt>Flake rate</dt><dd>{{ m.flake_rate }}</dd>
+        {% endif %}
+      </dl>
+    </article>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p class="empty">No module results were captured for this run.</p>
+  {% endif %}
+</section>
+
+{% if trends %}
+<section class="report-section" aria-labelledby="trends-heading">
+  <h2 id="trends-heading">Trends</h2>
+  <p class="trend-note">Last {{ trends.score_series|length }} runs (most recent on the right).</p>
+  <div class="trends-grid">
+    <article class="trend-card">
+      <h3>Quality score</h3>
+      {{ trends.score_sparkline_svg }}
+      <p class="trend-meta">
+        Latest {{ trends.latest_score }}; previous {{ trends.previous_score }}.
+      </p>
+    </article>
+    {% for module_name, series in trends.module_pass_rates %}
+    <article class="trend-card">
+      <h3>{{ module_name }} pass rate</h3>
+      {{ series.sparkline_svg }}
+      <p class="trend-meta">Latest {{ series.latest_display }}.</p>
+    </article>
+    {% endfor %}
+    {% if trends.top_recurring %}
+    <article class="trend-card">
+      <h3>Top recurring findings</h3>
+      <ol>
+        {% for entry in trends.top_recurring %}
+        <li>
+          <span class="badge sev-{{ entry.severity }}">{{ entry.severity_label }}</span>
+          <strong>{{ entry.title }}</strong>
+          <span class="trend-meta">seen {{ entry.count }} times</span>
+        </li>
+        {% endfor %}
+      </ol>
+    </article>
+    {% endif %}
+  </div>
+</section>
+{% endif %}
+
+<section class="report-section" aria-labelledby="audit-heading">
+  <h2 id="audit-heading">Audit trail</h2>
+  {% if audit_entries %}
+  <div class="audit-controls" role="group" aria-label="Audit log filters">
+    <label>
+      <span>Level</span>
+      <select data-filter="audit-level">
+        <option value="">All levels</option>
+        {% for level in audit_levels %}
+        <option value="{{ level }}">{{ level }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label>
+      <span>Module</span>
+      <select data-filter="audit-module">
+        <option value="">All modules</option>
+        {% for module in audit_modules %}
+        <option value="{{ module }}">{{ module }}</option>
+        {% endfor %}
+      </select>
+    </label>
+  </div>
+  <details open>
+    <summary>{{ audit_entries|length }} entries (redacted)</summary>
+    <ul class="audit-list">
+      {% for entry in audit_entries %}
+      <li class="audit-entry"
+          data-level="{{ entry.level }}"
+          data-module="{{ entry.module }}">
+        <span class="audit-ts">{{ entry.ts }}</span>
+        <span class="audit-event">{{ entry.event }}</span>
+        <span class="audit-detail">{{ entry.detail }}</span>
+      </li>
+      {% endfor %}
+    </ul>
+  </details>
+  {% else %}
+  <p class="empty">No audit log entries were captured for this run.</p>
+  {% endif %}
+</section>
+
+<footer class="report-footer">
+  <h2>Report metadata</h2>
+  <dl class="kv">
+    <dt>Run id</dt><dd>{{ run.id }}</dd>
+    <dt>Config digest</dt><dd>{{ config_digest }}</dd>
+    <dt>Run schema</dt><dd>{{ schema_versions.run }}</dd>
+    <dt>Findings schema</dt><dd>{{ schema_versions.findings }}</dd>
+    <dt>Score schema</dt><dd>{{ schema_versions.score }}</dd>
+    <dt>SARIF</dt><dd>{{ schema_versions.sarif }}</dd>
+    <dt>HTML schema</dt><dd>{{ schema_versions.html }}</dd>
+  </dl>
+  <h2>Companion artifacts</h2>
+  <ul>
+    {% for link in artifact_links %}
+    <li><a href="{{ link.href }}" rel="noopener">{{ link.label }}</a></li>
+    {% endfor %}
+  </ul>
+  <p class="footer-note">
+    SentinelQA is for authorized testing only (PRD §2).
+    This report was generated locally and contains redacted data.
+  </p>
+</footer>
+</main>
+<script>{{ inline_js }}</script>
+</body>
+</html>

@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SentinelQA report — RUN-PASSEDAAAAAA</title>
+<meta name="generator" content="SentinelQA Reporter (Phase 15)">
+<style><inline_css></style>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to main content</a>
+<main id="main-content">
+<header class="report-header">
+  <h1 class="report-title">SentinelQA report</h1>
+  <p class="report-target">
+    <span class="report-target-label">Target:</span>
+    <span class="report-target-value">https://localhost:8080/</span>
+  </p>
+  <div class="badge-row" role="group" aria-label="Run summary">
+    <span class="badge score" aria-label="Quality score">87.25 / 100</span>
+    <span class="badge decision-pass" aria-label="Release decision">PASS</span>
+  </div>
+</header>
+
+<section class="report-section" aria-labelledby="summary-heading">
+  <h2 id="summary-heading">Summary</h2>
+  <dl class="summary-grid">
+    <div class="summary-cell">
+      <dt class="label">Run id</dt>
+      <dd class="value">RUN-PASSEDAAAAAA</dd>
+    </div>
+    <div class="summary-cell">
+      <dt class="label">Status</dt>
+      <dd class="value">passed</dd>
+    </div>
+    <div class="summary-cell">
+      <dt class="label">Duration</dt>
+      <dd class="value">30.0s</dd>
+    </div>
+    <div class="summary-cell">
+      <dt class="label">Target mode</dt>
+      <dd class="value">safe</dd>
+    </div>
+    <div class="summary-cell">
+      <dt class="label">Findings</dt>
+      <dd class="value">1 high, 1 medium, 1 info</dd>
+    </div>
+    <div class="summary-cell">
+      <dt class="label">Modules</dt>
+      <dd class="value">accessibility, functional</dd>
+    </div>
+  </dl>
+</section>
+
+<section class="report-section" aria-labelledby="blockers-heading">
+  <h2 id="blockers-heading">Critical blockers</h2>
+  
+  <ul class="blockers-list">
+    
+    <li>
+      <p class="meta">
+        <span class="badge sev-high">High</span>
+        <span>security / security/cookies</span>
+        <span>id=FND-HIGHAAAAAAAA</span>
+      </p>
+      <p><strong>Session cookie missing HttpOnly attribute</strong></p>
+      <p>The session cookie on /login is missing HttpOnly; client-side JavaScript can read it.</p>
+      <p><em>Recommendation:</em> Set HttpOnly on the session cookie.</p>
+    </li>
+    
+  </ul>
+  
+</section>
+
+<section class="report-section" aria-labelledby="findings-heading">
+  <h2 id="findings-heading">All findings</h2>
+  
+  <div class="findings-controls" role="group" aria-label="Findings filters">
+    <label>
+      <span>Severity</span>
+      <select data-filter="severity">
+        <option value="">All severities</option>
+        
+        <option value="high">High</option>
+        
+        <option value="medium">Medium</option>
+        
+        <option value="info">Info</option>
+        
+      </select>
+    </label>
+    <label>
+      <span>Module</span>
+      <select data-filter="module">
+        <option value="">All modules</option>
+        
+        <option value="accessibility">accessibility</option>
+        
+        <option value="performance">performance</option>
+        
+        <option value="security">security</option>
+        
+      </select>
+    </label>
+    <label>
+      <span>Search</span>
+      <input type="text" data-filter="query" placeholder="title or id" autocomplete="off">
+    </label>
+  </div>
+  <table class="findings-table">
+    <thead>
+      <tr>
+        <th scope="col">Severity</th>
+        <th scope="col">Module</th>
+        <th scope="col">Title</th>
+        <th scope="col">Location</th>
+        <th scope="col">Evidence</th>
+      </tr>
+    </thead>
+    <tbody>
+      
+      <tr class="finding-row"
+          data-severity="high"
+          data-module="security"
+          data-search="FND-HIGHAAAAAAAA Session cookie missing HttpOnly attribute security security/cookies">
+        <td><span class="badge sev-high">High</span></td>
+        <td>security</td>
+        <td>
+          <strong>Session cookie missing HttpOnly attribute</strong>
+          <div class="finding-desc">The session cookie on /login is missing HttpOnly; client-side JavaScript can read it.</div>
+          
+          <div class="finding-rec"><em>Recommendation:</em> Set HttpOnly on the session cookie.</div>
+          
+          <div class="finding-meta">id=FND-HIGHAAAAAAAA category=security/cookies confidence=0.9</div>
+        </td>
+        <td>route=/login; target=https://localhost:8080</td>
+        <td>
+          
+          <details class="evidence-drawer">
+            <summary>1 evidence item</summary>
+            <ul>
+              
+              <li>
+                <a href="traces/login.har" rel="noopener">network_log</a>
+                <span class="evidence-meta">(EVD-HIGHAAAAAAAA)</span>
+                
+              </li>
+              
+            </ul>
+          </details>
+          
+        </td>
+      </tr>
+      
+      <tr class="finding-row"
+          data-severity="medium"
+          data-module="accessibility"
+          data-search="FND-MEDAAAAAAAAA Insufficient contrast on submit button accessibility a11y/contrast">
+        <td><span class="badge sev-medium">Medium</span></td>
+        <td>accessibility</td>
+        <td>
+          <strong>Insufficient contrast on submit button</strong>
+          <div class="finding-desc">The /signup submit button has contrast ratio 3.8 (WCAG AA needs ≥4.5).</div>
+          
+          <div class="finding-rec"><em>Recommendation:</em> Increase foreground/background contrast to ≥4.5.</div>
+          
+          <div class="finding-meta">id=FND-MEDAAAAAAAAA category=a11y/contrast confidence=0.7</div>
+        </td>
+        <td>route=/signup; selector=button[type=submit]; target=https://localhost:8080</td>
+        <td>
+          
+          <details class="evidence-drawer">
+            <summary>1 evidence item</summary>
+            <ul>
+              
+              <li>
+                <a href="screenshots/signup.png" rel="noopener">screenshot</a>
+                <span class="evidence-meta">(EVD-MEDAAAAAAAAA)</span>
+                
+                <img src="screenshots/signup.png" alt="Evidence image EVD-MEDAAAAAAAAA (screenshot)" loading="lazy">
+                
+              </li>
+              
+            </ul>
+          </details>
+          
+        </td>
+      </tr>
+      
+      <tr class="finding-row"
+          data-severity="info"
+          data-module="performance"
+          data-search="FND-INFOAAAAAAAB LCP within budget performance perf/lcp">
+        <td><span class="badge sev-info">Info</span></td>
+        <td>performance</td>
+        <td>
+          <strong>LCP within budget</strong>
+          <div class="finding-desc">LCP measured at 1.8s; budget is 2.5s.</div>
+          
+          <div class="finding-rec"><em>Recommendation:</em> No action required.</div>
+          
+          <div class="finding-meta">id=FND-INFOAAAAAAAB category=perf/lcp confidence=0.6</div>
+        </td>
+        <td>route=/; target=https://localhost:8080</td>
+        <td>
+          
+          <details class="evidence-drawer">
+            <summary>1 evidence item</summary>
+            <ul>
+              
+              <li>
+                <a href="traces/home.zip" rel="noopener">trace</a>
+                <span class="evidence-meta">(EVD-INFOAAAAAAAB)</span>
+                
+              </li>
+              
+            </ul>
+          </details>
+          
+        </td>
+      </tr>
+      
+    </tbody>
+  </table>
+  
+</section>
+
+<section class="report-section" aria-labelledby="modules-heading">
+  <h2 id="modules-heading">Per-module results</h2>
+  
+  <div class="modules-grid">
+    
+    <article class="module-card">
+      <h3>accessibility</h3>
+      <p class="status"><span class="badge">passed</span></p>
+      <dl class="kv">
+        <dt>Duration</dt><dd>2.1 s</dd>
+        <dt>Findings</dt><dd>1</dd>
+        
+      </dl>
+    </article>
+    
+    <article class="module-card">
+      <h3>functional</h3>
+      <p class="status"><span class="badge">passed</span></p>
+      <dl class="kv">
+        <dt>Duration</dt><dd>4.2 s</dd>
+        <dt>Findings</dt><dd>0</dd>
+        
+      </dl>
+    </article>
+    
+  </div>
+  
+</section>
+
+
+
+<section class="report-section" aria-labelledby="audit-heading">
+  <h2 id="audit-heading">Audit trail</h2>
+  
+  <p class="empty">No audit log entries were captured for this run.</p>
+  
+</section>
+
+<footer class="report-footer">
+  <h2>Report metadata</h2>
+  <dl class="kv">
+    <dt>Run id</dt><dd>RUN-PASSEDAAAAAA</dd>
+    <dt>Config digest</dt><dd>sha256:goldena1b2c3</dd>
+    <dt>Run schema</dt><dd>1</dd>
+    <dt>Findings schema</dt><dd>1</dd>
+    <dt>Score schema</dt><dd>1</dd>
+    <dt>SARIF</dt><dd>2.1.0</dd>
+    <dt>HTML schema</dt><dd>1</dd>
+  </dl>
+  <h2>Companion artifacts</h2>
+  <ul>
+    
+    <li><a href="run.json" rel="noopener">run.json</a></li>
+    
+    <li><a href="findings.json" rel="noopener">findings.json</a></li>
+    
+    <li><a href="score.json" rel="noopener">score.json</a></li>
+    
+    <li><a href="sarif.json" rel="noopener">sarif.json</a></li>
+    
+    <li><a href="junit.xml" rel="noopener">junit.xml</a></li>
+    
+    <li><a href="report.md" rel="noopener">report.md</a></li>
+    
+    <li><a href="audit.log" rel="noopener">audit.log</a></li>
+    
+  </ul>
+  <p class="footer-note">
+    SentinelQA is for authorized testing only (PRD §2).
+    This report was generated locally and contains redacted data.
+  </p>
+</footer>
+</main>
+<script><inline_js></script>
+</body>
+</html>
