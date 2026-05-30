@@ -37,6 +37,7 @@ ALLOWED_PATHS = {
     Path("tests/security/test_no_stealth_flags.py"),
     Path("tests/security/test_security_forbidden_flags.py"),
     Path("tests/security/test_api_no_aggressive_flags.py"),
+    Path("tests/security/test_chaos_no_evasion_flags.py"),
     Path("tests/unit/policy/test_forbidden_features.py"),
     Path("PRD.md"),
     Path("CLAUDE.md"),

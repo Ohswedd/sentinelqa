@@ -530,6 +530,60 @@ class ApiConfig(SentinelModel):
         return value
 
 
+class ChaosConfig(SentinelModel):
+    """`chaos:` block (Phase 23, PRD §10.8, CLAUDE.md §6, ADR-0028).
+
+    Drives the ChaosModule. The module is OFF by default in
+    :class:`ModulesConfig` (``modules.chaos = false``); this block only
+    configures which categories / scenarios the module exercises *when*
+    it is opted in (via ``modules.chaos = true``, ``sentinel chaos
+    ...``, or the CI ``nightly`` preset). Defaults mirror PRD §10.8:
+    all four categories enabled with no scenario subsetting.
+
+    Safety boundary (CLAUDE.md §6): no field here lets an operator
+    turn the module into an evasion tool. There is no ``aggressive``
+    knob, no proxy-rotation knob, no detection-bypass knob — and the
+    ``tests/security/test_chaos_no_evasion_flags.py`` guard greps the
+    package + CLI to keep it that way.
+    """
+
+    enabled_categories: tuple[Literal["network", "session", "ux", "data"], ...] = (
+        "network",
+        "session",
+        "ux",
+        "data",
+    )
+    enabled_scenarios: tuple[str, ...] = Field(default_factory=tuple, max_length=64)
+    flows: tuple[str, ...] = Field(default_factory=tuple, max_length=64)
+    events_path: Path | None = None
+    slow_3g_kbps: int = Field(default=400, ge=100, le=10_000)
+    slow_3g_rtt_ms: int = Field(default=400, ge=50, le=5_000)
+    api_timeout_abort_ms: int = Field(default=30_000, ge=1_000, le=120_000)
+    large_dataset_items: int = Field(default=1000, ge=100, le=10_000)
+
+    @field_validator("enabled_categories")
+    @classmethod
+    def _categories_unique(cls, value: tuple[str, ...]) -> tuple[str, ...]:
+        seen: set[str] = set()
+        for item in value:
+            if item in seen:
+                raise ValueError(f"chaos.enabled_categories duplicate entry: {item!r}.")
+            seen.add(item)
+        return value
+
+    @field_validator("enabled_scenarios")
+    @classmethod
+    def _scenarios_shape(cls, value: tuple[str, ...]) -> tuple[str, ...]:
+        seen: set[str] = set()
+        for item in value:
+            if not item or len(item) > 128:
+                raise ValueError("chaos.enabled_scenarios entries must be 1..128 chars.")
+            if item in seen:
+                raise ValueError(f"chaos.enabled_scenarios duplicate entry: {item!r}.")
+            seen.add(item)
+        return value
+
+
 class PolicyConfig(SentinelModel):
     """`policy:` block (PRD §17.1, §19.4).
 
@@ -663,6 +717,7 @@ class RootConfig(SentinelModel):
     analyzer: AnalyzerConfig = Field(default_factory=lambda: AnalyzerConfig())
     accessibility: AccessibilityConfig = Field(default_factory=lambda: AccessibilityConfig())
     api: ApiConfig = Field(default_factory=lambda: ApiConfig())
+    chaos: ChaosConfig = Field(default_factory=lambda: ChaosConfig())
     policy: PolicyConfig = Field(default_factory=lambda: PolicyConfig())
     runner: RunnerConfig = Field(default_factory=lambda: RunnerConfig())
     healer: HealerConfig = Field(default_factory=lambda: HealerConfig())
@@ -710,6 +765,7 @@ __all__ = [
     "AccessibilityAxeConfig",
     "ApiAuthTestUser",
     "ApiConfig",
+    "ChaosConfig",
     "PolicyConfig",
     "RunnerConfig",
     "RunnerRetriesConfig",
