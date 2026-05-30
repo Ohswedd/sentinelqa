@@ -25,6 +25,7 @@ UV ?= uv
         docs-check-fresh \
         changelog-draft audit-metadata \
         build-all inspect-all \
+        bench dod \
         clean ci
 
 help:
@@ -54,6 +55,8 @@ help:
 	@echo "  audit-metadata    Verify every publishable manifest carries release-ready metadata"
 	@echo "  build-all     Build every Python sdist+wheel and the TS npm tarball into dist/"
 	@echo "  inspect-all   Inspect every artifact under dist/ for forbidden contents"
+	@echo "  bench         Phase 29 — measure import + CLI cold-start budgets"
+	@echo "  dod           Phase 29 — Definition-of-Done sweep (ci + git status)"
 	@echo "  clean         Remove caches and build artifacts"
 
 # --- install ---------------------------------------------------------------
@@ -336,6 +339,35 @@ changelog-draft:
 		$(if $(INCLUDE_INTERNAL),--include-internal) \
 		-o $(CHANGELOG_DRAFT)
 	@echo "wrote $(CHANGELOG_DRAFT) (curate by hand before pasting into CHANGELOG.md)"
+
+# Phase 29 — `make bench` measures the Phase 29.04 wall-clock targets and
+# writes a JSON report. Pass AUDIT_URL=<url> to additionally measure a live
+# `sentinel audit` run; otherwise the audit case is skipped (default).
+BENCH_REPEAT ?= 3
+BENCH_OUTPUT ?= docs/release/bench-results.json
+AUDIT_URL ?=
+bench:
+	$(UV) run python -m scripts.bench \
+		--repeat $(BENCH_REPEAT) \
+		--output $(BENCH_OUTPUT) \
+		$(if $(AUDIT_URL),--audit-url $(AUDIT_URL))
+
+# Phase 29 — `make dod` runs the local Definition-of-Done sweep (CLAUDE.md
+# §18). It is the local equivalent of the phase-gate review: format-check,
+# lint, typecheck, adr-check, test, plus the secret-leak audit, plus a
+# `git status` cleanliness check. CI itself is `make ci`; this target is
+# what a contributor runs before pushing.
+dod: ci
+	@echo "dod: running secret-leak audit on .sentinel/runs/ ..."
+	$(UV) run pytest tests/integration/release/test_secret_leak.py -q
+	@echo "dod: running determinism audit ..."
+	$(UV) run pytest tests/integration/release/test_determinism.py -q
+	@if [ -n "$$(git status --porcelain)" ]; then \
+		echo "dod: FAIL — git working tree not clean"; \
+		git status --porcelain; \
+		exit 1; \
+	fi
+	@echo "dod: PASS — Definition of Done locally satisfied"
 
 # --- ci --------------------------------------------------------------------
 ci: format-check lint typecheck adr-check test
