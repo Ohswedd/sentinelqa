@@ -8,13 +8,13 @@
 
 ## Status
 
-`Planned` — Phase 00 (foundation) in progress. No product behavior is shipped yet. See `plans/STATUS.md` for live state.
+`Stable (pre-1.0)` — MVP (Phases 00–29) is complete and the engineering surface for `v0.7.0` is on `main`. The road to `v1.0.0` runs through **Phases 30–36** (multi-provider LLM adapters, browser-authenticated audits, extended security skills, supply-chain audit, compliance packs, public release engineering, publish). See `plans/STATUS.md` for live state and `plans/README.md` for the full phase index.
 
 ## Documents
 
 - [`PRD.md`](./PRD.md) — product source of truth.
 - [`CLAUDE.md`](./CLAUDE.md) — engineering constitution; mandatory operating rules.
-- [`plans/README.md`](./plans/README.md) — 30-phase execution plan.
+- [`plans/README.md`](./plans/README.md) — 37-phase execution plan (00–29 MVP, 30–36 ecosystem + release).
 - [`plans/STATUS.md`](./plans/STATUS.md) — live status, active phase, gate-review log.
 - [`docs/adr/`](./docs/adr/) — Architecture Decision Records.
 - [`docs/dev/`](./docs/dev/) — contributor docs.

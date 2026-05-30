@@ -15,7 +15,28 @@ human owner curates the draft before each tag.
 
 ## [Unreleased]
 
-_No unreleased changes — `v0.7.0` is being prepared._
+### Added
+
+- **plans/phase-30-llm-providers/** — Multi-provider LLM adapter layer. Generalises the planner/analyzer/healer LLM Protocols into a single `engine.llm.LlmProvider` surface; adds adapters for Google Gemini, Ollama (local), Azure OpenAI, Google Vertex AI, Mistral, Groq, OpenRouter. Shared cost / budget / rate-limit / redaction plumbing; `sentinel llm doctor` / `list` / `price` CLI surface.
+- **plans/phase-31-browser-auth/** — Browser-authenticated audits. Encrypted storage-state vault, `sentinel auth login` interactive flow, OAuth + LLM-web profile recipes (Google / GitHub / Microsoft + Claude / ChatGPT / Codex / Gemini / Le Chat), vault-aware runner + crawler wiring, layered safety guards.
+- **plans/phase-32-extended-security/** — Extended security skill catalog (9 new checks, no offensive material). JWT weakness scanner, extended cookie audit, TLS / cert posture probe, GraphQL safety probe, OWASP-API-Top-10 BOLA/BFLA via authorized identity replay, deeper frontend-only auth detector, secret-in-bundle scanner, SSRF / open-redirect map, CWE / MITRE ATT&CK / OWASP-API id mapping on every security + API finding.
+- **plans/phase-33-supply-chain/** — Supply-chain & dependency audit. CycloneDX 1.5 SBOM generator, OSV vulnerability lookup, lockfile freshness gate, postinstall-hook scanner, Trivy / Grype container scanner adapter, SPDX license audit, `sentinel supply-chain` CLI.
+- **plans/phase-34-compliance/** — Compliance packs. WCAG 2.2 axe upgrade + 5 deterministic checks, GDPR cookie-consent detection, CCPA Do-Not-Sell link check, SOC 2 audit-trail quality gate, compliance-pack policy DSL with four built-in packs.
+- **plans/phase-35-public-release/** — Public release engineering. README polish with badges and quickstart, GitHub community files (issue templates, CoC, SECURITY.md, CONTRIBUTING polish), license-header audit, Cloudflare Pages docs deploy, brand assets, branch-protection documentation, Dependabot + GitHub Security Advisories, owner-gated "go public" checklist.
+- **plans/phase-36-publish-ecosystem/** — Ecosystem publish. v1.0.0 tag prep (manifests bump + curated CHANGELOG), PyPI Trusted-Publisher workflow, npm publish workflow with provenance, Docker Hub multi-arch publish (amd64 + arm64), GitHub Release with binaries, post-publish smoke test, owner-only publish runbook.
+- **docs/PRD.md §7.3** updated — original future-scope split into "moved in-scope (Phases 30–36)" and "still future-scope". Out-of-scope items remain ADR-anchored.
+- **plans/README.md** — phase table extended to 37 phases; PRD → phase mapping updated.
+- **plans/STATUS.md** — Phase 30–36 added as `[ ]`, PR & merge log carries Phase 29 release-prep row, active pointer flipped from "build complete" to "Phase 30 planned (not yet started)".
+
+### Changed
+
+- **Project framing**: the README headline status moves from `Stable (pre-1.0)` to a forward-looking pointer at Phases 30–36 (MVP complete; ecosystem expansion in progress). v1.0.0 lands at the end of Phase 36.
+
+### Status
+
+This is **planning only** — no production code changed in this commit. Each of the seven new phases will land via its own `feature/phase-NN-<slug>` branch + PR + CI + squash-merge, same as Phases 00–29.
+
+## [0.7.0] - 2026-05-31
 
 ## [0.7.0] - 2026-05-31
 
