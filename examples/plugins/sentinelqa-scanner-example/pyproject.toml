@@ -1,0 +1,22 @@
+[project]
+name = "sentinelqa-scanner-example"
+version = "0.1.0"
+description = "Reference SentinelQA scanner plugin (Phase 24 task 24.06)."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "Apache-2.0" }
+authors = [{ name = "ohswedd" }]
+dependencies = [
+    "sentinelqa",
+    "sentinelqa-engine",
+]
+
+[project.entry-points."sentinelqa.plugins"]
+header-checker = "sentinelqa_scanner_example.plugin:HeaderChecker"
+
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/sentinelqa_scanner_example"]

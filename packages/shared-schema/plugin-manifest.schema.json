@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sentinelqa.dev/schemas/plugin-manifest/v1.0.0",
+  "title": "SentinelQA plugin manifest",
+  "description": "Validates the wire format every SentinelQA plugin ships. The Pydantic model `engine.plugins.manifest.Manifest` is the runtime equivalent; the two MUST agree.",
+  "type": "object",
+  "x-sentinelqa-schema-version": "1",
+  "additionalProperties": false,
+  "required": ["name", "version", "kind", "requires_protocol"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Stable plugin name (lowercase, kebab-case).",
+      "pattern": "^[a-z][a-z0-9-]*$",
+      "minLength": 1,
+      "maxLength": 64
+    },
+    "version": {
+      "type": "string",
+      "description": "Plugin's own semver string.",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+([-+].+)?$"
+    },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "discovery",
+        "scanner",
+        "runner",
+        "reporter",
+        "policy",
+        "auth",
+        "data_fixture",
+        "cloud_execution"
+      ]
+    },
+    "capabilities": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "default": []
+    },
+    "permissions": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z]+(\\.[a-z_]+)+(:[A-Za-z0-9._/\\-]+)?$"
+      },
+      "default": []
+    },
+    "requires_protocol": {
+      "type": "string",
+      "description": "PEP 440 version specifier against the host PROTOCOL_VERSION (e.g. '>=1.0,<2.0').",
+      "minLength": 1
+    },
+    "entry_point": {
+      "type": ["string", "null"],
+      "description": "Optional 'package.module:object' string for external validation only."
+    },
+    "description": {
+      "type": ["string", "null"],
+      "description": "Human-readable description shown by 'sentinel plugins info'.",
+      "maxLength": 1024
+    }
+  }
+}

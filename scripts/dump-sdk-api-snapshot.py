@@ -24,6 +24,7 @@ PUBLIC_MODULES: tuple[str, ...] = (
     "sentinelqa",
     "sentinelqa.errors",
     "sentinelqa.agent",
+    "sentinelqa.plugins",
 )
 
 
