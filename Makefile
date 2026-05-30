@@ -24,6 +24,7 @@ UV ?= uv
         docs-gen-cli docs-gen-sdk docs-gen-mcp docs-gen-adr-index \
         docs-check-fresh \
         changelog-draft audit-metadata \
+        build-all inspect-all \
         clean ci
 
 help:
@@ -51,6 +52,8 @@ help:
 	@echo "  docs-check-fresh  Fail if any generated docs page is stale"
 	@echo "  changelog-draft   Draft a Keep a Changelog section from Conventional Commits"
 	@echo "  audit-metadata    Verify every publishable manifest carries release-ready metadata"
+	@echo "  build-all     Build every Python sdist+wheel and the TS npm tarball into dist/"
+	@echo "  inspect-all   Inspect every artifact under dist/ for forbidden contents"
 	@echo "  clean         Remove caches and build artifacts"
 
 # --- install ---------------------------------------------------------------
@@ -294,6 +297,25 @@ docs: docs-build
 # Phase 28 — audit publishable manifests for release-ready metadata.
 audit-metadata:
 	$(UV) run python -m scripts.release.audit_metadata
+
+# Phase 28 — build every Python sdist + wheel and the TS npm tarball.
+# Pass DIST=<dir> to override the output directory (default: dist/).
+# Pass DOCKER=1 to also build the runner image.
+DIST ?= dist
+DOCKER ?=
+build-all:
+	$(UV) run python -m scripts.release.build_all \
+		--out-dir $(DIST) \
+		$(if $(DOCKER),--docker)
+
+# Phase 28 — inspect every built artifact for forbidden contents (.git, .env,
+# private keys, cloud credentials, byte-compiled caches). Pass LIST=1 to also
+# print the full file inventory of each artifact.
+LIST ?=
+inspect-all:
+	$(UV) run python -m scripts.release.inspect_built_packages \
+		--dist-dir $(DIST) \
+		$(if $(LIST),--list)
 
 # Phase 28 — draft a Keep a Changelog section from Conventional Commits.
 # Writes to CHANGELOG.draft.md for the human curator. Set FROM=<rev> to bound

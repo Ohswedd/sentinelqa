@@ -1,0 +1,87 @@
+[project]
+name = "sentinelqa-integrations"
+version = "0.0.0"
+description = "SentinelQA integrations adapters — BrowserStack, Sauce Labs, Slack, GitHub, GitLab, Jira, Linear. PRD §21, ADR-0030."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "Apache-2.0" }
+authors = [{ name = "ohswedd" }]
+keywords = [
+    "sentinelqa",
+    "integrations",
+    "browserstack",
+    "saucelabs",
+    "slack",
+    "github",
+    "gitlab",
+    "jira",
+    "linear",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: System :: Networking",
+    "Typing :: Typed",
+]
+dependencies = [
+    "sentinelqa-engine",
+]
+
+[project.urls]
+Homepage = "https://github.com/Ohswedd/sentinelqa"
+Documentation = "https://github.com/Ohswedd/sentinelqa/tree/main/docs"
+Repository = "https://github.com/Ohswedd/sentinelqa"
+Issues = "https://github.com/Ohswedd/sentinelqa/issues"
+Changelog = "https://github.com/Ohswedd/sentinelqa/blob/main/CHANGELOG.md"
+
+[tool.uv.sources]
+sentinelqa-engine = { workspace = true }
+
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+# Same flat layout as engine + modules: integrations/ IS the package; the
+# dev-mode-dirs trick keeps editable installs cheap, the wheel remaps via
+# sources.
+[tool.hatch.build]
+dev-mode-dirs = [".."]
+
+[tool.hatch.build.targets.wheel]
+include = [
+    "__init__.py",
+    "py.typed",
+    "_http.py",
+    "browserstack/**/*.py",
+    "github/**/*.py",
+    "gitlab/**/*.py",
+    "jira/**/*.py",
+    "linear/**/*.py",
+    "saucelabs/**/*.py",
+    "slack/**/*.py",
+]
+
+[tool.hatch.build.targets.wheel.sources]
+"" = "integrations"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "pyproject.toml",
+    "README.md",
+    "__init__.py",
+    "py.typed",
+    "_http.py",
+    "browserstack/**/*.py",
+    "github/**/*.py",
+    "gitlab/**/*.py",
+    "jira/**/*.py",
+    "linear/**/*.py",
+    "saucelabs/**/*.py",
+    "slack/**/*.py",
+]

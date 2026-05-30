@@ -33,6 +33,8 @@ classifiers = [
 ]
 dependencies = [
     "sentinelqa-engine",
+    "sentinelqa-modules",
+    "sentinelqa-integrations",
     "sentinelqa",
     "sentinelqa-mcp",
     "typer==0.15.1",
@@ -51,6 +53,8 @@ Changelog = "https://github.com/Ohswedd/sentinelqa/blob/main/CHANGELOG.md"
 
 [tool.uv.sources]
 sentinelqa-engine = { workspace = true }
+sentinelqa-modules = { workspace = true }
+sentinelqa-integrations = { workspace = true }
 sentinelqa = { workspace = true }
 sentinelqa-mcp = { workspace = true }
 

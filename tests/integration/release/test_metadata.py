@@ -81,6 +81,8 @@ def test_audit_catalogue_is_exhaustive() -> None:
     [
         "apps/cli/pyproject.toml",
         "engine/pyproject.toml",
+        "modules/pyproject.toml",
+        "integrations/pyproject.toml",
         "packages/python-sdk/pyproject.toml",
         "packages/mcp-server/pyproject.toml",
     ],

@@ -54,6 +54,8 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 PUBLISHABLE_PY: tuple[str, ...] = (
     "apps/cli/pyproject.toml",
     "engine/pyproject.toml",
+    "modules/pyproject.toml",
+    "integrations/pyproject.toml",
     "packages/python-sdk/pyproject.toml",
     "packages/mcp-server/pyproject.toml",
 )

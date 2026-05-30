@@ -1,0 +1,89 @@
+[project]
+name = "sentinelqa-modules"
+version = "0.0.0"
+description = "SentinelQA concrete audit modules — accessibility, api, chaos, functional, llm-audit, performance, security, visual. PRD §10."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "Apache-2.0" }
+authors = [{ name = "ohswedd" }]
+keywords = [
+    "sentinelqa",
+    "playwright",
+    "testing",
+    "qa",
+    "accessibility",
+    "performance",
+    "security",
+    "modules",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: Quality Assurance",
+    "Topic :: Software Development :: Testing",
+    "Typing :: Typed",
+]
+dependencies = [
+    "sentinelqa-engine",
+]
+
+[project.urls]
+Homepage = "https://github.com/Ohswedd/sentinelqa"
+Documentation = "https://github.com/Ohswedd/sentinelqa/tree/main/docs"
+Repository = "https://github.com/Ohswedd/sentinelqa"
+Issues = "https://github.com/Ohswedd/sentinelqa/issues"
+Changelog = "https://github.com/Ohswedd/sentinelqa/blob/main/CHANGELOG.md"
+
+[tool.uv.sources]
+sentinelqa-engine = { workspace = true }
+
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+# The modules source lives at modules/<subpkg>/ (NOT under a src/ layout).
+# The modules/ directory IS the package: it contains __init__.py and the
+# subpackages. dev-mode-dirs makes `import modules` work in editable mode;
+# the include + sources mapping repackages the contents under `modules/` in
+# the wheel.
+[tool.hatch.build]
+dev-mode-dirs = [".."]
+
+[tool.hatch.build.targets.wheel]
+include = [
+    "__init__.py",
+    "py.typed",
+    "accessibility/**/*.py",
+    "api/**/*.py",
+    "chaos/**/*.py",
+    "functional/**/*.py",
+    "llm_audit/**/*.py",
+    "performance/**/*.py",
+    "security/**/*.py",
+    "visual/**/*.py",
+]
+
+[tool.hatch.build.targets.wheel.sources]
+"" = "modules"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "pyproject.toml",
+    "README.md",
+    "__init__.py",
+    "py.typed",
+    "accessibility/**/*.py",
+    "api/**/*.py",
+    "chaos/**/*.py",
+    "functional/**/*.py",
+    "llm_audit/**/*.py",
+    "performance/**/*.py",
+    "security/**/*.py",
+    "visual/**/*.py",
+]
