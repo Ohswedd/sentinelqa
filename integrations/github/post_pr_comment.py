@@ -116,7 +116,9 @@ class HttpClient:
                     raw = response.read()
                     if not raw:
                         return {}
-                    return json.loads(raw.decode("utf-8"))
+                    decoded = json.loads(raw.decode("utf-8"))
+                    assert isinstance(decoded, list | dict)
+                    return decoded
             except urllib.error.HTTPError as exc:
                 last_error = exc
                 if exc.code in {429, 502, 503, 504} and attempt < self._retry.max_attempts:
