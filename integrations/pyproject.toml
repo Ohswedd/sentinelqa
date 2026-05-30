@@ -1,6 +1,6 @@
 [project]
 name = "sentinelqa-integrations"
-version = "0.0.0"
+version = "0.7.0"
 description = "SentinelQA integrations adapters — BrowserStack, Sauce Labs, Slack, GitHub, GitLab, Jira, Linear. PRD §21, ADR-0030."
 readme = "README.md"
 requires-python = ">=3.11"
