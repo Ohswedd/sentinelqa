@@ -30,6 +30,21 @@ from engine.domain.test_run import TestRun
 
 GOLDEN_UPDATE_ENV: str = "SENTINELQA_UPDATE_GOLDENS"
 
+
+# Phase 29 — child Python processes that pytest-cov auto-instruments via its
+# `pytest-cov.pth` would otherwise read `[tool.coverage.run]` from whatever
+# directory they happened to start in. When that directory has no
+# `pyproject.toml` (e.g. a `tmp_path` used by an integration test), the
+# child's coverage falls back to statement-mode while the parent runs in
+# branch-mode, and the final `coverage combine` fails with
+# "Can't combine statement coverage data with branch data". Pin both the
+# rcfile and the data file to absolute repo paths so every child process
+# (and there are many — CLI smoke, generator tsc, redaction parity) uses
+# the same `branch = true` config and appends to a single `.coverage` file.
+_REPO_ROOT_FOR_COVERAGE = Path(__file__).resolve().parent.parent
+os.environ.setdefault("COVERAGE_RCFILE", str(_REPO_ROOT_FOR_COVERAGE / "pyproject.toml"))
+os.environ.setdefault("COVERAGE_FILE", str(_REPO_ROOT_FOR_COVERAGE / ".coverage"))
+
 # Deterministic IDs. ID_REGEX allows any ``[A-Z0-9]{12}`` after the prefix,
 # so these literals pick mnemonic spellings that pad to exactly 12 chars.
 RUN_ID = "RUN-PASSEDAAAAAA"
