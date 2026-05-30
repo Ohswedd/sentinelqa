@@ -2304,6 +2304,93 @@ class MyScanner(ScannerPlugin):
 - Permission declaration.
 - Safe defaults.
 
+### 22.4 MVP delivery (Phase 24)
+
+Phase 24 ships the plugin architecture end-to-end under ADR-0029.
+
+- **SDK public surface** — `packages/python-sdk/src/sentinelqa/plugins.py`
+  defines `PROTOCOL_VERSION = "1.0.0"`, the `ENTRY_POINT_GROUP =
+  "sentinelqa.plugins"` constant, the `PluginContext` runtime
+  Protocol, and eight `@runtime_checkable` Protocols
+  (`DiscoveryPlugin`, `ScannerPlugin`, `RunnerPlugin`,
+  `ReporterPlugin`, `PolicyPlugin`, `AuthPlugin`,
+  `DataFixturePlugin`, `CloudExecutionPlugin`). Every Protocol
+  declares the same four required attributes (`name`, `version`,
+  `capabilities`, `permissions`) plus a `kind` discriminator and a
+  per-kind method. The surface is part of the SDK API snapshot
+  (`packages/python-sdk/api-snapshot.json` now lists
+  `sentinelqa.plugins` as the fourth public module).
+
+- **Manifest wire format** —
+  `packages/shared-schema/plugin-manifest.schema.json` (Draft 2020-12,
+  `x-sentinelqa-schema-version "1"`) is the wire format plugin
+  authors publish. `engine.plugins.manifest.Manifest` is the runtime
+  Pydantic equivalent; a drift guard
+  (`tests/integration/plugins/test_manifest_schema.py`) proves the
+  two agree on accept and reject paths.
+
+- **Loader** — `engine.plugins.discover()` iterates
+  `importlib.metadata.entry_points(group="sentinelqa.plugins")`,
+  synthesises a manifest from each candidate's class-level
+  attributes, validates it, rejects forbidden capabilities (CLAUDE
+  §6 via
+  `engine.policy.forbidden_features.FORBIDDEN_CAPABILITIES`), checks
+  semver compatibility via `packaging.specifiers`, and verifies
+  `isinstance(obj, PLUGIN_PROTOCOLS[kind])`. Failures log + skip; a
+  broken plugin never crashes the run.
+
+- **Capabilities + permissions** — capabilities are free-form tags
+  (rejected only against the forbidden list); permissions follow the
+  grammar `<group>.<verb>[:<scope>]` and must be on the host
+  allow-list (`fs.read`, `fs.write:.sentinel/runs`, `network.outbound`,
+  `subprocess.spawn`, plus scoped `fs.read:<path>` and
+  `env.read:<NAME>`). Unscoped `fs.write` is explicitly forbidden.
+
+- **Runtime context** — `engine.plugins.runtime.PluginContextImpl`
+  hands each plugin only the APIs its manifest declared:
+  `artifact_path(name)` (confined under
+  `<run_dir>/plugins/<plugin_name>/`, traversal + absolute paths
+  rejected), `read_text(path)`, `env(name)`, and a
+  `has_permission(perm)` check. Overreach raises
+  `PluginPermissionError` (`E-PLG-002`, exit 7).
+
+- **Subprocess sandbox** — `engine.plugins.sandbox.run_in_sandbox(...)`
+  launches a child `python -m engine.plugins.sandbox_worker` with a
+  filtered env (only `ALWAYS_INHERITED_ENV` + `SENTINEL_`/`SENTINELQA_`
+  prefixes + declared `env.read:<NAME>` vars). Communication is one
+  line of JSON in / one line of JSON out. Default 60s timeout
+  surfaces as `ok=False` rather than crashing the host. Required
+  permission is `subprocess.spawn`.
+
+- **Versioning** — `is_compatible(requires_protocol, host)` reuses
+  `packaging.specifiers.SpecifierSet`; bumping
+  `PROTOCOL_VERSION` major requires a new ADR (CLAUDE.md §22, §40).
+  Plugins declaring an incompatible range fail load with
+  `PluginIncompatibleError` (`E-PLG-001`, exit 5).
+
+- **CLI** — `sentinel plugins` Typer subapp with `list`, `info`, and
+  `validate` subcommands. Exit codes: 0 success, 2 invalid usage /
+  missing plugin / bad manifest, 7 internal error. JSON mode is
+  available across all three.
+
+- **Reference plugins** — two installable example packages under
+  `examples/plugins/`: `sentinelqa-scanner-example` (HeaderChecker
+  `ScannerPlugin`) and `sentinelqa-reporter-example` (CsvReporter
+  `ReporterPlugin`). Both ship a `pyproject.toml` entry point, a
+  README, and integration tests proving discovery + Protocol
+  conformance.
+
+- **Documentation** — `docs/dev/plugins.md` (how to write a plugin)
+  and `docs/dev/plugin-permissions.md` (permission reference + path
+  traversal guard + env-strip policy + drift checks).
+
+The MVP delivers what PRD §22.2 promises: a third party can ship a
+`pip install`-able package whose entry point loads into SentinelQA,
+declares its capabilities and permissions, and is rejected at load
+if it overreaches. Whether `discover()` is automatically wired into
+`sentinel audit`'s module scheduler is a separate decision that any
+future ADR will own — Phase 24 does not promise auto-scheduling.
+
 ---
 
 ## 23. Security and Threat Model
