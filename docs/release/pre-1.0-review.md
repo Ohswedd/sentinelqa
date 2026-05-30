@@ -111,4 +111,35 @@ Signed: <owner-name>
 
 ### Active sign-offs
 
-_None yet — the first tag (v0.7.0, Phase 28 surface) requires the registered-marks rows above to clear before this block is filled in._
+_None signed yet — the first tag (v0.7.0) requires the registered-marks rows above to clear before this block is signed and applied as a tag._
+
+### Draft sign-off — v0.7.0 (prepared 2026-05-31, awaiting owner)
+
+The engineering, build, inspection, audit, and changelog gates below were re-verified on the release-prep branch `feature/release-0.7.0`. The four owner-only rows (USPTO / EUIPO / UKIPO / signature) are intentionally blank.
+
+```
+## Tag: v0.7.0
+Date:           2026-05-31
+Owner:          <human-owner-name>     ← owner to fill in
+Commit:         <to be set at merge time of feature/release-0.7.0>
+Branch:         feature/release-0.7.0
+
+make ci:        3027 Python tests passed + 2 skipped (Chromium-gated lanes) + 27 deselected | TS: 261 passed (31 test files)
+make coverage:  Python 95.13% (floor 95%) | TS 88.14% lines / 78.26% branches (floors 85/75)
+make test-full: 3054 Python tests passed + 2 skipped (incl. slow-tier build/install smoke; 9 hypothesis property tests; 15 tsc-acceptance tests)
+make audit-metadata: ok — 16 manifests audited
+make build-all: 6 Python wheels + 6 Python sdists + 1 TS tarball (sentinelqa-ts-runtime-0.7.0.tgz); 13 artifacts total
+make inspect-all: ok — 13 artifact(s) inspected, no forbidden files
+
+Trademark clearance:
+  - USPTO:   <verdict + date + screenshot URL>   ← owner to complete
+  - EUIPO:   <verdict + date + screenshot URL>   ← owner to complete
+  - UKIPO:   <verdict + date + screenshot URL>   ← owner to complete
+
+Publication intent: none (Phase 28's `v0.7.0` row in `docs/dev/semver.md` says "No publication"; the tag captures the release-engineering surface only)
+Notes:          v0.7.0 covers Phases 28 (release-engineering) and 29 (final hardening & PRD reconciliation). All six publishable Python pyprojects and `packages/ts-runtime/package.json` are at `0.7.0`. `CHANGELOG.md` has a curated `[0.7.0]` section. `tests/integration/cli/test_subprocess_smoke.py::test_sentinel_version` now reads the version from `apps/cli/pyproject.toml` instead of pinning the literal, so future bumps don't drift. `tests/integration/generator/test_tsc_accepts_output.py` had a latent slow-tier breakage on `@types/node` resolution — fixed by pointing `typeRoots` at the workspace's `node_modules/@types`. Coverage and TS-coverage numbers are unchanged from Phase 29's gate row. No new ADRs.
+
+Signed: <owner-name>                  ← owner to sign
+```
+
+The act of filling in the four blank rows and the signature is permission to **tag**. It is NOT permission to publish; CLAUDE.md §40 requires a separate explicit go-ahead before any `pnpm publish` / `twine upload` / `docker push`.

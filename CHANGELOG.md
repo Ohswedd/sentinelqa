@@ -15,12 +15,89 @@ human owner curates the draft before each tag.
 
 ## [Unreleased]
 
+_No unreleased changes — `v0.7.0` is being prepared._
+
+## [0.7.0] - 2026-05-31
+
+Captures Phases 28 and 29. **First publication-eligible tag** — owner approval
+required per `CLAUDE.md` §40 and the trademark rows in
+`docs/release/pre-1.0-review.md`.
+
 ### Added
 
-- Release-engineering surface for Phase 28: pre-1.0 semver policy at
-  `docs/dev/semver.md`, this `CHANGELOG.md`, the `scripts/release/draft_changelog.py`
-  drafter, `cliff.toml` (optional `git-cliff` parity), and
-  `.github/changelog-template.md` for GitHub release notes.
+- **phase-28**: Release-engineering surface. Pre-1.0 semver policy at
+  `docs/dev/semver.md`, this `CHANGELOG.md`, the
+  `scripts/release/draft_changelog.py` drafter (and `cliff.toml` + the
+  `.github/changelog-template.md` GitHub release-notes template). Every
+  publishable Python `pyproject.toml` gains release-ready
+  `keywords` / `classifiers` / `project.urls`;
+  `packages/ts-runtime/package.json` gains `license` / `repository` /
+  `author` / `keywords` / `files` / `homepage` / `bugs` / `engines`
+  (`private:true` preserved). Audit gate
+  `scripts/release/audit_metadata.py` (`make audit-metadata`) rejects
+  AI authors. Build pipeline `scripts/release/build_all.py`
+  (`make build-all`) produces 6 Python sdists + 6 wheels + 1 TS tarball.
+  Inspection gate `scripts/release/inspect_built_packages.py`
+  (`make inspect-all`) rejects `.git/`, `.env`, PEM/SSH keys, cloud
+  credentials, `__pycache__/`, `*.pyc`. `docs/dev/trademarks-and-naming.md`
+  (Stable verdict; common-law lanes cleared). `docs/release/pre-1.0-review.md`
+  (the human-owner sign-off gate covering every CLAUDE.md §40 bullet).
+  `modules/` and `integrations/` are now their own workspace members
+  (`sentinelqa-modules`, `sentinelqa-integrations`).
+- **phase-29**: Final hardening & PRD reconciliation. Nine audit
+  deliverables under `docs/release/` — safety, secret-leak, determinism,
+  perf + bench JSON, output-a11y, PRD coverage, CLAUDE.md coverage, and
+  DoD-sweep audits, all dated `2026-05-30`. Live red-team probe against
+  `https://example.com` refused with exit 4 + `E-SAFE-001`. gitleaks +
+  13-rule pattern sweep over `.sentinel/runs/` returned zero hits across
+  2 442 files. Reporter writers byte-equal across N=3 runs modulo the
+  documented volatile fields. `sentinel doctor` 778 ms / 3 000 ms budget.
+  Eleven static WCAG-2.1 anchors green on the Phase 15 HTML report.
+- **phase-29**: New helpers. `scripts/diff_runs.py` normalises volatile
+  fields when comparing run trees; `scripts/bench.py` drives the
+  wall-clock budgets. New Make targets `bench` and `dod` (Definition-of-
+  Done sweep wrapping `ci` + secret-leak + determinism + git-status).
+- **phase-29**: Three new recurring-audit integration tests under
+  `tests/integration/release/` — `test_secret_leak.py` (no unredacted
+  secrets in `.sentinel/runs/` on every CI run), `test_determinism.py`
+  (per-artifact byte equality + drift detection),
+  `test_report_self_a11y.py` (WCAG-2.1 anchors; Chromium lane gated
+  behind `SENTINELQA_SELF_A11Y_PLAYWRIGHT=1`).
+- **release**: Versions bumped to `0.7.0` across all six publishable
+  Python pyprojects (`sentinelqa-cli`, `sentinelqa-engine`,
+  `sentinelqa-modules`, `sentinelqa-integrations`, `sentinelqa`,
+  `sentinelqa-mcp`) and `packages/ts-runtime/package.json`. The SDK and
+  MCP packages moved from `0.1.0` to `0.7.0` to align with the
+  monorepo's headline version (the SDK public surface is unchanged).
+
+### Changed
+
+- `tests/conftest.py` pins `COVERAGE_RCFILE` and `COVERAGE_FILE` env
+  vars to absolute repo paths so child Python processes started during
+  pytest no longer initialise statement-mode coverage and break
+  `coverage combine`. Fix for a latent local-only flake; CI was
+  unaffected because the workflow runs `pytest` without `--cov`.
+- `.pre-commit-config.yaml` excludes
+  `tests/integration/release/test_secret_leak.py` and
+  `docs/release/secret-leak-audit-2026-05-30.md` from `detect-private-key`
+  — both files reference the PEM regex literal as a pattern, not a key.
+  gitleaks still scans them.
+- `engine/pyproject.toml` migrated from `packages = ["../engine"]` to
+  the `include + sources = {"" = "engine"}` mapping so `uv build`
+  succeeds.
+
+### Removed
+
+_Nothing removed in `0.7.0`._
+
+### Security
+
+- Re-audited every `SafetyPolicy.enforce` call site (19 total). Live
+  red-team probe against `https://example.com` refused with exit 4 +
+  `E-SAFE-001`. Full verdict + per-module table in
+  `docs/release/safety-audit-2026-05-30.md`.
+- Secret-leak gate added as a recurring CI check
+  (`tests/integration/release/test_secret_leak.py`).
 
 ## [0.6.0] - 2026-05-30
 
