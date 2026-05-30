@@ -33,6 +33,7 @@ from sentinel_cli.commands import (
     mcp_cmd,
     perf_cmd,
     plan_cmd,
+    plugins_cmd,
     report_cmd,
     security_cmd,
     stubs,
@@ -286,6 +287,16 @@ def build_app() -> typer.Typer:
             "compares captured PNGs against baselines; `visual accept` "
             "promotes captures into the baseline tree (refused in CI); "
             "`visual capture` stages an external PNG tree."
+        ),
+    )
+    cli.add_typer(
+        plugins_cmd.plugins_app,
+        name="plugins",
+        help=(
+            "Manage SentinelQA plugins (Phase 24, PRD §22, ADR-0029). "
+            "`plugins list` shows installed plugins; `plugins info` "
+            "prints one manifest; `plugins validate` checks a "
+            "standalone manifest file."
         ),
     )
 
