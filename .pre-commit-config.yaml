@@ -36,7 +36,8 @@ repos:
             tests/golden/redaction/parity\.json|
             scripts/export-redaction-parity\.py|
             tests/unit/modules/security/test_secret_patterns\.py|
-            tests/integration/release/test_built_packages\.py
+            tests/integration/release/test_built_packages\.py|
+            tests/integration/release/test_secret_leak\.py
           )$
       - id: check-merge-conflict
       - id: check-case-conflict
