@@ -1,0 +1,1 @@
+"""SentinelQA FastAPI demo package."""
