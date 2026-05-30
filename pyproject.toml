@@ -224,6 +224,7 @@ source = [
     "engine/healer",
     "engine/modules",
     "engine/ci",
+    "engine/plugins",
     "modules/api",
     "modules/functional",
     "modules/visual",
