@@ -249,13 +249,26 @@ Needs:
 
 ### 7.3 Future scope
 
-- Mobile Appium support.
-- Desktop Electron testing.
-- Hosted browser execution cloud.
-- Visual AI model.
-- Compliance packs.
-- Test data management UI.
-- Human-in-the-loop QA marketplace.
+The list below was the original future-scope snapshot at MVP definition time. As the project completed the MVP (Phases 00–29) and progressed into the ecosystem expansion (Phases 30–36), several items moved into scope; the remainder stay future-scope with ADR-recorded reasons.
+
+**Moved in-scope post-MVP (Phases 30–36):**
+
+- ✅ Multi-provider LLM support (Gemini, Ollama, Azure OpenAI, Vertex AI, Mistral, Groq, OpenRouter) — Phase 30 (`plans/phase-30-llm-providers/`).
+- ✅ Browser-authenticated audits (OAuth + LLM-web app sessions) — Phase 31 (`plans/phase-31-browser-auth/`).
+- ✅ Extended security skill catalog (CWE / ATT&CK / OWASP-API-Top-10 mapping) — Phase 32 (`plans/phase-32-extended-security/`).
+- ✅ Supply-chain audit (CycloneDX SBOM + OSV + lockfile freshness + container scan + license audit) — Phase 33 (`plans/phase-33-supply-chain/`).
+- ✅ Compliance packs (WCAG 2.2, GDPR cookie consent, CCPA Do-Not-Sell, SOC 2 audit-trail) — Phase 34 (`plans/phase-34-compliance/`).
+- ✅ Public release engineering — Phase 35 (`plans/phase-35-public-release/`).
+- ✅ Ecosystem publish (PyPI, npm, Docker Hub, v1.0.0 GitHub Release) — Phase 36 (`plans/phase-36-publish-ecosystem/`).
+
+**Still future-scope (no phase yet; out of scope until adoption justifies the work):**
+
+- Mobile Appium support — ADR-0033 cloud-boundary precedent applies; revisit post-1.0 if adoption demands it.
+- Desktop Electron testing — same.
+- Hosted browser execution cloud — ADR-0033, ADR-0036 (cloud delayed until CLI traction).
+- Visual AI model — Phase 21 ships pixel + perceptual-hash visual diff; an ML-backed visual diff is future scope.
+- Test data management UI — out of scope until the CLI demonstrates need.
+- Human-in-the-loop QA marketplace — ADR-0033 precedent.
 
 ---
 

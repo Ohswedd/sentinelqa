@@ -1,6 +1,6 @@
 # SentinelQA Implementation Plan
 
-This folder is the **single source of truth for execution**. It decomposes the SentinelQA PRD into 30 phases, each broken into sub-phases and per-task files. Every task is sized so an AI coding agent or human contributor can pick it up, do it, verify it, and commit it without further design work.
+This folder is the **single source of truth for execution**. It decomposes the SentinelQA PRD into **37 phases** (Phases 00–29 = MVP / pre-1.0; Phases 30–36 = ecosystem expansion + v1.0.0 release), each broken into sub-phases and per-task files. Every task is sized so an AI coding agent or human contributor can pick it up, do it, verify it, and commit it without further design work.
 
 > Authority order (per `CLAUDE.md` §2): system safety rules → user instructions → `CLAUDE.md` → `PRD.md` → ADRs → comments → this plan. If this plan contradicts the PRD or CLAUDE.md, the PRD/CLAUDE.md wins — update this plan immediately when you discover the conflict.
 
@@ -65,6 +65,13 @@ No task is allowed to be vague. If a task ever feels under-specified, the contri
 | 27 | Docs & ADRs | Docs site, status labels, ADRs for every CLAUDE §34 trigger |
 | 28 | Versioning & Release Prep | Semver, changelog, package metadata, distribution scripts |
 | 29 | Final Hardening & PRD Reconciliation | Safety audit, secret-leak audit, determinism audit, DoD sweep, PRD/CLAUDE.md reconcile |
+| 30 | Multi-Provider LLM Adapter Layer | Gemini, Ollama, Azure OpenAI, Vertex AI, Mistral, Groq, OpenRouter; shared cost / budget / redaction |
+| 31 | Browser-Authenticated Audits | Encrypted vault, `sentinel auth login`, OAuth + LLM-web profiles, vault-aware runner |
+| 32 | Extended Security Skill Catalog | JWT, cookies, TLS, GraphQL, OWASP-API BOLA/BFLA, SSRF, bundle secrets, CWE/ATT&CK mapping |
+| 33 | Supply-Chain & Dependency Audit | CycloneDX SBOM, OSV lookup, lockfile freshness, postinstall scan, container scan, license audit |
+| 34 | Compliance Packs | WCAG 2.2, GDPR cookies, CCPA Do-Not-Sell, SOC 2 trail, pack DSL |
+| 35 | Public Release Engineering | README polish, GitHub community files, license headers, docs deploy, brand, branch protection, go-public |
+| 36 | Publish to Ecosystem | v1.0.0 tag prep, PyPI / npm / Docker Hub publish workflows, post-publish smoke, publish runbook |
 
 ---
 
@@ -108,7 +115,7 @@ The `PROMT.md` file contains the exact prompt to paste back into Claude Code to 
 | §1 Market Context | (positioning; nothing to build) |
 | §2 Safety Boundary | Phase 01 (policy), Phase 13 (security), Phase 29 (audit) |
 | §3 Vision / §4 Personas / §5 JTBD / §6 Principles | Drives every phase; explicit citations in each task |
-| §7 Scope | Phases 00–29 cover **all in-scope** items; out-of-scope is preserved as ADRs |
+| §7 Scope | Phases 00–29 cover **all in-scope MVP items**. Phase 30–36 expand scope (multi-provider LLM, browser auth, extended security catalog, supply-chain audit, compliance packs, public release, ecosystem publish); the previously out-of-scope items still without a phase remain ADR-documented. |
 | §9 Core Modules | 9.1 Discovery → Phase 05; 9.2 Planner → 06; 9.3 Generator → 07; 9.4 Runner → 08; 9.5 Analyzer → 09; 9.6 Healer → 20; 9.7 Reporter → 03 + 15 |
 | §10 Testing Capabilities | 10.1 Functional → Phase 10; 10.2 Regression → 17; 10.3 API → 22; 10.4 A11y → 11; 10.5 Perf → 12; 10.6 Visual → 21; 10.7 Security → 13; 10.8 Chaos → 23; 10.9 LLM Audit → 19 |
 | §11 Architecture | Phase 00 (repo) + Phase 04 (runtimes) + Phase 24 (plugins) |
@@ -134,6 +141,7 @@ The `PROMT.md` file contains the exact prompt to paste back into Claude Code to 
 | §32 Recommended Build Order | Reflected in phase ordering |
 | §33 Reference Sources | Preserved in Phase 27 docs |
 | §34 Final Verdict | Phase 29 ensures we hold the line |
+| §7.3 Future scope items pulled in-scope | Phases 30–36: multi-provider LLM (30), browser-authenticated audits (31), extended security catalog with CWE/ATT&CK mapping (32), supply-chain + SBOM (33), compliance packs (34), public release engineering (35), ecosystem publish (36). |
 
 If a PRD bullet is not visibly accounted for in the phase that should own it, that is a planning bug — fix it in this README and the relevant phase.
 
