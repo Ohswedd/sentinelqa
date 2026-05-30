@@ -42,10 +42,15 @@ def test_snapshot_has_schema_version() -> None:
     assert "modules" in payload
 
 
-def test_snapshot_lists_three_public_modules() -> None:
+def test_snapshot_lists_public_modules() -> None:
     payload = json.loads(SNAPSHOT_PATH.read_text(encoding="utf-8"))
     modules = set(payload["modules"].keys())
-    assert modules == {"sentinelqa", "sentinelqa.errors", "sentinelqa.agent"}
+    assert modules == {
+        "sentinelqa",
+        "sentinelqa.errors",
+        "sentinelqa.agent",
+        "sentinelqa.plugins",
+    }
 
 
 def test_snapshot_matches_live_surface(tmp_path: Path) -> None:

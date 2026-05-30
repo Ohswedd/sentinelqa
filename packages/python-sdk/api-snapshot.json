@@ -389,6 +389,92 @@
         "kind": "function",
         "signature": "(agent_message: 'Mapping[str, Any]') -> 'SentinelError'"
       }
+    },
+    "sentinelqa.plugins": {
+      "AuthPlugin": {
+        "kind": "class",
+        "model_fields": [],
+        "own_attributes": [
+          "acquire",
+          "kind"
+        ]
+      },
+      "CloudExecutionPlugin": {
+        "kind": "class",
+        "model_fields": [],
+        "own_attributes": [
+          "kind",
+          "submit"
+        ]
+      },
+      "DataFixturePlugin": {
+        "kind": "class",
+        "model_fields": [],
+        "own_attributes": [
+          "kind",
+          "setup",
+          "teardown"
+        ]
+      },
+      "DiscoveryPlugin": {
+        "kind": "class",
+        "model_fields": [],
+        "own_attributes": [
+          "discover",
+          "kind"
+        ]
+      },
+      "ENTRY_POINT_GROUP": {
+        "kind": "constant",
+        "value": "sentinelqa.plugins"
+      },
+      "PLUGIN_PROTOCOLS": {
+        "kind": "dict"
+      },
+      "PROTOCOL_VERSION": {
+        "kind": "constant",
+        "value": "1.0.0"
+      },
+      "PluginContext": {
+        "kind": "class",
+        "model_fields": [],
+        "own_attributes": [
+          "artifact_path",
+          "has_permission"
+        ]
+      },
+      "PolicyPlugin": {
+        "kind": "class",
+        "model_fields": [],
+        "own_attributes": [
+          "evaluate",
+          "kind"
+        ]
+      },
+      "ReporterPlugin": {
+        "kind": "class",
+        "model_fields": [],
+        "own_attributes": [
+          "emit",
+          "kind"
+        ]
+      },
+      "RunnerPlugin": {
+        "kind": "class",
+        "model_fields": [],
+        "own_attributes": [
+          "kind",
+          "run"
+        ]
+      },
+      "ScannerPlugin": {
+        "kind": "class",
+        "model_fields": [],
+        "own_attributes": [
+          "kind",
+          "run"
+        ]
+      }
     }
   },
   "schema_version": "1"
