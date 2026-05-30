@@ -1,0 +1,68 @@
+# SentinelQA configuration for the Django demo (Phase 26.03).
+# The app binds to 127.0.0.1:8001 by default — see README.md.
+version: 1
+
+project:
+  name: sentinelqa-django-example
+  framework: django
+  package_manager: pip
+
+source:
+  root: .
+  include:
+    - core
+    - demo_site
+    - templates
+  exclude:
+    - .venv
+    - __pycache__
+
+target:
+  base_url: http://127.0.0.1:8001
+  allowed_hosts:
+    - 127.0.0.1
+    - localhost
+
+auth:
+  strategy: test_user
+  login_url: /login/
+  username_env: SENTINEL_DJANGO_DEMO_USER
+  password_env: SENTINEL_DJANGO_DEMO_PASSWORD
+
+modules:
+  functional: true
+  api: false
+  accessibility: true
+  performance: true
+  visual: false
+  security: true
+  chaos: false
+  llm_audit: true
+
+security:
+  mode: safe
+  destructive_tests: false
+  max_requests_per_second: 5
+  allowed_payload_level: low
+  routes:
+    - /
+    - /login/
+    - /projects/
+  request_timeout_seconds: 15.0
+
+discovery:
+  engine: "http"
+  max_depth: 2
+  max_pages: 25
+  rate_limit_rps: 5.0
+  respect_robots: true
+  same_host_only: true
+
+accessibility:
+  axe:
+    tags:
+      - wcag2a
+      - wcag2aa
+
+policy:
+  min_quality_score: 85

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Projects — SentinelQA Django Demo{% endblock %}
+{% block content %}
+  <h2>Projects</h2>
+  <table>
+    <caption class="sr-only">Your projects</caption>
+    <thead><tr><th scope="col">ID</th><th scope="col">Name</th><th scope="col">Description</th><th scope="col">Actions</th></tr></thead>
+    <tbody>
+      {% for project in projects %}
+        <tr>
+          <td>{{ project.id }}</td>
+          <td>{{ project.name }}</td>
+          <td>{{ project.description }}</td>
+          <td>
+            <form class="inline" method="post" action="{% url 'project-delete' project.id %}">{% csrf_token %}
+              <button type="submit" aria-label="Delete {{ project.name }}">Delete</button>
+            </form>
+          </td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="4">No projects yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <h3>Create project</h3>
+  <form method="post">{% csrf_token %}
+    {{ form.as_p }}
+    <p><button type="submit">Create</button></p>
+  </form>
+{% endblock %}

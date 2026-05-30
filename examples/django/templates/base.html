@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}SentinelQA Django Demo{% endblock %}</title>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        margin: 2rem auto;
+        max-width: 48rem;
+        padding: 0 1rem;
+        line-height: 1.4;
+      }
+      nav a { margin-right: 0.75rem; }
+      form.inline { display: inline; }
+      table { border-collapse: collapse; width: 100%; }
+      th, td { text-align: left; padding: 0.4rem 0.6rem; border-bottom: 1px solid #ddd; }
+      .messages { color: #b91c1c; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>SentinelQA Django Demo</h1>
+      <nav aria-label="Primary">
+        <a href="{% url 'home' %}">Home</a>
+        <a href="{% url 'projects' %}">Projects</a>
+        {% if user.is_authenticated %}
+          <form class="inline" action="{% url 'logout' %}" method="post">{% csrf_token %}
+            <button type="submit">Log out ({{ user.username }})</button>
+          </form>
+        {% else %}
+          <a href="{% url 'login' %}">Log in</a>
+        {% endif %}
+        <a href="/admin/">Admin</a>
+      </nav>
+    </header>
+    <main>
+      {% if messages %}
+        <ul class="messages" role="alert">
+          {% for message in messages %}<li>{{ message }}</li>{% endfor %}
+        </ul>
+      {% endif %}
+      {% block content %}{% endblock %}
+    </main>
+  </body>
+</html>

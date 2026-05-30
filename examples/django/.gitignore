@@ -1,0 +1,4 @@
+*.sqlite3
+.venv-demo/
+__pycache__/
+*.pyc
