@@ -121,7 +121,7 @@ Every phase ends with a push → PR → CI → merge cycle handled by the loop p
 | 23 | feature/phase-23-chaos-module | https://github.com/Ohswedd/sentinelqa/pull/24 | https://github.com/Ohswedd/sentinelqa/actions/runs/26668421179 | 89709a5c1568489b112da2aed1cfdead711f0532 | 2026-05-30 |
 | 24 | feature/phase-24-plugin-architecture | https://github.com/Ohswedd/sentinelqa/pull/25 | https://github.com/Ohswedd/sentinelqa/actions/runs/26669773370 | 7aefb9ea2d51f2671b0b1a56f1e6a03840ebb2e2 | 2026-05-30 |
 | 25 | feature/phase-25-integrations | https://github.com/Ohswedd/sentinelqa/pull/26 | https://github.com/Ohswedd/sentinelqa/actions/runs/26682369546 | 329e6cc166e0334505728b25c76328def7659e37 | 2026-05-30 |
-| 26 | — | — | — | — | — |
+| 26 | feature/phase-26-example-apps | https://github.com/Ohswedd/sentinelqa/pull/27 | https://github.com/Ohswedd/sentinelqa/actions/runs/26689564818 | 086f99073561b9b0c7902f03d5e5df1baa43453c | 2026-05-30 |
 | 27 | — | — | — | — | — |
 | 28 | — | — | — | — | — |
 | 29 | — | — | — | — | — |
