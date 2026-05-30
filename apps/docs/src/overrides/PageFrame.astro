@@ -1,0 +1,25 @@
+---
+// Override of Starlight's default PageFrame so we can inject the
+// SentinelQA status badge directly under the page title. The rest of
+// the layout is delegated back to Starlight's default component.
+//
+// Reference: https://starlight.astro.build/guides/overriding-components/
+
+import type { Props } from "@astrojs/starlight/props";
+import Default from "@astrojs/starlight/components/PageFrame.astro";
+import StatusBadge from "../components/StatusBadge.astro";
+
+const status = Astro.props.entry.data.status as
+  | "Stable"
+  | "Experimental"
+  | "Planned"
+  | "Deprecated"
+  | undefined;
+---
+
+<Default {...Astro.props}>
+  <slot name="header" slot="header" />
+  <slot name="sidebar" slot="sidebar" />
+  {status && <StatusBadge status={status} />}
+  <slot />
+</Default>

@@ -16,9 +16,9 @@ repos:
       # `json.dumps` / `xml.etree` / the Markdown writer — any whitespace
       # massage here would silently break the schema-drift guard.
       - id: trailing-whitespace
-        exclude: ^(PRD\.md|CLAUDE\.md|tests/golden/|tests/integration/scoring/expected/)
+        exclude: ^(PRD\.md|CLAUDE\.md|tests/golden/|tests/integration/scoring/expected/|apps/docs/src/content/docs/(errors|cli|sdk|mcp|adrs)/)
       - id: end-of-file-fixer
-        exclude: ^(PRD\.md|CLAUDE\.md|tests/golden/|tests/integration/scoring/expected/)
+        exclude: ^(PRD\.md|CLAUDE\.md|tests/golden/|tests/integration/scoring/expected/|apps/docs/src/content/docs/(errors|cli|sdk|mcp|adrs)/)
       - id: check-yaml
       - id: check-json
       - id: check-added-large-files
