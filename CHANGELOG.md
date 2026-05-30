@@ -125,9 +125,10 @@ Captures Phases 20 and 21.
   diff math (pixel diff + single-scale Wang et al. SSIM perceptual filter).
   Storage layout `.sentinel/baselines/<viewport>/<route-slug>.png`. Three
   default viewports (mobile / tablet / desktop). Mask grammar (`selector` or
-  `rect`, wildcard `*`, prefix glob `admin*`). `sentinel visual {diff, accept,
-  capture}` Typer subapp. Hard CI-acceptance guard (`sentinel visual accept`
-  refuses in CI; exit 4; `visual.accept.refused_ci` audit-log entry). ADR-0026.
+  `rect`, wildcard `*`, prefix glob `admin*`). `sentinel visual` Typer subapp
+  with `diff`, `accept`, and `capture` subcommands. Hard CI-acceptance guard
+  (`sentinel visual accept` refuses in CI; exit 4; `visual.accept.refused_ci`
+  audit-log entry). ADR-0026.
 
 ## [0.2.0] - 2026-05-29
 
@@ -190,7 +191,7 @@ Initial MVP. Captures Phases 00 through 17.
   robots.txt + token bucket + transparent UA). DOM map, forms inventory, API
   detector with path templating, auth boundary detector, OpenAPI + GraphQL
   ingest. Ten-rule deterministic `risk_model` + `build_risk_map`. `sentinel
-  discover` CLI replaces the Phase-02 stub. ADR-0010.
+discover` CLI replaces the Phase-02 stub. ADR-0010.
 - **phase-06**: Deterministic planner + optional LLM adapter (`engine.planner`).
   Eleven named extractors (login / signup / logout / pwreset / CRUD / SFS /
   admin / role / file / payment / notification). Plan wire format
@@ -202,7 +203,7 @@ Initial MVP. Captures Phases 00 through 17.
   (env-var creds only; destructive data gated on
   `security.mode=authorized_destructive`). `sentinel-ts audit-locators`
   subcommand. Banner-aware writer refuses hand-edited files. `sentinel
-  generate` CLI. ADR-0012.
+generate` CLI. ADR-0012.
 - **phase-08**: Playwright runner (`engine.runner`). `LocalRunner` + `DockerRunner`
   sharing the `RunnerInvocation → RunnerOutcome` contract. JSONL aggregator
   with partial-stream tolerance, P50/P95 metrics, flake-rate. Strict
@@ -219,8 +220,8 @@ Initial MVP. Captures Phases 00 through 17.
   `SentinelModule` base class (CLAUDE §9). `FunctionalModule` discovers
   `tests/sentinel/*.spec.ts`, drives the runner, translates failed tests into
   typed findings. Canonical `@p0..p3 / @module:<n> / @flow:<extractor> /
-  @risk:<level>` tag set. Slice modes (`smoke / standard / full`). `sentinel
-  functional` CLI. ADR-0015.
+@risk:<level>` tag set. Slice modes (`smoke / standard / full`). `sentinel
+functional` CLI. ADR-0015.
 - **phase-11**: Accessibility module (`modules/accessibility`). Per-route
   audits via `sentinel-ts audit-a11y` subcommand. axe-core + keyboard +
   landmark + accessible-name checks. CLAUDE §28 wording guard ("Automated
@@ -235,15 +236,15 @@ Initial MVP. Captures Phases 00 through 17.
   `SEC-*` rule IDs registered with the SARIF writer. Stored XSS / SQLi
   require `security.mode=authorized_destructive` + valid proof-of-authorization.
   AST guard at `tests/security/test_module_calls_policy.py`. `sentinel
-  security` CLI. ADR-0018.
+security` CLI. ADR-0018.
 - **phase-14**: Quality scoring (`engine.scoring`). Eight PRD §19.1 axes;
   `compute_blockers` (CLAUDE §25); typed `PolicyDecision`. `sentinel report
-  --explain-score` CLI. Hypothesis 5000-example property test + three byte-
+--explain-score` CLI. Hypothesis 5000-example property test + three byte-
   locked replay goldens. ADR-0019.
 - **phase-15**: HTML + JSON reports. Self-contained HTML report (offline-
   enforced); PR-comment upsert via `<!-- sentinelqa:pr-comment -->` anchor;
   inline SVG sparkline trends; Slack Block Kit payload generator. `sentinel
-  report --latest / --run-id / --format / --open / --explain-score`. ADR-0020.
+report --latest / --run-id / --format / --open / --explain-score`. ADR-0020.
 - **phase-16**: Python SDK at `packages/python-sdk/src/sentinelqa/`. `Sentinel`
   facade with typed sync + `async_<name>` counterparts. Frozen Pydantic
   `AuditResult` model. Agent-message contract (`AGENT_MESSAGE_SCHEMA_VERSION`).
@@ -254,7 +255,7 @@ Initial MVP. Captures Phases 00 through 17.
   with broad-impact tripwires. `sentinel ci` CLI. GitHub composite Action +
   reusable workflow; GitLab template; PR / MR posters (`urllib`-only).
   TS `sentinel-ts discover` subcommand + `engine.discovery.backends.
-  playwright_backend.PlaywrightCrawlBackend` lights up the second discovery
+playwright_backend.PlaywrightCrawlBackend` lights up the second discovery
   backend (ADR-0010 follow-up #1 closed). ADR-0022.
 
 ### Security

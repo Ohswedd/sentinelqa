@@ -6,6 +6,28 @@ readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "Apache-2.0" }
 authors = [{ name = "ohswedd" }]
+keywords = [
+    "sentinelqa",
+    "playwright",
+    "testing",
+    "qa",
+    "engine",
+    "audit",
+    "release-confidence",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: Quality Assurance",
+    "Topic :: Software Development :: Testing",
+    "Typing :: Typed",
+]
 dependencies = [
     "pydantic==2.10.3",
     "pyyaml==6.0.2",
@@ -18,6 +40,13 @@ dependencies = [
     "pillow==11.0.0",
     "packaging==26.2",
 ]
+
+[project.urls]
+Homepage = "https://github.com/Ohswedd/sentinelqa"
+Documentation = "https://github.com/Ohswedd/sentinelqa/tree/main/docs"
+Repository = "https://github.com/Ohswedd/sentinelqa"
+Issues = "https://github.com/Ohswedd/sentinelqa/issues"
+Changelog = "https://github.com/Ohswedd/sentinelqa/blob/main/CHANGELOG.md"
 
 [build-system]
 requires = ["hatchling>=1.25"]

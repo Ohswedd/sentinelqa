@@ -23,7 +23,7 @@ UV ?= uv
         docs docs-build docs-dev docs-gen-all docs-gen-error-codes \
         docs-gen-cli docs-gen-sdk docs-gen-mcp docs-gen-adr-index \
         docs-check-fresh \
-        changelog-draft \
+        changelog-draft audit-metadata \
         clean ci
 
 help:
@@ -50,6 +50,7 @@ help:
 	@echo "  docs-gen-all  Run every docs generator (CLI / SDK / MCP / errors / ADR index)"
 	@echo "  docs-check-fresh  Fail if any generated docs page is stale"
 	@echo "  changelog-draft   Draft a Keep a Changelog section from Conventional Commits"
+	@echo "  audit-metadata    Verify every publishable manifest carries release-ready metadata"
 	@echo "  clean         Remove caches and build artifacts"
 
 # --- install ---------------------------------------------------------------
@@ -290,6 +291,10 @@ docs-dev: docs-gen-all
 docs: docs-build
 
 # --- release ---------------------------------------------------------------
+# Phase 28 — audit publishable manifests for release-ready metadata.
+audit-metadata:
+	$(UV) run python -m scripts.release.audit_metadata
+
 # Phase 28 — draft a Keep a Changelog section from Conventional Commits.
 # Writes to CHANGELOG.draft.md for the human curator. Set FROM=<rev> to bound
 # the lower edge of the range (default: repo root). VERSION/DATE override the
