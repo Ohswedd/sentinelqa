@@ -29,6 +29,8 @@ node_modules/
 .nuxt/
 .cache/
 .parcel-cache/
+# Astro cache (Phase 27 — apps/docs Starlight site)
+.astro/
 # Vitest v8 coverage output (Phase 04.07). Coverage is enforced via
 # the threshold block in `packages/ts-runtime/vitest.config.ts`; the
 # emitted directory itself is a build artifact.
