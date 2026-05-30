@@ -219,7 +219,9 @@ def test_render_entry_marks_breaking() -> None:
 
 
 # --------------------------------------------------------------------------- #
-# CLI smoke test — against the real repo
+# CLI smoke test — against a hermetic tmp git repo so CI shallow clones don't
+# trip up the test (the live repo's --max-parents=0 root is unreachable under
+# `actions/checkout`'s default fetch-depth=1).
 # --------------------------------------------------------------------------- #
 
 
@@ -233,54 +235,90 @@ def _run_drafter(*args: str, cwd: Path | None = None) -> subprocess.CompletedPro
     )
 
 
-def test_drafter_against_real_repo_produces_unreleased_section() -> None:
-    # Limit the range to keep the test fast and deterministic enough to assert
-    # on. The starting commit is the very first commit in the repo.
-    first = (
-        subprocess.run(
-            ["git", "rev-list", "--max-parents=0", "HEAD"],
-            capture_output=True,
-            text=True,
-            cwd=str(REPO_ROOT),
-            check=True,
-        )
-        .stdout.strip()
-        .splitlines()[-1]
+def _git(cwd: Path, *args: str) -> None:
+    import os as _os
+
+    subprocess.run(
+        ["git", *args],
+        cwd=str(cwd),
+        capture_output=True,
+        text=True,
+        check=True,
+        env={
+            **_os.environ,
+            "GIT_AUTHOR_NAME": "Test",
+            "GIT_AUTHOR_EMAIL": "test@example.com",
+            "GIT_COMMITTER_NAME": "Test",
+            "GIT_COMMITTER_EMAIL": "test@example.com",
+            "GIT_CONFIG_GLOBAL": "/dev/null",
+            "GIT_CONFIG_SYSTEM": "/dev/null",
+        },
     )
 
-    result = _run_drafter("--from", first, "--to", "HEAD", "--version", "X.Y.Z")
+
+def _init_synth_repo(root: Path, *subjects: str) -> None:
+    """Initialise a synthetic git repo with one commit per subject (no merges)."""
+    root.mkdir(parents=True, exist_ok=True)
+    _git(root, "init", "-q", "-b", "main")
+    for i, subject in enumerate(subjects):
+        (root / f"f{i}.txt").write_text(f"{i}\n", encoding="utf-8")
+        _git(root, "add", "-A")
+        _git(root, "commit", "-q", "-m", subject)
+
+
+def test_drafter_against_synthetic_repo_produces_unreleased_section(tmp_path: Path) -> None:
+    repo = tmp_path / "synth"
+    _init_synth_repo(
+        repo,
+        "feat(cli): land sentinel test",
+        "fix(runner): handle partial stream",
+        "security(repo): redact webhook url",
+        "phase 02: cli skeleton, run lifecycle, artifact tree",
+        "chore(tooling): bump pytest",
+    )
+
+    result = _run_drafter("--to", "HEAD", "--version", "X.Y.Z", cwd=repo)
     assert result.returncode == 0, result.stderr
     out = result.stdout
-    # Header present.
     assert "## [X.Y.Z]" in out
-    # At least one Added entry — every shipped phase produced an Added entry.
+    # feat + phase both go under Added; fix → Fixed; security → Security.
     assert "### Added" in out
-    # Phase commits get a phase-NN scope.
-    assert "**phase-" in out
-    # Internal noise filtered by default.
+    assert "land sentinel test" in out
+    assert "**phase-02**" in out
+    assert "### Fixed" in out
+    assert "### Security" in out
+    # chore is internal and excluded by default.
     assert "### Internal" not in out
 
 
 def test_drafter_writes_output_file(tmp_path: Path) -> None:
-    out_file = tmp_path / "draft.md"
-    first = (
-        subprocess.run(
-            ["git", "rev-list", "--max-parents=0", "HEAD"],
-            capture_output=True,
-            text=True,
-            cwd=str(REPO_ROOT),
-            check=True,
-        )
-        .stdout.strip()
-        .splitlines()[-1]
-    )
+    repo = tmp_path / "synth"
+    _init_synth_repo(repo, "feat(cli): land sentinel test")
 
-    result = _run_drafter("--from", first, "--to", "HEAD", "-o", str(out_file))
+    out_file = tmp_path / "draft.md"
+    result = _run_drafter("--to", "HEAD", "-o", str(out_file), cwd=repo)
     assert result.returncode == 0, result.stderr
     assert result.stdout == ""  # quiet when -o is used
     text = out_file.read_text(encoding="utf-8")
     assert "## [Unreleased]" in text
     assert "### Added" in text
+    assert "land sentinel test" in text
+
+
+def test_drafter_includes_internal_when_flagged(tmp_path: Path) -> None:
+    repo = tmp_path / "synth"
+    _init_synth_repo(
+        repo,
+        "feat(cli): land sentinel test",
+        "chore(tooling): bump pytest",
+    )
+
+    result = _run_drafter("--to", "HEAD", "--include-internal", "--version", "0.1.0", cwd=repo)
+    assert result.returncode == 0, result.stderr
+    out = result.stdout
+    assert "### Added" in out
+    assert "### Internal" in out
+    assert "bump pytest" in out
 
 
 def test_canonical_changelog_file_exists_and_references_keep_a_changelog() -> None:

@@ -16,7 +16,7 @@
 
 # SentinelQA vX.Y.Z
 
-_Status: pre-1.0 — see [`docs/dev/semver.md`](docs/dev/semver.md)._
+_Status: pre-1.0 — see [`docs/dev/semver.md`](https://github.com/Ohswedd/sentinelqa/blob/main/docs/dev/semver.md)._
 
 ## Summary
 
@@ -57,6 +57,6 @@ _Status: pre-1.0 — see [`docs/dev/semver.md`](docs/dev/semver.md)._
 ## Signed off
 
 - Owner: @ohswedd
-- Pre-1.0 review: [`docs/release/pre-1.0-review.md`](docs/release/pre-1.0-review.md)
+- Pre-1.0 review: [`docs/release/pre-1.0-review.md`](https://github.com/Ohswedd/sentinelqa/blob/main/docs/release/pre-1.0-review.md)
 
 _No AI tools are co-authors of this release (CLAUDE.md §3)._
