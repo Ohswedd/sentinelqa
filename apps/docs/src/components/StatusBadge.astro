@@ -1,0 +1,25 @@
+---
+// SentinelQA status badge — surfaced at the top of every feature page
+// when `status` is present in the page's frontmatter.
+//
+// Allowed values mirror docs/dev/status-labels.md exactly:
+//   Stable | Experimental | Planned | Deprecated
+
+interface Props {
+  status?: "Stable" | "Experimental" | "Planned" | "Deprecated";
+}
+
+const { status } = Astro.props;
+
+const className = status
+  ? `sentinel-status-badge sentinel-status-badge--${status.toLowerCase()}`
+  : "";
+---
+
+{
+  status && (
+    <span class={className} aria-label={`Documentation status: ${status}`}>
+      {status}
+    </span>
+  )
+}

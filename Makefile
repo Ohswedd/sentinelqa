@@ -20,6 +20,9 @@ UV ?= uv
         demo demo-down \
         demo-flask demo-fastapi demo-fastapi-openapi \
         demo-django demo-nextjs demo-react-vite demo-llm-broken \
+        docs docs-build docs-dev docs-gen-all docs-gen-error-codes \
+        docs-gen-cli docs-gen-sdk docs-gen-mcp docs-gen-adr-index \
+        docs-check-fresh \
         clean ci
 
 help:
@@ -41,6 +44,10 @@ help:
 	@echo "  demo          Bring up the end-to-end stack and run sentinel audit"
 	@echo "  demo-down     Tear the end-to-end stack down"
 	@echo "  demo-<name>   Boot one example: flask|fastapi|django|nextjs|react-vite|llm-broken"
+	@echo "  docs          Regenerate auto-generated pages, then build the Starlight site"
+	@echo "  docs-dev      Run the Starlight dev server (apps/docs/)"
+	@echo "  docs-gen-all  Run every docs generator (CLI / SDK / MCP / errors / ADR index)"
+	@echo "  docs-check-fresh  Fail if any generated docs page is stale"
 	@echo "  clean         Remove caches and build artifacts"
 
 # --- install ---------------------------------------------------------------
@@ -244,6 +251,41 @@ demo-down:
 	@if [ -f examples/end-to-end-demo/docker-compose.yml ]; then \
 		cd examples/end-to-end-demo && docker compose down -v; \
 	fi
+
+# --- docs ------------------------------------------------------------------
+# Phase 27 — Astro Starlight site under apps/docs/ + auto-generated pages.
+docs-gen-error-codes:
+	$(UV) run python -m scripts.docs.gen_error_codes
+
+docs-gen-cli:
+	$(UV) run python -m scripts.docs.gen_cli_status
+
+docs-gen-sdk:
+	$(UV) run python -m scripts.docs.gen_sdk_reference
+
+docs-gen-mcp:
+	$(UV) run python -m scripts.docs.gen_mcp_reference
+
+docs-gen-adr-index:
+	$(UV) run python -m scripts.docs.gen_adr_index
+
+docs-gen-all:
+	$(UV) run python -m scripts.docs.gen_all
+
+docs-check-fresh:
+	$(UV) run pytest tests/integration/docs -q
+
+docs-build: docs-gen-all
+	@if [ -f package.json ]; then \
+		pnpm --filter @sentinelqa/docs build; \
+	else \
+		echo "skipping docs build (pnpm workspace not bootstrapped)"; \
+	fi
+
+docs-dev: docs-gen-all
+	pnpm --filter @sentinelqa/docs dev
+
+docs: docs-build
 
 # --- ci --------------------------------------------------------------------
 ci: format-check lint typecheck adr-check test

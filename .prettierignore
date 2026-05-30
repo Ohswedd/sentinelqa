@@ -8,6 +8,16 @@ test-results
 .sentinel
 .mypy_cache
 .pytest_cache
+
+# Phase 27 — auto-generated docs pages. Written by `make docs-gen-all` from
+# Python sources (engine.errors.codes, the SDK API snapshot, the live MCP
+# tool registry, etc.). Prettier reformat = drift = the freshness gate
+# in tests/integration/docs/test_generated_docs_fresh.py fails CI.
+apps/docs/src/content/docs/errors/
+apps/docs/src/content/docs/cli/
+apps/docs/src/content/docs/sdk/
+apps/docs/src/content/docs/mcp/
+apps/docs/src/content/docs/adrs/
 .ruff_cache
 .coverage
 htmlcov

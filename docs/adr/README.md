@@ -75,3 +75,13 @@ Use [`_template.md`](./_template.md). The required headings are validated by `sc
 | [0029](./0029-plugin-architecture.md)                     | Plugin architecture — entry-point discovery, capability/permission declarations, sandbox      | `Accepted` | 24    |
 | [0030](./0030-integrations.md)                            | Integrations — stdlib HTTP adapters, off-by-default, redacted                                 | `Accepted` | 25    |
 | [0031](./0031-example-apps.md)                            | Example apps — self-contained reference implementations + structural CI tests                 | `Accepted` | 26    |
+| [0032](./0032-docs-site.md)                               | Docs site built with Astro Starlight                                                          | `Accepted` | 27    |
+| [0033](./0033-cloud-boundary.md)                          | Cloud boundary — no SentinelQA cloud in the MVP                                               | `Accepted` | 27    |
+| [0034](./0034-python-cli-typescript-runtime.md)           | Python-first CLI with a TypeScript Playwright runtime (PRD §31 Q1)                            | `Accepted` | 27    |
+| [0035](./0035-generated-tests-in-user-repo.md)            | Generated tests live in the user's repo (PRD §31 Q2)                                          | `Accepted` | 27    |
+| [0036](./0036-cloud-delayed-until-cli-traction.md)        | Cloud is delayed until the CLI earns adoption (PRD §31 Q3)                                    | `Accepted` | 27    |
+| [0037](./0037-llm-provider-agnostic.md)                   | Provider-agnostic LLM access through adapters (PRD §31 Q4)                                    | `Accepted` | 27    |
+| [0038](./0038-mcp-day-one.md)                             | Ship an MCP server on day one (PRD §31 Q5)                                                    | `Accepted` | 27    |
+| [0039](./0039-planner-deterministic-llm-split.md)         | Discovery + execution deterministic, planning LLM-augmented (PRD §31 Q6)                      | `Accepted` | 27    |
+| [0040](./0040-visual-built-in-first.md)                   | Built-in visual diff engine first, integrations later (PRD §31 Q7)                            | `Accepted` | 27    |
+| [0041](./0041-framework-agnostic-with-nextjs.md)          | Framework-agnostic crawler with first-class Next.js support (PRD §31 Q8)                      | `Accepted` | 27    |

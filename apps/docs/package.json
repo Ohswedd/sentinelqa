@@ -1,0 +1,24 @@
+{
+  "name": "@sentinelqa/docs",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "SentinelQA documentation site (Astro Starlight). See docs/adr/0032-docs-site.md.",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "typecheck": "astro check",
+    "lint": "echo 'apps/docs: lint handled by prettier+astro check at root'",
+    "test": "echo 'apps/docs: structural checks live under tests/integration/docs (Python)'"
+  },
+  "dependencies": {
+    "@astrojs/starlight": "0.28.6",
+    "astro": "4.16.18"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.4",
+    "typescript": "5.7.2"
+  }
+}

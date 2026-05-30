@@ -18,6 +18,7 @@
 - [`plans/STATUS.md`](./plans/STATUS.md) — live status, active phase, gate-review log.
 - [`docs/adr/`](./docs/adr/) — Architecture Decision Records.
 - [`docs/dev/`](./docs/dev/) — contributor docs.
+- [`apps/docs/`](./apps/docs/) — Astro Starlight docs site (`pnpm --filter @sentinelqa/docs build`).
 
 If `CLAUDE.md` and `PRD.md` conflict, follow the authority order in `CLAUDE.md` §2 and update the docs before continuing.
 
