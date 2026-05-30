@@ -43,6 +43,9 @@ def test_golden_compiles_with_tsc(golden: Path, tmp_path: Path) -> None:
     spec = project / golden.name
     spec.write_text(golden.read_text(encoding="utf-8"), encoding="utf-8")
     # Minimal tsconfig that resolves the workspace package via baseUrl/paths.
+    # `typeRoots` points at the workspace's `@types/` install so the tmp
+    # project can find `@types/node` without re-installing it (the workspace
+    # already pins it; copying or symlinking would just duplicate the install).
     tsconfig = {
         "compilerOptions": {
             "target": "ES2022",
@@ -50,6 +53,7 @@ def test_golden_compiles_with_tsc(golden: Path, tmp_path: Path) -> None:
             "moduleResolution": "Bundler",
             "lib": ["ES2022", "DOM"],
             "types": ["node"],
+            "typeRoots": [f"{REPO_ROOT}/node_modules/@types"],
             "strict": True,
             "esModuleInterop": True,
             "skipLibCheck": True,
