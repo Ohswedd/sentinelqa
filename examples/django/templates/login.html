@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Log in — SentinelQA Django Demo{% endblock %}
+{% block content %}
+  <h2>Log in</h2>
+  <form method="post">{% csrf_token %}
+    {{ form.as_p }}
+    <p><button type="submit">Sign in</button></p>
+  </form>
+{% endblock %}

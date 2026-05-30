@@ -1,0 +1,59 @@
+# SentinelQA configuration for the LLM-broken demo (Phase 26.06).
+# This app is INTENTIONALLY BROKEN. The audit should surface ≥ 8 findings.
+# Binds to 127.0.0.1:3030 by default — see README.md.
+version: 1
+
+project:
+  name: sentinelqa-llm-broken-example
+  framework: nextjs
+  package_manager: pnpm
+
+source:
+  root: .
+  include:
+    - src
+  exclude:
+    - node_modules
+    - .next
+
+target:
+  base_url: http://127.0.0.1:3030
+  allowed_hosts:
+    - 127.0.0.1
+    - localhost
+
+modules:
+  functional: true
+  api: false
+  accessibility: true
+  performance: false
+  visual: false
+  security: true
+  chaos: false
+  llm_audit: true
+
+security:
+  mode: safe
+  destructive_tests: false
+  max_requests_per_second: 5
+  allowed_payload_level: low
+  routes:
+    - /
+    - /login
+    - /dashboard
+    - /checkout
+    - /admin
+
+discovery:
+  engine: "http"
+  max_depth: 3
+  max_pages: 50
+  rate_limit_rps: 5.0
+  respect_robots: true
+  same_host_only: true
+
+# Quality gate intentionally LOW — the demo's goal is to ship findings, not
+# pass. The recommended way to consume this app is `sentinel llm-audit`, which
+# enumerates the issues in `report.html` and `report.md`.
+policy:
+  min_quality_score: 0

@@ -1,0 +1,40 @@
+# SentinelQA Phase 26.07 — full end-to-end demo.
+#
+# Brings up the FastAPI backend (port 8000) and the Next.js frontend
+# (port 3000) so `sentinel audit --url http://127.0.0.1:3000` can drive
+# the full stack. Bound to the loopback interface only; the demo is for
+# local development and CI smoke runs.
+services:
+  fastapi:
+    image: python:3.11-slim
+    working_dir: /app
+    volumes:
+      - ../fastapi:/app:ro
+    command: >
+      sh -c "
+        pip install --no-cache-dir -r requirements.txt &&
+        exec uvicorn app.main:app --host 0.0.0.0 --port 8000
+      "
+    ports:
+      - "127.0.0.1:8000:8000"
+    environment:
+      SENTINEL_FASTAPI_TOKEN: demo-token
+
+  nextjs:
+    image: node:20-bookworm-slim
+    working_dir: /app
+    volumes:
+      - ../nextjs:/app
+    command: >
+      sh -c "
+        corepack enable &&
+        corepack prepare pnpm@9.15.4 --activate &&
+        pnpm install --frozen-lockfile=false &&
+        exec pnpm run dev
+      "
+    ports:
+      - "127.0.0.1:3000:3000"
+    depends_on:
+      - fastapi
+    environment:
+      NEXT_PUBLIC_API_BASE: http://127.0.0.1:8000

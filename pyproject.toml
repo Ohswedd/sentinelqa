@@ -77,6 +77,11 @@ extend-exclude = [
     "playwright-report",
     "test-results",
     ".sentinel",
+    # Phase 26 — `examples/` ships reference apps (Next.js, FastAPI,
+    # Django, Flask, React+Vite) whose framework idioms (e.g. Django's
+    # class-level `dependencies = [...]`) deliberately diverge from the
+    # SentinelQA core style. They are typed by their own toolchains.
+    "examples",
 ]
 
 [tool.ruff.lint]

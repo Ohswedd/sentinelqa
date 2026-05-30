@@ -1,0 +1,61 @@
+# SentinelQA configuration for the FastAPI demo (Phase 26.02).
+# The app binds to 127.0.0.1:8000 by default — see README.md.
+version: 1
+
+project:
+  name: sentinelqa-fastapi-example
+  framework: fastapi
+  package_manager: pip
+
+source:
+  root: .
+  include:
+    - app
+  exclude:
+    - .venv
+    - __pycache__
+
+target:
+  base_url: http://127.0.0.1:8000
+  allowed_hosts:
+    - 127.0.0.1
+    - localhost
+
+modules:
+  functional: false
+  api: true
+  accessibility: false
+  performance: false
+  visual: false
+  security: true
+  chaos: false
+  llm_audit: false
+
+security:
+  mode: safe
+  destructive_tests: false
+  max_requests_per_second: 5
+  allowed_payload_level: low
+  request_timeout_seconds: 15.0
+
+discovery:
+  engine: "http"
+  max_depth: 2
+  max_pages: 25
+  rate_limit_rps: 5.0
+  respect_robots: true
+  same_host_only: true
+
+api:
+  openapi_path: ./openapi.json
+  enabled_checks:
+    - contract
+    - negative
+    - auth
+    - error_shape
+  rate_per_second: 5.0
+  negative_max_payload_kb: 8
+  negative_max_variants_per_endpoint: 4
+
+policy:
+  min_quality_score: 85

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Log in — SentinelQA Flask Demo{% endblock %}
+{% block content %}
+  <h2>Log in</h2>
+  <form action="{{ url_for('login_post') }}" method="post">
+    <p>
+      <label for="username">Username</label><br />
+      <input id="username" name="username" autocomplete="username" required />
+    </p>
+    <p>
+      <label for="password">Password</label><br />
+      <input id="password" name="password" type="password" autocomplete="current-password" required />
+    </p>
+    <p><button type="submit">Sign in</button></p>
+  </form>
+{% endblock %}

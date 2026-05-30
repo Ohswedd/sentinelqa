@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Home — SentinelQA Flask Demo{% endblock %}
+{% block content %}
+  <p>This is the SentinelQA Flask example. Log in to manage projects.</p>
+  {% if user %}
+    <p>You are signed in as <strong>{{ user }}</strong>. Visit
+      <a href="{{ url_for('projects_list') }}">Projects</a>.</p>
+  {% else %}
+    <p>Use the demo credentials in <code>README.md</code> to sign in.</p>
+  {% endif %}
+{% endblock %}

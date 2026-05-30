@@ -1,0 +1,69 @@
+# SentinelQA configuration for the Next.js demo (Phase 26.01).
+# The app binds to 127.0.0.1:3000 by default — see README.md.
+version: 1
+
+project:
+  name: sentinelqa-nextjs-example
+  framework: nextjs
+  package_manager: pnpm
+
+source:
+  root: .
+  include:
+    - src
+  exclude:
+    - node_modules
+    - .next
+
+target:
+  base_url: http://127.0.0.1:3000
+  allowed_hosts:
+    - 127.0.0.1
+    - localhost
+
+auth:
+  strategy: test_user
+  login_url: /login
+  username_env: SENTINEL_NEXTJS_DEMO_USER
+  password_env: SENTINEL_NEXTJS_DEMO_PASSWORD
+
+modules:
+  functional: true
+  api: false
+  accessibility: true
+  performance: true
+  visual: false
+  security: true
+  chaos: false
+  llm_audit: true
+
+security:
+  mode: safe
+  destructive_tests: false
+  max_requests_per_second: 5
+  allowed_payload_level: low
+  routes:
+    - /
+    - /login
+    - /signup
+    - /projects
+    - /dashboard
+    - /admin
+  request_timeout_seconds: 15.0
+
+discovery:
+  engine: "http"
+  max_depth: 3
+  max_pages: 50
+  rate_limit_rps: 5.0
+  respect_robots: true
+  same_host_only: true
+
+accessibility:
+  axe:
+    tags:
+      - wcag2a
+      - wcag2aa
+
+policy:
+  min_quality_score: 85

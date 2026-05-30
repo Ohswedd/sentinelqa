@@ -1430,11 +1430,45 @@ sentinelqa/
     django/
     flask/
     react-vite/
+    llm-broken/
+    end-to-end-demo/
+    mcp-claude-desktop/
+    plugins/
   tests/
     unit/
     integration/
     e2e/
 ```
+
+### 11.2.1 Example apps (Phase 26 delivery)
+
+The Phase 26 example apps are runnable reference implementations under
+`examples/`, each with its own `sentinel.config.yaml` and a top-level
+Make target. The MVP set is:
+
+| Directory | Stack | Loopback port | Make target | Config gate |
+| --- | --- | --- | --- | --- |
+| `examples/nextjs/` | Next.js 14 App Router, cookie session, in-memory CRUD, `/admin` role gate | `3000` | `make demo-nextjs` | `policy.min_quality_score: 85` |
+| `examples/fastapi/` | FastAPI + Pydantic, Bearer auth, OpenAPI 3 dump | `8000` | `make demo-fastapi` | `policy.min_quality_score: 85` |
+| `examples/django/` | Django 5, session auth, admin enabled, SQLite | `8001` | `make demo-django` | `policy.min_quality_score: 85` |
+| `examples/flask/` | Flask 3, session auth, in-memory `Project` CRUD | `5001` | `make demo-flask` | `policy.min_quality_score: 85` |
+| `examples/react-vite/` | Vite + React 18 SPA against `examples/fastapi/` | `5173` | `make demo-react-vite` | `discovery.engine: playwright`, `policy.min_quality_score: 85` |
+| `examples/llm-broken/` | Intentionally broken Next.js — exhibits ≥ 8 PRD §10.9 anti-patterns | `3030` | `make demo-llm-broken` | `policy.min_quality_score: 0` (demo purpose is to surface findings) |
+| `examples/end-to-end-demo/` | `docker compose` stack tying `nextjs/` + `fastapi/` together; `make demo` boots compose + runs `sentinel audit --ci`. Tear down with `make demo-down`. | `3000` (UI) / `8000` (API) | `make demo`, `make demo-down` | inherits `examples/nextjs/sentinel.config.yaml` |
+
+Safety contract (CLAUDE.md §6 / PRD §2): every example binds to
+`127.0.0.1` only — never to a public interface — and every credential
+in the demo apps is public, documented in the matching `README.md`, and
+local-only. The `examples/` tree is excluded from the monorepo's ruff,
+mypy, Prettier, and coverage scopes; each example is typed and linted
+by its own framework toolchain.
+
+The phase Make target naming differs slightly from the plan's shorthand:
+plan documents read `make demo:<name>` (with a colon) but GNU and BSD
+`make` both treat `:` as the rule separator, so the literal targets use
+`-` (`make demo-flask`, `make demo-nextjs`, …). The end-to-end stack
+keeps the bare `make demo` / `make demo-down` form. The Phase 26
+deliverable is the same set of demos in either notation.
 
 ### 11.3 Language strategy
 

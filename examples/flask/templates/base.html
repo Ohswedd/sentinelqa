@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}SentinelQA Flask Demo{% endblock %}</title>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        margin: 2rem auto;
+        max-width: 48rem;
+        padding: 0 1rem;
+        line-height: 1.4;
+      }
+      nav { margin-bottom: 1rem; }
+      nav a { margin-right: 0.75rem; }
+      form.inline { display: inline; }
+      .flashes { color: #b91c1c; }
+      input, button { font: inherit; padding: 0.25rem 0.5rem; }
+      table { border-collapse: collapse; width: 100%; }
+      th, td { text-align: left; padding: 0.4rem 0.6rem; border-bottom: 1px solid #ddd; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>SentinelQA Flask Demo</h1>
+      <nav aria-label="Primary">
+        <a href="{{ url_for('home') }}">Home</a>
+        <a href="{{ url_for('projects_list') }}">Projects</a>
+        {% if user %}
+          <form class="inline" action="{{ url_for('logout') }}" method="post">
+            <button type="submit">Log out ({{ user }})</button>
+          </form>
+        {% else %}
+          <a href="{{ url_for('login_get') }}">Log in</a>
+        {% endif %}
+      </nav>
+    </header>
+    <main>
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          <ul class="flashes" role="alert">
+            {% for message in messages %}<li>{{ message }}</li>{% endfor %}
+          </ul>
+        {% endif %}
+      {% endwith %}
+      {% block content %}{% endblock %}
+    </main>
+  </body>
+</html>
