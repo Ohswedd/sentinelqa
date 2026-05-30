@@ -76,15 +76,32 @@ PATTERNS: dict[str, tuple[re.Pattern[str], str]] = {
 }
 
 
+# Only scan actual artifact extensions. The fallback path walks
+# `tests/golden/reports/`, which co-locates byte-locked goldens with the
+# Python *writer tests* that build them — those test files legitimately
+# carry redactor fixtures and would falsely trip the secret-shape gates.
+# Real shipped artifacts only ever use the extensions below; everything
+# else (.py/.pyc/__pycache__/.so/.dylib) is out-of-scope.
+_ARTIFACT_EXTENSIONS: frozenset[str] = frozenset(
+    {".json", ".html", ".md", ".xml", ".yaml", ".yml", ".log", ".jsonl", ".txt"}
+)
+
+
 def _iter_artifact_files() -> list[Path]:
     """Return every artifact path we want to scan, deduplicated and sorted."""
 
     if RUNS_DIR.exists() and any(RUNS_DIR.iterdir()):
-        return sorted(p for p in RUNS_DIR.rglob("*") if p.is_file())
-    # Fallback: the curated reporter goldens. These are byte-stable inputs to
-    # the writers, so a regression there would surface in a developer's first
-    # local run.
-    return sorted(p for p in GOLDEN_DIR.rglob("*") if p.is_file())
+        candidates = RUNS_DIR.rglob("*")
+    else:
+        # Fallback: the curated reporter goldens. These are byte-stable
+        # inputs to the writers, so a regression there would surface in a
+        # developer's first local run.
+        candidates = GOLDEN_DIR.rglob("*")
+    return sorted(
+        p
+        for p in candidates
+        if p.is_file() and "__pycache__" not in p.parts and p.suffix.lower() in _ARTIFACT_EXTENSIONS
+    )
 
 
 _SCAN_TARGETS = _iter_artifact_files()
