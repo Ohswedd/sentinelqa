@@ -39,6 +39,9 @@ dev = [
     "pytest-httpserver==1.1.0",
     "jinja2==3.1.4",
     "pillow==11.0.0",
+    # Phase 30: RS256 JWT signing for the Vertex AI provider. See
+    # engine/pyproject.toml for the dependency rationale.
+    "cryptography==45.0.1",
 ]
 
 [tool.uv]
@@ -140,6 +143,7 @@ files = [
     "engine/generator",
     "engine/analyzer",
     "engine/healer",
+    "engine/llm",
     "engine/modules",
     "modules/api",
     "modules/functional",
@@ -160,6 +164,15 @@ exclude = [
 [[tool.mypy.overrides]]
 module = "tests.*"
 disable_error_code = ["arg-type", "type-arg", "no-untyped-def", "misc"]
+
+# cryptography 45.x ships type stubs that use Python 3.12 PEP-695
+# `type` parameter list syntax; mypy at python_version="3.11" trips
+# on the stubs themselves. Silencing the third-party stub keeps our
+# strict-mode invariant on first-party code intact.
+[[tool.mypy.overrides]]
+module = "cryptography.*"
+follow_imports = "skip"
+ignore_missing_imports = true
 
 # ---------------------------------------------------------------------------
 # Pytest
@@ -230,6 +243,7 @@ source = [
     "engine/runner",
     "engine/analyzer",
     "engine/healer",
+    "engine/llm",
     "engine/modules",
     "engine/ci",
     "engine/plugins",

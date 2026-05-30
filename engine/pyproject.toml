@@ -39,6 +39,13 @@ dependencies = [
     "jinja2==3.1.4",
     "pillow==11.0.0",
     "packaging==26.2",
+    # cryptography is required for RS256 JWT signing in the Phase-30
+    # Vertex AI provider. We deliberately do NOT pull in `google-auth`
+    # or `google-cloud-aiplatform`; the canonical PyCA `cryptography`
+    # library is the minimal dependency that lets us sign a JWT against
+    # a service-account key file (CLAUDE.md §35 — pick the smallest
+    # well-maintained dep that does the job).
+    "cryptography==45.0.1",
 ]
 
 [project.urls]
