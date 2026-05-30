@@ -2798,6 +2798,26 @@ Recommended answers:
 7. Basic built-in visual diff first, integrations later.
 8. Framework-agnostic crawler, with first-class Next.js support.
 
+### 31.1 Resolutions (Phase 27)
+
+Every recommended answer above shipped as an Accepted ADR in Phase 27
+and is enforced by the ADR-completeness guard
+(`tests/integration/docs/test_adr_completeness.py`). The Phase 27
+**Cloud boundary** trigger from CLAUDE.md §34 is also recorded.
+
+| # | Question | Accepted ADR |
+|---:|---|---|
+| 1 | Python CLI vs Node CLI | [ADR-0034](docs/adr/0034-python-cli-typescript-runtime.md) |
+| 2 | Generated tests location | [ADR-0035](docs/adr/0035-generated-tests-in-user-repo.md) |
+| 3 | Cloud delay | [ADR-0036](docs/adr/0036-cloud-delayed-until-cli-traction.md) |
+| 4 | LLM provider choice | [ADR-0037](docs/adr/0037-llm-provider-agnostic.md) |
+| 5 | MCP from day one | [ADR-0038](docs/adr/0038-mcp-day-one.md) |
+| 6 | Planner determinism vs LLM | [ADR-0039](docs/adr/0039-planner-deterministic-llm-split.md) |
+| 7 | Visual diff: built-in vs integrate | [ADR-0040](docs/adr/0040-visual-built-in-first.md) |
+| 8 | Framework targeting | [ADR-0041](docs/adr/0041-framework-agnostic-with-nextjs.md) |
+| n/a | Cloud boundary (CLAUDE.md §34 trigger) | [ADR-0033](docs/adr/0033-cloud-boundary.md) |
+| n/a | Docs site choice (Phase 27 deliverable) | [ADR-0032](docs/adr/0032-docs-site.md) |
+
 ---
 
 ## 32. Recommended Build Order
