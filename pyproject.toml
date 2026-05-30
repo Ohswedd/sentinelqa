@@ -137,6 +137,7 @@ files = [
     "modules/api",
     "modules/functional",
     "modules/visual",
+    "integrations",
     "tests",
 ]
 exclude = [
@@ -231,6 +232,7 @@ source = [
     "apps/cli/src/sentinel_cli",
     "packages/python-sdk/src/sentinelqa",
     "packages/mcp-server/src/sentinelqa_mcp",
+    "integrations",
 ]
 # `engine/discovery` and `engine/planner` are intentionally NOT in the
 # coverage source list: their public API surface is exercised
