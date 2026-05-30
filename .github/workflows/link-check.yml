@@ -38,6 +38,16 @@ jobs:
         # evidence paths (`traces/login.har`). The goldens are
         # byte-locked outputs of the renderer, not human-authored docs —
         # broken links inside them are by design.
+        #
+        # `apps/docs/src/content/docs/` is the Astro Starlight content
+        # tree. Its internal links use root-relative URLs
+        # (`/modules/foo/`, `/errors/`) that resolve against the built
+        # site, not against the filesystem. Lychee without `--base`
+        # cannot reason about those — and Starlight's own build
+        # (`astro build`) plus the Python scaffold test
+        # (`tests/integration/docs/test_docs_site_scaffold.py`) already
+        # validate that every sidebar / internal link resolves to a
+        # page on disk before the docs site ships.
         uses: lycheeverse/lychee-action@v2
         with:
           args: >-
@@ -48,5 +58,6 @@ jobs:
             --exclude-path .venv
             --exclude-path plans/PROMT.md
             --exclude-path tests/golden
+            --exclude-path apps/docs/src/content/docs
             './**/*.md'
           fail: true
