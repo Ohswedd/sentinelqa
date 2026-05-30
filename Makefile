@@ -23,6 +23,7 @@ UV ?= uv
         docs docs-build docs-dev docs-gen-all docs-gen-error-codes \
         docs-gen-cli docs-gen-sdk docs-gen-mcp docs-gen-adr-index \
         docs-check-fresh \
+        changelog-draft \
         clean ci
 
 help:
@@ -48,6 +49,7 @@ help:
 	@echo "  docs-dev      Run the Starlight dev server (apps/docs/)"
 	@echo "  docs-gen-all  Run every docs generator (CLI / SDK / MCP / errors / ADR index)"
 	@echo "  docs-check-fresh  Fail if any generated docs page is stale"
+	@echo "  changelog-draft   Draft a Keep a Changelog section from Conventional Commits"
 	@echo "  clean         Remove caches and build artifacts"
 
 # --- install ---------------------------------------------------------------
@@ -286,6 +288,27 @@ docs-dev: docs-gen-all
 	pnpm --filter @sentinelqa/docs dev
 
 docs: docs-build
+
+# --- release ---------------------------------------------------------------
+# Phase 28 — draft a Keep a Changelog section from Conventional Commits.
+# Writes to CHANGELOG.draft.md for the human curator. Set FROM=<rev> to bound
+# the lower edge of the range (default: repo root). VERSION/DATE override the
+# header. INCLUDE_INTERNAL=1 surfaces chore/ci/docs/test/build/style commits.
+FROM ?=
+TO ?= HEAD
+VERSION ?= Unreleased
+DATE ?=
+INCLUDE_INTERNAL ?=
+CHANGELOG_DRAFT ?= CHANGELOG.draft.md
+changelog-draft:
+	$(UV) run python -m scripts.release.draft_changelog \
+		$(if $(FROM),--from $(FROM)) \
+		--to $(TO) \
+		--version $(VERSION) \
+		$(if $(DATE),--date $(DATE)) \
+		$(if $(INCLUDE_INTERNAL),--include-internal) \
+		-o $(CHANGELOG_DRAFT)
+	@echo "wrote $(CHANGELOG_DRAFT) (curate by hand before pasting into CHANGELOG.md)"
 
 # --- ci --------------------------------------------------------------------
 ci: format-check lint typecheck adr-check test

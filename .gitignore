@@ -104,3 +104,4 @@ service-account*.json
 *.tmp
 *.bak
 .envrc
+CHANGELOG.draft.md
