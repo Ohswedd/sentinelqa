@@ -19,6 +19,7 @@ work exactly as it did in Phase 14.
 from __future__ import annotations
 
 import json
+import os
 import webbrowser
 from collections.abc import Mapping, Sequence
 from datetime import UTC, datetime
@@ -40,9 +41,12 @@ from engine.errors.codes import (
 )
 from engine.orchestrator.artifacts import ArtifactDirectory
 from engine.reporter.dispatcher import Reporter, ReportInputs
+from engine.reporter.slack import render_slack_payload
 
 from sentinel_cli.json_mode import json_stdout
 from sentinel_cli.state import GlobalState
+
+_SUPPORTED_NOTIFY: tuple[str, ...] = ("slack",)
 
 _RERENDER_FORMATS: tuple[str, ...] = (
     "run",
@@ -106,6 +110,16 @@ def run_report(
             help="Open the rendered HTML report in the default browser (skipped in CI).",
         ),
     ] = False,
+    notify: Annotated[
+        list[str] | None,
+        typer.Option(
+            "--notify",
+            help=(
+                "Push a summary to a downstream channel after re-render. "
+                "Repeat to fan out. Currently supported: slack."
+            ),
+        ),
+    ] = None,
 ) -> None:
     """Re-render reports for a completed run, or explain its score."""
 
@@ -157,6 +171,13 @@ def run_report(
                 typer.echo("--open ignored in CI mode.", err=True)
         else:
             webbrowser.open(outputs["html"].as_uri())
+
+    if notify:
+        try:
+            _dispatch_notifications(run_dir=run_dir, channels=notify, state=state)
+        except _ReportError as exc:
+            typer.echo(f"error: {exc}", err=True)
+            raise typer.Exit(code=EXIT_CONFIG_ERROR) from None
 
     raise typer.Exit(code=EXIT_SUCCESS)
 
@@ -583,6 +604,57 @@ def _render_explain_markdown(
         parts.append(f"| `{key}` | {policy.get(key)!r} |")
     parts.append("")
     return "\n".join(parts) + "\n"
+
+
+def _dispatch_notifications(
+    *,
+    run_dir: Path,
+    channels: Sequence[str],
+    state: GlobalState,
+) -> None:
+    """Push the re-rendered summary out via each requested notifier.
+
+    Phase 25.03: only ``slack`` is wired. Unknown channels raise
+    ``_ReportError`` so the caller can surface exit-code 2.
+    """
+
+    for raw in channels:
+        channel = raw.strip().lower()
+        if not channel:
+            continue
+        if channel not in _SUPPORTED_NOTIFY:
+            raise _ReportError(
+                f"--notify channel {raw!r} is not supported. "
+                f"Choose one of: {', '.join(_SUPPORTED_NOTIFY)}."
+            )
+        if channel == "slack":
+            _dispatch_slack(run_dir=run_dir, state=state)
+
+
+def _dispatch_slack(*, run_dir: Path, state: GlobalState) -> None:
+    from integrations.slack import SLACK_WEBHOOK_ENV, post_payload
+
+    webhook = os.environ.get(SLACK_WEBHOOK_ENV, "").strip()
+    if not webhook:
+        raise _ReportError(
+            f"--notify slack: env var {SLACK_WEBHOOK_ENV!r} is unset; " f"refusing to post."
+        )
+
+    run_payload = _load_json(run_dir / "run.json")
+    run = _build_test_run(run_payload)
+    findings = _load_findings(run_dir)
+    score = _load_score_obj(run_dir, run_id=str(run_payload["run_id"]))
+    policy = _load_policy(run_dir, run_id=str(run_payload["run_id"]))
+    payload = render_slack_payload(run, findings, score, policy)
+
+    dedup_path = run_dir / "slack-dedup.json"
+    reply = post_payload(
+        payload=payload,
+        webhook_url=webhook,
+        dedup_path=dedup_path,
+    )
+    if not state.json and not state.quiet:
+        typer.echo(f"  notify(slack) -> {reply or 'ok'}")
 
 
 __all__ = ["run_report"]

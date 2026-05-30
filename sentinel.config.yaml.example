@@ -207,6 +207,20 @@ policy:
   severity_penalty_medium: 6.5     # range 3..10
   severity_penalty_low: 2.0        # range 1..3
 
+  # Phase 25 deeper-integration toggles. Every adapter is off by default;
+  # tokens are read from environment variables at call time, never logged
+  # (CLAUDE.md §33). CI must never receive real BrowserStack / Sauce Labs
+  # / Slack / Jira / Linear credentials — see the credential-leak guard
+  # at `tests/integration/integrations/test_credential_leak_guard.py`.
+  github:
+    auto_create_issue: false       # Phase 25.04 — open GitHub issues for criticals
+  integrations:
+    jira: {}                       # set project_key + base_url to enable
+    linear: {}                     # set team_id to enable
+    slack:
+      enabled: false
+      webhook_env: "SLACK_WEBHOOK_URL"
+
 runner:
   # `sentinel test` controls (Phase 08, ADR-0013). The runner is
   # Playwright-native; choose between local execution and the pinned

@@ -584,6 +584,52 @@ class ChaosConfig(SentinelModel):
         return value
 
 
+class PolicyGitHubIntegrationConfig(SentinelModel):
+    """`policy.github:` block (Phase 25.04).
+
+    Controls the Phase 25 deeper GitHub integration. Off by default —
+    flipping ``auto_create_issue`` to ``true`` lets the caller open
+    GitHub issues for critical findings via
+    :func:`integrations.github.issue.create_issue_for_finding`. The
+    poster also checks this flag at call time, so a misconfigured CI
+    cannot bypass the gate by setting it directly in Python.
+    """
+
+    auto_create_issue: bool = False
+
+
+class PolicyJiraIntegrationConfig(SentinelModel):
+    """`policy.integrations.jira:` block (Phase 25.06)."""
+
+    project_key: str | None = Field(default=None, max_length=64)
+    base_url: str | None = Field(default=None, max_length=256)
+
+
+class PolicyLinearIntegrationConfig(SentinelModel):
+    """`policy.integrations.linear:` block (Phase 25.06)."""
+
+    team_id: str | None = Field(default=None, max_length=64)
+
+
+class PolicySlackIntegrationConfig(SentinelModel):
+    """`policy.integrations.slack:` block (Phase 25.03)."""
+
+    enabled: bool = False
+    webhook_env: str = Field(default="SLACK_WEBHOOK_URL", max_length=128)
+
+
+class PolicyIntegrationsConfig(SentinelModel):
+    """`policy.integrations:` umbrella for Phase 25 adapters."""
+
+    jira: PolicyJiraIntegrationConfig = Field(default_factory=lambda: PolicyJiraIntegrationConfig())
+    linear: PolicyLinearIntegrationConfig = Field(
+        default_factory=lambda: PolicyLinearIntegrationConfig()
+    )
+    slack: PolicySlackIntegrationConfig = Field(
+        default_factory=lambda: PolicySlackIntegrationConfig()
+    )
+
+
 class PolicyConfig(SentinelModel):
     """`policy:` block (PRD §17.1, §19.4).
 
@@ -603,6 +649,12 @@ class PolicyConfig(SentinelModel):
     severity_penalty_high: float = Field(default=17.5, ge=10.0, le=25.0)
     severity_penalty_medium: float = Field(default=6.5, ge=3.0, le=10.0)
     severity_penalty_low: float = Field(default=2.0, ge=1.0, le=3.0)
+    github: PolicyGitHubIntegrationConfig = Field(
+        default_factory=lambda: PolicyGitHubIntegrationConfig()
+    )
+    integrations: PolicyIntegrationsConfig = Field(
+        default_factory=lambda: PolicyIntegrationsConfig()
+    )
 
 
 class RunnerRetriesConfig(SentinelModel):
@@ -767,6 +819,11 @@ __all__ = [
     "ApiConfig",
     "ChaosConfig",
     "PolicyConfig",
+    "PolicyGitHubIntegrationConfig",
+    "PolicyIntegrationsConfig",
+    "PolicyJiraIntegrationConfig",
+    "PolicyLinearIntegrationConfig",
+    "PolicySlackIntegrationConfig",
     "RunnerConfig",
     "RunnerRetriesConfig",
     "RunnerQuarantineConfig",
