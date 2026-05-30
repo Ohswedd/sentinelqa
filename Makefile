@@ -17,6 +17,9 @@ UV ?= uv
         schemas update-goldens \
         sdk-api-snapshot \
         build-runner-image \
+        demo demo-down \
+        demo-flask demo-fastapi demo-fastapi-openapi \
+        demo-django demo-nextjs demo-react-vite demo-llm-broken \
         clean ci
 
 help:
@@ -35,6 +38,9 @@ help:
 	@echo "  update-goldens  Regenerate report goldens (Phase 03+); commit the diff"
 	@echo "  sdk-api-snapshot  Regenerate the SDK public-API snapshot (Phase 16)"
 	@echo "  ci            format-check + lint + typecheck + adr-check + test"
+	@echo "  demo          Bring up the end-to-end stack and run sentinel audit"
+	@echo "  demo-down     Tear the end-to-end stack down"
+	@echo "  demo-<name>   Boot one example: flask|fastapi|django|nextjs|react-vite|llm-broken"
 	@echo "  clean         Remove caches and build artifacts"
 
 # --- install ---------------------------------------------------------------
@@ -175,6 +181,69 @@ build-runner-image:
 		-t $(RUNNER_IMAGE) \
 		-f apps/cli/sentinel/runner/docker/Dockerfile.runner \
 		.
+
+# --- examples / demos ------------------------------------------------------
+# Phase 26 — example apps. Each demo target builds a throw-away venv (Python
+# examples) or runs `pnpm install` (TS examples) and boots the app on a
+# loopback port. Targets are intentionally synchronous so `Ctrl-C` cleans up.
+# Plan called these `make demo:<name>` — `:` is awkward in Make target names
+# across GNU and BSD make, so the literal targets use `-` instead.
+
+demo-flask:
+	@cd examples/flask && \
+	  if [ ! -d .venv-demo ]; then python3 -m venv .venv-demo; fi && \
+	  .venv-demo/bin/pip install -q -r requirements.txt && \
+	  .venv-demo/bin/python app.py
+
+demo-fastapi:
+	@cd examples/fastapi && \
+	  if [ ! -d .venv-demo ]; then python3 -m venv .venv-demo; fi && \
+	  .venv-demo/bin/pip install -q -r requirements.txt && \
+	  .venv-demo/bin/uvicorn app.main:app --host 127.0.0.1 --port 8000
+
+demo-fastapi-openapi:
+	@cd examples/fastapi && \
+	  if [ ! -d .venv-demo ]; then python3 -m venv .venv-demo; fi && \
+	  .venv-demo/bin/pip install -q -r requirements.txt && \
+	  .venv-demo/bin/python -c "import json, sys; sys.path.insert(0, '.'); from app.main import app; json.dump(app.openapi(), open('openapi.json', 'w'), indent=2, sort_keys=True); print('wrote openapi.json')"
+
+demo-django:
+	@cd examples/django && \
+	  if [ ! -d .venv-demo ]; then python3 -m venv .venv-demo; fi && \
+	  .venv-demo/bin/pip install -q -r requirements.txt && \
+	  .venv-demo/bin/python manage.py migrate --noinput && \
+	  .venv-demo/bin/python -c "from django.conf import settings; settings.configure() if not settings.configured else None" 2>/dev/null; \
+	  DJANGO_SETTINGS_MODULE=demo_site.settings .venv-demo/bin/python manage.py shell -c "from django.contrib.auth import get_user_model; U=get_user_model(); U.objects.filter(username='demo').exists() or U.objects.create_user('demo', password='demo'); U.objects.filter(username='admin').exists() or U.objects.create_superuser('admin', '', 'admin')" && \
+	  .venv-demo/bin/python manage.py runserver 127.0.0.1:8001
+
+demo-nextjs:
+	@cd examples/nextjs && pnpm install && pnpm run dev
+
+demo-react-vite:
+	@cd examples/react-vite && pnpm install && pnpm run dev
+
+demo-llm-broken:
+	@cd examples/llm-broken && pnpm install && pnpm run dev
+
+# End-to-end stack: FastAPI + Next.js via docker compose, then `sentinel audit`.
+# Requires Docker. The audit is non-blocking: the stack stays up until
+# `make demo-down` so a human can poke at the report.
+demo:
+	@if ! command -v docker >/dev/null 2>&1; then \
+		echo "docker not on PATH; install Docker Desktop first."; \
+		exit 5; \
+	fi
+	cd examples/end-to-end-demo && docker compose up -d
+	@echo "Waiting for Next.js to come up on 127.0.0.1:3000…"
+	@until curl -sf http://127.0.0.1:3000/ >/dev/null 2>&1; do sleep 2; done
+	$(UV) run sentinel audit --url http://127.0.0.1:3000 \
+	  --config examples/nextjs/sentinel.config.yaml --ci
+	@echo "Audit complete. Stack still running; tear down with 'make demo-down'."
+
+demo-down:
+	@if [ -f examples/end-to-end-demo/docker-compose.yml ]; then \
+		cd examples/end-to-end-demo && docker compose down -v; \
+	fi
 
 # --- ci --------------------------------------------------------------------
 ci: format-check lint typecheck adr-check test

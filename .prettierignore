@@ -45,3 +45,15 @@ tests/integration/scoring/expected/
 # via Python `json.dumps(sort_keys=True, indent=2)`. Prettier must NOT
 # reformat it; CI compares the committed bytes against a live dump.
 packages/python-sdk/api-snapshot.json
+
+# Phase 26 — example apps. These are self-contained reference apps with
+# their own dependencies (React, Next.js, Vite, FastAPI, Django, Flask).
+# They are not part of the monorepo's TS workspace and intentionally use
+# their own conventions; do not lint or reformat them from the root.
+examples/django/
+examples/fastapi/
+examples/flask/
+examples/llm-broken/
+examples/nextjs/
+examples/react-vite/
+examples/end-to-end-demo/
