@@ -10,9 +10,17 @@
   `GOOGLE_APPLICATION_CREDENTIALS`. The adapter exchanges the JWT for an
   access token via the OAuth2 token endpoint
   (`https://oauth2.googleapis.com/token`) and caches it for the token's
-  TTL minus a 60s safety margin. JWT signing uses the stdlib
-  `cryptography` package (already a transitive dep via `httpx`'s
-  `cryptography` extras; pin explicitly).
+  TTL minus a 60s safety margin. JWT signing uses the PyCA
+  [`cryptography`](https://pypi.org/project/cryptography/) library
+  (added as a NEW direct dependency in `engine/pyproject.toml` for this
+  task — it is not, contrary to the original draft of this task file, a
+  transitive dep of `httpx`). The dependency is justified under
+  CLAUDE.md §35: it is necessary (RS256 JWT signing without the
+  `google-auth` SDK is not feasible without a real crypto library), it
+  is the canonical Python crypto library (maintained by PyCA, BSD/Apache
+  dual-licensed, audited), it has a small attack surface relative to a
+  full Google SDK, and it replaces the much larger `google-auth` +
+  `google-cloud-aiplatform` stack we are explicitly avoiding.
 - Same Gemini-family API shape as Phase 30.02; reuse the `gemini.py`
   payload builder.
 - Cost mapping mirrors the Gemini provider but the rates come from
