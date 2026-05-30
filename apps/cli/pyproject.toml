@@ -6,8 +6,35 @@ readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "Apache-2.0" }
 authors = [{ name = "ohswedd" }]
+keywords = [
+    "sentinelqa",
+    "playwright",
+    "testing",
+    "qa",
+    "e2e",
+    "automation",
+    "release-confidence",
+    "llm-code-audit",
+    "agent",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Quality Assurance",
+    "Topic :: Software Development :: Testing",
+    "Topic :: Software Development :: Testing :: Acceptance",
+    "Typing :: Typed",
+]
 dependencies = [
     "sentinelqa-engine",
+    "sentinelqa-modules",
+    "sentinelqa-integrations",
     "sentinelqa",
     "sentinelqa-mcp",
     "typer==0.15.1",
@@ -17,8 +44,17 @@ dependencies = [
     "httpx==0.28.1",
 ]
 
+[project.urls]
+Homepage = "https://github.com/Ohswedd/sentinelqa"
+Documentation = "https://github.com/Ohswedd/sentinelqa/tree/main/docs"
+Repository = "https://github.com/Ohswedd/sentinelqa"
+Issues = "https://github.com/Ohswedd/sentinelqa/issues"
+Changelog = "https://github.com/Ohswedd/sentinelqa/blob/main/CHANGELOG.md"
+
 [tool.uv.sources]
 sentinelqa-engine = { workspace = true }
+sentinelqa-modules = { workspace = true }
+sentinelqa-integrations = { workspace = true }
 sentinelqa = { workspace = true }
 sentinelqa-mcp = { workspace = true }
 

@@ -6,7 +6,9 @@ members = [
     "sentinelqa",
     "sentinelqa-cli",
     "sentinelqa-engine",
+    "sentinelqa-integrations",
     "sentinelqa-mcp",
+    "sentinelqa-modules",
     "sentinelqa-monorepo",
 ]
 
@@ -1338,7 +1340,9 @@ dependencies = [
     { name = "pyyaml" },
     { name = "sentinelqa" },
     { name = "sentinelqa-engine" },
+    { name = "sentinelqa-integrations" },
     { name = "sentinelqa-mcp" },
+    { name = "sentinelqa-modules" },
     { name = "typer" },
 ]
 
@@ -1350,7 +1354,9 @@ requires-dist = [
     { name = "pyyaml", specifier = "==6.0.2" },
     { name = "sentinelqa", editable = "packages/python-sdk" },
     { name = "sentinelqa-engine", editable = "engine" },
+    { name = "sentinelqa-integrations", editable = "integrations" },
     { name = "sentinelqa-mcp", editable = "packages/mcp-server" },
+    { name = "sentinelqa-modules", editable = "modules" },
     { name = "typer", specifier = "==0.15.1" },
 ]
 
@@ -1386,6 +1392,17 @@ requires-dist = [
 ]
 
 [[package]]
+name = "sentinelqa-integrations"
+version = "0.0.0"
+source = { editable = "integrations" }
+dependencies = [
+    { name = "sentinelqa-engine" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "sentinelqa-engine", editable = "engine" }]
+
+[[package]]
 name = "sentinelqa-mcp"
 version = "0.1.0"
 source = { editable = "packages/mcp-server" }
@@ -1403,6 +1420,17 @@ requires-dist = [
     { name = "sentinelqa", editable = "packages/python-sdk" },
     { name = "sentinelqa-engine", editable = "engine" },
 ]
+
+[[package]]
+name = "sentinelqa-modules"
+version = "0.0.0"
+source = { editable = "modules" }
+dependencies = [
+    { name = "sentinelqa-engine" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "sentinelqa-engine", editable = "engine" }]
 
 [[package]]
 name = "sentinelqa-monorepo"

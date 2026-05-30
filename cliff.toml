@@ -1,0 +1,65 @@
+# git-cliff configuration (optional contributor convenience).
+#
+# SentinelQA's canonical changelog drafter is `scripts/release/draft_changelog.py`,
+# which has no external dependencies. This file lets contributors who already
+# have `git-cliff` installed (https://git-cliff.org/) regenerate equivalent
+# drafts via `git-cliff -c cliff.toml -o CHANGELOG.draft.md` without polluting
+# `CHANGELOG.md` itself.
+#
+# The pure-Python drafter is the source-of-truth for CI; this config is best-
+# effort parity for local use.
+
+[changelog]
+header = """# Changelog
+
+All notable changes to SentinelQA will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
+under the pre-1.0 rules in `docs/dev/semver.md`.
+
+"""
+
+body = """
+{% if version %}\
+## [{{ version | trim_start_matches(pat="v") }}]{% if timestamp %} - {{ timestamp | date(format="%Y-%m-%d") }}{% endif %}
+{% else %}\
+## [Unreleased]
+{% endif %}\
+{% for group, commits in commits | group_by(attribute="group") %}
+### {{ group | upper_first }}
+{% for commit in commits %}
+- {% if commit.scope %}**{{ commit.scope }}**: {% endif %}{{ commit.message | upper_first | trim }} ({{ commit.id | truncate(length=7, end="") }})\
+{% endfor %}
+{% endfor %}
+"""
+
+footer = ""
+trim = true
+
+[git]
+conventional_commits = true
+filter_unconventional = true
+split_commits = false
+commit_parsers = [
+  { message = "^feat", group = "Added" },
+  { message = "^fix", group = "Fixed" },
+  { message = "^security", group = "Security" },
+  { message = "^refactor", group = "Changed" },
+  { message = "^perf", group = "Changed" },
+  { message = "^revert", group = "Changed" },
+  { message = "^docs", group = "Internal" },
+  { message = "^test", group = "Internal" },
+  { message = "^chore", group = "Internal" },
+  { message = "^ci", group = "Internal" },
+  { message = "^build", group = "Internal" },
+  { message = "^style", group = "Internal" },
+  { message = "^[Pp]hase\\s+\\d+", group = "Added" },
+]
+# Internal entries are kept by default for parity with the Python drafter's
+# --include-internal mode. To drop them, append { skip = true } parsers above.
+filter_commits = false
+tag_pattern = "v[0-9]+\\.[0-9]+\\.[0-9]+"
+ignore_tags = ""
+topo_order = false
+sort_commits = "newest"

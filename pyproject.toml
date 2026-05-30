@@ -47,6 +47,8 @@ package = false
 [tool.uv.workspace]
 members = [
     "engine",
+    "modules",
+    "integrations",
     "apps/cli",
     "packages/python-sdk",
     "packages/mcp-server",

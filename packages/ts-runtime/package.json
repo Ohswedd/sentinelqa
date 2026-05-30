@@ -3,6 +3,29 @@
   "version": "0.0.0",
   "private": true,
   "description": "SentinelQA TypeScript runtime — Playwright helpers, runtime tracing, JSONL bridge. PRD §15. Owns the TS side of the Python ↔ TS contract (ADR-0009).",
+  "license": "Apache-2.0",
+  "author": "ohswedd",
+  "homepage": "https://github.com/Ohswedd/sentinelqa#readme",
+  "bugs": {
+    "url": "https://github.com/Ohswedd/sentinelqa/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ohswedd/sentinelqa.git",
+    "directory": "packages/ts-runtime"
+  },
+  "keywords": [
+    "sentinelqa",
+    "playwright",
+    "testing",
+    "qa",
+    "e2e",
+    "automation",
+    "release-confidence"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
   "type": "module",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
@@ -27,6 +50,14 @@
   "bin": {
     "sentinel-ts": "./dist/cli.js"
   },
+  "files": [
+    "dist/**",
+    "src/**/*.ts",
+    "!src/**/__tests__/**",
+    "!src/**/*.test.ts",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.build.json && node ./scripts/postbuild.mjs",
     "clean": "rm -rf dist",

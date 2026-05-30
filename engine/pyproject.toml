@@ -6,6 +6,28 @@ readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "Apache-2.0" }
 authors = [{ name = "ohswedd" }]
+keywords = [
+    "sentinelqa",
+    "playwright",
+    "testing",
+    "qa",
+    "engine",
+    "audit",
+    "release-confidence",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: Quality Assurance",
+    "Topic :: Software Development :: Testing",
+    "Typing :: Typed",
+]
 dependencies = [
     "pydantic==2.10.3",
     "pyyaml==6.0.2",
@@ -19,17 +41,96 @@ dependencies = [
     "packaging==26.2",
 ]
 
+[project.urls]
+Homepage = "https://github.com/Ohswedd/sentinelqa"
+Documentation = "https://github.com/Ohswedd/sentinelqa/tree/main/docs"
+Repository = "https://github.com/Ohswedd/sentinelqa"
+Issues = "https://github.com/Ohswedd/sentinelqa/issues"
+Changelog = "https://github.com/Ohswedd/sentinelqa/blob/main/CHANGELOG.md"
+
 [build-system]
 requires = ["hatchling>=1.25"]
 build-backend = "hatchling.build"
 
 # The engine source lives at engine/<subpkg>/ (NOT under a src/ layout). The
 # engine/ directory IS the package: it contains __init__.py and the
-# subpackages. For wheel builds, hatch ships engine/ itself; for editable
-# installs, `dev-mode-dirs` tells hatch to add the parent directory to
-# sys.path, which makes `import engine` find this directory directly.
+# subpackages.
+#
+# For editable installs, `dev-mode-dirs = [".."]` tells hatch to add the parent
+# directory to sys.path, which makes `import engine` find this directory.
+#
+# For wheel builds (Phase 28), the project root IS the package root. We
+# enumerate every subpackage explicitly and remap the wheel layout via
+# `sources` so `domain/foo.py` (here) becomes `engine/domain/foo.py` (wheel).
+# Resource files (Jinja2 templates + locked LLM prompts + the HTML report
+# template + py.typed) ride along via the `include` globs.
 [tool.hatch.build]
 dev-mode-dirs = [".."]
 
 [tool.hatch.build.targets.wheel]
-packages = ["../engine"]
+include = [
+    "__init__.py",
+    "py.typed",
+    "analyzer/**/*.py",
+    "analyzer/**/*.md",
+    "ci/**/*.py",
+    "config/**/*.py",
+    "discovery/**/*.py",
+    "domain/**/*.py",
+    "errors/**/*.py",
+    "generator/**/*.py",
+    "generator/**/*.j2",
+    "healer/**/*.py",
+    "log/**/*.py",
+    "modules/**/*.py",
+    "orchestrator/**/*.py",
+    "planner/**/*.py",
+    "planner/**/*.md",
+    "plugins/**/*.py",
+    "policy/**/*.py",
+    "reporter/**/*.py",
+    "reporter/**/*.j2",
+    "reporter/**/*.html",
+    "reporter/**/*.css",
+    "reporter/**/*.js",
+    "runner/**/*.py",
+]
+
+[tool.hatch.build.targets.wheel.sources]
+"" = "engine"
+
+# Sdist mirrors the wheel layout so `pip install <sdist>` rebuilds correctly.
+# `modules/` (concrete audit modules) and `integrations/` (external service
+# adapters) are SEPARATE distributables — `sentinelqa-modules` and
+# `sentinelqa-integrations` — pulled in via `sentinelqa-cli`'s dependencies.
+# The engine itself owns only `engine/...`.
+[tool.hatch.build.targets.sdist]
+include = [
+    "pyproject.toml",
+    "README.md",
+    "__init__.py",
+    "py.typed",
+    "analyzer/**/*.py",
+    "analyzer/**/*.md",
+    "ci/**/*.py",
+    "config/**/*.py",
+    "discovery/**/*.py",
+    "domain/**/*.py",
+    "errors/**/*.py",
+    "generator/**/*.py",
+    "generator/**/*.j2",
+    "healer/**/*.py",
+    "log/**/*.py",
+    "modules/**/*.py",
+    "orchestrator/**/*.py",
+    "planner/**/*.py",
+    "planner/**/*.md",
+    "plugins/**/*.py",
+    "policy/**/*.py",
+    "reporter/**/*.py",
+    "reporter/**/*.j2",
+    "reporter/**/*.html",
+    "reporter/**/*.css",
+    "reporter/**/*.js",
+    "runner/**/*.py",
+]
