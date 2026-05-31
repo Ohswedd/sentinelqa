@@ -60,3 +60,4 @@ ADR source files live under `docs/adr/` in the repository. See [`docs/adr/README
 | [0045](https://github.com/Ohswedd/sentinelqa/blob/main/docs/adr/0045-supply-chain-module.md) | Supply-Chain & Dependency Audit module (Phase 33) | `Accepted` |
 | [0046](https://github.com/Ohswedd/sentinelqa/blob/main/docs/adr/0046-compliance-packs.md) | Compliance Packs (Phase 34) | `Accepted` |
 | [0047](https://github.com/Ohswedd/sentinelqa/blob/main/docs/adr/0047-public-release-readiness.md) | Public release readiness (Phase 35) | `Accepted` |
+| [0048](https://github.com/Ohswedd/sentinelqa/blob/main/docs/adr/0048-publish-pipeline.md) | Publish pipeline (Phase 36) | `Accepted` |

@@ -1,0 +1,102 @@
+name: Publish (GitHub Release)
+
+# Triggered on a `v*` tag push. Builds every Python wheel + sdist
+# and the npm tarball, then creates a GitHub Release with the
+# curated CHANGELOG section as the body, all built artifacts
+# attached. Read-only against the registries — the Release page
+# itself is the only thing this workflow writes.
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write # needed to create the release
+
+concurrency:
+  group: github-release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: release (GitHub)
+    runs-on: ubuntu-latest
+    environment:
+      name: github-release
+      url: https://github.com/Ohswedd/sentinelqa/releases
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up uv (with cache)
+        uses: astral-sh/setup-uv@v4
+        with:
+          version: '0.5.24'
+          enable-cache: true
+
+      - name: Set up Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: '9.15.0'
+          run_install: false
+
+      - name: Install Python 3.12
+        run: uv python install 3.12
+
+      - name: Install Python deps (frozen)
+        run: uv sync --frozen --all-packages
+
+      - name: Install Node deps (frozen)
+        run: pnpm install --frozen-lockfile
+
+      - name: Resolve tag + version
+        id: meta
+        run: |
+          set -euo pipefail
+          TAG="${GITHUB_REF##*/}"
+          VERSION="${TAG#v}"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Build every artifact (Python sdists + wheels + TS tarball)
+        run: uv run python -m scripts.release.build_all --out-dir dist
+
+      - name: Inspect built artifacts
+        run: uv run python -m scripts.release.inspect_built_packages --dist-dir dist
+
+      - name: Extract CHANGELOG section into release notes
+        env:
+          TAG: ${{ steps.meta.outputs.tag }}
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+          uv run python -m scripts.release.extract_release_notes "$TAG" -o dist/release-notes.md
+          echo "--- release notes preview ---"
+          head -40 dist/release-notes.md
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.meta.outputs.tag }}
+          name: ${{ steps.meta.outputs.tag }}
+          body_path: dist/release-notes.md
+          # Hardcoded `legacy` so this tag overrides the `latest` GitHub
+          # Release pointer; pre-releases are out-of-scope at v1.0.0+.
+          make_latest: legacy
+          # Discussions toggle is owner-side; the workflow names the
+          # category by default. If Discussions are disabled this
+          # parameter is ignored (no failure).
+          discussion_category_name: Releases
+          files: |
+            dist/*.whl
+            dist/*.tar.gz
+            dist/sentinelqa-ts-runtime-*.tgz
+          fail_on_unmatched_files: true

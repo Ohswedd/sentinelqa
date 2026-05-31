@@ -1,0 +1,128 @@
+name: Publish (PyPI)
+
+# Triggered on a `v*` tag push. Builds every Python sdist + wheel,
+# validates them with twine check, then publishes via the PyPA
+# Trusted-Publisher OIDC flow (no long-lived API token in the repo).
+#
+# The `publish` job is gated on the `pypi-release` GitHub Environment,
+# which requires manual approval from the human owner before any
+# upload takes place. See docs/release/publish-runbook.md.
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: publish-pypi-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: build (Python sdists + wheels)
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up uv (with cache)
+        uses: astral-sh/setup-uv@v4
+        with:
+          version: '0.5.24'
+          enable-cache: true
+
+      - name: Install Python 3.12
+        run: uv python install 3.12
+
+      - name: Install dependencies (frozen)
+        run: uv sync --frozen --all-packages
+
+      - name: Verify tag matches apps/cli pyproject version
+        id: version
+        run: |
+          set -euo pipefail
+          TAG="${GITHUB_REF##*/}"
+          VERSION="${TAG#v}"
+          PY_VERSION="$(uv run python -c 'import tomllib,sys; sys.stdout.write(tomllib.load(open("apps/cli/pyproject.toml","rb"))["project"]["version"])')"
+          if [ "$VERSION" != "$PY_VERSION" ]; then
+            echo "::error::tag $TAG (= $VERSION) does not match apps/cli/pyproject.toml version $PY_VERSION"
+            exit 1
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Dry-run (build + twine check --strict)
+        run: uv run python -m scripts.release.dry_run_pypi --out-dir dist
+
+      - name: Upload dist/ artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-dist
+          path: dist/*
+
+  publish:
+    name: publish (PyPI Trusted Publisher)
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi-release
+      url: https://pypi.org/project/sentinelqa-cli/
+    # `id-token: write` is the OIDC trusted-publisher contract.
+    # `contents: read` is enough — we never push.
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Download dist/ artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: python-dist
+          path: dist
+
+      - name: Publish to PyPI (Trusted Publisher)
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          # Trusted Publisher (OIDC) auth — see
+          # docs/release/publish-runbook.md for the pypi.org configuration.
+          packages-dir: dist
+          # We DO NOT want twine to silently skip already-published files;
+          # a repeat tag is a workflow bug, not a recoverable state.
+          skip-existing: false
+          verbose: true
+
+  verify:
+    name: verify (install from PyPI)
+    needs: [build, publish]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up uv (with cache)
+        uses: astral-sh/setup-uv@v4
+        with:
+          version: '0.5.24'
+
+      - name: Install Python 3.12
+        run: uv python install 3.12
+
+      - name: Install sentinelqa-cli from PyPI into a fresh venv
+        env:
+          VERSION: ${{ needs.build.outputs.version }}
+        run: |
+          set -euo pipefail
+          uv venv .verify-venv --python 3.12
+          # `--index-strategy unsafe-best-match` lets uv resolve across the
+          # PyPI index after our packages land; nothing about it bypasses
+          # signature checks (the trusted-publisher provenance lives on PyPI).
+          .verify-venv/bin/python -m pip install --upgrade pip
+          uv pip install --python .verify-venv/bin/python \
+            --index-strategy unsafe-best-match \
+            "sentinelqa-cli==${VERSION}"
+          INSTALLED_VERSION="$(.verify-venv/bin/sentinel --version 2>&1 | tail -n1 | tr -d '\r')"
+          echo "installed: $INSTALLED_VERSION"
+          echo "$INSTALLED_VERSION" | grep -qE "(^|[[:space:]])${VERSION}([[:space:]]|$)" || {
+            echo "::error::sentinel --version did not report ${VERSION}; got: $INSTALLED_VERSION"
+            exit 1
+          }

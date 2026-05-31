@@ -1,7 +1,6 @@
 {
   "name": "@sentinelqa/ts-runtime",
-  "version": "0.7.0",
-  "private": true,
+  "version": "1.0.0",
   "description": "SentinelQA TypeScript runtime — Playwright helpers, runtime tracing, JSONL bridge. PRD §15. Owns the TS side of the Python ↔ TS contract (ADR-0009).",
   "license": "Apache-2.0",
   "author": "ohswedd",
@@ -27,24 +26,24 @@
     "node": ">=20"
   },
   "type": "module",
-  "main": "./src/index.ts",
-  "types": "./src/index.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./src/index.ts",
-      "import": "./src/index.ts"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
     },
     "./playwright": {
-      "types": "./src/playwright.ts",
-      "import": "./src/playwright.ts"
+      "types": "./dist/playwright.d.ts",
+      "import": "./dist/playwright.js"
     },
     "./protocol": {
-      "types": "./src/protocol.ts",
-      "import": "./src/protocol.ts"
+      "types": "./dist/protocol.d.ts",
+      "import": "./dist/protocol.js"
     },
     "./locators": {
-      "types": "./src/locators.ts",
-      "import": "./src/locators.ts"
+      "types": "./dist/locators.d.ts",
+      "import": "./dist/locators.js"
     }
   },
   "bin": {
@@ -52,12 +51,15 @@
   },
   "files": [
     "dist/**",
-    "src/**/*.ts",
-    "!src/**/__tests__/**",
-    "!src/**/*.test.ts",
+    "!dist/**/*.test.*",
+    "!dist/**/*.tsbuildinfo",
     "README.md",
     "LICENSE"
   ],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "scripts": {
     "build": "tsc -p tsconfig.build.json && node ./scripts/postbuild.mjs",
     "clean": "rm -rf dist",
