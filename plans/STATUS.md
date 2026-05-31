@@ -59,7 +59,7 @@ Legend: `[ ]` not started · `[~]` in progress · `[x]` done · `[!]` blocked
 - [x] Phase 27 — Docs & ADRs
 - [x] Phase 28 — Versioning & Release Prep
 - [x] Phase 29 — Final Hardening & PRD Reconciliation
-- [ ] Phase 30 — Multi-Provider LLM Adapter Layer
+- [~] Phase 30 — Multi-Provider LLM Adapter Layer
 - [ ] Phase 31 — Browser-Authenticated Audits
 - [ ] Phase 32 — Extended Security Skill Catalog
 - [ ] Phase 33 — Supply-Chain & Dependency Audit

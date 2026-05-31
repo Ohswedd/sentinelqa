@@ -409,6 +409,84 @@ class AnalyzerConfig(SentinelModel):
     llm: AnalyzerLlmConfig = Field(default_factory=lambda: AnalyzerLlmConfig())
 
 
+# ---------------------------------------------------------------------------
+# Multi-provider LLM block (Phase 30, ADR-0042)
+# ---------------------------------------------------------------------------
+
+
+_LLM_PROVIDER_NAMES = Literal[
+    "null",
+    "anthropic",
+    "openai",
+    "gemini",
+    "ollama",
+    "azure_openai",
+    "vertex",
+    "mistral",
+    "groq",
+    "openrouter",
+]
+
+
+class LlmProviderConfig(SentinelModel):
+    """One entry in the ``llm.providers:`` map (Phase 30, ADR-0042).
+
+    Each registered provider takes its credential env-var name (never the
+    raw value — CLAUDE.md §33) plus per-caller model strings. Provider-
+    specific knobs (Azure resource/deployment/api_version, Ollama host,
+    Vertex project/region) live on this object, validated strictly with
+    ``extra="forbid"``.
+    """
+
+    api_key_env: str | None = Field(default=None, max_length=128)
+    models: dict[str, str] = Field(default_factory=dict)
+    # Azure-only.
+    azure_resource: str | None = Field(default=None, max_length=128)
+    azure_deployment: str | None = Field(default=None, max_length=128)
+    azure_api_version: str | None = Field(default=None, max_length=64)
+    # Ollama-only.
+    host: str | None = Field(default=None, max_length=256)
+    # Vertex-only.
+    vertex_project: str | None = Field(default=None, max_length=128)
+    vertex_region: str | None = Field(default=None, max_length=64)
+
+
+class LlmBudgetConfig(SentinelModel):
+    """`llm.budget:` block.
+
+    Costs are USD. ``max_usd_per_run`` is the hard cap shared across
+    every caller; ``max_usd_<caller>`` (when set) imposes a tighter
+    sub-cap.
+    """
+
+    max_usd_per_run: float = Field(default=0.50, ge=0.0, le=100.0)
+    max_usd_planner: float | None = Field(default=None, ge=0.0, le=100.0)
+    max_usd_analyzer: float | None = Field(default=None, ge=0.0, le=100.0)
+    max_usd_healer: float | None = Field(default=None, ge=0.0, le=100.0)
+
+
+class LlmRateLimitConfig(SentinelModel):
+    """`llm.rate_limit:` block."""
+
+    requests_per_minute: float = Field(default=60.0, gt=0.0, le=6000.0)
+    capacity: int | None = Field(default=None, ge=1, le=10_000)
+
+
+class LlmConfig(SentinelModel):
+    """`llm:` block (Phase 30, ADR-0042).
+
+    Top-level LLM-provider config. Existing per-caller blocks
+    (:class:`PlannerLlmConfig` / :class:`AnalyzerLlmConfig`) remain the
+    fine-grained surface; this block centralizes the provider list,
+    shared budget, and rate-limit.
+    """
+
+    default_provider: _LLM_PROVIDER_NAMES = "null"
+    providers: dict[str, LlmProviderConfig] = Field(default_factory=dict)
+    budget: LlmBudgetConfig = Field(default_factory=lambda: LlmBudgetConfig())
+    rate_limit: LlmRateLimitConfig = Field(default_factory=lambda: LlmRateLimitConfig())
+
+
 class AccessibilityAxeConfig(SentinelModel):
     """`accessibility.axe:` block (Phase 11, ADR-0016)."""
 
@@ -767,6 +845,7 @@ class RootConfig(SentinelModel):
     discovery: DiscoveryConfig = Field(default_factory=lambda: DiscoveryConfig())
     planner: PlannerConfig = Field(default_factory=lambda: PlannerConfig())
     analyzer: AnalyzerConfig = Field(default_factory=lambda: AnalyzerConfig())
+    llm: LlmConfig = Field(default_factory=lambda: LlmConfig())
     accessibility: AccessibilityConfig = Field(default_factory=lambda: AccessibilityConfig())
     api: ApiConfig = Field(default_factory=lambda: ApiConfig())
     chaos: ChaosConfig = Field(default_factory=lambda: ChaosConfig())
@@ -813,6 +892,10 @@ __all__ = [
     "PlannerLlmConfig",
     "AnalyzerConfig",
     "AnalyzerLlmConfig",
+    "LlmConfig",
+    "LlmProviderConfig",
+    "LlmBudgetConfig",
+    "LlmRateLimitConfig",
     "AccessibilityConfig",
     "AccessibilityAxeConfig",
     "ApiAuthTestUser",

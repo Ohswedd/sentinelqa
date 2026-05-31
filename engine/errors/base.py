@@ -206,6 +206,78 @@ class PluginError(SentinelError):
     DEFAULT_CODE = "E-PLG-001"
 
 
+# ---------------------------------------------------------------------------
+# LLM adapter errors (Phase 30, ADR-0042)
+# ---------------------------------------------------------------------------
+
+
+class LlmError(SentinelError):
+    """Base class for LLM-provider errors.
+
+    Concrete subclasses bind to the E-LLM-001..009 grid in
+    :data:`engine.errors.codes.ERROR_REGISTRY`. The lifecycle catches
+    ``LlmError`` and falls back to the deterministic path; the run still
+    completes. The error code surfaces on the next ``audit.log`` line for
+    debuggability.
+    """
+
+    DEFAULT_CODE = "E-LLM-004"
+
+
+class LlmMissingKeyError(LlmError):
+    """The configured ``api_key_env`` is unset."""
+
+    DEFAULT_CODE = "E-LLM-001"
+
+
+class LlmModelUnavailableError(LlmError):
+    """The configured model is unknown / unreachable for this provider."""
+
+    DEFAULT_CODE = "E-LLM-002"
+
+
+class LlmBudgetExceededError(LlmError):
+    """The per-run cost cap would be breached by this call."""
+
+    DEFAULT_CODE = "E-LLM-003"
+
+
+class LlmRequestRejectedError(LlmError):
+    """The provider rejected the request (4xx other than 401/429)."""
+
+    DEFAULT_CODE = "E-LLM-004"
+
+
+class LlmResponseValidationError(LlmError):
+    """The provider's response did not match the locked structured envelope."""
+
+    DEFAULT_CODE = "E-LLM-005"
+
+
+class LlmTimeoutError(LlmError):
+    """The provider did not respond within the configured timeout."""
+
+    DEFAULT_CODE = "E-LLM-006"
+
+
+class LlmRateLimitedError(LlmError):
+    """The provider returned 429 (or the local token-bucket denied the call)."""
+
+    DEFAULT_CODE = "E-LLM-007"
+
+
+class LlmSchemaMismatchError(LlmError):
+    """Caller's response_schema rejected the otherwise-valid response."""
+
+    DEFAULT_CODE = "E-LLM-008"
+
+
+class LlmStructuredOutputUnsupportedError(LlmError):
+    """The selected model / provider combination cannot honor structured output."""
+
+    DEFAULT_CODE = "E-LLM-009"
+
+
 __all__ = [
     "SentinelError",
     "ConfigError",
@@ -221,4 +293,14 @@ __all__ = [
     "QualityGateFailedError",
     "InternalError",
     "PluginError",
+    "LlmError",
+    "LlmMissingKeyError",
+    "LlmModelUnavailableError",
+    "LlmBudgetExceededError",
+    "LlmRequestRejectedError",
+    "LlmResponseValidationError",
+    "LlmTimeoutError",
+    "LlmRateLimitedError",
+    "LlmSchemaMismatchError",
+    "LlmStructuredOutputUnsupportedError",
 ]

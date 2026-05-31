@@ -416,6 +416,7 @@ Phase 06 ships the planner as `engine.planner`:
 - **Named flow extractors** — login, signup, logout, password reset, CRUD, search/filter/sort, admin, role, file upload/download, payment sandbox, notification callback. Each extractor publishes its own confidence; below 0.5 the flow carries the `confidence_low` tag.
 - **Optional LLM augment** — `planner.llm.enabled=false` by default. When enabled, an `LlmPlanner` adapter proposes additional flows that are re-validated through Pydantic, capped by `max_proposals`, gated by a per-run USD budget (`max_usd_per_run`, default $0.50), and merged with `source="llm"` so downstream modules can distinguish them. The locked system prompt lives at `engine/planner/llm_prompts/planner.v1.md`; bumping the version requires a new ADR (ADR-0011).
 - **Providers shipped** — `openai_planner.py` (Chat Completions, `response_format=json_object`) and `anthropic_planner.py` (Messages API). Both speak HTTP directly via `httpx`; no vendor SDK is imported. A subclass interface (`HttpLlmProviderBase`) makes adding a third provider a small unit of work.
+- **Multi-provider extension (Phase 30, ADR-0042)** — Phase 30 introduced the canonical `engine.llm.LlmProvider` Protocol and seven additional HTTP-only adapters: `gemini` (Google AI Studio), `ollama` (local, offline default), `azure_openai`, `vertex` (Google Vertex AI, RS256 JWT exchange via the PyCA `cryptography` library), `mistral`, `groq`, `openrouter` (gateway). Plus the canonical `anthropic` + `openai` adapters at `engine/llm/providers/*.py`. The Phase-06 planner facade and the canonical surface co-exist: existing call sites are unchanged; new consumers (healer, future modules) implement once against `LlmProvider`. The full ten-provider matrix is enumerable via `sentinel llm list` and reachability-probed via `sentinel llm doctor`.
 - **Safety boundary** — provider credentials come from env vars by name only; the LLM payload contains route paths and counts, never form values, headers, cookies, query strings, env-var values, or source code (`build_graph_summary()` is the single point of redaction).
 - **CLI** — `sentinel plan --url …` runs lifecycle steps 1–9 and writes `plan.json` + `plan.md`. `sentinel plan --from-discovery <run-dir>` re-uses an existing `discovery.json`/`risk.json` instead of crawling again. `--llm/--no-llm` overrides `planner.llm.enabled` for the run.
 - **Artifacts** — `plan.json` (schema envelope at `packages/shared-schema/plan.schema.json`) and `plan.md` (deterministic Markdown summary). `audit.log` gains `plan.start`, `plan.llm.usage`, `plan.llm.budget_exceeded`, and `plan.complete` entries.
@@ -540,6 +541,7 @@ The Phase 09 analyzer ships the deterministic core for every PRD §9.5 output. T
 - **Retry / quarantine (`engine.analyzer.retry_decision.should_retry`).** Returns a typed `RetryDecision` (`retry` | `quarantine_candidate` | `no_action`). Flake and environment failures → retry. Auth-fixture failure → no_action (config-bound). Auth surfaced mid-test → retry (distinguish session timeout from a true block). App / API / security / a11y / performance / data-setup → no_action (deterministic). Test bug → no_action on the first attempt; `quarantine_candidate` once we've already retried or the optional `FailureHistory` shows recurring failures against a healthy app. A hard cap of two auto-retries applies regardless of category (CLAUDE §23).
 - **Pipeline (`engine.analyzer.pipeline.Analyzer`).** `Analyzer().analyze(signals, context=AnalyzerContext(auth_env_vars=..., base_url=..., history_by_test=...))` runs every stage in order, sorts results by `test_id`, and optionally appends a one-sentence `llm_refinement` from a configured explainer. Per-result output is `AnalyzerResult { test_id, classification, hypothesis, reproduction, retry_decision }`.
 - **LLM explainer adapter.** `engine.analyzer.llm_explainer` defines an `LlmExplainer` Protocol, a `NullLlmExplainer` default, and two HTTP-only provider adapters (`OpenAiLlmExplainer`, `AnthropicLlmExplainer`) — same shape as the planner adapter (ADR-0011). The locked prompt is `engine/analyzer/llm_prompts/explainer.v1.md` (`PROMPT_VERSION = "1"`); bumping it requires a new ADR. Provider responses are strictly validated (`{ "refinement": "<= 400 chars" }`); malformed responses are dropped silently and the deterministic hypothesis is preserved. Spend is bounded by `analyzer.llm.max_usd_per_run` (default $0.25). The feature is OFF by default (`analyzer.llm.enabled: false`); with the flag off, no LLM is constructed, no HTTP client is opened, and the analyzer is fully deterministic.
+- **Multi-provider extension (Phase 30, ADR-0042).** Same nine-provider matrix as §9.2.1 — the canonical `engine.llm.LlmProvider` Protocol replaces the per-caller `LlmExplainer` for new code. The Phase-09 facade continues to use the original two-provider adapter tree for backwards-compatibility.
 - **Safety boundary.** No credentials are ever inlined in repro output. The LLM summary clips fields and never re-includes raw cookies or `Authorization` headers (the caller pre-redacts per CLAUDE §33). The explainer respects the same env-var-name convention as `auth.*_env`. The deterministic path is identically reachable in air-gapped environments.
 
 ADR-0014 owns the rationale and alternatives.
@@ -1820,6 +1822,8 @@ The TS runtime never imports stealth, evasion, fingerprint-spoofing, CAPTCHA-byp
 
 Any future Python ↔ TS consumer that needs to *compare* URLs across the boundary must normalise both sides (lowercase the hostname, sort query parameters) before comparison.
 
+**LLM-provider redaction (Phase 30, ADR-0042).** Every outbound LLM request body and inbound LLM response body passes through `engine.llm.redaction.redact_request` / `redact_response` before reaching the audit log. The summarizers collapse `messages` / `contents` / `system` / `prompt` fields to count-and-redaction markers by default; the full prompt and response text never touch the audit log unless the caller explicitly opts in via `LlmRedactionPolicy(include_prompts_in_audit=True)`. API keys are read from env vars at call time, attached to the HTTP request via the provider's auth header, and are NEVER inlined into any log line. This Python-only invariant is consistent with §15.7 — the TS runtime never calls remote LLMs directly.
+
 ---
 
 ## 16. MCP / LLM Tool Interface
@@ -2016,6 +2020,56 @@ report:
     - json
     - junit
     - sarif
+
+# Multi-provider LLM (Phase 30, ADR-0042). The block is optional —
+# defaults give every consumer the `null` provider, no API calls, no
+# spend. Per-caller blocks (`planner.llm.*`, `analyzer.llm.*`) remain
+# the fine-grained surface; this block centralizes the provider list,
+# shared budget, and rate-limit.
+llm:
+  default_provider: null  # one of: null, anthropic, openai, gemini,
+                          #         ollama, azure_openai, vertex,
+                          #         mistral, groq, openrouter
+  providers:
+    anthropic:
+      api_key_env: ANTHROPIC_API_KEY
+      models:
+        planner: claude-3-5-sonnet-20241022
+        analyzer: claude-3-5-haiku-20241022
+    openai:
+      api_key_env: OPENAI_API_KEY
+      models:
+        planner: gpt-4o-mini
+    gemini:
+      api_key_env: GEMINI_API_KEY
+      models:
+        planner: gemini-1.5-flash
+    ollama:
+      host: http://localhost:11434
+      models:
+        planner: qwen2.5-coder:7b
+    azure_openai:
+      api_key_env: AZURE_OPENAI_API_KEY
+      azure_resource: my-resource
+      azure_deployment: gpt4o-prod
+      azure_api_version: 2024-08-01-preview
+    vertex:
+      api_key_env: GOOGLE_APPLICATION_CREDENTIALS
+      vertex_project: my-gcp-project
+      vertex_region: us-central1
+    mistral:
+      api_key_env: MISTRAL_API_KEY
+    groq:
+      api_key_env: GROQ_API_KEY
+    openrouter:
+      api_key_env: OPENROUTER_API_KEY
+  budget:
+    max_usd_per_run: 0.50
+    max_usd_planner: 0.30   # optional sub-cap
+    max_usd_analyzer: 0.15  # optional sub-cap
+    max_usd_healer: 0.05    # optional sub-cap
+  rate_limit:
+    requests_per_minute: 60
 ```
 
 ---

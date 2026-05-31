@@ -158,6 +158,111 @@ ERROR_REGISTRY: Final[dict[str, ErrorCodeSpec]] = {
             "diagnose; SentinelQA core continues without it."
         ),
     ),
+    # ------------------------------------------------------------------
+    # LLM adapter errors (Phase 30, ADR-0042). Most LLM failures are
+    # graceful — the caller falls back to the deterministic path. The
+    # codes below surface when the user explicitly asked for an LLM
+    # capability and the request cannot complete safely.
+    # ------------------------------------------------------------------
+    "E-LLM-001": ErrorCodeSpec(
+        code="E-LLM-001",
+        exit_code=EXIT_DEPENDENCY_MISSING,
+        message_template=(
+            "LLM provider {provider!r} is missing required credentials: env "
+            "var {env_var!r} is not set."
+        ),
+        suggested_fix=(
+            "Export the env var, or set `llm.providers.<name>.api_key_env` "
+            "to a name that IS set. SentinelQA never accepts inline API keys."
+        ),
+    ),
+    "E-LLM-002": ErrorCodeSpec(
+        code="E-LLM-002",
+        exit_code=EXIT_DEPENDENCY_MISSING,
+        message_template=(
+            "LLM provider {provider!r} cannot reach the configured model " "{model!r}: {detail}"
+        ),
+        suggested_fix=(
+            "Confirm the model name is correct for this provider (see `sentinel "
+            "llm list`). For local providers (Ollama), run `ollama pull <model>`."
+        ),
+    ),
+    "E-LLM-003": ErrorCodeSpec(
+        code="E-LLM-003",
+        exit_code=EXIT_QUALITY_GATE_FAILED,
+        message_template=(
+            "LLM per-run cost budget exceeded: projected {projected_usd:.4f} "
+            "USD > budget {budget_usd:.4f} USD."
+        ),
+        suggested_fix=(
+            "Raise `llm.budget.max_usd_per_run`, lower `planner.llm.max_proposals`, "
+            "or switch to a cheaper model. The deterministic path always works."
+        ),
+    ),
+    "E-LLM-004": ErrorCodeSpec(
+        code="E-LLM-004",
+        exit_code=EXIT_RUNTIME_ERROR,
+        message_template=(
+            "LLM provider {provider!r} rejected the request: HTTP " "{status_code} {detail}"
+        ),
+        suggested_fix=(
+            "Inspect the redacted request in the audit log. Common causes: "
+            "model deprecated, region/account blocked, content filter."
+        ),
+    ),
+    "E-LLM-005": ErrorCodeSpec(
+        code="E-LLM-005",
+        exit_code=EXIT_RUNTIME_ERROR,
+        message_template=(
+            "LLM provider {provider!r} returned a response that failed "
+            "structured-output validation: {detail}"
+        ),
+        suggested_fix=(
+            "The locked prompt envelope guards against this; if it recurs, "
+            "switch to a model that supports structured output and re-run."
+        ),
+    ),
+    "E-LLM-006": ErrorCodeSpec(
+        code="E-LLM-006",
+        exit_code=EXIT_RUNTIME_ERROR,
+        message_template=("LLM provider {provider!r} timed out after {timeout_seconds:.1f}s."),
+        suggested_fix=(
+            "Raise `*.llm.request_timeout_seconds`, or switch to a faster "
+            "provider. The deterministic fallback path always works."
+        ),
+    ),
+    "E-LLM-007": ErrorCodeSpec(
+        code="E-LLM-007",
+        exit_code=EXIT_RUNTIME_ERROR,
+        message_template=("LLM provider {provider!r} returned HTTP 429 (rate-limited)."),
+        suggested_fix=(
+            "Lower `llm.rate_limit.requests_per_minute`, retry later, or "
+            "switch providers. The deterministic fallback path always works."
+        ),
+    ),
+    "E-LLM-008": ErrorCodeSpec(
+        code="E-LLM-008",
+        exit_code=EXIT_RUNTIME_ERROR,
+        message_template=(
+            "LLM provider {provider!r} returned data that does not match the "
+            "caller-side schema: {detail}"
+        ),
+        suggested_fix=(
+            "Caller schema mismatches are a model-quality signal; the run "
+            "drops the malformed response and continues deterministically."
+        ),
+    ),
+    "E-LLM-009": ErrorCodeSpec(
+        code="E-LLM-009",
+        exit_code=EXIT_CONFIG_ERROR,
+        message_template=(
+            "LLM provider {provider!r} does not support structured output for " "model {model!r}."
+        ),
+        suggested_fix=(
+            "Pick a model that supports structured output (see `sentinel llm "
+            "list`) or disable the LLM feature for this caller."
+        ),
+    ),
 }
 
 
