@@ -157,7 +157,7 @@ Every phase ends with a push → PR → CI → merge cycle handled by the loop p
 | 30 | feature/phase-30-llm-providers | https://github.com/Ohswedd/sentinelqa/pull/33 | https://github.com/Ohswedd/sentinelqa/actions/runs/26698646186 | f1e8a5b7dad8f939c1c2628bc73cc018bb07d35a | 2026-05-31 |
 | 31 | feature/phase-31-browser-auth | https://github.com/Ohswedd/sentinelqa/pull/34 | https://github.com/Ohswedd/sentinelqa/actions/runs/26712888451 | 223871f75bbdc43867d53447b1b895c172420f40 | 2026-05-31 |
 | 32 | feature/phase-32-extended-security | https://github.com/Ohswedd/sentinelqa/pull/35 | https://github.com/Ohswedd/sentinelqa/actions/runs/26716664235 | db149e0248a3900a2b3c672b7fb5e92e6b49dbc3 | 2026-05-31 |
-| 33 | — | — | — | — | — |
+| 33 | feature/phase-33-supply-chain | https://github.com/Ohswedd/sentinelqa/pull/36 | https://github.com/Ohswedd/sentinelqa/actions/runs/26718565210 | 90fc4abacbcd9b775e1972658e3363fa9e98f009 | 2026-05-31 |
 | 34 | — | — | — | — | — |
 | 35 | — | — | — | — | — |
 | 36 | — | — | — | — | — |
