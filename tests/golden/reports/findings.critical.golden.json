@@ -3,9 +3,11 @@
   "findings": [
     {
       "affected_target": "https://localhost:8080",
+      "attack_id": null,
       "category": "security/headers",
       "confidence": 0.95,
       "created_at": "2026-05-27T12:00:30Z",
+      "cwe_id": null,
       "description": "The session cookie returned from POST /login is set without the Secure attribute. On a non-HTTPS request the cookie would be transmitted in cleartext.",
       "evidence": [
         {
@@ -23,13 +25,14 @@
         "selector": null
       },
       "module": "security",
+      "owasp_api_id": null,
       "recommendation": "Set the Secure attribute on the session cookie.",
       "reproduction_steps": [
         "POST https://localhost:8080/login with valid credentials.",
         "Inspect the Set-Cookie response header \u2014 note the missing Secure flag."
       ],
       "run_id": "RUN-PASSEDAAAAAA",
-      "schema_version": "1",
+      "schema_version": "2",
       "severity": "critical",
       "suggested_fix": null,
       "title": "Session cookie missing Secure flag"
@@ -37,5 +40,5 @@
   ],
   "generated_at": "2026-05-27T12:00:30+00:00",
   "run_id": "RUN-PASSEDAAAAAA",
-  "schema_version": "1"
+  "schema_version": "2"
 }

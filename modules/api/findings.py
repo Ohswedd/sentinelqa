@@ -10,6 +10,7 @@ from engine.domain.evidence import Evidence
 from engine.domain.finding import Finding, FindingLocation
 from engine.domain.ids import IdGenerator
 
+from modules.api.cwe_mapping import lookup as cwe_lookup
 from modules.api.models import ApiCheckResult, ApiIssue
 
 
@@ -42,11 +43,13 @@ def _issue_to_finding(
         )
     if extras_text:
         body = f"{body}\n\nEvidence: {extras_text}"
+    category = f"api/{check}/{issue.rule_id.lower()}"
+    ids = cwe_lookup(category)
     return Finding(
         id=id_generator.new("FND"),
         run_id=run_id,
         module="api",
-        category=f"api/{check}/{issue.rule_id.lower()}",
+        category=category,
         severity=issue.severity,
         confidence=issue.confidence,
         title=issue.title,
@@ -56,6 +59,9 @@ def _issue_to_finding(
         suggested_fix=issue.recommendation,
         affected_target=target_base_url,
         recommendation=issue.recommendation,
+        cwe_id=ids.cwe_id,
+        attack_id=ids.attack_id,
+        owasp_api_id=ids.owasp_api_id,
         created_at=timestamp,
     )
 

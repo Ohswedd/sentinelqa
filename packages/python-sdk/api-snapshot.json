@@ -62,20 +62,23 @@
       },
       "FINDINGS_SCHEMA_VERSION": {
         "kind": "constant",
-        "value": "1"
+        "value": "2"
       },
       "Finding": {
         "kind": "class",
         "model_fields": [
           "affected_target",
+          "attack_id",
           "category",
           "confidence",
           "created_at",
+          "cwe_id",
           "description",
           "evidence",
           "id",
           "location",
           "module",
+          "owasp_api_id",
           "recommendation",
           "reproduction_steps",
           "run_id",

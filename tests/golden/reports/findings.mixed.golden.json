@@ -3,9 +3,11 @@
   "findings": [
     {
       "affected_target": "https://localhost:8080",
+      "attack_id": null,
       "category": "security/cookies",
       "confidence": 0.9,
       "created_at": "2026-05-27T12:00:30Z",
+      "cwe_id": null,
       "description": "The session cookie on /login is missing HttpOnly; client-side JavaScript can read it.",
       "evidence": [
         {
@@ -23,19 +25,22 @@
         "selector": null
       },
       "module": "security",
+      "owasp_api_id": null,
       "recommendation": "Set HttpOnly on the session cookie.",
       "reproduction_steps": [],
       "run_id": "RUN-PASSEDAAAAAA",
-      "schema_version": "1",
+      "schema_version": "2",
       "severity": "high",
       "suggested_fix": null,
       "title": "Session cookie missing HttpOnly attribute"
     },
     {
       "affected_target": "https://localhost:8080",
+      "attack_id": null,
       "category": "a11y/contrast",
       "confidence": 0.7,
       "created_at": "2026-05-27T12:00:30Z",
+      "cwe_id": null,
       "description": "The /signup submit button has contrast ratio 3.8 (WCAG AA needs \u22654.5).",
       "evidence": [
         {
@@ -53,19 +58,22 @@
         "selector": "button[type=submit]"
       },
       "module": "accessibility",
+      "owasp_api_id": null,
       "recommendation": "Increase foreground/background contrast to \u22654.5.",
       "reproduction_steps": [],
       "run_id": "RUN-PASSEDAAAAAA",
-      "schema_version": "1",
+      "schema_version": "2",
       "severity": "medium",
       "suggested_fix": null,
       "title": "Insufficient contrast on submit button"
     },
     {
       "affected_target": "https://localhost:8080",
+      "attack_id": null,
       "category": "perf/lcp",
       "confidence": 0.6,
       "created_at": "2026-05-27T12:00:30Z",
+      "cwe_id": null,
       "description": "LCP measured at 1.8s; budget is 2.5s.",
       "evidence": [
         {
@@ -83,10 +91,11 @@
         "selector": null
       },
       "module": "performance",
+      "owasp_api_id": null,
       "recommendation": "No action required.",
       "reproduction_steps": [],
       "run_id": "RUN-PASSEDAAAAAA",
-      "schema_version": "1",
+      "schema_version": "2",
       "severity": "info",
       "suggested_fix": null,
       "title": "LCP within budget"
@@ -94,5 +103,5 @@
   ],
   "generated_at": "2026-05-27T12:00:30+00:00",
   "run_id": "RUN-PASSEDAAAAAA",
-  "schema_version": "1"
+  "schema_version": "2"
 }

@@ -19,8 +19,17 @@ from typing import Final
 RUN_SCHEMA_VERSION: Final[str] = "1"
 """Version of `run.json` and the in-memory ``TestRun`` model."""
 
-FINDINGS_SCHEMA_VERSION: Final[str] = "1"
-"""Version of `findings.json` and the in-memory ``Finding`` model (PRD §18.2)."""
+FINDINGS_SCHEMA_VERSION: Final[str] = "2"
+"""Version of `findings.json` and the in-memory ``Finding`` model (PRD §18.2).
+
+v2 (Phase 32, ADR-0044) adds three optional taxonomy ids — ``cwe_id``,
+``attack_id``, ``owasp_api_id`` — so SARIF / dashboard consumers can
+deep-link findings to ``cwe.mitre.org``, ``attack.mitre.org``, and the
+OWASP API Top-10. v1 documents parse cleanly into the v2 model (the new
+fields default to ``None``); the migration in
+``engine/domain/migrations/findings_1_to_2.py`` makes the upgrade
+explicit when callers persist v1 inputs back as v2.
+"""
 
 SCORE_SCHEMA_VERSION: Final[str] = "1"
 """Version of `score.json` and the in-memory ``QualityScore`` model (PRD §19)."""

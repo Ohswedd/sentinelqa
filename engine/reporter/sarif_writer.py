@@ -47,6 +47,35 @@ SEVERITY_TO_LEVEL: Final[dict[Severity, str]] = {
     "info": "note",
 }
 
+# Taxonomy descriptors emitted under ``tool.driver.taxa`` when any finding
+# carries a CWE / ATT&CK / OWASP-API id (Phase 32, ADR-0044). SARIF 2.1.0
+# §3.19 ``toolComponent.taxa`` is the canonical way to attach standards
+# references to results.
+_TAXA_CWE_NAME: Final[str] = "CWE"
+_TAXA_CWE_URI: Final[str] = "https://cwe.mitre.org"
+_TAXA_ATTACK_NAME: Final[str] = "MITRE-ATTACK"
+_TAXA_ATTACK_URI: Final[str] = "https://attack.mitre.org"
+_TAXA_OWASP_API_NAME: Final[str] = "OWASP-API-Top10-2023"
+_TAXA_OWASP_API_URI: Final[str] = "https://owasp.org/API-Security/editions/2023/en/0x11-t10/"
+
+
+def _cwe_help_uri(cwe_id: str) -> str:
+    number = cwe_id.removeprefix("CWE-")
+    return f"https://cwe.mitre.org/data/definitions/{number}.html"
+
+
+def _attack_help_uri(attack_id: str) -> str:
+    base, _, sub = attack_id.partition(".")
+    if sub:
+        return f"https://attack.mitre.org/techniques/{base}/{sub}/"
+    return f"https://attack.mitre.org/techniques/{base}/"
+
+
+def _owasp_api_help_uri(owasp_api_id: str) -> str:
+    # ``API-2023-01`` → ``xa1-broken-object-level-authorization``
+    # We don't know the slug; surface the editions index instead.
+    return _TAXA_OWASP_API_URI
+
 
 def write_sarif(
     artifact_dir: ArtifactDirectory,
@@ -87,30 +116,114 @@ def build_sarif_document(
     rules: list[SarifRule] = [reg.get(c) for c in categories]
     category_to_index: dict[str, int] = {r.category: i for i, r in enumerate(rules)}
 
+    # Collect every distinct taxonomy id referenced by any finding so we
+    # can emit a deterministic ``tool.driver.taxa`` array and point each
+    # result at it via ``taxa`` references (SARIF 2.1.0 §3.19).
+    cwe_ids: list[str] = sorted({f.cwe_id for f in findings if f.cwe_id})
+    attack_ids: list[str] = sorted({f.attack_id for f in findings if f.attack_id})
+    owasp_api_ids: list[str] = sorted({f.owasp_api_id for f in findings if f.owasp_api_id})
+
+    cwe_index = {ident: i for i, ident in enumerate(cwe_ids)}
+    attack_index = {ident: i for i, ident in enumerate(attack_ids)}
+    owasp_index = {ident: i for i, ident in enumerate(owasp_api_ids)}
+
     results: list[dict[str, Any]] = []
     for f in findings:
         rule = reg.get(f.category)
-        results.append(_finding_to_result(f, rule, category_to_index[f.category], run))
+        results.append(
+            _finding_to_result(
+                f,
+                rule,
+                category_to_index[f.category],
+                run,
+                cwe_index=cwe_index,
+                attack_index=attack_index,
+                owasp_index=owasp_index,
+            )
+        )
+
+    taxonomies = _build_taxonomies(cwe_ids, attack_ids, owasp_api_ids)
+
+    driver: dict[str, Any] = {
+        "name": TOOL_NAME,
+        "version": TOOL_VERSION,
+        "informationUri": TOOL_INFORMATION_URI,
+        "rules": [r.to_descriptor() for r in rules],
+    }
+    if taxonomies:
+        driver["supportedTaxonomies"] = [{"name": t["name"]} for t in taxonomies if t["taxa"]]
+
+    sarif_run: dict[str, Any] = {
+        "tool": {"driver": driver},
+        "automationDetails": {"id": run.id},
+        "results": results,
+    }
+    if taxonomies:
+        sarif_run["taxonomies"] = taxonomies
 
     document: dict[str, Any] = {
         "$schema": SARIF_SCHEMA_URI,
         "version": SARIF_VERSION,
-        "runs": [
-            {
-                "tool": {
-                    "driver": {
-                        "name": TOOL_NAME,
-                        "version": TOOL_VERSION,
-                        "informationUri": TOOL_INFORMATION_URI,
-                        "rules": [r.to_descriptor() for r in rules],
-                    }
-                },
-                "automationDetails": {"id": run.id},
-                "results": results,
-            }
-        ],
+        "runs": [sarif_run],
     }
     return document
+
+
+def _build_taxonomies(
+    cwe_ids: list[str],
+    attack_ids: list[str],
+    owasp_api_ids: list[str],
+) -> list[dict[str, Any]]:
+    """Build the SARIF ``runs[].taxonomies`` array. Empty arrays are kept
+    so the result references the correct, stable taxonomy indices.
+    """
+
+    if not (cwe_ids or attack_ids or owasp_api_ids):
+        return []
+    return [
+        {
+            "name": _TAXA_CWE_NAME,
+            "informationUri": _TAXA_CWE_URI,
+            "shortDescription": {"text": "Common Weakness Enumeration"},
+            "taxa": [
+                {
+                    "id": cid,
+                    "name": cid,
+                    "shortDescription": {"text": cid},
+                    "helpUri": _cwe_help_uri(cid),
+                }
+                for cid in cwe_ids
+            ],
+        },
+        {
+            "name": _TAXA_ATTACK_NAME,
+            "informationUri": _TAXA_ATTACK_URI,
+            "shortDescription": {"text": "MITRE ATT&CK technique catalog"},
+            "taxa": [
+                {
+                    "id": aid,
+                    "name": aid,
+                    "shortDescription": {"text": aid},
+                    "helpUri": _attack_help_uri(aid),
+                }
+                for aid in attack_ids
+            ],
+        },
+        {
+            "name": _TAXA_OWASP_API_NAME,
+            "informationUri": _TAXA_OWASP_API_URI,
+            "shortDescription": {"text": "OWASP API Security Top-10 (2023)"},
+            "taxa": [
+                {
+                    "id": oid,
+                    "name": oid,
+                    "shortDescription": {"text": oid},
+                    "helpUri": _owasp_api_help_uri(oid),
+                }
+                for oid in owasp_api_ids
+            ],
+        },
+    ]
 
 
 def _finding_to_result(
@@ -118,6 +231,10 @@ def _finding_to_result(
     rule: SarifRule,
     rule_index: int,
     run: TestRun,
+    *,
+    cwe_index: dict[str, int] | None = None,
+    attack_index: dict[str, int] | None = None,
+    owasp_index: dict[str, int] | None = None,
 ) -> dict[str, Any]:
     level = SEVERITY_TO_LEVEL.get(finding.severity, "warning")
     message_text = finding.title.strip()
@@ -143,7 +260,56 @@ def _finding_to_result(
         result["properties"]["evidence"] = [
             {"type": e.type, "path": str(e.path), "id": e.id} for e in finding.evidence
         ]
+    taxa_refs = _taxa_references(
+        finding,
+        cwe_index=cwe_index,
+        attack_index=attack_index,
+        owasp_index=owasp_index,
+    )
+    if taxa_refs:
+        result["taxa"] = taxa_refs
+    if finding.cwe_id:
+        result["properties"]["cwe_id"] = finding.cwe_id
+    if finding.attack_id:
+        result["properties"]["attack_id"] = finding.attack_id
+    if finding.owasp_api_id:
+        result["properties"]["owasp_api_id"] = finding.owasp_api_id
     return result
+
+
+def _taxa_references(
+    finding: Finding,
+    *,
+    cwe_index: dict[str, int] | None,
+    attack_index: dict[str, int] | None,
+    owasp_index: dict[str, int] | None,
+) -> list[dict[str, Any]]:
+    refs: list[dict[str, Any]] = []
+    if finding.cwe_id and cwe_index and finding.cwe_id in cwe_index:
+        refs.append(
+            {
+                "id": finding.cwe_id,
+                "index": cwe_index[finding.cwe_id],
+                "toolComponent": {"name": _TAXA_CWE_NAME},
+            }
+        )
+    if finding.attack_id and attack_index and finding.attack_id in attack_index:
+        refs.append(
+            {
+                "id": finding.attack_id,
+                "index": attack_index[finding.attack_id],
+                "toolComponent": {"name": _TAXA_ATTACK_NAME},
+            }
+        )
+    if finding.owasp_api_id and owasp_index and finding.owasp_api_id in owasp_index:
+        refs.append(
+            {
+                "id": finding.owasp_api_id,
+                "index": owasp_index[finding.owasp_api_id],
+                "toolComponent": {"name": _TAXA_OWASP_API_NAME},
+            }
+        )
+    return refs
 
 
 def _finding_to_location(finding: Finding, run: TestRun) -> dict[str, Any]:

@@ -36,6 +36,8 @@ repos:
             tests/golden/redaction/parity\.json|
             scripts/export-redaction-parity\.py|
             tests/unit/modules/security/test_secret_patterns\.py|
+            tests/unit/modules/security/test_bundle_secrets\.py|
+            tests/integration/modules/security/test_phase32_e2e\.py|
             tests/integration/release/test_built_packages\.py|
             tests/integration/release/test_secret_leak\.py|
             docs/release/secret-leak-audit-2026-05-30\.md

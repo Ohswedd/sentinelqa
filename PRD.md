@@ -1182,6 +1182,86 @@ section names what is actually shipped and the safety contract:
   `auth.second_user.{username_env, password_env, token_env,
   user_id}` for IDOR.
 
+#### 10.7.2 Extended Security Skill Catalog (Phase 32, ADR-0044)
+
+Phase 32 extends the Phase-13 catalog with eight defensive-only
+assessment checks drawn from the Anthropic Cybersecurity Skills
+taxonomy plus our existing follow-up backlog. Every check stays
+inside the CLAUDE.md §6 safety boundary — no offensive payloads, no
+exploit material, no WAF / detection bypass, no aggressive fuzzing.
+Each check maps every finding to a canonical taxonomy id (`cwe_id`,
+`attack_id`, and where applicable `owasp_api_id`) so SARIF / dashboard
+consumers can deep-link to standards instead of internal jargon.
+
+- **Schema v2 (Task 32.09).** `FINDINGS_SCHEMA_VERSION` bumps from
+  `"1"` to `"2"`. The `Finding` model gains three optional
+  taxonomy fields. v1 wire documents parse cleanly into the v2 model
+  (the new fields default to `null`); the canonical re-stamp helper
+  lives at
+  `engine.domain.migrations.findings_1_to_2.migrate`. The SARIF
+  writer emits `runs[].taxonomies` referencing `cwe.mitre.org`,
+  `attack.mitre.org`, and the OWASP API Top-10 editions index when
+  any finding carries the matching id.
+- **`modules/security/checks/jwt_weakness.py` (Task 32.01).** Walks
+  every JWT-shaped string observed in `Authorization` headers and
+  cookies; flags `alg=none` (CWE-347, T1606.001), HS256 verifying
+  against a fixed 6-entry weak-secret wordlist (CWE-347), missing
+  `exp` (CWE-613), expired `exp` (CWE-613), and missing `iss`/`aud`
+  for multi-tenant tokens (CWE-345). The wordlist is hard-coded; the
+  scanner does NOT iterate against any external dictionary.
+- **`modules/security/checks/cookies.py` extended (Task 32.02).**
+  Adds rules for missing `__Host-` / `__Secure-` prefix on
+  session-shaped cookies (CWE-1004), over-broad `Domain` attribute
+  (CWE-1275), and over-broad `Path=/` on sensitive cookies
+  (CWE-1275). The `__Host-` carve-out for `Path=/` is honored.
+- **`modules/security/checks/tls_posture.py` (Task 32.03).**
+  Read-only TLS handshake against the allowlisted host. Records
+  protocol version, cipher suite, leaf cert SHA-256 / issuer / SANs /
+  expiry, and HSTS status. Flags legacy TLS versions (CWE-326,
+  T1573), weak ciphers (CWE-326, T1573), expired / soon-to-expire
+  certs (CWE-295), and missing or short HSTS (CWE-319). The probe
+  is strictly read-only: no downgrade attempts, no cipher
+  brute-forcing.
+- **`modules/security/checks/graphql_safety.py` (Task 32.04).**
+  Fixed 3-query probe set (introspection, depth-5, alias bomb) plus
+  optional anonymous mutation probes (one request per discovered
+  mutation). Flags `graphql-introspection-enabled` (CWE-200),
+  `graphql-no-depth-limit` / `graphql-no-complexity-limit`
+  (CWE-770), and `graphql-mutation-no-auth` (CWE-862 /
+  OWASP API-2023-05).
+- **`modules/security/checks/api_bola_bfla.py` (Task 32.05).**
+  Replays observed identity-A API calls under identity B. Hard-gated
+  behind `security.mode == "authorized_destructive"` AND a non-empty
+  `target.proof_of_authorization`; capped at 50 endpoints per run.
+  Surfaces BOLA findings (CWE-639 / OWASP API-2023-01) and BFLA
+  findings (CWE-863 / OWASP API-2023-03).
+- **`modules/security/checks/frontend_only_auth_deeper.py` (Task
+  32.06).** Augments the Phase-19 frontend-only-auth detector with a
+  deeper probe: re-issues every observed XHR / fetch URL
+  anonymously and flags 200-with-body responses (CWE-862 /
+  OWASP API-2023-01). Apparent-public endpoints
+  (`/api/public/...`, `/api/health`) are excluded.
+- **`modules/security/checks/bundle_secrets.py` (Task 32.07).** Fetches
+  every JS bundle the page loaded (streamed; 50 MiB cap with a
+  `truncated` flag), scans for AWS / GCP / Azure / Stripe / GitHub /
+  Slack tokens and PEM private keys (all CWE-540). Match prefixes are
+  redacted to 8 characters; raw match text never enters the audit log.
+- **`modules/security/checks/ssrf_redirect.py` (Task 32.08).** For
+  every URL-shaped form field / query parameter, sends a fixed 6-entry
+  SSRF payload list (loopback, AWS / GCP metadata, file://, redis
+  gopher) and a fixed 2-entry open-redirect bait list. Flags
+  `ssrf-suspected` (CWE-918 / OWASP API-2023-07) and `open-redirect`
+  (CWE-601). Same destructive-mode + proof-of-authorization gate as
+  Task 32.05.
+- **Safety guard.** `tests/security/test_no_offensive_checks.py`
+  greps the new modules for forbidden tokens (`exploit`, `bypass`,
+  `shellcode`, `obfuscate`, `evade`, `captcha_bypass`, `stealth`,
+  etc.) and asserts per-module load-bearing invariants: the JWT
+  module never loads an external wordlist; the SSRF / GraphQL
+  payload sets are module-level `Final[tuple[str, ...]]`; the TLS
+  module never writes application-layer bytes to its socket outside
+  the SSL handshake.
+
 ### 10.8 Chaos/adversarial testing
 
 Safe chaos tests:

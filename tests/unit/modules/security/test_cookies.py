@@ -53,8 +53,40 @@ def test_evaluate_samesite_none_without_secure_is_high() -> None:
 
 
 def test_evaluate_fully_protected_cookie_yields_nothing() -> None:
-    cookie = parse_set_cookie("session=abc; HttpOnly; Secure; SameSite=Strict")
+    # Phase 32 (ADR-0044): session cookies must also carry __Host- prefix.
+    cookie = parse_set_cookie("__Host-session=abc; HttpOnly; Secure; SameSite=Strict; Path=/")
     assert list(evaluate_cookie(cookie, route="/", is_https=True)) == []
+
+
+def test_evaluate_session_cookie_without_host_prefix_flags_phase32_rule() -> None:
+    cookie = parse_set_cookie("session=abc; HttpOnly; Secure; SameSite=Strict; Path=/")
+    issues = list(evaluate_cookie(cookie, route="/", is_https=True))
+    ids = _ids(issues)
+    assert "SEC-COOKIE-MISSING-PREFIX" in ids
+
+
+def test_evaluate_overbroad_domain_fires() -> None:
+    cookie = parse_set_cookie("session=abc; HttpOnly; Secure; SameSite=Lax; Domain=.example.com")
+    issues = list(
+        evaluate_cookie(
+            cookie,
+            route="/",
+            is_https=True,
+            response_host="app.example.com",
+        )
+    )
+    ids = _ids(issues)
+    assert "SEC-COOKIE-OVERBROAD-DOMAIN" in ids
+
+
+def test_evaluate_overbroad_path_fires_on_auth_cookie() -> None:
+    # No __Host- prefix → the Path=/ scope is genuinely over-broad for a
+    # cookie clearly tied to /admin. __Host- prefix REQUIRES Path=/ so it's
+    # excluded from this rule (see the explanatory comment in cookies.py).
+    cookie = parse_set_cookie("admin_session=abc; HttpOnly; Secure; SameSite=Strict; Path=/")
+    issues = list(evaluate_cookie(cookie, route="/admin", is_https=True))
+    ids = _ids(issues)
+    assert "SEC-COOKIE-OVERBROAD-PATH" in ids
 
 
 def test_run_cookies_check_collects_findings(make_ctx) -> None:  # type: ignore[no-untyped-def]

@@ -41,7 +41,7 @@ def test_finding_has_schema_version() -> None:
         description="d",
         created_at=datetime.now(UTC),
     )
-    assert f.to_dict()["schema_version"] == "1"
+    assert f.to_dict()["schema_version"] == "2"
 
 
 def test_quality_score_has_schema_version() -> None:

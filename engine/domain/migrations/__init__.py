@@ -30,4 +30,9 @@ def run_migration(
     return migrator(data)
 
 
+# Import side-effecting migration modules so they register themselves in
+# ``MIGRATIONS`` at package import time. New migrations must be appended
+# here (and a matching ADR added per ``docs/dev/schema-versioning.md``).
+from engine.domain.migrations import findings_1_to_2  # noqa: E402,F401
+
 __all__ = ["MIGRATIONS", "run_migration"]
