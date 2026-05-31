@@ -59,7 +59,9 @@ def _load_toml(rel: str) -> dict:
 
 
 def _load_json(rel: str) -> dict:
-    return json.loads((REPO_ROOT / rel).read_text(encoding="utf-8"))
+    data = json.loads((REPO_ROOT / rel).read_text(encoding="utf-8"))
+    assert isinstance(data, dict)
+    return data
 
 
 @pytest.mark.parametrize("rel", PUBLISHABLE_PY)

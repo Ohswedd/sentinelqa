@@ -79,7 +79,7 @@ multi-arch (amd64 + arm64) build.
   (four ecosystems, weekly), owner-runnable go-public checklist + four
   announcement drafts.
 - **phase-36** — Ecosystem publish (ADR-0048). `.github/workflows/
-  publish-pypi.yml` (Trusted-Publisher OIDC, no long-lived API token,
+publish-pypi.yml` (Trusted-Publisher OIDC, no long-lived API token,
   approval-gated `pypi-release` environment), `publish-npm.yml`
   (provenance via OIDC), `publish-docker.yml` (multi-arch amd64 +
   arm64 via Buildx + QEMU, OCI labels), `github-release.yml`
@@ -104,7 +104,7 @@ multi-arch (amd64 + arm64) build.
   end-to-end, plus the Phase 36 release-engineering surface itself).
 - **`docs/release/pre-1.0-review.md`** — fresh `v1.0.0` draft sign-off
   block with every numeric gate pre-filled (`make ci`, `make
-  coverage`, `make test-full`, `make audit-metadata`,
+coverage`, `make test-full`, `make audit-metadata`,
   `make build-all`, `make inspect-all`). Owner-only trademark rows
   and signature remain blank.
 - **`CHANGELOG.md`** — the duplicated `## [0.7.0] - 2026-05-31` header

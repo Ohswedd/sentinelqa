@@ -62,7 +62,9 @@ def _read_published_version() -> str:
     pyproject = REPO_ROOT / "apps/cli/pyproject.toml"
     with pyproject.open("rb") as fh:
         data = tomllib.load(fh)
-    return data["project"]["version"]
+    version = data["project"]["version"]
+    assert isinstance(version, str)
+    return version
 
 
 def _have(cmd: str) -> bool:

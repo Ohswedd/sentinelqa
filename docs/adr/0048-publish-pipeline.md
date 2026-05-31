@@ -52,22 +52,22 @@ the first artefact this pipeline has to ship for real.
 Four independent GitHub Actions workflows triggered on the same
 `v*` tag push, each gated on its own owner-approval environment:
 
-| Workflow                                  | Environment        | Notes                                                                 |
-| ----------------------------------------- | ------------------ | --------------------------------------------------------------------- |
-| `.github/workflows/publish-pypi.yml`      | `pypi-release`     | Trusted-Publisher OIDC. No long-lived token. `skip-existing: false`.  |
-| `.github/workflows/publish-npm.yml`       | `npm-release`      | `pnpm publish --access public --provenance`. Slot via OIDC.           |
-| `.github/workflows/publish-docker.yml`    | `docker-release`   | Multi-arch buildx + QEMU. provenance + SBOM on. Four tags per release. |
-| `.github/workflows/github-release.yml`    | `github-release`   | `softprops/action-gh-release@v2`. Body from extracted CHANGELOG.      |
+| Workflow                               | Environment      | Notes                                                                  |
+| -------------------------------------- | ---------------- | ---------------------------------------------------------------------- |
+| `.github/workflows/publish-pypi.yml`   | `pypi-release`   | Trusted-Publisher OIDC. No long-lived token. `skip-existing: false`.   |
+| `.github/workflows/publish-npm.yml`    | `npm-release`    | `pnpm publish --access public --provenance`. Slot via OIDC.            |
+| `.github/workflows/publish-docker.yml` | `docker-release` | Multi-arch buildx + QEMU. provenance + SBOM on. Four tags per release. |
+| `.github/workflows/github-release.yml` | `github-release` | `softprops/action-gh-release@v2`. Body from extracted CHANGELOG.       |
 
 Each workflow exposes a matching local dry-run that the owner runs
 before pushing the tag:
 
-| Workflow                                  | Dry-run script                                       |
-| ----------------------------------------- | ---------------------------------------------------- |
-| `publish-pypi.yml`                        | `scripts/release/dry_run_pypi.py` (build + `twine check --strict`) |
-| `publish-npm.yml`                         | `scripts/release/dry_run_npm.py` (build + `pnpm pack` + `npm publish --dry-run` + tarball inspection) |
-| `publish-docker.yml`                      | `scripts/release/dry_run_docker.py` (`docker buildx build --platform amd64,arm64 --no-push`) |
-| `github-release.yml`                      | `scripts/release/extract_release_notes.py` (CHANGELOG slicer) |
+| Workflow             | Dry-run script                                                                                        |
+| -------------------- | ----------------------------------------------------------------------------------------------------- |
+| `publish-pypi.yml`   | `scripts/release/dry_run_pypi.py` (build + `twine check --strict`)                                    |
+| `publish-npm.yml`    | `scripts/release/dry_run_npm.py` (build + `pnpm pack` + `npm publish --dry-run` + tarball inspection) |
+| `publish-docker.yml` | `scripts/release/dry_run_docker.py` (`docker buildx build --platform amd64,arm64 --no-push`)          |
+| `github-release.yml` | `scripts/release/extract_release_notes.py` (CHANGELOG slicer)                                         |
 
 The runbook at `docs/release/publish-runbook.md` is the single
 owner-facing document that drives an actual publish:
@@ -79,7 +79,7 @@ owner-facing document that drives an actual publish:
 4. Approve each of the four publish workflows in the GitHub
    Environments UI as they trigger.
 5. Run the post-publish smoke (`SENTINELQA_TEST_POST_PUBLISH=1`
-   + `tests/integration/release/test_post_publish_smoke.py`).
+   - `tests/integration/release/test_post_publish_smoke.py`).
 6. Post the announcement drafts from
    `docs/release/announcement-draft.md`.
 7. Watch the registries for 24 h.
@@ -100,7 +100,7 @@ venv at `/opt/sentinelqa`. The existing
 
 - **Positive:**
   - One mental model per registry — workflow + dry-run + verify
-    + environment + secret.
+    - environment + secret.
   - Provenance everywhere (PyPI Trusted Publisher, npm
     `--provenance`, Docker `provenance: true` + `sbom: true`).
   - The owner can validate every artefact locally before the tag

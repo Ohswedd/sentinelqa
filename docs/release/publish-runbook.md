@@ -147,7 +147,7 @@ Watch `Actions` tab — four workflows queue against your environments:
 3. **`Publish (Docker Hub)`** → same approval flow. Watch the
    `verify` job at the end pull the image, assert the manifest
    carries `linux/amd64` + `linux/arm64`, and run `sentinel
-   --version` inside the image.
+--version` inside the image.
 4. **`Publish (GitHub Release)`** → same approval flow. Confirm
    the release notes render correctly and every artefact
    (wheels + sdists + TS tarball) appears under "Assets".
@@ -213,7 +213,7 @@ If a critical post-publish issue surfaces:
 ## What this runbook explicitly does not authorise
 
 - **The agent** never runs `git tag -s`, `twine upload`, `pnpm
-  publish`, `docker push`, or any equivalent. These are owner
+publish`, `docker push`, or any equivalent. These are owner
   commands. (`CLAUDE.md` §3 + §40)
 - **Tagging without signing the pre-1.0 review** is forbidden —
   the act of signing the review **is** the explicit owner
