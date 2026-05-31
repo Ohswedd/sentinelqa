@@ -78,16 +78,45 @@ class AuthConfig(SentinelModel):
 
     Secrets are NEVER inlined here — only env-var names are accepted via
     the ``*_env`` keys. The loader enforces this via :class:`ConfigSecretInlineError`.
+
+    Strategies (Phase 31, ADR-0043):
+
+    - ``test_user`` — env-var-named credentials replayed via the Phase
+      13 login fixture (~70 % of self-hosted apps).
+    - ``api_key`` — bearer token from an env var (the ``token_env`` key).
+    - ``oauth`` — placeholder for the Phase-22 OAuth client-credentials
+      flow.
+    - ``browser_session`` — Phase 31. Replay a real, human-captured
+      Playwright ``storage_state`` from the encrypted vault. Requires
+      ``session_name``; the host is inferred from ``target.base_url``.
+    - ``none`` — no auth.
     """
 
-    strategy: Literal["test_user", "api_key", "oauth", "none"] = "none"
+    strategy: Literal["test_user", "api_key", "oauth", "browser_session", "none"] = "none"
     login_url: str | None = Field(default=None, max_length=2048)
     username_env: str | None = Field(default=None, max_length=128)
     password_env: str | None = Field(default=None, max_length=128)
     token_env: str | None = Field(default=None, max_length=128)
+    #: For ``strategy: browser_session``: the entry name to resolve in
+    #: the vault. The host is taken from ``target.base_url`` so the
+    #: config never has to repeat it.
+    session_name: str | None = Field(default=None, max_length=128)
     second_user: AuthSecondUserConfig = Field(
         default_factory=lambda: AuthSecondUserConfig(),
     )
+
+    @model_validator(mode="after")
+    def _browser_session_requires_name(self) -> AuthConfig:
+        if self.strategy == "browser_session" and not self.session_name:
+            raise ValueError(
+                "auth.strategy='browser_session' requires auth.session_name "
+                "(captured via `sentinel auth login <name>`)."
+            )
+        if self.session_name and self.strategy != "browser_session":
+            raise ValueError(
+                "auth.session_name is only meaningful with " "auth.strategy='browser_session'."
+            )
+        return self
 
 
 class ModulesConfig(SentinelModel):

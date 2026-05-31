@@ -62,6 +62,7 @@ SECRET_KEY_NAMES: Final[frozenset[str]] = frozenset(
         "csrf_token",
         "xsrf_token",
         "cookie",
+        "cookies",
         "set_cookie",
         "set-cookie",
         "authorization",
@@ -80,6 +81,15 @@ SECRET_KEY_NAMES: Final[frozenset[str]] = frozenset(
         "rsa_private_key",
         "ssh_key",
         "service_account_key",
+        # Phase 31, ADR-0043. Playwright `storage_state` carries cookies
+        # under the `cookies` key (above) and per-origin localStorage
+        # under `localStorage` / `local_storage`. Redacting the whole
+        # payload prevents leaking either the cookie value or any
+        # tokens an SPA persisted to local storage.
+        "localstorage",
+        "local_storage",
+        "storage_state",
+        "storage_state_json",
     }
 )
 
@@ -127,6 +137,11 @@ _CATEGORY_FOR_KEY: Final[dict[str, str]] = {
     "rsa_private_key": "private_key",
     "ssh_key": "private_key",
     "service_account_key": "gcp_service_account",
+    "cookies": "cookie",
+    "localstorage": "local_storage",
+    "local_storage": "local_storage",
+    "storage_state": "storage_state",
+    "storage_state_json": "storage_state",
 }
 
 
@@ -143,6 +158,18 @@ BUILTIN_RULES: Final[tuple[RedactionRule, ...]] = (
         category="basic_auth",
         pattern=re.compile(r"Basic\s+[A-Za-z0-9+/=]{8,}", re.IGNORECASE),
         description="HTTP Basic auth header values.",
+    ),
+    RedactionRule(
+        # Phase 31, ADR-0043. A literal `Cookie:` or `Set-Cookie:`
+        # header line embedded in a log message — we redact the entire
+        # name=value pair when the value is longer than 16 chars (real
+        # session cookies invariably are; sub-16-char values are
+        # usually flags like `session=1`).
+        category="cookie",
+        pattern=re.compile(
+            r"(?i)\b(?:Set-)?Cookie:\s*[A-Za-z0-9_\-]+=[^;\r\n]{16,}",
+        ),
+        description="HTTP `Cookie:` / `Set-Cookie:` header lines.",
     ),
     RedactionRule(
         category="jwt",

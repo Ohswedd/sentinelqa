@@ -43,6 +43,12 @@ const RunConfigSchema = z
     retries: z.number().int().min(0).default(0),
     grep: z.string().min(1).max(512).nullable().optional(),
     env: z.record(z.string()).default({}),
+    // Phase 31 / ADR-0043. Absolute path to a Playwright `storage_state`
+    // JSON file. The runner forwards it via the env var
+    // `SENTINELQA_STORAGE_STATE`; generated tests read that env var and
+    // configure each Playwright context accordingly. CLI
+    // `--storage-state <path>` overrides the config value.
+    storage_state_path: z.string().min(1).max(1024).nullable().optional(),
   })
   .strict();
 
@@ -55,6 +61,12 @@ export interface RunnerOptions {
   readonly runDirOverride?: string;
   /** Override the browser. */
   readonly browserOverride?: 'chromium' | 'firefox' | 'webkit';
+  /**
+   * Phase 31 / ADR-0043. Override `storage_state_path` from the config.
+   * The runner forwards the final path to Playwright via the env var
+   * `SENTINELQA_STORAGE_STATE`. Empty string clears the env var.
+   */
+  readonly storageStateOverride?: string;
   /** Spawn function (for tests). */
   readonly spawnFn?: typeof spawn;
   /** Override the reporter path (for tests). */
@@ -161,6 +173,22 @@ export async function runPlaywright(opts: RunnerOptions): Promise<number> {
     SENTINELQA_RUN_DIR: runDir,
     SENTINELQA_TARGET: config.target,
   };
+
+  // Phase 31 / ADR-0043. CLI override wins over the config value;
+  // passing an empty string explicitly clears the env var. We resolve
+  // through `if`s so the "empty string = disable" branch is explicit
+  // (it would silently fall through with `??`).
+  let storageState = '';
+  if (opts.storageStateOverride !== undefined) {
+    storageState = opts.storageStateOverride;
+  } else if (config.storage_state_path !== undefined && config.storage_state_path !== null) {
+    storageState = config.storage_state_path;
+  }
+  if (storageState.length > 0) {
+    env['SENTINELQA_STORAGE_STATE'] = storageState;
+  } else {
+    delete env['SENTINELQA_STORAGE_STATE'];
+  }
 
   return await new Promise<number>((resolveFn) => {
     const child = spawnImpl(cmd, args, {

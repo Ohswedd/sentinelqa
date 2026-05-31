@@ -438,4 +438,86 @@ describe('CLI subcommands', () => {
     expect(result.exitCode).toBe(2);
     expect(result.stderr).toContain('chromium|firefox|webkit');
   });
+
+  it('run --storage-state <path> forwards to runPlaywright (Phase 31)', async () => {
+    let observed: string | undefined;
+    const result = await dispatchAsync(
+      ['run', '--input', '/x', '--storage-state', '/tmp/state.json'],
+      {
+        runFn: async (opts) => {
+          observed = opts.storageStateOverride;
+          return 0;
+        },
+      },
+    );
+    expect(result.exitCode).toBe(0);
+    expect(observed).toBe('/tmp/state.json');
+  });
+});
+
+describe('runPlaywright (Phase 31 storage_state)', () => {
+  it('forwards storage_state_path via SENTINELQA_STORAGE_STATE env var', async () => {
+    const cfgPath = join(workDir, 'cfg.json');
+    await writeJson(cfgPath, {
+      run_id: 'r',
+      target: 'http://x',
+      run_dir: join(workDir, 'run'),
+      storage_state_path: '/tmp/state.json',
+    });
+    const stderrSink = new NodeEmitter() as unknown as NodeJS.WriteStream;
+    Object.assign(stderrSink, { write: () => true });
+    const mock = buildSpawnMock({ exitCode: 0 });
+    await runPlaywright({
+      inputPath: cfgPath,
+      spawnFn: mock.fn as any,
+      reporterPathOverride: '/dev/null/reporter.js',
+      cwd: workDir,
+      stderr: stderrSink,
+    });
+    expect(mock.calls[0]!.env['SENTINELQA_STORAGE_STATE']).toBe('/tmp/state.json');
+  });
+
+  it('CLI override beats the run-config value', async () => {
+    const cfgPath = join(workDir, 'cfg.json');
+    await writeJson(cfgPath, {
+      run_id: 'r',
+      target: 'http://x',
+      run_dir: join(workDir, 'run'),
+      storage_state_path: '/from/config.json',
+    });
+    const stderrSink = new NodeEmitter() as unknown as NodeJS.WriteStream;
+    Object.assign(stderrSink, { write: () => true });
+    const mock = buildSpawnMock({ exitCode: 0 });
+    await runPlaywright({
+      inputPath: cfgPath,
+      storageStateOverride: '/from/cli.json',
+      spawnFn: mock.fn as any,
+      reporterPathOverride: '/dev/null/reporter.js',
+      cwd: workDir,
+      stderr: stderrSink,
+    });
+    expect(mock.calls[0]!.env['SENTINELQA_STORAGE_STATE']).toBe('/from/cli.json');
+  });
+
+  it('empty CLI override disables the env var entirely', async () => {
+    const cfgPath = join(workDir, 'cfg.json');
+    await writeJson(cfgPath, {
+      run_id: 'r',
+      target: 'http://x',
+      run_dir: join(workDir, 'run'),
+      storage_state_path: '/from/config.json',
+    });
+    const stderrSink = new NodeEmitter() as unknown as NodeJS.WriteStream;
+    Object.assign(stderrSink, { write: () => true });
+    const mock = buildSpawnMock({ exitCode: 0 });
+    await runPlaywright({
+      inputPath: cfgPath,
+      storageStateOverride: '',
+      spawnFn: mock.fn as any,
+      reporterPathOverride: '/dev/null/reporter.js',
+      cwd: workDir,
+      stderr: stderrSink,
+    });
+    expect(mock.calls[0]!.env['SENTINELQA_STORAGE_STATE']).toBeUndefined();
+  });
 });

@@ -21,6 +21,7 @@ from sentinel_cli.commands import (
     a11y_cmd,
     api_cmd,
     audit_cmd,
+    auth_cmd,
     chaos_cmd,
     ci_cmd,
     discover_cmd,
@@ -307,6 +308,17 @@ def build_app() -> typer.Typer:
             "Multi-provider LLM management (Phase 30, ADR-0042). `llm "
             "list` shows registered providers; `llm doctor` probes "
             "reachability; `llm price` prints per-model cost tables."
+        ),
+    )
+    cli.add_typer(
+        auth_cmd.auth_app,
+        name="auth",
+        help=(
+            "Browser-authenticated audits (Phase 31, ADR-0043). `auth "
+            "login` opens a real browser so the operator can sign in "
+            "once; SentinelQA encrypts the session locally and replays "
+            "it on later audits. `list` / `revoke` / `export` manage "
+            "the vault."
         ),
     )
 

@@ -88,6 +88,12 @@ class RunnerInvocation:
     quarantine: Quarantine = field(default_factory=Quarantine.empty)
     grep: str | None = None
     """Playwright ``--grep`` pattern (tag selection per Phase 10.03)."""
+    storage_state_path: Path | None = None
+    """Phase 31, ADR-0043. Plaintext ``storage_state`` file the runner
+    forwards to Playwright via the env var ``SENTINELQA_STORAGE_STATE``.
+    The orchestrator owns the file's lifecycle: it is materialized from
+    the encrypted vault before the runner is invoked and removed on
+    teardown — the file MUST NOT outlive the run."""
 
 
 SpawnFn = Callable[..., Awaitable[asyncio.subprocess.Process]]
@@ -203,6 +209,11 @@ class LocalRunner:
             retries=runner_cfg.retries.max,
             grep=invocation.grep,
             env=env,
+            storage_state_path=(
+                str(invocation.storage_state_path)
+                if invocation.storage_state_path is not None
+                else None
+            ),
         )
         # Persist under run-configs/<module>.json so each module's invocation
         # is independently reproducible.

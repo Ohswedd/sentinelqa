@@ -80,6 +80,7 @@ include = [
     "py.typed",
     "analyzer/**/*.py",
     "analyzer/**/*.md",
+    "auth/**/*.py",
     "ci/**/*.py",
     "config/**/*.py",
     "discovery/**/*.py",
@@ -88,6 +89,7 @@ include = [
     "generator/**/*.py",
     "generator/**/*.j2",
     "healer/**/*.py",
+    "llm/**/*.py",
     "log/**/*.py",
     "modules/**/*.py",
     "orchestrator/**/*.py",
@@ -101,6 +103,7 @@ include = [
     "reporter/**/*.css",
     "reporter/**/*.js",
     "runner/**/*.py",
+    "scoring/**/*.py",
 ]
 
 [tool.hatch.build.targets.wheel.sources]
@@ -119,6 +122,7 @@ include = [
     "py.typed",
     "analyzer/**/*.py",
     "analyzer/**/*.md",
+    "auth/**/*.py",
     "ci/**/*.py",
     "config/**/*.py",
     "discovery/**/*.py",
@@ -127,6 +131,7 @@ include = [
     "generator/**/*.py",
     "generator/**/*.j2",
     "healer/**/*.py",
+    "llm/**/*.py",
     "log/**/*.py",
     "modules/**/*.py",
     "orchestrator/**/*.py",
@@ -140,4 +145,5 @@ include = [
     "reporter/**/*.css",
     "reporter/**/*.js",
     "runner/**/*.py",
+    "scoring/**/*.py",
 ]

@@ -36,6 +36,25 @@ export const SENTINEL_PLAYWRIGHT_DEFAULTS = {
 } as const satisfies Partial<PlaywrightWorkerOptions>;
 
 /**
+ * Phase 31 / ADR-0043. When `sentinel-ts run --storage-state <path>` is
+ * passed (or `storage_state_path` is set in the run-config), the runner
+ * exports the env var `SENTINELQA_STORAGE_STATE`. This helper reads
+ * that env var and returns a `{storageState: <path>}` overlay the
+ * user's `playwright.config.ts` can spread into the `use` block.
+ *
+ * Returns `{}` when the env var is unset, so spreading is always safe.
+ */
+export function getSentinelStorageStateUse(env: NodeJS.ProcessEnv = process.env): {
+  storageState?: string;
+} {
+  const path = env['SENTINELQA_STORAGE_STATE'];
+  if (typeof path === 'string' && path.length > 0) {
+    return { storageState: path };
+  }
+  return {};
+}
+
+/**
  * Per-test SentinelQA context exposed as a Playwright fixture.
  */
 export interface SentinelFixture extends EvidenceContext, StepContext {

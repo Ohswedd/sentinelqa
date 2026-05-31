@@ -96,6 +96,16 @@ The safe and commercially viable alternative is **compliant realism**:
 - Safe payloads.
 - Staging/local-only destructive testing.
 - Proof-of-ownership validation for external domains.
+- **Operator-supplied browser sessions** (Phase 31, ADR-0043): for SSO /
+  MFA / consumer-LLM web logins, the operator signs in themselves in
+  a real browser and SentinelQA captures the resulting Playwright
+  `storage_state` into an encrypted local vault (AES-256-GCM, master
+  key in the OS keyring). SentinelQA never sees the operator's
+  username, password, OTP, or OAuth bearer token. The vault refuses
+  to surface a session whose recorded host is not in the active
+  target's allowlist, refuses expired entries, and never extends or
+  refreshes a session silently. The materialized plaintext session
+  file is deleted on run teardown (try/finally), even on crash.
 
 ### 2.3 Security testing policy
 
@@ -1973,10 +1983,19 @@ target:
     - staging.example.com
 
 auth:
+  # Choose one of: test_user | api_key | oauth | browser_session | none.
+  # `browser_session` (Phase 31, ADR-0043) replays a real, human-captured
+  # Playwright `storage_state` from the encrypted vault for apps behind
+  # SSO / MFA / consumer-LLM web logins.
   strategy: test_user
   login_url: /login
   username_env: TEST_USER_EMAIL
   password_env: TEST_USER_PASSWORD
+  # For `strategy: browser_session` only — the vault entry name created
+  # by `sentinel auth login <name> --url <login-url>`. The host is taken
+  # from `target.base_url`; SentinelQA refuses to surface a session
+  # whose recorded host is not in `target.allowed_hosts`.
+  # session_name: github-myorg
 
 modules:
   functional: true

@@ -43,6 +43,13 @@ class RunConfig(BaseModel):
     retries: int = Field(default=0, ge=0, le=10)
     grep: str | None = Field(default=None, max_length=512)
     env: dict[str, str] = Field(default_factory=dict)
+    #: Phase 31, ADR-0043. Absolute path to a Playwright ``storage_state``
+    #: JSON file. The TS runner forwards it via the env var
+    #: ``SENTINELQA_STORAGE_STATE``; generated tests read that env var
+    #: and configure each Playwright context accordingly. The
+    #: orchestrator materializes the file from the vault and deletes it
+    #: on teardown so the plaintext cookies never outlive the run.
+    storage_state_path: str | None = Field(default=None, max_length=1024)
 
 
 __all__ = ["PROTOCOL_VERSION", "RunConfig", "ShardConfig"]

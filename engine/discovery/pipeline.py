@@ -65,6 +65,11 @@ class DiscoveryInputs:
     openapi_url: str | None = None
     graphql_sdl_path: Path | None = None
     graphql_endpoint_url: str | None = None
+    #: Phase 31, ADR-0043. Cookies pre-loaded from the encrypted vault
+    #: (``auth.strategy: browser_session``). Injected into the anonymous
+    #: crawl's HTTP client so the crawler sees the same authenticated
+    #: pages the operator's browser sees.
+    extra_cookies: dict[str, str] | None = None
 
 
 @dataclass(frozen=True)
@@ -111,10 +116,14 @@ class DiscoveryPipeline:
 
     def run(self, inputs: DiscoveryInputs) -> DiscoveryResult:
         # 1) Anonymous crawl.
+        # Phase 31, ADR-0043: when the caller pre-loaded cookies from
+        # the auth vault, inject them so the "anonymous" crawl actually
+        # sees the operator's authenticated session.
         anon = self._crawler.crawl(
             inputs.base_url,
             run_id=inputs.run_id,
             policy=inputs.policy,
+            extra_cookies=inputs.extra_cookies,
         )
 
         # 2) Build the routes set from the anonymous crawl (auth crawl can

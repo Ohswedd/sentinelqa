@@ -113,6 +113,33 @@ class PluginContextImpl:
 
         return os.environ.get(name)
 
+    def auth_session(self, host: str, name: str) -> dict[str, Any]:
+        """Decrypt and return a Playwright ``storage_state`` from the vault.
+
+        Phase 31 / ADR-0043. The plugin MUST declare
+        ``auth.read:<host>`` in its manifest before it can read a vault
+        entry for that host; cross-host reads are refused even if the
+        plugin asks nicely. Re-uses :meth:`engine.auth.vault.Vault.get`
+        so the safety guards (host match, expiry, AEAD verification)
+        apply identically to plugins and the core engine.
+        """
+
+        scoped = f"auth.read:{host}"
+        if scoped not in self.granted_permissions:
+            raise PluginPermissionError(
+                plugin=self._plugin_name,
+                permission=scoped,
+                granted=self.granted_permissions,
+            )
+        # Local imports: avoids loading the vault subsystem unless a
+        # plugin actually exercises this path.
+        import json as _json
+
+        from engine.auth import Vault as _Vault
+
+        entry = _Vault().get(host, name, allowed_hosts={host.strip().lower()}, touch=True)
+        return _json.loads(entry.storage_state_json)
+
 
 def build_plugin_context(
     *,

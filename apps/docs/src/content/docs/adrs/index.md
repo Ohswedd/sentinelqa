@@ -55,3 +55,4 @@ ADR source files live under `docs/adr/` in the repository. See [`docs/adr/README
 | [0040](https://github.com/Ohswedd/sentinelqa/blob/main/docs/adr/0040-visual-built-in-first.md) | Built-in visual diff engine first, integrations later | `Accepted` |
 | [0041](https://github.com/Ohswedd/sentinelqa/blob/main/docs/adr/0041-framework-agnostic-with-nextjs.md) | Framework-agnostic crawler with first-class Next.js support | `Accepted` |
 | [0042](https://github.com/Ohswedd/sentinelqa/blob/main/docs/adr/0042-multi-provider-llm-adapter.md) | Canonical multi-provider LLM adapter layer | `Accepted` |
+| [0043](https://github.com/Ohswedd/sentinelqa/blob/main/docs/adr/0043-browser-authenticated-audits.md) | Browser-authenticated audits via an encrypted Playwright `storage_state` vault | `Accepted` |
