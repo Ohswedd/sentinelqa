@@ -45,7 +45,7 @@ evidence on disk, not opinions.
 SentinelQA is for **authorized testing only**. The product refuses to
 scan public targets that are not on its allowlist. No stealth. No
 CAPTCHA bypass. No fingerprint evasion. No destructive defaults.
-See [SECURITY.md](./SECURITY.md) and `CLAUDE.md` §6.
+See [SECURITY.md](https://github.com/Ohswedd/sentinelqa/blob/main/SECURITY.md) and `CLAUDE.md` §6.
 
 ### Get started
 
@@ -61,10 +61,10 @@ Docs: <https://docs.sentinelqa.dev>.
 ### Pre-1.0
 
 This is `v0.7.0`. Breaking changes between minor versions are
-documented in [CHANGELOG.md](./CHANGELOG.md) with a migration path.
+documented in [CHANGELOG.md](https://github.com/Ohswedd/sentinelqa/blob/main/CHANGELOG.md) with a migration path.
 The road to `v1.0.0` runs through Phase 36 (PyPI / npm / Docker Hub
 publish + the publish runbook). See
-[docs/dev/semver.md](./docs/dev/semver.md).
+[docs/dev/semver.md](https://github.com/Ohswedd/sentinelqa/blob/main/docs/dev/semver.md).
 
 ### Thanks
 
