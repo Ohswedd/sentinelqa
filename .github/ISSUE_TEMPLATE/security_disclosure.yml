@@ -1,0 +1,40 @@
+name: Security disclosure (DO NOT USE — see SECURITY.md)
+description: 'Public issues are NOT the channel for security disclosures.'
+title: 'do-not-use: security'
+labels: ['security', 'do-not-use']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        # Stop. Do not file this as a public issue.
+
+        SentinelQA uses **coordinated, private** vulnerability disclosure.
+        Public issues for security findings leak the issue before it's fixed.
+
+        ## Use one of these instead
+
+        - **Preferred (once the repo is public):** GitHub Private
+          Vulnerability Reporting →
+          [`/security/advisories/new`](https://github.com/Ohswedd/sentinelqa/security/advisories/new).
+        - **Email:** `security@sentinelqa.dev`
+          (owner-provisioned inbox; encrypted preferred —
+          PGP key fingerprint in [`SECURITY.md`](https://github.com/Ohswedd/sentinelqa/blob/main/SECURITY.md)).
+
+        ## What to include
+
+        - Reproduction steps and impact.
+        - SentinelQA version / commit.
+        - Whether the issue affects the safety boundary
+          (`CLAUDE.md` §6 / PRD §2).
+
+        Read [`SECURITY.md`](https://github.com/Ohswedd/sentinelqa/blob/main/SECURITY.md)
+        for the full disclosure policy, supported-versions matrix, and 90-day
+        coordinated-disclosure timeline.
+  - type: checkboxes
+    id: ack
+    attributes:
+      label: Acknowledgement
+      description: Tick this only if you understand this form is a redirect, not a disclosure channel.
+      options:
+        - label: I have read SECURITY.md and will use the private channel above. I will close this placeholder issue.
+          required: true

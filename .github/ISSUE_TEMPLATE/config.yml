@@ -1,0 +1,17 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security disclosure (private)
+    url: https://github.com/Ohswedd/sentinelqa/security/advisories/new
+    about: |
+      Report a vulnerability privately via GitHub Security Advisories
+      (preferred). See SECURITY.md for the full policy.
+  - name: Read the docs
+    url: https://docs.sentinelqa.dev
+    about: |
+      Quickstart, CLI reference, module reference, ADRs, and the safety
+      boundary live on the public docs site.
+  - name: Engineering rules
+    url: https://github.com/Ohswedd/sentinelqa/blob/main/CLAUDE.md
+    about: |
+      Read CLAUDE.md before opening a PR — it's the authority for
+      branching, commits, tests, safety, and Definition of Done.
