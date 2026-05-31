@@ -66,6 +66,7 @@ include = [
     "llm_audit/**/*.py",
     "performance/**/*.py",
     "security/**/*.py",
+    "supply_chain/**/*.py",
     "visual/**/*.py",
 ]
 
@@ -85,5 +86,6 @@ include = [
     "llm_audit/**/*.py",
     "performance/**/*.py",
     "security/**/*.py",
+    "supply_chain/**/*.py",
     "visual/**/*.py",
 ]

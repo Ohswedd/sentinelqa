@@ -1,0 +1,116 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://docs.sentinelqa.dev/schemas/cyclonedx-1.5.subset.json",
+  "title": "CycloneDX 1.5 BOM JSON (SentinelQA Phase 33 focused subset)",
+  "description": "Focused JSON Schema for the CycloneDX 1.5 fields SentinelQA's supply-chain module emits (Phase 33, ADR-0045). The official CycloneDX schema lives at http://cyclonedx.org/schema/bom-1.5.schema.json; this subset captures the shape of the documents we generate, so the schema-drift guard in tests/integration/modules/supply_chain/test_sbom_against_examples.py catches any accidental field divergence. Downstream consumers (Trivy, Grype, Dependency-Track) re-validate against the upstream schema; this file is not a redistribution of that schema.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["bomFormat", "specVersion", "version", "metadata", "components"],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "format": "uri"
+    },
+    "bomFormat": {
+      "type": "string",
+      "const": "CycloneDX"
+    },
+    "specVersion": {
+      "type": "string",
+      "const": "1.5"
+    },
+    "serialNumber": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["timestamp", "component"],
+      "properties": {
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "tools": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": true,
+            "properties": {
+              "vendor": { "type": "string" },
+              "name": { "type": "string" },
+              "version": { "type": "string" }
+            }
+          }
+        },
+        "component": {
+          "$ref": "#/$defs/component"
+        }
+      }
+    },
+    "components": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/component"
+      }
+    }
+  },
+  "$defs": {
+    "component": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["type", "name", "version"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "application",
+            "container",
+            "device",
+            "file",
+            "firmware",
+            "framework",
+            "library",
+            "operating-system",
+            "platform"
+          ]
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "purl": {
+          "type": "string",
+          "pattern": "^pkg:"
+        },
+        "licenses": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": true,
+            "properties": {
+              "license": {
+                "type": "object",
+                "additionalProperties": true,
+                "properties": {
+                  "id": { "type": "string" },
+                  "name": { "type": "string" }
+                }
+              },
+              "expression": { "type": "string" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

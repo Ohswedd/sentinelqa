@@ -1262,6 +1262,98 @@ consumers can deep-link to standards instead of internal jargon.
   module never writes application-layer bytes to its socket outside
   the SSL handshake.
 
+#### 10.7.3 Supply-Chain & Dependency Audit (Phase 33, ADR-0045)
+
+Phase 33 adds an audit of what the app was *built from* — its
+dependencies, lockfiles, install hooks, container layers, and
+licenses — so a clean run against a runtime that ships with a
+poisoned dependency still reads as a regression. Every check is
+defensive / read-only (CLAUDE.md §6 + §26). The module ships as a
+`modules.supply_chain.SupplyChainModule` registered with the default
+orchestrator registry; the CLI surface is `sentinel supply-chain`
+(plus `sbom` and `osv` sub-surfaces).
+
+- **CycloneDX 1.5 SBOM generation** (`modules/supply_chain/sbom.py` +
+  `lockfiles.py`). Seven lockfile shapes parsed: `uv.lock`,
+  `poetry.lock`, `Pipfile.lock`, `requirements.txt`,
+  `package-lock.json`, `pnpm-lock.yaml`, `yarn.lock`. Output:
+  one CycloneDX JSON per lockfile under `<run-dir>/sbom/` plus an
+  aggregate `index.json`. The deterministic `serialNumber` is a UUID
+  v5 over `(lockfile-path, sorted name@version list)` so two runs over
+  the same inputs emit byte-identical SBOMs. The vendored CycloneDX
+  1.5 schema at `packages/shared-schema/external/cyclonedx-1.5.json`
+  is a focused subset that captures the shape we emit; the
+  schema-drift guard re-validates every output.
+
+- **OSV vulnerability lookup** (`modules/supply_chain/osv.py`). Reads
+  the SBOM, batches up to 1 000 components per
+  `POST /v1/querybatch` call, respects
+  `policy.supply_chain.osv.rate_limit_rps` (default 5 rps). Severity
+  is mapped from CVSS bands (≥9.0 critical, ≥7.0 high, ≥4.0 medium,
+  >0 low). Findings carry `cwe_id` from the advisory's
+  `database_specific` field when present. Offline degradation is
+  `skipped` with a `"OSV unreachable"` reason — the run never marks
+  itself "passed" or "errored" against an unreachable upstream.
+
+- **Lockfile freshness + manifest drift**
+  (`modules/supply_chain/freshness.py`). Age is the most recent of
+  (filesystem mtime, last git commit touching the lockfile). Findings
+  beyond `policy.supply_chain.max_lockfile_age_days` (default 180)
+  carry `CWE-1357`. The drift check compares manifest direct deps
+  (`package.json`, `pyproject.toml`) to the lockfile's resolved
+  package set for `package-lock.json`, `pnpm-lock.yaml`, `uv.lock`,
+  and `poetry.lock`.
+
+- **Postinstall hook scanner**
+  (`modules/supply_chain/postinstall.py`). Walks every
+  `node_modules/**/package.json` (regex scan for `curl`, `wget`,
+  `nc`, `ncat`, `bash -c`, `sh -c`, `eval`, plus writes outside the
+  package directory) and every `setup.py` reachable under
+  `venv/` / `.venv/` / `.tox/` (AST scan for top-level imports of
+  `subprocess`, `urllib.request`, `requests`, `httpx`, `socket`,
+  plus direct calls to `subprocess.{run,Popen,call}` / `os.system`).
+  Findings carry `CWE-506`. The scanner never executes the matched
+  code — `tests/security/test_no_offensive_supply_chain.py` keeps
+  `subprocess.run(` / `os.system(` out of the scanner source.
+
+- **Container image scanner adapter**
+  (`modules/supply_chain/container.py`). Prefers Trivy when on PATH;
+  falls back to Grype. When neither is installed the report is
+  `skipped` with an info-severity recommendation — never silently
+  passed. The scanner runs ONLY against
+  `policy.supply_chain.container.image` (no pulling, no registry
+  iteration). Output is capped at
+  `policy.supply_chain.container.max_findings` (default 200).
+
+- **SPDX license audit** (`modules/supply_chain/licenses.py`). For
+  every SBOM component, resolve the declared license and classify
+  it against `policy.supply_chain.licenses.{allow,deny}`. Defaults:
+  allow `Apache-2.0`, `MIT`, `BSD-3-Clause`, `BSD-2-Clause`,
+  `ISC`, `Python-2.0`; deny `GPL-3.0-only`, `AGPL-3.0-only`,
+  `AGPL-3.0-or-later`. Unknown licenses surface at
+  `policy.supply_chain.licenses.unknown_severity` (default `low`).
+
+Findings re-use the Phase 32 v2 schema fields (`cwe_id`, `attack_id`,
+`owasp_api_id`) so dashboards already wired for Phase 32 findings
+get supply-chain taxonomies for free. New SARIF rule ids are
+registered with the rule registry (`SUP-OSV-VULNERABLE-DEP`,
+`SUP-FRESH-STALE-LOCKFILE`, `SUP-FRESH-MANIFEST-DRIFT`,
+`SUP-POSTINSTALL-NETWORK`, `SUP-POSTINSTALL-FS-WRITE`,
+`SUP-POSTINSTALL-PYTHON-EXEC`, `SUP-CONTAINER-CVE`,
+`SUP-CONTAINER-SCANNER-NOT-INSTALLED`, `SUP-LICENSE-DENY`,
+`SUP-LICENSE-UNKNOWN`).
+
+Safety boundary (CLAUDE.md §6):
+
+- No active exploitation, no network calls against attacker-
+  controlled hosts. The OSV lookup is read-only against the public
+  endpoint; the container scanner runs only against the configured
+  image.
+- The postinstall scanner never executes matched scripts — a grep
+  guard keeps `subprocess.run(` / `os.system(` out of the scanner.
+- Every check is opt-out via `policy.supply_chain.<check>.enabled`;
+  defaults are "every check on with conservative thresholds".
+
 ### 10.8 Chaos/adversarial testing
 
 Safe chaos tests:
@@ -1724,6 +1816,7 @@ sentinel a11y
 sentinel perf
 sentinel visual
 sentinel security
+sentinel supply-chain
 sentinel chaos
 sentinel llm-audit
 sentinel fix
@@ -2111,6 +2204,28 @@ policy:
   block_on_critical: true
   block_on_high_security: true
   max_flake_rate: 0.03
+  # Phase 33 Supply-Chain & Dependency Audit (PRD §10.7.3, ADR-0045).
+  # Every check is defensive / read-only; defaults are "every check
+  # on with conservative thresholds". OSV degrades to `skipped` when
+  # offline, never to `passed`.
+  supply_chain:
+    max_lockfile_age_days: 180
+    sbom: { enabled: true }
+    osv:
+      enabled: true
+      api_base: https://api.osv.dev
+      rate_limit_rps: 5.0
+    freshness: { enabled: true }
+    postinstall: { enabled: true }
+    container:
+      enabled: true
+      image: null          # e.g. "my-app@sha256:<digest>"
+      max_findings: 200
+    licenses:
+      enabled: true
+      allow: [Apache-2.0, MIT, BSD-3-Clause, BSD-2-Clause, ISC, Python-2.0]
+      deny: [GPL-3.0-only, AGPL-3.0-only, AGPL-3.0-or-later]
+      unknown_severity: low
 
 report:
   output_dir: .sentinel/reports

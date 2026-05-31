@@ -737,6 +737,100 @@ class PolicyIntegrationsConfig(SentinelModel):
     )
 
 
+class SupplyChainSbomConfig(SentinelModel):
+    """`policy.supply_chain.sbom:` block (Phase 33.01, ADR-0045)."""
+
+    enabled: bool = True
+
+
+class SupplyChainOsvConfig(SentinelModel):
+    """`policy.supply_chain.osv:` block (Phase 33.02, ADR-0045).
+
+    OSV lookups go against ``api.osv.dev`` over HTTPS. The rate limit
+    protects the public endpoint even though we batch up to 1 000
+    queries per call. Disabling the check (``enabled: false``) records
+    a structured ``skipped`` result rather than a failure (the run
+    continues without OSV data).
+    """
+
+    enabled: bool = True
+    api_base: str = Field(default="https://api.osv.dev", max_length=256)
+    rate_limit_rps: float = Field(default=5.0, gt=0.0, le=100.0)
+    request_timeout_seconds: float = Field(default=30.0, gt=0.0, le=300.0)
+
+
+class SupplyChainFreshnessConfig(SentinelModel):
+    """`policy.supply_chain.freshness:` block (Phase 33.03, ADR-0045)."""
+
+    enabled: bool = True
+
+
+class SupplyChainPostinstallConfig(SentinelModel):
+    """`policy.supply_chain.postinstall:` block (Phase 33.04, ADR-0045)."""
+
+    enabled: bool = True
+
+
+class SupplyChainContainerConfig(SentinelModel):
+    """`policy.supply_chain.container:` block (Phase 33.05, ADR-0045).
+
+    When ``image`` is ``None`` (the default), the container check is
+    automatically skipped. Set it to the digest-pinned image you ship
+    (e.g. ``my-app@sha256:...``); the scanner adapter (Trivy or Grype)
+    never resolves the image to anything other than what you wrote.
+    """
+
+    enabled: bool = True
+    image: str | None = Field(default=None, max_length=512)
+    max_findings: int = Field(default=200, ge=1, le=10_000)
+
+
+class SupplyChainLicensesConfig(SentinelModel):
+    """`policy.supply_chain.licenses:` block (Phase 33.06, ADR-0045).
+
+    SPDX allow / deny lists for the license audit. Empty allowlist
+    means "no whitelisting policy" (only denylist gates). Unknown
+    licenses surface at ``unknown_severity``.
+    """
+
+    enabled: bool = True
+    allow: tuple[str, ...] = Field(
+        default=("Apache-2.0", "MIT", "BSD-3-Clause", "BSD-2-Clause", "ISC", "Python-2.0"),
+        max_length=128,
+    )
+    deny: tuple[str, ...] = Field(
+        default=("GPL-3.0-only", "AGPL-3.0-only", "AGPL-3.0-or-later"),
+        max_length=128,
+    )
+    unknown_severity: Literal["info", "low", "medium", "high"] = "low"
+
+
+class SupplyChainConfig(SentinelModel):
+    """`policy.supply_chain:` block (Phase 33, PRD §10.7.3, ADR-0045).
+
+    Drives the SupplyChainModule. Defaults match the Phase 33 README:
+    every check on, conservative thresholds, OSV at 5 rps, default
+    SPDX allow/deny lists drawn from the Phase 33 README example.
+
+    Each per-check sub-block is its own model so future Phase 33+ work
+    can add per-check options without re-shaping this block.
+    """
+
+    max_lockfile_age_days: int = Field(default=180, ge=1, le=3650)
+    sbom: SupplyChainSbomConfig = Field(default_factory=lambda: SupplyChainSbomConfig())
+    osv: SupplyChainOsvConfig = Field(default_factory=lambda: SupplyChainOsvConfig())
+    freshness: SupplyChainFreshnessConfig = Field(
+        default_factory=lambda: SupplyChainFreshnessConfig()
+    )
+    postinstall: SupplyChainPostinstallConfig = Field(
+        default_factory=lambda: SupplyChainPostinstallConfig()
+    )
+    container: SupplyChainContainerConfig = Field(
+        default_factory=lambda: SupplyChainContainerConfig()
+    )
+    licenses: SupplyChainLicensesConfig = Field(default_factory=lambda: SupplyChainLicensesConfig())
+
+
 class PolicyConfig(SentinelModel):
     """`policy:` block (PRD §17.1, §19.4).
 
@@ -762,6 +856,7 @@ class PolicyConfig(SentinelModel):
     integrations: PolicyIntegrationsConfig = Field(
         default_factory=lambda: PolicyIntegrationsConfig()
     )
+    supply_chain: SupplyChainConfig = Field(default_factory=lambda: SupplyChainConfig())
 
 
 class RunnerRetriesConfig(SentinelModel):
@@ -934,6 +1029,13 @@ __all__ = [
     "PolicyGitHubIntegrationConfig",
     "PolicyIntegrationsConfig",
     "PolicyJiraIntegrationConfig",
+    "SupplyChainConfig",
+    "SupplyChainContainerConfig",
+    "SupplyChainFreshnessConfig",
+    "SupplyChainLicensesConfig",
+    "SupplyChainOsvConfig",
+    "SupplyChainPostinstallConfig",
+    "SupplyChainSbomConfig",
     "PolicyLinearIntegrationConfig",
     "PolicySlackIntegrationConfig",
     "RunnerConfig",

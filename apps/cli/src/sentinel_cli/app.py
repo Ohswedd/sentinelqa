@@ -39,6 +39,7 @@ from sentinel_cli.commands import (
     report_cmd,
     security_cmd,
     stubs,
+    supply_chain_cmd,
     test_cmd,
     visual_cmd,
 )
@@ -319,6 +320,17 @@ def build_app() -> typer.Typer:
             "once; SentinelQA encrypts the session locally and replays "
             "it on later audits. `list` / `revoke` / `export` manage "
             "the vault."
+        ),
+    )
+    cli.add_typer(
+        supply_chain_cmd.supply_chain_app,
+        name="supply-chain",
+        help=(
+            "Supply-Chain & Dependency Audit (Phase 33, PRD §10.7.3, "
+            "ADR-0045). Generates a CycloneDX 1.5 SBOM, queries OSV "
+            "for known CVEs, checks lockfile freshness, scans "
+            "postinstall hooks, scans a configured container image, "
+            "and audits SPDX licenses."
         ),
     )
 
