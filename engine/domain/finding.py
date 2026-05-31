@@ -54,6 +54,19 @@ class Finding(SentinelModel):
     """Schema v2 (Phase 32): MITRE ATT&CK technique id, e.g. ``T1606.001``."""
     owasp_api_id: str | None = Field(default=None, max_length=32, pattern=r"^API-\d{4}-\d{2}$")
     """Schema v2 (Phase 32): OWASP API Top-10 identifier, e.g. ``API-2023-01``."""
+    compliance_id: str | None = Field(
+        default=None,
+        max_length=128,
+        pattern=r"^[a-z][a-z0-9.-]*:[A-Za-z0-9][A-Za-z0-9._/-]*$",
+    )
+    """Schema v2 (Phase 34, additive): compliance-regime tag.
+
+    Examples: ``wcag-2.2:target-size-min``, ``gdpr:Art.6``,
+    ``gdpr:EDPB-03/2022``, ``ccpa:do-not-sell-link``,
+    ``soc2:trail-incomplete``. The shape is ``regime:rule-id`` where
+    ``regime`` is lower-kebab-case (``wcag-2.2``, ``gdpr``, ``ccpa``,
+    ``soc2``) and ``rule-id`` is a per-regime identifier.
+    """
     created_at: datetime
     schema_version: str = Field(default=FINDINGS_SCHEMA_VERSION)
 

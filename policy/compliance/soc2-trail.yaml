@@ -1,0 +1,29 @@
+# SOC 2 trail (automated) — Phase 34.05 / ADR-0046.
+#
+# This pack runs the Phase 34 compliance module's SOC 2 audit-trail
+# gate. The check audits SentinelQA's OWN audit.log against seven
+# completeness + integrity gates so a SOC 2 auditor can use the run
+# artefact as evidence ("our release-confidence engine produces this
+# trail per run; here is the artefact").
+#
+# WORDING NOTE (CLAUDE §28): the pack documents the gates, never that
+# the target product is SOC 2 compliant.
+
+pack:
+  id: soc2-trail
+  label: SOC 2 trail (automated)
+  description: >-
+    Seven-gate audit of the run's own append-only audit.log: existence,
+    JSONL parseability, monotonic timestamps, presence of safety
+    decisions, module start/end events, artifact events, and absence
+    of unredacted secrets.
+  version: 1
+  includes:
+    - module: compliance
+      checks:
+        - soc2_trail
+  fail_on:
+    - severity: critical
+    - severity: high
+  warn_on:
+    - severity: medium

@@ -40,5 +40,5 @@
   ],
   "title": "Evidence",
   "type": "object",
-  "x-sentinelqa-schema-version": "1"
+  "x-sentinelqa-schema-version": "2"
 }

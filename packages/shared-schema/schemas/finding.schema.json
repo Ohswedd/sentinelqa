@@ -120,11 +120,39 @@
       "default": null,
       "title": "Affected Target"
     },
+    "attack_id": {
+      "anyOf": [
+        {
+          "maxLength": 32,
+          "pattern": "^T\\d{4}(\\.\\d{3})?$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Attack Id"
+    },
     "category": {
       "maxLength": 128,
       "minLength": 1,
       "title": "Category",
       "type": "string"
+    },
+    "compliance_id": {
+      "anyOf": [
+        {
+          "maxLength": 128,
+          "pattern": "^[a-z][a-z0-9.-]*:[A-Za-z0-9][A-Za-z0-9._/-]*$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Compliance Id"
     },
     "confidence": {
       "maximum": 1.0,
@@ -136,6 +164,20 @@
       "format": "date-time",
       "title": "Created At",
       "type": "string"
+    },
+    "cwe_id": {
+      "anyOf": [
+        {
+          "maxLength": 32,
+          "pattern": "^CWE-\\d+$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Cwe Id"
     },
     "description": {
       "maxLength": 8000,
@@ -163,6 +205,20 @@
       "title": "Module",
       "type": "string"
     },
+    "owasp_api_id": {
+      "anyOf": [
+        {
+          "maxLength": 32,
+          "pattern": "^API-\\d{4}-\\d{2}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Owasp Api Id"
+    },
     "recommendation": {
       "anyOf": [
         {
@@ -188,7 +244,7 @@
       "type": "string"
     },
     "schema_version": {
-      "default": "1",
+      "default": "2",
       "title": "Schema Version",
       "type": "string"
     },
@@ -236,5 +292,5 @@
   ],
   "title": "Finding",
   "type": "object",
-  "x-sentinelqa-schema-version": "1"
+  "x-sentinelqa-schema-version": "2"
 }
