@@ -52,7 +52,7 @@
   "files": [
     "dist/**",
     "!dist/**/*.test.*",
-    "!dist/**/.tsbuildinfo",
+    "!dist/**/*.tsbuildinfo",
     "README.md",
     "LICENSE"
   ],

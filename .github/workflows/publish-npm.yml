@@ -1,0 +1,149 @@
+name: Publish (npm)
+
+# Triggered on a `v*` tag push. Builds @sentinelqa/ts-runtime,
+# validates the tarball via the dry-run script, then publishes
+# with `pnpm publish --access public --provenance`. The OIDC
+# token (id-token: write) is required for npm provenance.
+#
+# The `publish` job is gated on the `npm-release` GitHub Environment,
+# which requires manual approval from the human owner before any
+# upload takes place. See docs/release/publish-runbook.md.
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: publish-npm-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: build (@sentinelqa/ts-runtime tarball)
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      tarball: ${{ steps.pack.outputs.tarball }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: '9.15.0'
+          run_install: false
+
+      - name: Install dependencies (frozen)
+        run: pnpm install --frozen-lockfile
+
+      - name: Verify tag matches package.json version
+        id: version
+        run: |
+          set -euo pipefail
+          TAG="${GITHUB_REF##*/}"
+          VERSION="${TAG#v}"
+          NPM_VERSION="$(node -p "require('./packages/ts-runtime/package.json').version")"
+          if [ "$VERSION" != "$NPM_VERSION" ]; then
+            echo "::error::tag $TAG (= $VERSION) does not match packages/ts-runtime/package.json version $NPM_VERSION"
+            exit 1
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Dry-run (build + pack + npm publish --dry-run)
+        run: python -m scripts.release.dry_run_npm --out-dir dist/npm
+        env:
+          PYTHONUNBUFFERED: '1'
+
+      - name: Locate tarball
+        id: pack
+        run: |
+          TARBALL="$(ls dist/npm/sentinelqa-ts-runtime-*.tgz | head -n1)"
+          echo "tarball=$TARBALL" >> "$GITHUB_OUTPUT"
+
+      - name: Upload tarball artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: npm-tarball
+          path: ${{ steps.pack.outputs.tarball }}
+
+  publish:
+    name: publish (npm with provenance)
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: npm-release
+      url: https://www.npmjs.com/package/@sentinelqa/ts-runtime
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: '9.15.0'
+          run_install: false
+
+      - name: Install dependencies (frozen)
+        run: pnpm install --frozen-lockfile
+
+      - name: Build @sentinelqa/ts-runtime
+        run: pnpm --filter @sentinelqa/ts-runtime build
+
+      - name: Publish to npm (with provenance)
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_CONFIG_PROVENANCE: 'true'
+        run: |
+          set -euo pipefail
+          cd packages/ts-runtime
+          pnpm publish --access public --provenance --no-git-checks
+
+  verify:
+    name: verify (npm view + version match)
+    needs: [build, publish]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: npm view version
+        env:
+          VERSION: ${{ needs.build.outputs.version }}
+        run: |
+          set -euo pipefail
+          # `npm view` falls back to the registry; retry briefly in case of
+          # CDN propagation delay.
+          for i in 1 2 3 4 5; do
+            PUBLISHED="$(npm view @sentinelqa/ts-runtime@${VERSION} version || true)"
+            if [ "$PUBLISHED" = "$VERSION" ]; then
+              echo "ok: @sentinelqa/ts-runtime@${VERSION} is live"
+              exit 0
+            fi
+            echo "attempt $i: not yet visible (got: $PUBLISHED); sleeping ..."
+            sleep 10
+          done
+          echo "::error::@sentinelqa/ts-runtime@${VERSION} did not appear on npm within 50s"
+          exit 1
