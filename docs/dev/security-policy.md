@@ -13,10 +13,10 @@ versions matrix.
 
 ## Supported versions
 
-| Stream | Supported until | Notes |
-|---|---|---|
-| `0.7.x` | next minor ships (`0.8.0`) | Current pre-1.0 stream. |
-| `< 0.7.0` | unsupported | Pre-1.0 releases supersede each other; upgrade to the latest minor (`docs/dev/semver.md`). |
+| Stream    | Supported until            | Notes                                                                                      |
+| --------- | -------------------------- | ------------------------------------------------------------------------------------------ |
+| `0.7.x`   | next minor ships (`0.8.0`) | Current pre-1.0 stream.                                                                    |
+| `< 0.7.0` | unsupported                | Pre-1.0 releases supersede each other; upgrade to the latest minor (`docs/dev/semver.md`). |
 
 Once `v1.0.0` ships (Phase 36), SentinelQA switches to **latest two
 minors only** — i.e. when `1.2.0` ships, `1.0.x` becomes unsupported
@@ -26,23 +26,23 @@ and `1.1.x` continues to receive security patches until `1.3.0`.
 
 We use **CVSS v4.0** (NIST NVD scoring). The first.qualitative band drives release urgency:
 
-| Severity | CVSS v4.0 | Patch target | Examples |
-|---|---|---|---|
-| Critical | 9.0–10.0 | within 7 days | Safety-boundary breach (stealth / evasion path), RCE, auth bypass on the audit CLI. |
-| High     | 7.0–8.9  | within 30 days | Sensitive data exposure, unauthenticated access to audit artifacts, scoped privilege escalation. |
-| Medium   | 4.0–6.9  | within 60 days | Logic bugs in the safety policy, partial-redaction misses, supply-chain advisories without active exploit. |
-| Low      | 0.1–3.9  | within 90 days | Hardening opportunities (header tightening, error-message verbosity), ergonomics. |
+| Severity | CVSS v4.0 | Patch target   | Examples                                                                                                   |
+| -------- | --------- | -------------- | ---------------------------------------------------------------------------------------------------------- |
+| Critical | 9.0–10.0  | within 7 days  | Safety-boundary breach (stealth / evasion path), RCE, auth bypass on the audit CLI.                        |
+| High     | 7.0–8.9   | within 30 days | Sensitive data exposure, unauthenticated access to audit artifacts, scoped privilege escalation.           |
+| Medium   | 4.0–6.9   | within 60 days | Logic bugs in the safety policy, partial-redaction misses, supply-chain advisories without active exploit. |
+| Low      | 0.1–3.9   | within 90 days | Hardening opportunities (header tightening, error-message verbosity), ergonomics.                          |
 
 ## Coordinated disclosure timeline
 
 Reproduced from `SECURITY.md` for the operator's convenience:
 
-| Day | Milestone |
-|---:|---|
-| 0   | Report received. Acknowledgement within 3 business days. |
-| 0–14 | Triage, CVSS, reproduction. |
-| 14–60 | Fix developed; regression tests added; ADR opened if the safety boundary changed. |
-| 60–80 | Patch release prepared; reporter reviews the fix. |
+|   Day | Milestone                                                                                   |
+| ----: | ------------------------------------------------------------------------------------------- |
+|     0 | Report received. Acknowledgement within 3 business days.                                    |
+|  0–14 | Triage, CVSS, reproduction.                                                                 |
+| 14–60 | Fix developed; regression tests added; ADR opened if the safety boundary changed.           |
+| 60–80 | Patch release prepared; reporter reviews the fix.                                           |
 | 80–90 | Coordinated publication: tag, GitHub Security Advisory, reporter credit (unless anonymous). |
 
 If we cannot meet the 90-day deadline, we coordinate an embargo
@@ -64,12 +64,12 @@ extension in writing with the reporter.
 `.github/dependabot.yml` (Phase 35.07) covers four ecosystems on a
 weekly cadence:
 
-| Ecosystem | Manifests watched | Notes |
-|---|---|---|
-| `pip` (Python) | `/`, `/apps/cli`, `/packages/python-sdk`, `/packages/mcp-server` | Per-package so workspace-scoped upgrades surface separately. |
-| `npm` (JavaScript) | `/`, `/packages/ts-runtime` | Root reads pnpm-lock; the ts-runtime entry surfaces workspace-scoped upgrades. |
-| `github-actions` | `/` | Weekly; catches upstream action advisories. |
-| `docker` | `/apps/cli/sentinel/runner/docker` | The Playwright runner base image. |
+| Ecosystem          | Manifests watched                                                | Notes                                                                          |
+| ------------------ | ---------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| `pip` (Python)     | `/`, `/apps/cli`, `/packages/python-sdk`, `/packages/mcp-server` | Per-package so workspace-scoped upgrades surface separately.                   |
+| `npm` (JavaScript) | `/`, `/packages/ts-runtime`                                      | Root reads pnpm-lock; the ts-runtime entry surfaces workspace-scoped upgrades. |
+| `github-actions`   | `/`                                                              | Weekly; catches upstream action advisories.                                    |
+| `docker`           | `/apps/cli/sentinel/runner/docker`                               | The Playwright runner base image.                                              |
 
 Minor + patch upgrades are grouped per ecosystem to keep the PR
 queue manageable. Major upgrades arrive as their own PRs so the

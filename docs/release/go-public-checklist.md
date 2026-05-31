@@ -127,7 +127,7 @@ After the flip, in this order:
 3. Apply the branch-protection rules from
    [`docs/dev/branch-protection.md`](../dev/branch-protection.md)
    via the GitHub UI (or `gh api -X PUT
-   repos/Ohswedd/sentinelqa/branches/main/protection -f …` once the
+repos/Ohswedd/sentinelqa/branches/main/protection -f …` once the
    payload is reviewed). Then run:
 
    ```bash
@@ -135,6 +135,7 @@ After the flip, in this order:
    ```
 
    …and confirm exit 0.
+
 4. Confirm the docs site is reachable at
    <https://docs.sentinelqa.dev>:
 
@@ -149,13 +150,13 @@ After the flip, in this order:
 
 ## Sign-off
 
-| Field | Value |
-|---|---|
-| Owner | _to be filled in by the human owner_ |
-| Date | _YYYY-MM-DD_ |
-| `make ci` summary | _paste the final line_ |
-| Tag at flip | _e.g. `v0.7.0`_ |
-| Pre-1.0 review row signed | _yes / no_ |
+| Field                     | Value                                |
+| ------------------------- | ------------------------------------ |
+| Owner                     | _to be filled in by the human owner_ |
+| Date                      | _YYYY-MM-DD_                         |
+| `make ci` summary         | _paste the final line_               |
+| Tag at flip               | _e.g. `v0.7.0`_                      |
+| Pre-1.0 review row signed | _yes / no_                           |
 
 > The act of signing this file is **permission to flip visibility**;
 > it is NOT permission to publish packages. PyPI / npm / Docker Hub

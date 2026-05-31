@@ -26,7 +26,9 @@ OPERATOR_DOC = REPO_ROOT / "docs" / "dev" / "docs-deploy.md"
 
 
 def _load() -> dict:
-    return yaml.safe_load(WORKFLOW.read_text(encoding="utf-8"))
+    data = yaml.safe_load(WORKFLOW.read_text(encoding="utf-8"))
+    assert isinstance(data, dict), "docs-deploy.yml must parse as a YAML mapping"
+    return data
 
 
 def test_workflow_file_present() -> None:
@@ -47,6 +49,7 @@ def test_workflow_top_level_keys() -> None:
 def test_workflow_triggers_on_main_pushes_and_prs() -> None:
     data = _load()
     triggers = data.get("on") or data.get(True)
+    assert isinstance(triggers, dict)
     push = triggers["push"]
     assert push["branches"] == ["main"]
     # Path filter must cover docs + lockfiles so unrelated commits

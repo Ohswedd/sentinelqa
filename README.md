@@ -46,26 +46,26 @@ target / 5 missing dependency / 6 test execution / 7 internal). See
 
 ## What it does today
 
-| Layer | Module | What it does |
-|---|---|---|
-| Engine | **Discovery** | HTTP + Playwright crawl: routes, forms, APIs, auth boundaries, OpenAPI/GraphQL ingest. |
-| Engine | **Planner** | Deterministic-first test plan generator with optional LLM proposals (provider-agnostic, budgeted). |
-| Engine | **Generator** | Playwright spec / page-object / fixture generator with semantic locators. |
-| Engine | **Runner** | Local and Docker Playwright runners, retry + quarantine, deterministic sharding. |
-| Engine | **Analyzer** | Failure categorization (app vs test vs env vs flake), root-cause hypothesis, repro spec, retry decision. |
-| Module | **Functional** | Login / signup / CRUD / role / admin / file-upload / payment-sandbox coverage. |
-| Module | **Accessibility** | axe-core (`wcag22a` / `wcag22aa`) + keyboard / focus / landmark / accessible-name checks. |
-| Module | **Performance** | Synthetic page / API / CPU / bundle / nav-stability budgets — labeled synthetic, not RUM. |
-| Module | **Security (safe)** | Headers, cookies, CORS, CSRF, safe XSS probe, IDOR smoke, secret scan, SARIF export, target allowlist. |
-| Module | **API** | OpenAPI / GraphQL contract validation, negative cases, auth, latency budgets. |
-| Module | **Visual** | Baselines, diff threshold, dynamic-content masking. No CI auto-accept. |
-| Module | **Chaos** | Slow network, offline, 500/timeout mocking, session expiry, navigation edge cases. |
-| Module | **LLM-code audit** | Dead buttons, fake routes, mock data shipped, frontend-only auth, missing CRUD edges. |
-| Module | **Supply chain** | CycloneDX SBOM, OSV lookup, freshness, postinstall scan, license audit. |
-| Module | **Compliance packs** | WCAG 2.2 / GDPR-baseline / CCPA-baseline / SOC 2 audit-trail. Automated checks only. |
-| Surface | **Python SDK** | `Sentinel`, `AuditResult`, `Finding`, `TestPlan`. Typed, stable, snapshot-tested. |
-| Surface | **MCP server** | Twelve `sentinel.*` tools for agent integration. |
-| Surface | **CI** | GitHub Actions + GitLab CI templates; PR comment poster; fast / standard / full / nightly / release modes. |
+| Layer   | Module               | What it does                                                                                               |
+| ------- | -------------------- | ---------------------------------------------------------------------------------------------------------- |
+| Engine  | **Discovery**        | HTTP + Playwright crawl: routes, forms, APIs, auth boundaries, OpenAPI/GraphQL ingest.                     |
+| Engine  | **Planner**          | Deterministic-first test plan generator with optional LLM proposals (provider-agnostic, budgeted).         |
+| Engine  | **Generator**        | Playwright spec / page-object / fixture generator with semantic locators.                                  |
+| Engine  | **Runner**           | Local and Docker Playwright runners, retry + quarantine, deterministic sharding.                           |
+| Engine  | **Analyzer**         | Failure categorization (app vs test vs env vs flake), root-cause hypothesis, repro spec, retry decision.   |
+| Module  | **Functional**       | Login / signup / CRUD / role / admin / file-upload / payment-sandbox coverage.                             |
+| Module  | **Accessibility**    | axe-core (`wcag22a` / `wcag22aa`) + keyboard / focus / landmark / accessible-name checks.                  |
+| Module  | **Performance**      | Synthetic page / API / CPU / bundle / nav-stability budgets — labeled synthetic, not RUM.                  |
+| Module  | **Security (safe)**  | Headers, cookies, CORS, CSRF, safe XSS probe, IDOR smoke, secret scan, SARIF export, target allowlist.     |
+| Module  | **API**              | OpenAPI / GraphQL contract validation, negative cases, auth, latency budgets.                              |
+| Module  | **Visual**           | Baselines, diff threshold, dynamic-content masking. No CI auto-accept.                                     |
+| Module  | **Chaos**            | Slow network, offline, 500/timeout mocking, session expiry, navigation edge cases.                         |
+| Module  | **LLM-code audit**   | Dead buttons, fake routes, mock data shipped, frontend-only auth, missing CRUD edges.                      |
+| Module  | **Supply chain**     | CycloneDX SBOM, OSV lookup, freshness, postinstall scan, license audit.                                    |
+| Module  | **Compliance packs** | WCAG 2.2 / GDPR-baseline / CCPA-baseline / SOC 2 audit-trail. Automated checks only.                       |
+| Surface | **Python SDK**       | `Sentinel`, `AuditResult`, `Finding`, `TestPlan`. Typed, stable, snapshot-tested.                          |
+| Surface | **MCP server**       | Twelve `sentinel.*` tools for agent integration.                                                           |
+| Surface | **CI**               | GitHub Actions + GitLab CI templates; PR comment poster; fast / standard / full / nightly / release modes. |
 
 All findings carry evidence (artifact paths, redacted snippets, run
 ids) and a safe-remediation note. The quality score is reproducible
@@ -98,7 +98,9 @@ Follow the disclosure path in [`SECURITY.md`](./SECURITY.md).
 
 ## Status
 
-Pre-1.0. The MVP (Phases 00–29) is on `main` and tagged `v0.7.0`. The
+Pre-1.0. The MVP (Phases 00–29) is on `main` and the working version
+is `0.7.0`; the `v0.7.0` git tag is minted via the
+[`pre-1.0 review`](./docs/release/pre-1.0-review.md) checklist. The
 road to `v1.0.0` runs through Phases 30–36 (multi-provider LLM
 adapters, browser-authenticated audits, extended security skills,
 supply-chain audit, compliance packs, public release engineering,

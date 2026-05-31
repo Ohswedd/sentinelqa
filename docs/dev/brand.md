@@ -17,17 +17,17 @@ The docs site (`apps/docs/`) carries the subset that needs to be
 served (favicons + the social-preview OG image) in
 [`apps/docs/public/`](../../apps/docs/public/).
 
-| Asset | Path | Notes |
-|---|---|---|
-| Primary mark (vector) | `docs/assets/brand/logo.svg` | Source of truth. 1:1 viewBox; crops cleanly to icon sizes. |
-| Primary mark @ 256 | `docs/assets/brand/logo-256.png` | RGBA. README / Slack / chat embeds. |
-| Primary mark @ 512 | `docs/assets/brand/logo-512.png` | App stores, Open Graph. |
-| Primary mark @ 1024 | `docs/assets/brand/logo-1024.png` | Print, conference assets. |
-| Favicon (vector) | `docs/assets/brand/favicon.svg` | Served at `/favicon.svg`. |
-| Favicon 16 | `docs/assets/brand/favicon-16.png` | Browser tab. |
-| Favicon 32 | `docs/assets/brand/favicon-32.png` | Browser tab @2x. |
-| Apple touch icon | `docs/assets/brand/apple-touch-icon-180.png` | iOS / iPadOS home-screen. |
-| Social preview | `docs/assets/brand/social-preview-1280x640.png` | GitHub social card + OG image. |
+| Asset                 | Path                                            | Notes                                                      |
+| --------------------- | ----------------------------------------------- | ---------------------------------------------------------- |
+| Primary mark (vector) | `docs/assets/brand/logo.svg`                    | Source of truth. 1:1 viewBox; crops cleanly to icon sizes. |
+| Primary mark @ 256    | `docs/assets/brand/logo-256.png`                | RGBA. README / Slack / chat embeds.                        |
+| Primary mark @ 512    | `docs/assets/brand/logo-512.png`                | App stores, Open Graph.                                    |
+| Primary mark @ 1024   | `docs/assets/brand/logo-1024.png`               | Print, conference assets.                                  |
+| Favicon (vector)      | `docs/assets/brand/favicon.svg`                 | Served at `/favicon.svg`.                                  |
+| Favicon 16            | `docs/assets/brand/favicon-16.png`              | Browser tab.                                               |
+| Favicon 32            | `docs/assets/brand/favicon-32.png`              | Browser tab @2x.                                           |
+| Apple touch icon      | `docs/assets/brand/apple-touch-icon-180.png`    | iOS / iPadOS home-screen.                                  |
+| Social preview        | `docs/assets/brand/social-preview-1280x640.png` | GitHub social card + OG image.                             |
 
 All PNGs are generated procedurally from
 [`scripts/release/gen_brand_pngs.py`](../../scripts/release/gen_brand_pngs.py).

@@ -20,7 +20,9 @@ SECURITY_POLICY = REPO_ROOT / "docs" / "dev" / "security-policy.md"
 
 
 def _load() -> dict:
-    return yaml.safe_load(DEPENDABOT.read_text(encoding="utf-8"))
+    data = yaml.safe_load(DEPENDABOT.read_text(encoding="utf-8"))
+    assert isinstance(data, dict), "dependabot.yml must parse as a YAML mapping"
+    return data
 
 
 def test_dependabot_file_present() -> None:

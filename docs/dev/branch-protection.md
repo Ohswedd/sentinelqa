@@ -28,17 +28,17 @@ The PR cannot merge until **every** check below has reported success
 on the merge-base commit. Names must match the `name:` field in the
 respective workflow exactly — GitHub matches by string.
 
-| Check name                | Workflow file                              | What it gates |
-|---|---|---|
-| `python (3.11)`           | `.github/workflows/ci.yml`                 | Ruff format-check + lint, mypy strict, ADR check, pytest on Python 3.11. |
-| `python (3.12)`           | `.github/workflows/ci.yml`                 | Same as above, on Python 3.12. |
-| `typescript (node 20)`    | `.github/workflows/ci.yml`                 | Prettier, ESLint, tsc --noEmit, Vitest on Node 20. |
-| `typescript (node 22)`    | `.github/workflows/ci.yml`                 | Same, on Node 22. |
-| `docs (Astro Starlight)`  | `.github/workflows/ci.yml`                 | `make docs-build` + freshness gate (`make docs-check-fresh`). |
-| `commitlint`              | `.github/workflows/commitlint.yml`         | Every commit in the PR range validated against `commitlint.config.cjs`. |
-| `gitleaks`                | `.github/workflows/secret-scan.yml`        | Secret scan over the PR diff (same pin as `.pre-commit-config.yaml`). |
-| `lychee`                  | `.github/workflows/link-check.yml`         | Internal Markdown link integrity. |
-| `no-ai-coauthor`          | `.github/workflows/no-ai-coauthor.yml`     | Rejects any commit containing an AI tool in `Co-authored-by:` (`CLAUDE.md` §3). |
+| Check name               | Workflow file                          | What it gates                                                                   |
+| ------------------------ | -------------------------------------- | ------------------------------------------------------------------------------- |
+| `python (3.11)`          | `.github/workflows/ci.yml`             | Ruff format-check + lint, mypy strict, ADR check, pytest on Python 3.11.        |
+| `python (3.12)`          | `.github/workflows/ci.yml`             | Same as above, on Python 3.12.                                                  |
+| `typescript (node 20)`   | `.github/workflows/ci.yml`             | Prettier, ESLint, tsc --noEmit, Vitest on Node 20.                              |
+| `typescript (node 22)`   | `.github/workflows/ci.yml`             | Same, on Node 22.                                                               |
+| `docs (Astro Starlight)` | `.github/workflows/ci.yml`             | `make docs-build` + freshness gate (`make docs-check-fresh`).                   |
+| `commitlint`             | `.github/workflows/commitlint.yml`     | Every commit in the PR range validated against `commitlint.config.cjs`.         |
+| `gitleaks`               | `.github/workflows/secret-scan.yml`    | Secret scan over the PR diff (same pin as `.pre-commit-config.yaml`).           |
+| `lychee`                 | `.github/workflows/link-check.yml`     | Internal Markdown link integrity.                                               |
+| `no-ai-coauthor`         | `.github/workflows/no-ai-coauthor.yml` | Rejects any commit containing an AI tool in `Co-authored-by:` (`CLAUDE.md` §3). |
 
 The `Docs deploy` workflow (Phase 35.04) is NOT a required check —
 forks cannot run it, and an unreachable check would block fork PRs

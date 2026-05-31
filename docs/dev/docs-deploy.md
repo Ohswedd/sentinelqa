@@ -37,11 +37,11 @@ Scope it to the SentinelQA account only. **Do not** grant Zone:Edit or any DNS-e
 
 In `https://github.com/Ohswedd/sentinelqa/settings/secrets/actions`:
 
-| Secret | Value | Notes |
-|---|---|---|
-| `CLOUDFLARE_API_TOKEN` | The token from step 2 | Owner-only, rotated quarterly. |
-| `CLOUDFLARE_ACCOUNT_ID` | The Cloudflare account id | Found in the Cloudflare dashboard URL. |
-| `CLOUDFLARE_PAGES_PROJECT` | `sentinelqa-docs` | Must match the project name from step 1. |
+| Secret                     | Value                     | Notes                                    |
+| -------------------------- | ------------------------- | ---------------------------------------- |
+| `CLOUDFLARE_API_TOKEN`     | The token from step 2     | Owner-only, rotated quarterly.           |
+| `CLOUDFLARE_ACCOUNT_ID`    | The Cloudflare account id | Found in the Cloudflare dashboard URL.   |
+| `CLOUDFLARE_PAGES_PROJECT` | `sentinelqa-docs`         | Must match the project name from step 1. |
 
 ### 4. Point the custom domain at the project
 

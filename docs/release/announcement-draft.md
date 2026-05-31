@@ -15,7 +15,7 @@ announcement leads with that, not with adjectives.
 
 ## A. GitHub release notes for `v0.7.0`
 
-```markdown
+````markdown
 ## SentinelQA v0.7.0 — public release
 
 SentinelQA is a Playwright-native release-confidence engine for
@@ -54,6 +54,7 @@ uv pip install sentinelqa-cli
 sentinel init
 sentinel audit --url http://localhost:3000
 ```
+````
 
 Docs: <https://docs.sentinelqa.dev>.
 
@@ -69,7 +70,8 @@ publish + the publish runbook). See
 
 Built by Ohswedd. Findings, evidence, and the safety boundary are
 the work product; the project is Apache-2.0.
-```
+
+````
 
 ## B. Short post (X / Mastodon / Bluesky — ≤ 280 chars)
 
@@ -82,7 +84,7 @@ hard safety boundary (no stealth, no evasion, no unauthorized
 targets).
 
 Apache-2.0 · https://github.com/Ohswedd/sentinelqa
-```
+````
 
 ## C. Hacker News / Lobsters submission
 

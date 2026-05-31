@@ -55,12 +55,12 @@ including any artifact (`CLAUDE.md` §33).
 SentinelQA follows a **90-day coordinated disclosure** policy
 (industry standard, modeled on Google Project Zero).
 
-| Day | Milestone |
-|---:|---|
-| 0   | Report received. Acknowledgement within 3 business days. |
-| 0–14 | Triage, severity assessment (CVSS v4.0), reproduction. |
-| 14–60 | Fix developed, regression tests added, ADR opened if the safety boundary changed. |
-| 60–80 | Release prepared (patch version per `docs/dev/semver.md`). Reporter reviews the fix. |
+|   Day | Milestone                                                                                                                                |
+| ----: | ---------------------------------------------------------------------------------------------------------------------------------------- |
+|     0 | Report received. Acknowledgement within 3 business days.                                                                                 |
+|  0–14 | Triage, severity assessment (CVSS v4.0), reproduction.                                                                                   |
+| 14–60 | Fix developed, regression tests added, ADR opened if the safety boundary changed.                                                        |
+| 60–80 | Release prepared (patch version per `docs/dev/semver.md`). Reporter reviews the fix.                                                     |
 | 80–90 | Coordinated publication: release tagged, GitHub Security Advisory published, reporter credited (unless they prefer to remain anonymous). |
 
 If we cannot meet the 90-day deadline, we will coordinate an embargo
@@ -68,10 +68,10 @@ extension in writing with the reporter.
 
 ## Supported versions
 
-| Version | Supported | Notes |
-|---|---|---|
-| `0.7.x` | Yes | Current pre-1.0 stream (`docs/dev/semver.md`). |
-| `< 0.7.0` | No | Pre-1.0 releases supersede each other; upgrade to the latest minor. |
+| Version   | Supported | Notes                                                               |
+| --------- | --------- | ------------------------------------------------------------------- |
+| `0.7.x`   | Yes       | Current pre-1.0 stream (`docs/dev/semver.md`).                      |
+| `< 0.7.0` | No        | Pre-1.0 releases supersede each other; upgrade to the latest minor. |
 
 Once `v1.0.0` ships (Phase 36), SentinelQA switches to **"latest two
 minors"** support per `docs/dev/security-policy.md` (lands in task
@@ -82,12 +82,12 @@ minors"** support per `docs/dev/security-policy.md` (lands in task
 Severity is rated via **CVSS v4.0** (NVD-style). Severity bands map
 to release urgency:
 
-| Severity | Response target | Notes |
-|---|---|---|
-| Critical | patch within 7 days | Safety boundary breach, RCE, auth bypass. |
-| High | patch within 30 days | Sensitive data exposure, scoped privilege escalation. |
-| Medium | patch within 60 days | Logic bugs, supply-chain concerns without active exploit. |
-| Low | patch within 90 days | Hardening opportunities, ergonomics. |
+| Severity | Response target      | Notes                                                     |
+| -------- | -------------------- | --------------------------------------------------------- |
+| Critical | patch within 7 days  | Safety boundary breach, RCE, auth bypass.                 |
+| High     | patch within 30 days | Sensitive data exposure, scoped privilege escalation.     |
+| Medium   | patch within 60 days | Logic bugs, supply-chain concerns without active exploit. |
+| Low      | patch within 90 days | Hardening opportunities, ergonomics.                      |
 
 ## Scope
 
