@@ -31,6 +31,12 @@ Commands:
                        --input <path>      Path to run-config JSON (required).
                        --run-dir <path>    Override run_dir from the config.
                        --browser <name>    chromium | firefox | webkit.
+                       --storage-state <path>
+                                           Override storage_state_path (Phase
+                                           31, ADR-0043). Forwarded to
+                                           Playwright via the env var
+                                           SENTINELQA_STORAGE_STATE. Pass an
+                                           empty string to disable.
                        --ci                CI mode (no spinners, JSONL only).
   list-tests         List spec files matching a glob.
                        --pattern <glob>    Glob relative to cwd (required).
@@ -152,6 +158,10 @@ async function handleRun(args: readonly string[], opts: DispatchOptions): Promis
       exitCode: 2,
     };
   }
+  // Phase 31 / ADR-0043. CLI override for the storage_state path.
+  // Empty string is a valid value: it disables the env var even when
+  // the run-config carried a path.
+  const storageStateOverride = takeFlag(args, '--storage-state');
 
   const fn = opts.runFn ?? runPlaywright;
   try {
@@ -159,6 +169,7 @@ async function handleRun(args: readonly string[], opts: DispatchOptions): Promis
       inputPath,
       ...(runDirOverride !== undefined ? { runDirOverride } : {}),
       ...(browser !== undefined ? { browserOverride: browser } : {}),
+      ...(storageStateOverride !== undefined ? { storageStateOverride } : {}),
       ...(opts.cwd !== undefined ? { cwd: opts.cwd } : {}),
     });
     return { stdout: '', stderr: '', exitCode: code };

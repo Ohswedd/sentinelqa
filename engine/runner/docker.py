@@ -239,6 +239,17 @@ class DockerRunner:
             _to_container_relative(p, invocation.run_dir) for p in invocation.spec_files
         )
 
+        # Phase 31, ADR-0043. When the caller provided a storage_state
+        # file, we expose it inside the container under
+        # ``/sentinel/run/auth/storage_state.json``. The actual bind-
+        # mount of the run dir is set up elsewhere in this module; the
+        # orchestrator writes the file into the run dir so the Docker
+        # mount picks it up automatically.
+        if invocation.storage_state_path is not None:
+            container_storage_path: str | None = "/sentinel/run/auth/storage_state.json"
+        else:
+            container_storage_path = None
+
         run_config = RunConfig(
             run_id=invocation.run_id,
             target=invocation.target,
@@ -252,6 +263,7 @@ class DockerRunner:
             retries=runner_cfg.retries.max,
             grep=invocation.grep,
             env={},
+            storage_state_path=container_storage_path,
         )
         out_dir = artifacts.subdir("run-configs")
         target = out_dir / f"{invocation.module_name}.docker.json"

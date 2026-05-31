@@ -24,13 +24,20 @@ import sys
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Annotated
+from urllib.parse import urlparse
 
 import typer
+from engine.auth import (
+    SessionHandle,
+    Vault,
+    cleanup_storage_state,
+    materialize_storage_state,
+)
 from engine.config.loader import load_config
 from engine.config.schema import RootConfig
 from engine.domain.ids import IdGenerator
 from engine.domain.target import Target
-from engine.errors.base import ConfigError, UnsafeTargetError
+from engine.errors.base import AuthError, ConfigError, UnsafeTargetError
 from engine.errors.codes import (
     EXIT_CONFIG_ERROR,
     EXIT_DEPENDENCY_MISSING,
@@ -205,6 +212,26 @@ def run_test(
             sys.stderr.write(f"sentinel test: {exc}\n")
             raise typer.Exit(code=EXIT_CONFIG_ERROR) from exc
 
+    # Phase 31, ADR-0043. If the operator selected
+    # ``auth.strategy: browser_session``, decrypt the vault entry into a
+    # short-lived plaintext file under ``<run-dir>/auth/``. The file is
+    # cleaned up before the command returns; the orchestrator never
+    # copies it into report artifacts.
+    session_handle: SessionHandle | None = None
+    if config.auth.strategy == "browser_session":
+        try:
+            session_handle = materialize_storage_state(
+                Vault(),
+                host=_target_host(str(config.target.base_url)),
+                name=config.auth.session_name or "",
+                run_dir=run_dir,
+                allowed_hosts=config.target.allowed_hosts,
+                audit_log_path=audit_log_path,
+            )
+        except AuthError as exc:
+            sys.stderr.write(f"sentinel test: {exc.message}\n")
+            raise typer.Exit(code=exc.exit_code) from exc
+
     invocation = RunnerInvocation(
         run_id=run_id,
         run_dir=run_dir,
@@ -214,6 +241,7 @@ def run_test(
         shard=shard_spec,
         workers=workers,
         quarantine=quarantine,
+        storage_state_path=session_handle.path if session_handle else None,
     )
 
     write_audit_entry(
@@ -248,6 +276,12 @@ def run_test(
     except LocalRunnerError as exc:
         sys.stderr.write(f"sentinel test: runner failed: {exc}\n")
         raise typer.Exit(code=EXIT_TEST_EXECUTION_FAILED) from exc
+    finally:
+        # Phase 31, ADR-0043. The plaintext storage_state file MUST NOT
+        # outlive the run; we drop it as soon as the runner returns,
+        # regardless of outcome (success, gate-fail, spawn-error, crash).
+        if session_handle is not None:
+            cleanup_storage_state(session_handle)
 
     gate_failed = _gate_failed(outcome, config)
     exit_code = (
@@ -306,6 +340,18 @@ def run_test(
 # ----------------------------------------------------------------------
 # Helpers
 # ----------------------------------------------------------------------
+
+
+def _target_host(base_url: str) -> str:
+    """Return the lower-cased host from a ``target.base_url`` value.
+
+    Phase 31, ADR-0043 — used by `auth.strategy: browser_session` to
+    look the session up by host. Returns an empty string when the URL
+    is malformed; the vault then raises ``VaultEntryNotFoundError`` and
+    the caller surfaces a precise error to the operator.
+    """
+
+    return (urlparse(base_url).hostname or "").lower()
 
 
 def _generate_before_test(

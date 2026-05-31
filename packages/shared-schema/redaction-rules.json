@@ -10,8 +10,11 @@
     "authorization",
     "client_secret",
     "cookie",
+    "cookies",
     "csrf_token",
     "id_token",
+    "local_storage",
+    "localstorage",
     "passwd",
     "password",
     "private_key",
@@ -29,6 +32,8 @@
     "set-cookie",
     "set_cookie",
     "ssh_key",
+    "storage_state",
+    "storage_state_json",
     "token",
     "x-api-key",
     "x-auth-token",
@@ -45,8 +50,11 @@
     "authorization": "authorization",
     "client_secret": "client_secret",
     "cookie": "cookie",
+    "cookies": "cookie",
     "csrf_token": "csrf_token",
     "id_token": "id_token",
+    "local_storage": "local_storage",
+    "localstorage": "local_storage",
     "passwd": "password",
     "password": "password",
     "private_key": "private_key",
@@ -64,6 +72,8 @@
     "set-cookie": "cookie",
     "set_cookie": "cookie",
     "ssh_key": "private_key",
+    "storage_state": "storage_state",
+    "storage_state_json": "storage_state",
     "token": "token",
     "x-api-key": "api_key",
     "x-auth-token": "auth_token",
@@ -113,6 +123,14 @@
         "IGNORECASE"
       ],
       "description": "HTTP Basic auth header values."
+    },
+    {
+      "category": "cookie",
+      "pattern": "(?i)\\b(?:Set-)?Cookie:\\s*[A-Za-z0-9_\\-]+=[^;\\r\\n]{16,}",
+      "flags": [
+        "IGNORECASE"
+      ],
+      "description": "HTTP `Cookie:` / `Set-Cookie:` header lines."
     },
     {
       "category": "jwt",

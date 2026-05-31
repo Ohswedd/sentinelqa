@@ -12,8 +12,14 @@ import sys
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Annotated
+from urllib.parse import urlparse
 
 import typer
+from engine.auth import (
+    Vault,
+    cookies_for_host,
+    load_storage_state_dict,
+)
 from engine.config.loader import load_config
 from engine.config.schema import RootConfig
 from engine.discovery.auth_boundary import AuthCredentials
@@ -118,6 +124,12 @@ def run_discover(
 
     credentials = _resolve_credentials(config)
 
+    # Phase 31, ADR-0043. `auth.strategy: browser_session` injects
+    # cookies from the encrypted vault into the discovery crawler's
+    # HTTP client. The decrypted payload stays in memory — we never
+    # write the plaintext storage state to the run dir.
+    extra_cookies = _resolve_vault_cookies(config, audit_log_path)
+
     # Phase 17 task 07 — `discovery.engine` selects the crawl backend.
     # HTTP is the Phase 05 default; `playwright` lights up Chromium-driven
     # SPA crawling (ADR-0010). Construction is intentionally lazy: the
@@ -138,6 +150,7 @@ def run_discover(
         openapi_url=config.discovery.openapi.url,
         graphql_sdl_path=graphql_sdl or config.discovery.graphql.path,
         graphql_endpoint_url=config.discovery.graphql.url,
+        extra_cookies=extra_cookies,
     )
 
     try:
@@ -208,6 +221,31 @@ def _build_crawl_policy(
         same_host_only=discovery.same_host_only,
         extra_allowed_hosts=discovery.extra_allowed_hosts,
     )
+
+
+def _resolve_vault_cookies(config: RootConfig, audit_log_path: Path) -> dict[str, str] | None:
+    """Phase 31, ADR-0043. Pull cookies from the auth vault if configured.
+
+    Returns ``None`` when the strategy is not ``browser_session``. Raises
+    :class:`engine.errors.base.AuthError` when the vault entry is
+    missing, expired, host-mismatched, or fails AEAD verification — the
+    caller surfaces those at the CLI boundary.
+    """
+
+    if config.auth.strategy != "browser_session":
+        return None
+    target_host = (urlparse(str(config.target.base_url)).hostname or "").lower()
+    if not target_host:
+        return None
+    storage_state = load_storage_state_dict(
+        Vault(),
+        host=target_host,
+        name=config.auth.session_name or "",
+        allowed_hosts=config.target.allowed_hosts,
+        audit_log_path=audit_log_path,
+    )
+    cookies = cookies_for_host(storage_state, target_host)
+    return cookies or None
 
 
 def _resolve_credentials(config: RootConfig) -> AuthCredentials | None:

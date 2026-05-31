@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest';
 
-import { buildSentinelFixture, SENTINEL_PLAYWRIGHT_DEFAULTS, sentinelTest } from '../playwright.js';
+import {
+  buildSentinelFixture,
+  getSentinelStorageStateUse,
+  SENTINEL_PLAYWRIGHT_DEFAULTS,
+  sentinelTest,
+} from '../playwright.js';
 
 describe('SENTINEL_PLAYWRIGHT_DEFAULTS', () => {
   it('matches CLAUDE §21 defaults', () => {
@@ -34,5 +39,22 @@ describe('sentinelTest export', () => {
     // `.extend` chained on the result should also be a function (we
     // re-exported Playwright's test.extend).
     expect(typeof (sentinelTest as unknown as { extend: unknown }).extend).toBe('function');
+  });
+});
+
+describe('getSentinelStorageStateUse (Phase 31)', () => {
+  it('returns storageState when env var is set', () => {
+    const overlay = getSentinelStorageStateUse({
+      SENTINELQA_STORAGE_STATE: '/run/auth/storage_state.json',
+    });
+    expect(overlay).toStrictEqual({ storageState: '/run/auth/storage_state.json' });
+  });
+
+  it('returns an empty object when env var is unset', () => {
+    expect(getSentinelStorageStateUse({})).toStrictEqual({});
+  });
+
+  it('returns an empty object when env var is the empty string', () => {
+    expect(getSentinelStorageStateUse({ SENTINELQA_STORAGE_STATE: '' })).toStrictEqual({});
   });
 });

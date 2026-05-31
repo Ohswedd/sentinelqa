@@ -278,6 +278,60 @@ class LlmStructuredOutputUnsupportedError(LlmError):
     DEFAULT_CODE = "E-LLM-009"
 
 
+# ---------------------------------------------------------------------------
+# Browser-authenticated audit / vault errors (Phase 31, ADR-0043)
+# ---------------------------------------------------------------------------
+
+
+class AuthError(SentinelError):
+    """Base class for browser-authenticated audit / vault failures.
+
+    Concrete subclasses bind to the E-AUTH-001..006 grid in
+    :data:`engine.errors.codes.ERROR_REGISTRY`. The orchestrator catches
+    :class:`AuthError` at the lifecycle boundary; a vault failure aborts
+    the run because running an authenticated audit without the session is
+    a different audit than the operator asked for.
+    """
+
+    DEFAULT_CODE = "E-AUTH-001"
+
+
+class VaultEntryNotFoundError(AuthError):
+    """No vault entry matches the requested (host, name) pair."""
+
+    DEFAULT_CODE = "E-AUTH-001"
+
+
+class VaultEntryExpiredError(AuthError):
+    """The vault entry's ``expires_at`` has passed."""
+
+    DEFAULT_CODE = "E-AUTH-002"
+
+
+class VaultHostMismatchError(AuthError):
+    """The vault entry's recorded host does not match the active target host."""
+
+    DEFAULT_CODE = "E-AUTH-003"
+
+
+class VaultIntegrityError(AuthError):
+    """Decryption / AEAD tag verification failed for the vault entry."""
+
+    DEFAULT_CODE = "E-AUTH-004"
+
+
+class LoginOriginChangedError(AuthError):
+    """Login flow landed on a different origin than the start URL."""
+
+    DEFAULT_CODE = "E-AUTH-005"
+
+
+class AuthCommandForbiddenInCiError(AuthError):
+    """Interactive `sentinel auth` subcommand invoked in CI mode."""
+
+    DEFAULT_CODE = "E-AUTH-006"
+
+
 __all__ = [
     "SentinelError",
     "ConfigError",
@@ -303,4 +357,11 @@ __all__ = [
     "LlmRateLimitedError",
     "LlmSchemaMismatchError",
     "LlmStructuredOutputUnsupportedError",
+    "AuthError",
+    "VaultEntryNotFoundError",
+    "VaultEntryExpiredError",
+    "VaultHostMismatchError",
+    "VaultIntegrityError",
+    "LoginOriginChangedError",
+    "AuthCommandForbiddenInCiError",
 ]

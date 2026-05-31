@@ -67,10 +67,15 @@ ALLOWED_PERMISSIONS: Final[frozenset[str]] = frozenset(
 )
 
 #: Permissions matching this prefix are also accepted ('fs.read:<path>'
-#: limits a read scope; 'env.read:<NAME>' opens a specific env var).
+#: limits a read scope; 'env.read:<NAME>' opens a specific env var;
+#: 'auth.read:<host>' grants read access to the auth vault for a single
+#: host — Phase 31 / ADR-0043. Plugins MUST declare the host they want
+#: to consume sessions for; cross-host vault reads are refused at load
+#: time.
 ALLOWED_PERMISSION_PREFIXES: Final[tuple[str, ...]] = (
     "fs.read:",
     "env.read:",
+    "auth.read:",
 )
 
 

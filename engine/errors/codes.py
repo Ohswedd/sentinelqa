@@ -263,6 +263,78 @@ ERROR_REGISTRY: Final[dict[str, ErrorCodeSpec]] = {
             "list`) or disable the LLM feature for this caller."
         ),
     ),
+    # ------------------------------------------------------------------
+    # Browser-authenticated audit / vault errors (Phase 31, ADR-0043).
+    # All vault-host / cross-origin / expiry failures are safety-boundary
+    # refusals (exit 4); not-found / tamper / CI rejection are config
+    # errors (exit 2). The vault never recovers a corrupted entry — the
+    # operator must capture a fresh session via `sentinel auth login`.
+    # ------------------------------------------------------------------
+    "E-AUTH-001": ErrorCodeSpec(
+        code="E-AUTH-001",
+        exit_code=EXIT_CONFIG_ERROR,
+        message_template="Vault entry not found for host={host!r} name={name!r}.",
+        suggested_fix=(
+            "List entries with `sentinel auth list` and confirm the name. "
+            "Capture a new session with `sentinel auth login`."
+        ),
+    ),
+    "E-AUTH-002": ErrorCodeSpec(
+        code="E-AUTH-002",
+        exit_code=EXIT_UNSAFE_TARGET,
+        message_template=("Vault entry {name!r} for {host!r} expired at {expires_at}."),
+        suggested_fix=(
+            "Re-capture the session with `sentinel auth login <name> "
+            "--url <login-url>`. SentinelQA never extends expired sessions."
+        ),
+    ),
+    "E-AUTH-003": ErrorCodeSpec(
+        code="E-AUTH-003",
+        exit_code=EXIT_UNSAFE_TARGET,
+        message_template=(
+            "Vault entry {name!r} was captured for host {vault_host!r} but "
+            "the active target host is {target_host!r}."
+        ),
+        suggested_fix=(
+            "SentinelQA refuses to replay sessions across hosts (CLAUDE.md "
+            "§6). Capture a separate entry for each target."
+        ),
+    ),
+    "E-AUTH-004": ErrorCodeSpec(
+        code="E-AUTH-004",
+        exit_code=EXIT_UNSAFE_TARGET,
+        message_template=(
+            "Vault entry {name!r} for {host!r} failed integrity check "
+            "(decryption or AEAD tag verification failed)."
+        ),
+        suggested_fix=(
+            "Re-capture the session with `sentinel auth login`. The vault "
+            "file may have been edited, corrupted, or the master key changed."
+        ),
+    ),
+    "E-AUTH-005": ErrorCodeSpec(
+        code="E-AUTH-005",
+        exit_code=EXIT_UNSAFE_TARGET,
+        message_template=(
+            "Login flow refused to capture session: post-login URL host "
+            "{landed_host!r} differs from the start URL host {start_host!r}."
+        ),
+        suggested_fix=(
+            "If the redirect is expected (e.g. an IdP that lands you on a "
+            "different subdomain), add it to `target.allowed_hosts` and "
+            "retry. Otherwise verify you signed in on the right page."
+        ),
+    ),
+    "E-AUTH-006": ErrorCodeSpec(
+        code="E-AUTH-006",
+        exit_code=EXIT_CONFIG_ERROR,
+        message_template=("Interactive `sentinel auth {command}` is forbidden in CI mode."),
+        suggested_fix=(
+            "Capture the session locally with `sentinel auth login`, then "
+            "ship the encrypted vault file to CI (the master key must be "
+            "supplied via the OS keyring or SENTINEL_VAULT_PASSPHRASE)."
+        ),
+    ),
 }
 
 
