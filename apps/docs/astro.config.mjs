@@ -32,6 +32,51 @@ export default defineConfig({
       },
       lastUpdated: false,
       customCss: ['./src/styles/custom.css'],
+      // Brand assets (Phase 35.05). The canonical copies live at
+      // docs/assets/brand/; apps/docs/public/ holds the copy served
+      // by Astro. Update both when the registered mark replaces the
+      // placeholder (docs/dev/brand.md).
+      favicon: '/favicon.svg',
+      head: [
+        {
+          tag: 'link',
+          attrs: { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/favicon-16.png' },
+        },
+        {
+          tag: 'link',
+          attrs: { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon-32.png' },
+        },
+        {
+          tag: 'link',
+          attrs: { rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon-180.png' },
+        },
+        {
+          tag: 'meta',
+          attrs: {
+            property: 'og:image',
+            content: 'https://docs.sentinelqa.dev/social-preview-1280x640.png',
+          },
+        },
+        {
+          tag: 'meta',
+          attrs: { property: 'og:image:width', content: '1280' },
+        },
+        {
+          tag: 'meta',
+          attrs: { property: 'og:image:height', content: '640' },
+        },
+        {
+          tag: 'meta',
+          attrs: { name: 'twitter:card', content: 'summary_large_image' },
+        },
+        {
+          tag: 'meta',
+          attrs: {
+            name: 'twitter:image',
+            content: 'https://docs.sentinelqa.dev/social-preview-1280x640.png',
+          },
+        },
+      ],
       components: {
         PageFrame: './src/overrides/PageFrame.astro',
       },

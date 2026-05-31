@@ -1,0 +1,63 @@
+name: Feature request
+description: Propose a new SentinelQA capability or improvement.
+title: 'feat: '
+labels: ['feature', 'triage']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before filing: read [`PRD.md`](https://github.com/Ohswedd/sentinelqa/blob/main/PRD.md)
+        and check whether the capability already lives in a later phase
+        (`plans/`). New capabilities require a PRD update and may need an
+        ADR (`CLAUDE.md` §34).
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: One paragraph — what user pain or risk does this address?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed change
+      description: One paragraph — the smallest change that solves the problem.
+    validations:
+      required: true
+  - type: input
+    id: prd-section
+    attributes:
+      label: PRD section(s) this maps to
+      description: |
+        If it doesn't map to an existing section, explain why the PRD should
+        be extended (`CLAUDE.md` §5).
+    validations:
+      required: true
+  - type: input
+    id: differentiation
+    attributes:
+      label: Differentiation
+      description: How does this strengthen the PRD §28 differentiation story?
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: Bullet list of observable, testable outcomes.
+    validations:
+      required: true
+  - type: textarea
+    id: safety
+    attributes:
+      label: Safety boundary impact (CLAUDE.md §6 / PRD §2)
+      description: |
+        Does this involve scanning, browser automation against third parties,
+        credential handling, or anything else that could touch the safety
+        boundary? If yes, describe how the safe-by-default behavior is
+        preserved.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: What else did you consider, and why is this proposal better?

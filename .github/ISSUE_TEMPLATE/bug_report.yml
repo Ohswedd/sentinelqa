@@ -1,0 +1,78 @@
+name: Bug report
+description: Report incorrect behavior of SentinelQA itself (not findings produced by it).
+title: 'bug: '
+labels: ['bug', 'triage']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for taking the time to report a bug. **Do not paste secrets, tokens, or real customer data.**
+        For security issues, do **not** open a public issue — follow the disclosure path in
+        [`SECURITY.md`](https://github.com/Ohswedd/sentinelqa/blob/main/SECURITY.md).
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: One paragraph describing the actual behavior.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+      description: One paragraph describing the intended/documented behavior. Cite the PRD section if you can.
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Reproduction
+      description: Exact commands, config snippet, and CLI invocation. Redact secrets first.
+      render: shell
+    validations:
+      required: true
+  - type: input
+    id: sentinel-version
+    attributes:
+      label: SentinelQA version / commit
+      placeholder: 'sentinel --version'
+    validations:
+      required: true
+  - type: input
+    id: python-version
+    attributes:
+      label: Python version
+      placeholder: 'python3 --version'
+    validations:
+      required: true
+  - type: input
+    id: node-version
+    attributes:
+      label: Node version
+      placeholder: 'node --version'
+  - type: input
+    id: os
+    attributes:
+      label: Operating system
+      placeholder: 'uname -a or Windows build'
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: |
+        Attach logs / `run.json` / `findings.json` / screenshots from
+        `.sentinel/runs/<run-id>/`. Redact secrets first
+        (`docs/dev/secret-hygiene.md`).
+  - type: input
+    id: prd-section
+    attributes:
+      label: Affected PRD section(s)
+      description: e.g. PRD §9.4 Runner — helps the triage owner route the report.
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Safety boundary impact (CLAUDE.md §6 / PRD §2)
+      options:
+        - label: This bug affects the safety boundary. If checked, the report will be triaged under `security/`.

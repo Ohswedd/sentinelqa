@@ -1,0 +1,151 @@
+# Dependabot configuration (Phase 35.07).
+# Covers the four ecosystems SentinelQA depends on at build / runtime:
+# uv-resolved Python lockfiles, the npm root + ts-runtime workspace,
+# GitHub Actions, and the Docker runner base image. Schedule is
+# weekly across the board so the maintainer reviews one batch per
+# week, not a daily firehose.
+
+version: 2
+updates:
+  # Python — uv resolves the lockfile, but Dependabot reads
+  # `pyproject.toml` to figure out the dependency graph. The
+  # `package-ecosystem: pip` value covers both pip and uv-managed
+  # lockfiles.
+  - package-ecosystem: pip
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: '07:00'
+      timezone: 'Etc/UTC'
+    open-pull-requests-limit: 5
+    labels: ['dependencies', 'python']
+    commit-message:
+      prefix: 'chore(deps)'
+      include: scope
+    groups:
+      python-minor-patch:
+        applies-to: version-updates
+        update-types:
+          - minor
+          - patch
+
+  # Per-package Python manifests so transitive resolution surfaces
+  # workspace-scoped upgrades (the engine/SDK/MCP/modules/integrations
+  # packages all carry their own pyproject.toml).
+  - package-ecosystem: pip
+    directory: /apps/cli
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 3
+    labels: ['dependencies', 'python', 'cli']
+    commit-message:
+      prefix: 'chore(deps)'
+      include: scope
+    groups:
+      cli-minor-patch:
+        applies-to: version-updates
+        update-types:
+          - minor
+          - patch
+
+  - package-ecosystem: pip
+    directory: /packages/python-sdk
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 3
+    labels: ['dependencies', 'python', 'sdk']
+    commit-message:
+      prefix: 'chore(deps)'
+      include: scope
+    groups:
+      sdk-minor-patch:
+        applies-to: version-updates
+        update-types:
+          - minor
+          - patch
+
+  - package-ecosystem: pip
+    directory: /packages/mcp-server
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 3
+    labels: ['dependencies', 'python', 'mcp']
+    commit-message:
+      prefix: 'chore(deps)'
+      include: scope
+    groups:
+      mcp-minor-patch:
+        applies-to: version-updates
+        update-types:
+          - minor
+          - patch
+
+  # npm — root workspace + the ts-runtime package. pnpm-lock.yaml
+  # lives at the root; Dependabot reads `package.json` there to
+  # construct the dependency graph and proposes updates that include
+  # both the root and workspace members.
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: '07:00'
+      timezone: 'Etc/UTC'
+    open-pull-requests-limit: 5
+    labels: ['dependencies', 'javascript']
+    commit-message:
+      prefix: 'chore(deps)'
+      include: scope
+    groups:
+      javascript-minor-patch:
+        applies-to: version-updates
+        update-types:
+          - minor
+          - patch
+
+  - package-ecosystem: npm
+    directory: /packages/ts-runtime
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 3
+    labels: ['dependencies', 'javascript', 'ts-runtime']
+    commit-message:
+      prefix: 'chore(deps)'
+      include: scope
+    groups:
+      ts-runtime-minor-patch:
+        applies-to: version-updates
+        update-types:
+          - minor
+          - patch
+
+  # GitHub Actions — pinned at v4/v5 today; weekly cadence catches
+  # upstream sec advisories quickly without spamming the queue.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 3
+    labels: ['dependencies', 'ci']
+    commit-message:
+      prefix: 'ci(deps)'
+      include: scope
+
+  # Docker runner image (Phase 08 / 17). Pinned to
+  # mcr.microsoft.com/playwright; Dependabot upgrades the FROM tag.
+  - package-ecosystem: docker
+    directory: /apps/cli/sentinel/runner/docker
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 2
+    labels: ['dependencies', 'docker']
+    commit-message:
+      prefix: 'chore(deps)'
+      include: scope
