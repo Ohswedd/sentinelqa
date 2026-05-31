@@ -2,7 +2,7 @@ SentinelQA
 Copyright 2026 SentinelQA Authors
 
 This product includes software developed by the SentinelQA Authors
-(https://github.com/ohswedd/sentinelqa — repository may move; check
+(https://github.com/Ohswedd/sentinelqa — repository may move; check
 the repo root for the canonical pointer).
 
 Licensed under the Apache License, Version 2.0 (the "License"); you
@@ -21,11 +21,68 @@ permissions and limitations under the License.
 Third-party attributions
 ================================================================================
 
-Phase 00 ships no production dependencies that require attribution beyond
-their own LICENSE files (Python and TypeScript dev tooling, Playwright,
-ruff, mypy, pytest, eslint, prettier, vitest, commitlint, pre-commit,
-gitleaks, uv, pnpm — each governed by its own upstream license).
+SentinelQA's first-party source code is Apache-2.0. The repository
+vendors a small number of upstream JSON Schemas / XSDs at
+`packages/shared-schema/external/` so the build does not depend on
+fetching them at runtime. Each upstream remains under its own
+license; SentinelQA does not relicense them.
 
-As production dependencies are added in later phases, append their
-required attributions to this section in the same commit that introduces
-them. See docs/dev/ownership.md for the procedure.
+# Vendored upstream schemas
+
+* CycloneDX 1.5 JSON Schema
+  - File: packages/shared-schema/external/cyclonedx-1.5.json
+  - License: Apache-2.0 (upstream).
+  - Source: https://github.com/CycloneDX/specification
+  - Used by: modules.supply_chain (Phase 33) to validate SBOMs.
+
+* SARIF 2.1.0 JSON Schema (OASIS)
+  - File: packages/shared-schema/external/sarif-2.1.0.json
+  - License: OASIS Open License (non-copyleft; attribution preserved
+    here).
+  - Source: https://docs.oasis-open.org/sarif/sarif/v2.1.0/
+  - Used by: engine.reporter (Phase 03) to emit SARIF reports.
+
+* JUnit XML (Surefire) XSD
+  - File: packages/shared-schema/external/junit.xsd
+  - License: permissive (Apache-2.0 — Maven Surefire upstream).
+  - Source: https://maven.apache.org/surefire/maven-surefire-plugin/xsd/
+  - Used by: engine.reporter (Phase 03) to validate JUnit output.
+
+* Slack Block Kit JSON Schema
+  - File: packages/shared-schema/external/slack-block-kit.schema.json
+  - License: derived from Slack's published Block Kit reference
+    (publicly documented); reproduced here for offline validation
+    only. Attribution preserved.
+  - Source: https://api.slack.com/reference/block-kit
+  - Used by: integrations.slack (Phase 25) report renderer.
+
+================================================================================
+Build / development dependencies
+================================================================================
+
+SentinelQA depends on a large number of Python and TypeScript libraries
+at build/test time (Playwright, axe-core, Typer, Pydantic, httpx, uv,
+pnpm, ruff, mypy, pytest, eslint, prettier, vitest, commitlint,
+pre-commit, gitleaks, ts-morph, Jinja2, BeautifulSoup, and others).
+Each is governed by its own upstream LICENSE, distributed alongside
+the package via the package manager. The aggregated build-time
+inventory (with pinned versions) is produced by the supply-chain
+module (`sentinel supply-chain sbom`, Phase 33) and lives under
+`.sentinel/runs/<run-id>/sbom.cdx.json`.
+
+================================================================================
+Adding a new vendored upstream
+================================================================================
+
+If you vendor a new file under `packages/shared-schema/external/` (or
+anywhere else in the tree that does not inherit the root LICENSE):
+
+  1. Add the file's source URL + upstream license to the
+     "Vendored upstream schemas" section above.
+  2. Register the file in
+     `scripts/release/audit_license_headers.py`'s
+     `VENDORED_EXTERNALS` map.
+  3. Run `make audit-license-headers`; the audit fails until both
+     bullets are done.
+
+See `docs/dev/ownership.md` for the broader attribution procedure.

@@ -23,7 +23,7 @@ UV ?= uv
         docs docs-build docs-dev docs-gen-all docs-gen-error-codes \
         docs-gen-cli docs-gen-sdk docs-gen-mcp docs-gen-adr-index \
         docs-check-fresh \
-        changelog-draft audit-metadata \
+        changelog-draft audit-metadata audit-license-headers \
         build-all inspect-all \
         bench dod \
         clean ci
@@ -53,6 +53,7 @@ help:
 	@echo "  docs-check-fresh  Fail if any generated docs page is stale"
 	@echo "  changelog-draft   Draft a Keep a Changelog section from Conventional Commits"
 	@echo "  audit-metadata    Verify every publishable manifest carries release-ready metadata"
+	@echo "  audit-license-headers  Verify SPDX headers + NOTICE completeness (Phase 35.03)"
 	@echo "  build-all     Build every Python sdist+wheel and the TS npm tarball into dist/"
 	@echo "  inspect-all   Inspect every artifact under dist/ for forbidden contents"
 	@echo "  bench         Phase 29 — measure import + CLI cold-start budgets"
@@ -300,6 +301,10 @@ docs: docs-build
 # Phase 28 — audit publishable manifests for release-ready metadata.
 audit-metadata:
 	$(UV) run python -m scripts.release.audit_metadata
+
+# Phase 35 — audit source files for SPDX headers + NOTICE completeness.
+audit-license-headers:
+	$(UV) run python -m scripts.release.audit_license_headers --check
 
 # Phase 28 — build every Python sdist + wheel and the TS npm tarball.
 # Pass DIST=<dir> to override the output directory (default: dist/).
