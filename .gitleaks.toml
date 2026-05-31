@@ -70,6 +70,10 @@ paths = [
   '''^tests/unit/modules/security/test_jwt_weakness\.py$''',
   '''^tests/unit/modules/security/test_bundle_secrets\.py$''',
   '''^tests/integration/modules/security/test_phase32_e2e\.py$''',
+  # Phase 34 — SOC 2 audit-trail tests (ADR-0046) assert the
+  # secret-leak gate detects unredacted Bearer / JWT / AKIA / sk-
+  # tokens inside synthetic audit.log entries.
+  '''^tests/unit/modules/compliance/test_soc2_trail\.py$''',
 ]
 regexes = [
   # Canonical AWS example access-key from public AWS docs.

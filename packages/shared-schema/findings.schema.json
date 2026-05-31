@@ -47,6 +47,7 @@
         "cwe_id",
         "attack_id",
         "owasp_api_id",
+        "compliance_id",
         "created_at",
         "schema_version"
       ],
@@ -122,6 +123,11 @@
           "type": ["string", "null"],
           "pattern": "^API-[0-9]{4}-[0-9]{2}$",
           "maxLength": 32
+        },
+        "compliance_id": {
+          "type": ["string", "null"],
+          "pattern": "^[a-z][a-z0-9.-]*:[A-Za-z0-9][A-Za-z0-9._/-]*$",
+          "maxLength": 128
         },
         "created_at": {
           "type": "string",

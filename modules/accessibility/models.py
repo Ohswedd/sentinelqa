@@ -33,6 +33,20 @@ A11Y_RESULT_SCHEMA_VERSION = "1"
 AxeImpact = Literal["critical", "serious", "moderate", "minor"]
 KeyboardCategory = Literal["keyboard-navigation", "focus-trap", "focus-visible"]
 LandmarkCategory = Literal["missing-landmark", "duplicate-landmark"]
+Wcag22Category = Literal[
+    "focus-obscured",
+    "target-size-min",
+    "dragging-movements",
+    "redundant-entry",
+    "accessible-authentication",
+]
+"""WCAG 2.2 success-criteria covered by deterministic Phase 34 checks.
+
+These are the SCs axe-core 4.10 either does not cover, covers only
+behind an experimental flag, or covers without enough page-shape
+context to be reliable. The deterministic check functions live in
+:mod:`modules.accessibility.checks.wcag22`.
+"""
 
 
 class AxeNode(BaseModel):
@@ -90,6 +104,21 @@ class AccessibleNameIssue(BaseModel):
     description: str = Field(min_length=1, max_length=2_000)
 
 
+class Wcag22Issue(BaseModel):
+    """One WCAG 2.2 deterministic check issue (Phase 34 / ADR-0046).
+
+    Categories map 1:1 to a WCAG 2.2 success criterion via
+    ``success_criterion`` (e.g. ``2.5.8`` for *Target Size (Minimum)*).
+    """
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    category: Wcag22Category
+    success_criterion: str = Field(min_length=1, max_length=16)
+    selector: str = Field(default="", max_length=2_048)
+    description: str = Field(min_length=1, max_length=2_000)
+
+
 class A11yPageResult(BaseModel):
     """Aggregate accessibility result for one route."""
 
@@ -106,6 +135,7 @@ class A11yPageResult(BaseModel):
     accessible_name_issues: tuple[AccessibleNameIssue, ...] = Field(
         default_factory=tuple, max_length=500
     )
+    wcag22_issues: tuple[Wcag22Issue, ...] = Field(default_factory=tuple, max_length=500)
     duration_ms: int = Field(ge=0)
     schema_version: str = Field(default=A11Y_RESULT_SCHEMA_VERSION)
     error: str | None = Field(default=None, max_length=2_000)
@@ -127,6 +157,7 @@ class A11yRunOutcome(BaseModel):
             + len(p.keyboard_issues)
             + len(p.landmark_issues)
             + len(p.accessible_name_issues)
+            + len(p.wcag22_issues)
             for p in self.pages
         )
 
@@ -143,4 +174,6 @@ __all__ = [
     "KeyboardIssue",
     "LandmarkCategory",
     "LandmarkIssue",
+    "Wcag22Category",
+    "Wcag22Issue",
 ]

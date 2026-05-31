@@ -36,6 +36,7 @@ from modules.accessibility.models import (
     AxeViolation,
     KeyboardIssue,
     LandmarkIssue,
+    Wcag22Category,
 )
 
 # ---------------------------------------------------------------------------
@@ -58,6 +59,49 @@ _KEYBOARD_SEVERITY: dict[str, Severity] = {
 _LANDMARK_SEVERITY: dict[str, Severity] = {
     "missing-landmark": "medium",
     "duplicate-landmark": "low",
+}
+
+_WCAG22_SEVERITY: dict[Wcag22Category, Severity] = {
+    "focus-obscured": "medium",
+    "target-size-min": "medium",
+    "dragging-movements": "medium",
+    "redundant-entry": "low",
+    "accessible-authentication": "high",
+}
+
+_WCAG22_COMPLIANCE_ID: dict[Wcag22Category, str] = {
+    "focus-obscured": "wcag-2.2:focus-not-obscured-min",
+    "target-size-min": "wcag-2.2:target-size-min",
+    "dragging-movements": "wcag-2.2:dragging-movements",
+    "redundant-entry": "wcag-2.2:redundant-entry",
+    "accessible-authentication": "wcag-2.2:accessible-authentication-min",
+}
+
+_WCAG22_RECOMMENDATION: dict[Wcag22Category, str] = {
+    "focus-obscured": (
+        "Adjust the sticky / fixed element so the focused control "
+        "remains at least partially visible when focused — typically "
+        "by adding ``scroll-padding-top`` matching the overlay height."
+    ),
+    "target-size-min": (
+        "Increase the clickable target to at least 24x24 CSS px, or "
+        "ensure 24 px of clear space around it (the SC 2.5.8 spacing "
+        "exception)."
+    ),
+    "dragging-movements": (
+        "Provide a single-pointer alternative — arrow-key support, "
+        "explicit move buttons, or a numeric position input — so the "
+        "control is operable without drag gestures."
+    ),
+    "redundant-entry": (
+        "Pre-fill the field from the prior step, or offer an explicit "
+        '"same as previous" affordance.'
+    ),
+    "accessible-authentication": (
+        "Offer an alternative authentication path that does not require "
+        "a cognitive function test — passkeys, TOTP, hardware tokens, "
+        "or magic links."
+    ),
 }
 
 _AUTO_PREFIX = "Automated accessibility check found"
@@ -147,6 +191,16 @@ def findings_from_page(
     )
     findings.extend(
         _accessible_name_findings(
+            page=page,
+            run_id=run_id,
+            target_base_url=target_base_url,
+            id_generator=id_generator,
+            artifact_path=artifact_path,
+            timestamp=timestamp,
+        )
+    )
+    findings.extend(
+        _wcag22_findings(
             page=page,
             run_id=run_id,
             target_base_url=target_base_url,
@@ -396,6 +450,65 @@ def _accessible_name_findings(
                     "accessible name."
                 ),
                 suggested_fix="accessible-name",
+                created_at=timestamp,
+            )
+        )
+    return out
+
+
+def _wcag22_findings(
+    *,
+    page: A11yPageResult,
+    run_id: str,
+    target_base_url: str,
+    id_generator: IdGenerator,
+    artifact_path: str | None,
+    timestamp: datetime,
+) -> list[Finding]:
+    out: list[Finding] = []
+    for issue in page.wcag22_issues:
+        severity = _WCAG22_SEVERITY[issue.category]
+        compliance_id = _WCAG22_COMPLIANCE_ID[issue.category]
+        recommendation = _WCAG22_RECOMMENDATION[issue.category]
+        title = _truncate_for_title(
+            f"{_AUTO_PREFIX} (WCAG 2.2 SC {issue.success_criterion}): " f"{issue.category}"
+        )
+        description = _truncate_for_description(
+            f"{_AUTO_PREFIX} a WCAG 2.2 issue ({issue.category}) on "
+            f"route {page.route!r}: {issue.description}"
+        )
+        evidence = _build_evidence(
+            page=page,
+            id_generator=id_generator,
+            artifact_path=artifact_path,
+        )
+        out.append(
+            Finding(
+                id=id_generator.new("FND"),
+                run_id=run_id,
+                module="accessibility",
+                category=f"a11y.wcag-2.2.{issue.category}",
+                severity=severity,
+                confidence=0.9,
+                title=title,
+                description=description,
+                location=FindingLocation(
+                    route=page.route,
+                    selector=issue.selector or None,
+                ),
+                evidence=evidence,
+                reproduction_steps=(
+                    f"Load {page.url}.",
+                    (
+                        f"Inspect {issue.selector!r}."
+                        if issue.selector
+                        else "Inspect the page structure."
+                    ),
+                ),
+                affected_target=target_base_url,
+                recommendation=recommendation,
+                suggested_fix=f"wcag-2.2:{issue.category}",
+                compliance_id=compliance_id,
                 created_at=timestamp,
             )
         )

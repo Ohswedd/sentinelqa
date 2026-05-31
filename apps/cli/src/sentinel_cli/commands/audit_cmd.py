@@ -4,6 +4,11 @@ In Phase 02 no module phases have shipped yet, so audit runs the
 lifecycle with an empty module registry. The output is the artifact
 tree + `run.json` + audit log. Module phases (05+) register themselves
 into the orchestrator and audit's behavior expands automatically.
+
+Phase 34 adds ``--compliance-pack`` so operators can drive a run with
+a named (or path-resolved) compliance pack (WCAG 2.2 AA, GDPR
+baseline, CCPA baseline, SOC 2 trail). The pack composes the modules,
+per-module options, and check filter for the run.
 """
 
 from __future__ import annotations
@@ -15,13 +20,22 @@ from typing import Annotated
 import typer
 from engine.config.loader import load_config
 from engine.errors.codes import (
+    EXIT_CONFIG_ERROR,
     EXIT_QUALITY_GATE_FAILED,
     EXIT_SUCCESS,
     EXIT_TEST_EXECUTION_FAILED,
     EXIT_UNSAFE_TARGET,
 )
 from engine.orchestrator.run_lifecycle import RunLifecycle
+from engine.policy.compliance import (
+    CompliancePack,
+    CompliancePackError,
+    load_compliance_pack,
+)
 
+# Side-effect import — registers the compliance module so the
+# ``--compliance-pack`` flag can reference it.
+import modules.compliance  # noqa: F401
 from sentinel_cli.json_mode import json_stdout
 from sentinel_cli.state import GlobalState
 
@@ -57,6 +71,17 @@ def run_audit(
             help="Override policy.min_quality_score for the run.",
         ),
     ] = None,
+    compliance_pack: Annotated[
+        str | None,
+        typer.Option(
+            "--compliance-pack",
+            help=(
+                "Built-in pack id (e.g. wcag-2.2-aa, gdpr-baseline, "
+                "ccpa-baseline, soc2-trail) or a path to a custom "
+                "compliance pack YAML."
+            ),
+        ),
+    ] = None,
 ) -> None:
     """Execute the full audit lifecycle."""
 
@@ -77,6 +102,22 @@ def run_audit(
     if modules:
         requested_modules = [m.strip() for m in modules.split(",") if m.strip()]
 
+    pack: CompliancePack | None = None
+    module_options: dict[str, dict[str, object]] | None = None
+    if compliance_pack is not None:
+        try:
+            pack = load_compliance_pack(compliance_pack)
+        except CompliancePackError as exc:
+            sys.stderr.write(f"compliance pack error: {exc}\n")
+            raise typer.Exit(code=EXIT_CONFIG_ERROR) from exc
+        # ``--modules`` is the explicit user override; when present it
+        # constrains the run to that set (even when the pack lists more).
+        # Without ``--modules``, the pack drives the requested-module
+        # list directly.
+        if requested_modules is None:
+            requested_modules = list(pack.requested_modules())
+        module_options = pack.module_options()
+
     artifacts_root = output if output is not None else Path(".sentinel") / "runs"
 
     lifecycle = RunLifecycle(artifacts_root=artifacts_root)
@@ -85,30 +126,32 @@ def run_audit(
         requested_modules=requested_modules,
         dry_run=state.dry_run,
         ci=state.ci,
+        module_options=module_options,
     )
 
     exit_code = _status_to_exit_code(test_run.status)
 
     if state.mode == "json":
         with json_stdout() as out:
-            out.emit(
-                {
-                    "command": "audit",
-                    "run_id": test_run.id,
-                    "status": test_run.status,
-                    "modules_run": list(test_run.modules_run),
-                    "started_at": test_run.started_at.isoformat(),
-                    "finished_at": (
-                        test_run.finished_at.isoformat() if test_run.finished_at else None
-                    ),
-                }
-            )
+            payload: dict[str, object] = {
+                "command": "audit",
+                "run_id": test_run.id,
+                "status": test_run.status,
+                "modules_run": list(test_run.modules_run),
+                "started_at": test_run.started_at.isoformat(),
+                "finished_at": (test_run.finished_at.isoformat() if test_run.finished_at else None),
+            }
+            if pack is not None:
+                payload["compliance_pack"] = pack.id
+            out.emit(payload)
     elif state.mode != "quiet":
         sys.stdout.write(
             f"run_id   : {test_run.id}\n"
             f"status   : {test_run.status}\n"
             f"modules  : {', '.join(test_run.modules_run) or '(none)'}\n"
         )
+        if pack is not None:
+            sys.stdout.write(f"pack     : {pack.id} ({pack.label})\n")
 
     if exit_code != EXIT_SUCCESS:
         raise typer.Exit(code=exit_code)

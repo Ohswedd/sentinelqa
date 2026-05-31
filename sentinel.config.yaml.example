@@ -300,3 +300,13 @@ report:
     - json
     - junit
     - sarif
+
+# Phase 34 — Compliance Packs (PRD §10.4.2, ADR-0046). Packs are
+# loaded from `policy/compliance/<id>.yaml` (built-in) or by absolute
+# path. Run with `sentinel audit --compliance-pack <id-or-path>`.
+# Built-in pack ids: wcag-2.2-aa, gdpr-baseline, ccpa-baseline,
+# soc2-trail. Pack labels always say "(automated)"; CLAUDE.md §28
+# forbids "compliant" claims in product output.
+#
+# See docs/user/compliance-packs.md for the pack schema, custom-pack
+# authoring, signal file layout, and CLI exit codes.

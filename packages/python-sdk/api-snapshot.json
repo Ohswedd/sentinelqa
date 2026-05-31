@@ -70,6 +70,7 @@
           "affected_target",
           "attack_id",
           "category",
+          "compliance_id",
           "confidence",
           "created_at",
           "cwe_id",

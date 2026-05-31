@@ -89,3 +89,4 @@ Use [`_template.md`](./_template.md). The required headings are validated by `sc
 | [0043](./0043-browser-authenticated-audits.md)            | Browser-authenticated audits via an encrypted Playwright `storage_state` vault                                 | `Accepted` | 31    |
 | [0044](./0044-extended-security-skill-catalog.md)         | Extended security skill catalog (JWT, TLS, GraphQL, BOLA/BFLA, SSRF, bundle secrets, CWE/ATT&CK mapping)       | `Accepted` | 32    |
 | [0045](./0045-supply-chain-module.md)                     | Supply-Chain & Dependency Audit (CycloneDX SBOM, OSV lookup, freshness, postinstall, container, SPDX licenses) | `Accepted` | 33    |
+| [0046](./0046-compliance-packs.md)                        | Compliance Packs (WCAG 2.2 AA, GDPR baseline, CCPA baseline, SOC 2 trail) + pack DSL + `Finding.compliance_id` | `Accepted` | 34    |

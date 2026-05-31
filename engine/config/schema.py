@@ -517,10 +517,23 @@ class LlmConfig(SentinelModel):
 
 
 class AccessibilityAxeConfig(SentinelModel):
-    """`accessibility.axe:` block (Phase 11, ADR-0016)."""
+    """`accessibility.axe:` block (Phase 11, ADR-0016; Phase 34 / ADR-0046).
+
+    Phase 34 (compliance packs) extends the default tag set to cover the
+    WCAG 2.1 and 2.2 success criteria axe-core 4.10+ supports. Operators
+    can still override ``tags`` to a narrower set (Phase 11 behavior).
+    """
 
     tags: tuple[str, ...] = Field(
-        default=("wcag2a", "wcag2aa", "best-practice"),
+        default=(
+            "wcag2a",
+            "wcag2aa",
+            "wcag21a",
+            "wcag21aa",
+            "wcag22a",
+            "wcag22aa",
+            "best-practice",
+        ),
         max_length=32,
     )
 

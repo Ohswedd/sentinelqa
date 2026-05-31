@@ -972,6 +972,24 @@ The accessibility module ships in Phase 11 as the second concrete `SentinelModul
 - **Safety + tone (CLAUDE §28):** every description begins with "Automated accessibility check found"; the phrases "fully WCAG compliant" / "WCAG compliant" never appear in product output. A forbidden-phrase guard (`tests/security/test_no_wcag_compliance_claims.py`) scans the module + TS helper packages on every CI run.
 - **Dependency:** `axe-core` is **not** a workspace dependency. Projects that adopt the accessibility module install it themselves (`pnpm add axe-core`); the TS helper resolves it via `require.resolve('axe-core/axe.min.js')` at runtime and raises a typed `AxeCoreNotInstalledError` when missing.
 
+#### 10.4.2 Compliance Packs (Phase 34, ADR-0046)
+
+Phase 34 layers a *compliance pack* surface on top of the existing modules so operators can drive a run with a single named posture (WCAG 2.2 AA, GDPR baseline, CCPA baseline, SOC 2 trail) instead of hand-wiring `--modules` and per-module options. The pack file is a strict YAML document loaded via `engine.policy.compliance.load_compliance_pack`; the loader rejects unknown modules, unknown check ids, and checks against modules that do not support the `checks` filter — all at **load time**, so a misspelled reference fails before any work starts.
+
+- **CLI surface:** `sentinel audit --compliance-pack <id-or-path>`. Pack ids resolve to `policy/compliance/<id>.yaml`; paths are accepted as-is. The CLI exits `EXIT_CONFIG_ERROR` (2) when the pack fails to load. In `--json` mode, the response payload carries `compliance_pack: <id>`.
+- **Pack shape:** `pack.id` (lower-kebab), `label` (ends with "(automated)"; never "compliant"), `description`, `version` (integer, ≥ 1), `includes` (1..64 entries — each has `module`, optional free-form `options`, optional `checks` filter), `fail_on` (severities that fail the gate), `warn_on` (severities that warn). Repeated entries per module are allowed; the loader merges `options:` (last-wins) and unions `checks:` into a final `enabled_checks` tuple threaded through `ModuleContext.options`.
+- **Compliance module:** `modules/compliance/` ships four sub-checks under a single `SentinelModule`:
+  - `gdpr` — consent banner detection (heuristics on `aria-label` / `id` / `class` / `role=dialog`), cookies-before-consent (Art. 6, flags every non-essential `Set-Cookie` on the first page-load), asymmetric reject UX (EDPB Guidelines 03/2022).
+  - `ccpa` — Do Not Sell / Share / Privacy Choices link presence + opt-out form verification (link target must expose an actual opt-out form, not a generic privacy policy).
+  - `soc2_trail` — seven-gate audit on SentinelQA's own `audit.log`: existence, JSONL parseability, monotonic timestamps, presence of safety decisions, paired module-start / module-end events, artifact events, and absence of unredacted secrets (Bearer tokens, JWTs, `sk-` / `AKIA` keys, `Set-Cookie` values). Optional gates for LLM events (Phase 30) and vault events (Phase 31).
+  - `wcag22` — signal-driven adapter that invokes the Phase 34.01 deterministic checks against `<run-dir>/compliance/signals/wcag22.json`. SCs covered: 2.4.11 Focus Not Obscured (Minimum), 2.5.7 Dragging Movements, 2.5.8 Target Size (Minimum), 3.3.7 Redundant Entry, 3.3.8 Accessible Authentication (Minimum).
+  - The module reads optional signal files from `<run-dir>/compliance/signals/{gdpr,ccpa,wcag22}.json` and the run's own `audit.log`. Missing signals → the corresponding sub-check reports `signals_seen=False` / no findings (CLAUDE §37 — no fake completion).
+- **Outputs:** per-check summaries under `<run-dir>/compliance/{gdpr,ccpa,soc2_trail,wcag22}.json` plus `<run-dir>/compliance/index.json` listing what ran + duration. Findings appear in the normal `findings.json` with `module: compliance` and a `compliance_id` tag (e.g. `wcag-2.2:target-size-min`, `gdpr:Art.6`, `gdpr:EDPB-03/2022`, `ccpa:do-not-sell-link`, `soc2:trail-incomplete`).
+- **Schema:** the additive `Finding.compliance_id` field (regex `^[a-z][a-z0-9.-]*:[A-Za-z0-9][A-Za-z0-9._/-]*$`) joins `cwe_id` / `attack_id` / `owasp_api_id` as a fourth optional taxonomy field. `FINDINGS_SCHEMA_VERSION` stays at `"2"` per the Phase 33 precedent ("additive optional fields do not bump").
+- **Safety + tone (CLAUDE §28 extended):** every description begins with "Automated <regime> check found"; product outputs never claim the target is *compliant*. A forbidden-phrase guard (`tests/security/test_no_compliance_claims.py`) scans `modules/compliance/`, `policy/compliance/`, and `engine/policy/compliance.py` for 14 phrases ("WCAG compliant", "GDPR compliant", "CCPA compliant", "SOC 2 compliant", "fully <regime> compliant", etc.).
+- **Built-in packs (`policy/compliance/`):** `wcag-2.2-aa.yaml` (accessibility + compliance `wcag22`), `gdpr-baseline.yaml` (compliance `gdpr` with `flag_missing_consent_banner: true`), `ccpa-baseline.yaml` (compliance `ccpa` with `enforce_ccpa_link_presence: true`), `soc2-trail.yaml` (compliance `soc2_trail`). Each pack's label ends with "(automated)".
+- **Docs:** the operator-facing reference lives at `docs/user/compliance-packs.md` (custom-pack schema + validation rules + per-pack output layout).
+
 ### 10.5 Performance testing
 
 Capabilities:
@@ -2234,6 +2252,14 @@ report:
     - json
     - junit
     - sarif
+
+# Phase 34 — Compliance Packs (ADR-0046). Packs live under
+# `policy/compliance/` and compose modules + per-module options + check
+# filters under one regime label. Built-in pack ids: `wcag-2.2-aa`,
+# `gdpr-baseline`, `ccpa-baseline`, `soc2-trail`. Custom packs are
+# loaded by path. Run with `sentinel audit --compliance-pack <id>`.
+# Pack labels always say "(automated)"; CLAUDE §28 forbids
+# "compliant" claims in product output.
 
 # Multi-provider LLM (Phase 30, ADR-0042). The block is optional —
 # defaults give every consumer the `null` provider, no API calls, no
