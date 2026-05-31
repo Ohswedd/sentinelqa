@@ -251,6 +251,7 @@ source = [
     "engine/plugins",
     "modules/api",
     "modules/functional",
+    "modules/supply_chain",
     "modules/visual",
     "apps/cli/src/sentinel_cli",
     "packages/python-sdk/src/sentinelqa",

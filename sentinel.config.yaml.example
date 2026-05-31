@@ -221,6 +221,47 @@ policy:
       enabled: false
       webhook_env: "SLACK_WEBHOOK_URL"
 
+  # Phase 33 Supply-Chain & Dependency Audit (PRD §10.7.3, ADR-0045).
+  # Every check is defensive / read-only. Network access is limited to
+  # `api.osv.dev` (OSV lookup) and the configured container scanner
+  # (Trivy or Grype) running against the configured image only. When the
+  # container image is unset or no scanner is on PATH, the check is
+  # downgraded to `skipped` with an info-severity recommendation — never
+  # silently passed.
+  supply_chain:
+    max_lockfile_age_days: 180     # CWE-1357 freshness threshold
+    sbom:
+      enabled: true
+    osv:
+      enabled: true
+      api_base: "https://api.osv.dev"
+      rate_limit_rps: 5.0          # protects the public OSV endpoint
+      request_timeout_seconds: 30.0
+    freshness:
+      enabled: true
+    postinstall:
+      enabled: true
+    container:
+      enabled: true
+      image: null                  # e.g. "my-app@sha256:<digest>"
+      max_findings: 200
+    licenses:
+      enabled: true
+      # SPDX policy. Empty allowlist means "no whitelisting policy";
+      # only the denylist gates findings.
+      allow:
+        - Apache-2.0
+        - MIT
+        - BSD-3-Clause
+        - BSD-2-Clause
+        - ISC
+        - Python-2.0
+      deny:
+        - GPL-3.0-only
+        - AGPL-3.0-only
+        - AGPL-3.0-or-later
+      unknown_severity: low        # info | low | medium | high
+
 runner:
   # `sentinel test` controls (Phase 08, ADR-0013). The runner is
   # Playwright-native; choose between local execution and the pinned
