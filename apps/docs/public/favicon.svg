@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  SentinelQA favicon — simplified mark, tuned to legibility at 16×16.
+  Phase 35.05. Owner replaces with registered mark before v1.0.0.
+-->
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 32 32"
+     role="img"
+     aria-label="SentinelQA">
+  <title>SentinelQA</title>
+  <rect width="32" height="32" rx="6" fill="#0f766e"/>
+  <text x="16" y="22"
+        text-anchor="middle"
+        font-family="ui-sans-serif, system-ui, sans-serif"
+        font-weight="800"
+        font-size="20"
+        fill="#f0fdfa">S</text>
+</svg>
