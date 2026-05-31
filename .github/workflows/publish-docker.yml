@@ -1,0 +1,133 @@
+name: Publish (Docker Hub)
+
+# Triggered on a `v*` tag push. Builds the public
+# `sentinelqa/runner:<version>` image for linux/amd64 + linux/arm64
+# via Docker Buildx + QEMU, tags it `:1.0.0` / `:1.0` / `:latest` /
+# `:sha-<short>`, and pushes to Docker Hub. The image pre-installs
+# sentinelqa-cli from PyPI so `docker run --rm sentinelqa/runner:<tag>
+# sentinel --version` works standalone.
+#
+# Publish is gated on the `docker-release` GitHub Environment so the
+# human owner manually approves before any push.
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: publish-docker-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build-and-push:
+    name: build-and-push (multi-arch)
+    runs-on: ubuntu-latest
+    environment:
+      name: docker-release
+      url: https://hub.docker.com/r/sentinelqa/runner
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Resolve tag and version
+        id: meta
+        run: |
+          set -euo pipefail
+          TAG="${GITHUB_REF##*/}"
+          VERSION="${TAG#v}"
+          # Major.minor for the `:1.0` rolling tag.
+          MINOR="$(echo "$VERSION" | awk -F. '{ print $1"."$2 }')"
+          SHORT_SHA="$(git rev-parse --short HEAD)"
+          BUILD_DATE="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "minor=$MINOR" >> "$GITHUB_OUTPUT"
+          echo "short_sha=$SHORT_SHA" >> "$GITHUB_OUTPUT"
+          echo "build_date=$BUILD_DATE" >> "$GITHUB_OUTPUT"
+          # Verify the tag matches apps/cli pyproject so a stale tag fails fast.
+          PY_VERSION="$(python3 -c 'import tomllib,sys; sys.stdout.write(tomllib.load(open("apps/cli/pyproject.toml","rb"))["project"]["version"])')"
+          if [ "$VERSION" != "$PY_VERSION" ]; then
+            echo "::error::tag $TAG (= $VERSION) does not match apps/cli/pyproject.toml version $PY_VERSION"
+            exit 1
+          fi
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push multi-arch image
+        uses: docker/build-push-action@v6
+        with:
+          context: apps/cli/sentinel/runner/docker
+          file: apps/cli/sentinel/runner/docker/Dockerfile.publish
+          platforms: linux/amd64,linux/arm64
+          push: true
+          provenance: true
+          sbom: true
+          tags: |
+            sentinelqa/runner:${{ steps.meta.outputs.version }}
+            sentinelqa/runner:${{ steps.meta.outputs.minor }}
+            sentinelqa/runner:latest
+            sentinelqa/runner:sha-${{ steps.meta.outputs.short_sha }}
+          build-args: |
+            SENTINEL_VERSION=${{ steps.meta.outputs.version }}
+            SOURCE_COMMIT=${{ github.sha }}
+            BUILD_DATE=${{ steps.meta.outputs.build_date }}
+          labels: |
+            org.opencontainers.image.source=https://github.com/Ohswedd/sentinelqa
+            org.opencontainers.image.version=${{ steps.meta.outputs.version }}
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.created=${{ steps.meta.outputs.build_date }}
+
+  verify:
+    name: verify (pull + manifest inspect + run)
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Resolve version
+        id: meta
+        run: |
+          set -euo pipefail
+          TAG="${GITHUB_REF##*/}"
+          VERSION="${TAG#v}"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+      - name: Pull image
+        run: docker pull sentinelqa/runner:${{ steps.meta.outputs.version }}
+      - name: Verify multi-arch manifest contains amd64 and arm64
+        env:
+          VERSION: ${{ steps.meta.outputs.version }}
+        run: |
+          set -euo pipefail
+          MANIFEST="$(docker manifest inspect sentinelqa/runner:${VERSION})"
+          echo "$MANIFEST" | grep -q '"architecture": "amd64"' || {
+            echo "::error::manifest is missing linux/amd64"
+            exit 1
+          }
+          echo "$MANIFEST" | grep -q '"architecture": "arm64"' || {
+            echo "::error::manifest is missing linux/arm64"
+            exit 1
+          }
+      - name: Run sentinel --version inside the image
+        env:
+          VERSION: ${{ steps.meta.outputs.version }}
+        run: |
+          set -euo pipefail
+          OUTPUT="$(docker run --rm sentinelqa/runner:${VERSION} sentinel --version)"
+          echo "$OUTPUT"
+          echo "$OUTPUT" | grep -qE "(^|[[:space:]])${VERSION}([[:space:]]|$)" || {
+            echo "::error::sentinel --version did not report ${VERSION}"
+            exit 1
+          }
