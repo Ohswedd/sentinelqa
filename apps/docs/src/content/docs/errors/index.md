@@ -29,6 +29,7 @@ Each code below maps to one of the CLI exit codes above. The message template us
 
 | Code | Message template | Suggested fix |
 |---|---|---|
+| `E-LLM-003` | LLM per-run cost budget exceeded: projected {projected_usd:.4f} USD > budget {budget_usd:.4f} USD. | Raise `llm.budget.max_usd_per_run`, lower `planner.llm.max_proposals`, or switch to a cheaper model. The deterministic path always works. |
 | `E-QGATE-001` | Quality gate failed: {detail} | Either fix the underlying findings or adjust `policy` in `sentinel.config.yaml` if the gate is genuinely too strict. |
 
 ## Exit 2 — Invalid config
@@ -38,6 +39,17 @@ Each code below maps to one of the CLI exit codes above. The message template us
 | `E-CFG-001` | Configuration file is missing or unreadable: {path} | Create `sentinel.config.yaml` at the project root or pass `--config <path>` pointing at an existing file. |
 | `E-CFG-002` | Configuration failed schema validation: {detail} | Run `sentinel doctor` for a precise diff against the expected schema (PRD §17.1). |
 | `E-CFG-003` | Inline secret detected at config key {field!r}; secrets must come from environment variables. | Replace the literal value with the corresponding `*_env` key (e.g. `password_env: TEST_USER_PASSWORD`). |
+| `E-LLM-009` | LLM provider {provider!r} does not support structured output for model {model!r}. | Pick a model that supports structured output (see `sentinel llm list`) or disable the LLM feature for this caller. |
+
+## Exit 3 — Runtime error
+
+| Code | Message template | Suggested fix |
+|---|---|---|
+| `E-LLM-004` | LLM provider {provider!r} rejected the request: HTTP {status_code} {detail} | Inspect the redacted request in the audit log. Common causes: model deprecated, region/account blocked, content filter. |
+| `E-LLM-005` | LLM provider {provider!r} returned a response that failed structured-output validation: {detail} | The locked prompt envelope guards against this; if it recurs, switch to a model that supports structured output and re-run. |
+| `E-LLM-006` | LLM provider {provider!r} timed out after {timeout_seconds:.1f}s. | Raise `*.llm.request_timeout_seconds`, or switch to a faster provider. The deterministic fallback path always works. |
+| `E-LLM-007` | LLM provider {provider!r} returned HTTP 429 (rate-limited). | Lower `llm.rate_limit.requests_per_minute`, retry later, or switch providers. The deterministic fallback path always works. |
+| `E-LLM-008` | LLM provider {provider!r} returned data that does not match the caller-side schema: {detail} | Caller schema mismatches are a model-quality signal; the run drops the malformed response and continues deterministically. |
 
 ## Exit 4 — Unsafe target
 
@@ -52,6 +64,8 @@ Each code below maps to one of the CLI exit codes above. The message template us
 | Code | Message template | Suggested fix |
 |---|---|---|
 | `E-DEP-001` | Required dependency is missing: {dependency} | Run `make install` (or `uv sync --frozen --all-packages` and `pnpm install --frozen-lockfile`) and retry. |
+| `E-LLM-001` | LLM provider {provider!r} is missing required credentials: env var {env_var!r} is not set. | Export the env var, or set `llm.providers.<name>.api_key_env` to a name that IS set. SentinelQA never accepts inline API keys. |
+| `E-LLM-002` | LLM provider {provider!r} cannot reach the configured model {model!r}: {detail} | Confirm the model name is correct for this provider (see `sentinel llm list`). For local providers (Ollama), run `ollama pull <model>`. |
 | `E-PLG-001` | Plugin {plugin!r} could not be loaded: {detail} | Verify the plugin is installed, declares the expected entry point, and matches the host SentinelQA version. |
 
 ## Exit 6 — Test execution failed

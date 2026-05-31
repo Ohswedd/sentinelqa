@@ -30,6 +30,7 @@ from sentinel_cli.commands import (
     generate_cmd,
     init_cmd,
     llm_audit_cmd,
+    llm_cmd,
     mcp_cmd,
     perf_cmd,
     plan_cmd,
@@ -297,6 +298,15 @@ def build_app() -> typer.Typer:
             "`plugins list` shows installed plugins; `plugins info` "
             "prints one manifest; `plugins validate` checks a "
             "standalone manifest file."
+        ),
+    )
+    cli.add_typer(
+        llm_cmd.llm_app,
+        name="llm",
+        help=(
+            "Multi-provider LLM management (Phase 30, ADR-0042). `llm "
+            "list` shows registered providers; `llm doctor` probes "
+            "reachability; `llm price` prints per-model cost tables."
         ),
     )
 
