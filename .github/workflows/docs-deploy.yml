@@ -37,7 +37,7 @@ concurrency:
 
 jobs:
   build-and-deploy:
-    name: docs (Astro Starlight)
+    name: docs deploy (Cloudflare Pages)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

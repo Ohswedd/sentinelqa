@@ -76,7 +76,7 @@ def test_workflow_has_named_job_with_required_steps() -> None:
     jobs = data["jobs"]
     assert "build-and-deploy" in jobs
     job = jobs["build-and-deploy"]
-    assert job["name"] == "docs (Astro Starlight)"
+    assert job["name"] == "docs deploy (Cloudflare Pages)"
     step_names = [s.get("name", "") for s in job["steps"]]
     required = [
         "Checkout",
