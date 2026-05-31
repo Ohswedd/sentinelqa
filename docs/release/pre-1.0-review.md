@@ -113,6 +113,38 @@ Signed: <owner-name>
 
 _None signed yet — the first tag (v0.7.0) requires the registered-marks rows above to clear before this block is signed and applied as a tag._
 
+### Draft sign-off — v1.0.0 (prepared 2026-06-01, awaiting owner)
+
+Phase 36 (Publish to Ecosystem) closed on `feature/phase-36-publish-ecosystem`. All engineering, build, inspection, audit, and changelog gates below were re-verified on the close-out commit. The four owner-only rows (USPTO / EUIPO / UKIPO / signature) are intentionally blank — they remain pre-tag blockers for the actual `git tag -s v1.0.0` (`CLAUDE.md` §40 + `docs/dev/semver.md` pre-1.0 rule §5).
+
+```
+## Tag: v1.0.0
+Date:           2026-06-01
+Owner:          <human-owner-name>     ← owner to fill in
+Commit:         <to be set at merge time of feature/phase-36-publish-ecosystem>
+Branch:         feature/phase-36-publish-ecosystem
+
+make ci:        <pytest summary on tag commit> | TS: <vitest summary on tag commit>
+make coverage:  Python <pct>% (floor 95%) | TS <lines%>/<branches%> (floors 85/75)
+make test-full: <added slow-tier summary on tag commit>
+make audit-metadata: ok — 16 manifests audited
+make audit-license-headers: ok — SPDX coverage + foreign-SPDX drift clean
+make build-all: 6 Python wheels + 6 Python sdists + 1 TS tarball (sentinelqa-ts-runtime-1.0.0.tgz); 13 artifacts total
+make inspect-all: ok — 13 artifact(s) inspected, no forbidden files
+
+Trademark clearance:
+  - USPTO:   <verdict + date + screenshot URL>   ← owner to complete
+  - EUIPO:   <verdict + date + screenshot URL>   ← owner to complete
+  - UKIPO:   <verdict + date + screenshot URL>   ← owner to complete
+
+Publication intent: PyPI + npm + Docker Hub + GitHub Release (the v1.0.0 row in `docs/dev/semver.md` is publication-eligible; the publish-runbook at `docs/release/publish-runbook.md` is the owner-driven execution path)
+Notes:          v1.0.0 covers Phases 30 – 36 (multi-provider LLM, browser-authenticated audits, extended security catalog with `FINDINGS_SCHEMA_VERSION` 1→2, supply-chain audit, compliance packs, public-release engineering, ecosystem publish). All six publishable Python pyprojects and `packages/ts-runtime/package.json` are at `1.0.0`; the TS package drops `private:true`, tightens `files:` to `dist/` + `LICENSE` + `README.md`, and gains `publishConfig.access: public` + `publishConfig.provenance: true`. `CHANGELOG.md` has a curated `[1.0.0]` section. `docs/dev/semver.md` `v1.0.0` row updated. ADR-0048 (publish pipeline) accepted.
+
+Signed: <owner-name>                  ← owner to sign
+```
+
+The act of filling in the four blank rows and the signature is permission to **tag**. Even after the tag, publication is gated by `docs/release/publish-runbook.md` — the agent never runs `twine upload` / `pnpm publish` / `docker push` / `git tag`; those are owner commands.
+
 ### Draft sign-off — v0.7.0 (prepared 2026-05-31, awaiting owner)
 
 The engineering, build, inspection, audit, and changelog gates below were re-verified on the release-prep branch `feature/release-0.7.0`. The four owner-only rows (USPTO / EUIPO / UKIPO / signature) are intentionally blank.

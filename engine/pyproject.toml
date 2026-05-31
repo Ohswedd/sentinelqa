@@ -1,6 +1,6 @@
 [project]
 name = "sentinelqa-engine"
-version = "0.7.0"
+version = "1.0.0"
 description = "SentinelQA engine — domain models, config loader, safety policy, errors, logging, orchestrator."
 readme = "README.md"
 requires-python = ">=3.11"

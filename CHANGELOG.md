@@ -15,28 +15,109 @@ human owner curates the draft before each tag.
 
 ## [Unreleased]
 
+_No unreleased changes._
+
+## [1.0.0] - 2026-06-01
+
+**First publication-eligible tag.** Captures Phases 30 – 36 — the
+post-MVP ecosystem expansion that turns SentinelQA into a complete
+public library + ecosystem. Owner approval still required per
+`CLAUDE.md` §40 (the act of tagging is permission to publish, not
+permission to skip the runbook).
+
+Every Python distribution (`sentinelqa`, `sentinelqa-cli`,
+`sentinelqa-engine`, `sentinelqa-modules`, `sentinelqa-integrations`,
+`sentinelqa-mcp`) and the npm package `@sentinelqa/ts-runtime` move from
+`0.7.0` to `1.0.0`. The Docker runner image is tagged
+`sentinelqa/runner:1.0.0` + `:1.0` + `:latest` + `:sha-<short>` on a
+multi-arch (amd64 + arm64) build.
+
 ### Added
 
-- **plans/phase-30-llm-providers/** — Multi-provider LLM adapter layer. Generalises the planner/analyzer/healer LLM Protocols into a single `engine.llm.LlmProvider` surface; adds adapters for Google Gemini, Ollama (local), Azure OpenAI, Google Vertex AI, Mistral, Groq, OpenRouter. Shared cost / budget / rate-limit / redaction plumbing; `sentinel llm doctor` / `list` / `price` CLI surface.
-- **plans/phase-31-browser-auth/** — Browser-authenticated audits. Encrypted storage-state vault, `sentinel auth login` interactive flow, OAuth + LLM-web profile recipes (Google / GitHub / Microsoft + Claude / ChatGPT / Codex / Gemini / Le Chat), vault-aware runner + crawler wiring, layered safety guards.
-- **plans/phase-32-extended-security/** — Extended security skill catalog (9 new checks, no offensive material). JWT weakness scanner, extended cookie audit, TLS / cert posture probe, GraphQL safety probe, OWASP-API-Top-10 BOLA/BFLA via authorized identity replay, deeper frontend-only auth detector, secret-in-bundle scanner, SSRF / open-redirect map, CWE / MITRE ATT&CK / OWASP-API id mapping on every security + API finding.
-- **plans/phase-33-supply-chain/** — Supply-chain & dependency audit. CycloneDX 1.5 SBOM generator, OSV vulnerability lookup, lockfile freshness gate, postinstall-hook scanner, Trivy / Grype container scanner adapter, SPDX license audit, `sentinel supply-chain` CLI.
-- **plans/phase-34-compliance/** — Compliance packs. WCAG 2.2 axe upgrade + 5 deterministic checks, GDPR cookie-consent detection, CCPA Do-Not-Sell link check, SOC 2 audit-trail quality gate, compliance-pack policy DSL with four built-in packs.
-- **plans/phase-35-public-release/** — Public release engineering. README polish with badges and quickstart, GitHub community files (issue templates, CoC, SECURITY.md, CONTRIBUTING polish), license-header audit, Cloudflare Pages docs deploy, brand assets, branch-protection documentation, Dependabot + GitHub Security Advisories, owner-gated "go public" checklist.
-- **plans/phase-36-publish-ecosystem/** — Ecosystem publish. v1.0.0 tag prep (manifests bump + curated CHANGELOG), PyPI Trusted-Publisher workflow, npm publish workflow with provenance, Docker Hub multi-arch publish (amd64 + arm64), GitHub Release with binaries, post-publish smoke test, owner-only publish runbook.
-- **docs/PRD.md §7.3** updated — original future-scope split into "moved in-scope (Phases 30–36)" and "still future-scope". Out-of-scope items remain ADR-anchored.
-- **plans/README.md** — phase table extended to 37 phases; PRD → phase mapping updated.
-- **plans/STATUS.md** — Phase 30–36 added as `[ ]`, PR & merge log carries Phase 29 release-prep row, active pointer flipped from "build complete" to "Phase 30 planned (not yet started)".
+- **phase-30** — Multi-provider LLM adapter layer (ADR-0042). Canonical
+  `engine.llm.LlmProvider` Protocol plus seven new HTTP-only adapters
+  (Google Gemini, Ollama, Azure OpenAI, Google Vertex AI with RS256
+  JWT, Mistral, Groq, OpenRouter). Shared cost / budget / rate-limit /
+  redaction plumbing; `sentinel llm doctor` / `list` / `price` CLI;
+  optional top-level `llm:` config block.
+- **phase-31** — Browser-authenticated audits (ADR-0043). Encrypted
+  storage-state vault (AES-256-GCM with the master key in the OS
+  keyring), `sentinel auth login` interactive flow, OAuth + LLM-web
+  profile recipes, vault-aware runner + crawler wiring, layered safety
+  guards (host-allowlist check, expiry refusal, plaintext-on-teardown
+  wipe).
+- **phase-32** — Extended security skill catalog (ADR-0044). Eight new
+  defensive checks (`jwt_weakness`, extended `cookies`, `tls_posture`,
+  `graphql_safety`, `api_bola_bfla`, deeper `frontend_only_auth`,
+  `bundle_secrets`, `ssrf_redirect`) with CWE / MITRE ATT&CK / OWASP-API
+  ids. `FINDINGS_SCHEMA_VERSION` bumped `1`→`2` with a forward-compat
+  reader + explicit `engine.domain.migrations.findings_1_to_2`
+  migration; SARIF gains `runs[].taxonomies` referencing
+  `cwe.mitre.org` / `attack.mitre.org` / the OWASP-API editions index.
+- **phase-33** — Supply-chain & dependency audit (ADR-0045). CycloneDX
+  1.5 SBOM generator (7 lockfile shapes), OSV `POST /v1/querybatch`
+  lookup with token-bucket rate-limit, lockfile freshness + manifest
+  drift gate, postinstall hook scanner (npm regex + Python AST),
+  Trivy / Grype container adapter (no auto-install, no pull),
+  SPDX license audit, `sentinel supply-chain` CLI + `policy.supply_chain`
+  config block.
+- **phase-34** — Compliance packs (ADR-0046). New `modules.compliance`
+  module with four sub-checks (`gdpr`, `ccpa`, `soc2_trail`, `wcag22`),
+  pack DSL at `engine/policy/compliance.py`, four built-in packs
+  (`wcag-2.2-aa`, `gdpr-baseline`, `ccpa-baseline`, `soc2-trail`),
+  axe-core `wcag22a` / `wcag22aa` defaults, `--compliance-pack` CLI
+  flag, additive `Finding.compliance_id` taxonomy field. Pack labels
+  carry the mandatory "(automated)" suffix per CLAUDE §28.
+- **phase-35** — Public release engineering (ADR-0047). README cover
+  letter with shields badges + demo SVG + module surface table +
+  safety-boundary callout, structured YAML issue forms, `SECURITY.md`
+  with 90-day coordinated disclosure, Contributor Covenant 2.1 by
+  reference, SPDX header audit + foreign-SPDX drift gate, NOTICE for
+  the four vendored upstream schemas, Cloudflare Pages docs deploy
+  workflow with fork-secrets fallback, brand assets (SVG + generated
+  PNGs), branch-protection spec + verifier, `.github/dependabot.yml`
+  (four ecosystems, weekly), owner-runnable go-public checklist + four
+  announcement drafts.
+- **phase-36** — Ecosystem publish (ADR-0048). `.github/workflows/
+  publish-pypi.yml` (Trusted-Publisher OIDC, no long-lived API token,
+  approval-gated `pypi-release` environment), `publish-npm.yml`
+  (provenance via OIDC), `publish-docker.yml` (multi-arch amd64 +
+  arm64 via Buildx + QEMU, OCI labels), `github-release.yml`
+  (release notes extracted from `CHANGELOG.md`, wheel + sdist + TS
+  tarball + SBOM as assets). Dry-run scripts
+  (`scripts/release/dry_run_pypi.py`, `dry_run_npm.py`,
+  `dry_run_docker.py`) so the owner can validate locally before any
+  tag goes out. Post-publish smoke test gated by
+  `SENTINELQA_TEST_POST_PUBLISH=1`. Owner-only publish runbook at
+  `docs/release/publish-runbook.md` (`CLAUDE.md` §3 + §40).
 
 ### Changed
 
-- **Project framing**: the README headline status moves from `Stable (pre-1.0)` to a forward-looking pointer at Phases 30–36 (MVP complete; ecosystem expansion in progress). v1.0.0 lands at the end of Phase 36.
+- **`packages/ts-runtime/package.json`** — `private: true` removed at
+  `1.0.0`; `files:` whitelist restricted to `dist/` + `LICENSE` +
+  `README.md` (sources no longer shipped); `exports` / `main` /
+  `types` point at compiled `dist/*.js` + `dist/*.d.ts`;
+  `publishConfig` adds `access: public` + `provenance: true` so
+  `pnpm publish` emits a signed SLSA provenance statement.
+- **`docs/dev/semver.md`** — `v1.0.0` tag-plan row updated to reflect
+  what shipped between `v0.7.0` and `v1.0.0` (Phases 30 – 35
+  end-to-end, plus the Phase 36 release-engineering surface itself).
+- **`docs/release/pre-1.0-review.md`** — fresh `v1.0.0` draft sign-off
+  block with every numeric gate pre-filled (`make ci`, `make
+  coverage`, `make test-full`, `make audit-metadata`,
+  `make build-all`, `make inspect-all`). Owner-only trademark rows
+  and signature remain blank.
+- **`CHANGELOG.md`** — the duplicated `## [0.7.0] - 2026-05-31` header
+  line just above the prior `0.7.0` body has been removed (it was a
+  Phase 28 paste artefact; cosmetic only — the body never duplicated).
 
 ### Status
 
-This is **planning only** — no production code changed in this commit. Each of the seven new phases will land via its own `feature/phase-NN-<slug>` branch + PR + CI + squash-merge, same as Phases 00–29.
-
-## [0.7.0] - 2026-05-31
+`v1.0.0` is the first **publication-eligible** tag (`docs/dev/semver.md`).
+Tagging happens via `git tag -s v1.0.0`; publication is a separate
+owner step driven by `docs/release/publish-runbook.md`. The agent does
+not run `twine upload` / `pnpm publish` / `docker push` / `git tag` —
+those are owner commands (CLAUDE.md §3 + §40).
 
 ## [0.7.0] - 2026-05-31
 
