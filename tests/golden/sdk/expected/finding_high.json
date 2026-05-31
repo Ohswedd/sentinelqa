@@ -17,7 +17,7 @@
   "module": "security",
   "recommendation": "Set HttpOnly on the session cookie.",
   "run_id": "RUN-AAAAAAAAAAAA",
-  "schema_version": "1",
+  "schema_version": "2",
   "severity": "high",
   "suggested_fix": "Add `HttpOnly` to the Set-Cookie header.",
   "title": "Cookie missing HttpOnly",

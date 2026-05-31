@@ -20,7 +20,9 @@ from engine.reporter.findings_linter import (
     lint_findings,
 )
 
-FINDINGS_ENVELOPE_SCHEMA_VERSION: str = "1"
+FINDINGS_ENVELOPE_SCHEMA_VERSION: str = "2"
+"""Envelope wire version. Tracks ``FINDINGS_SCHEMA_VERSION`` 1:1; bumped
+to ``"2"`` in Phase 32 / ADR-0044 to match the per-finding schema bump."""
 
 
 def write_findings(

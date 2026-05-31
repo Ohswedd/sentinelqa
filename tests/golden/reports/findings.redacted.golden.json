@@ -3,9 +3,11 @@
   "findings": [
     {
       "affected_target": "https://localhost:8080",
+      "attack_id": null,
       "category": "security/headers",
       "confidence": 0.95,
       "created_at": "2026-05-27T12:00:30Z",
+      "cwe_id": null,
       "description": "GET /api/users/me returned 500; response body included Authorization: [REDACTED:bearer_token]",
       "evidence": [
         {
@@ -23,10 +25,11 @@
         "selector": null
       },
       "module": "security",
+      "owasp_api_id": null,
       "recommendation": "Filter Authorization header from server error responses.",
       "reproduction_steps": [],
       "run_id": "RUN-PASSEDAAAAAA",
-      "schema_version": "1",
+      "schema_version": "2",
       "severity": "critical",
       "suggested_fix": null,
       "title": "Authorization header leaked in error response"
@@ -34,5 +37,5 @@
   ],
   "generated_at": "2026-05-27T12:00:30+00:00",
   "run_id": "RUN-PASSEDAAAAAA",
-  "schema_version": "1"
+  "schema_version": "2"
 }

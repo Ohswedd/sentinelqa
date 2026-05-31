@@ -63,6 +63,13 @@ paths = [
   # member into an in-memory tarball to prove the inspector flags it.
   # The body is a literal PEM-style header with no key bytes.
   '''^tests/integration/release/test_built_packages\.py$''',
+  # Phase 32 — Extended security catalog tests (ADR-0044) assert that
+  # the new credential-shape detectors (JWT, Stripe live, GitHub PAT)
+  # fire on literal canonical fixtures. Each test then asserts the
+  # raw value never survives into the persisted finding.
+  '''^tests/unit/modules/security/test_jwt_weakness\.py$''',
+  '''^tests/unit/modules/security/test_bundle_secrets\.py$''',
+  '''^tests/integration/modules/security/test_phase32_e2e\.py$''',
 ]
 regexes = [
   # Canonical AWS example access-key from public AWS docs.

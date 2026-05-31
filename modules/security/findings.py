@@ -16,6 +16,7 @@ from engine.domain.evidence import Evidence
 from engine.domain.finding import Finding, FindingLocation
 from engine.domain.ids import IdGenerator
 
+from modules.security.cwe_mapping import lookup as cwe_lookup
 from modules.security.models import SecurityCheckResult, SecurityIssue
 
 
@@ -41,11 +42,18 @@ def _issue_to_finding(
     body = issue.description
     if extras_text:
         body = f"{body}\n\nEvidence: {extras_text}"
+    category = f"security/{check}/{issue.rule_id.lower()}"
+    ids = cwe_lookup(category)
+    evidence_cwe = issue.evidence.get("cwe_id") if isinstance(issue.evidence, dict) else None
+    evidence_attack = issue.evidence.get("attack_id") if isinstance(issue.evidence, dict) else None
+    evidence_owasp = (
+        issue.evidence.get("owasp_api_id") if isinstance(issue.evidence, dict) else None
+    )
     return Finding(
         id=id_generator.new("FND"),
         run_id=run_id,
         module="security",
-        category=f"security/{check}/{issue.rule_id.lower()}",
+        category=category,
         severity=issue.severity,
         confidence=issue.confidence,
         title=issue.title,
@@ -55,6 +63,9 @@ def _issue_to_finding(
         suggested_fix=issue.recommendation,
         affected_target=target_base_url,
         recommendation=issue.recommendation,
+        cwe_id=str(evidence_cwe) if evidence_cwe is not None else ids.cwe_id,
+        attack_id=str(evidence_attack) if evidence_attack is not None else ids.attack_id,
+        owasp_api_id=str(evidence_owasp) if evidence_owasp is not None else ids.owasp_api_id,
         created_at=timestamp,
     )
 

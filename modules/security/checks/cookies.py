@@ -36,10 +36,20 @@ class _ParsedCookie:
     name: str
     attributes: frozenset[str]
     samesite: str | None
+    domain: str | None = None
+    path: str | None = None
 
     @property
     def is_auth_like(self) -> bool:
         return bool(_AUTH_COOKIE_RE.search(self.name))
+
+    @property
+    def has_host_prefix(self) -> bool:
+        return self.name.startswith("__Host-")
+
+    @property
+    def has_secure_prefix(self) -> bool:
+        return self.name.startswith("__Secure-")
 
 
 def parse_set_cookie(raw: str) -> _ParsedCookie:
@@ -59,12 +69,23 @@ def parse_set_cookie(raw: str) -> _ParsedCookie:
     name, _, _value = nv.partition("=")
     attributes: set[str] = set()
     samesite: str | None = None
+    domain: str | None = None
+    path: str | None = None
     for token in parts[1:]:
         if "=" in token:
             attr_name, _, attr_val = token.partition("=")
             attr_name = attr_name.strip().lower()
+            attr_val = attr_val.strip()
             if attr_name == "samesite":
-                samesite = attr_val.strip().lower()
+                samesite = attr_val.lower()
+            elif attr_name == "domain":
+                domain = attr_val.lstrip(".").lower() if attr_val else None
+                # Track the leading dot so over-broad detection can fire
+                # on ``Domain=.parent.tld``.
+                if attr_val.startswith("."):
+                    attributes.add("domain-leading-dot")
+            elif attr_name == "path":
+                path = attr_val
             attributes.add(attr_name)
         else:
             attributes.add(token.strip().lower())
@@ -72,6 +93,8 @@ def parse_set_cookie(raw: str) -> _ParsedCookie:
         name=name.strip(),
         attributes=frozenset(attributes),
         samesite=samesite,
+        domain=domain,
+        path=path,
     )
 
 
@@ -80,6 +103,7 @@ def evaluate_cookie(
     *,
     route: str,
     is_https: bool,
+    response_host: str | None = None,
 ) -> Iterable[SecurityIssue]:
     """Yield issues for one cookie."""
 
@@ -116,6 +140,50 @@ def evaluate_cookie(
             extra={"cookie_name": cookie.name},
         )
 
+    # ---------- Phase 32 extended rules (ADR-0044) ----------
+    if cookie.is_auth_like and not (cookie.has_host_prefix or cookie.has_secure_prefix):
+        yield _issue(
+            "SEC-COOKIE-MISSING-PREFIX",
+            severity="medium",
+            route=route,
+            extra={
+                "cookie_name": cookie.name,
+                "expected_prefix": "__Host-" if "domain" not in cookie.attributes else "__Secure-",
+                "cwe_id": "CWE-1004",
+            },
+        )
+    if (
+        cookie.domain is not None
+        and response_host is not None
+        and "domain-leading-dot" in cookie.attributes
+        and cookie.domain != response_host.lower()
+        and response_host.lower().endswith("." + cookie.domain)
+    ):
+        yield _issue(
+            "SEC-COOKIE-OVERBROAD-DOMAIN",
+            severity="medium",
+            route=route,
+            extra={
+                "cookie_name": cookie.name,
+                "domain": cookie.domain,
+                "response_host": response_host.lower(),
+                "cwe_id": "CWE-1275",
+            },
+        )
+    # __Host- prefix REQUIRES Path=/ (RFC 6265bis); only fire overbroad-path
+    # when the cookie isn't relying on the prefix to enforce host binding.
+    if cookie.path == "/" and cookie.is_auth_like and not cookie.has_host_prefix:
+        yield _issue(
+            "SEC-COOKIE-OVERBROAD-PATH",
+            severity="low",
+            route=route,
+            extra={
+                "cookie_name": cookie.name,
+                "path": cookie.path,
+                "cwe_id": "CWE-1275",
+            },
+        )
+
 
 def run_cookies_check(ctx: CheckContext) -> SecurityCheckResult:
     SafetyPolicy().enforce(ctx.target, ctx.safety.mode)
@@ -134,9 +202,15 @@ def run_cookies_check(ctx: CheckContext) -> SecurityCheckResult:
         targets_scanned += 1
         _audit(ctx, route=route, kind="probe", detail=f"status={response.status_code}")
         # httpx splits Set-Cookie into multiple header entries automatically.
+        response_host = parsed.hostname
         for raw in response.headers.get_list("set-cookie"):
             cookie = parse_set_cookie(raw)
-            for issue in evaluate_cookie(cookie, route=route, is_https=is_https):
+            for issue in evaluate_cookie(
+                cookie,
+                route=route,
+                is_https=is_https,
+                response_host=response_host,
+            ):
                 issues.append(issue)
     elapsed_ms = int((time.monotonic() - start) * 1000)
     return SecurityCheckResult(

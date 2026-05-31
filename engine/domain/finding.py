@@ -48,6 +48,12 @@ class Finding(SentinelModel):
     suggested_fix: str | None = Field(default=None, max_length=4000)
     affected_target: str | None = Field(default=None, max_length=2048)
     recommendation: str | None = Field(default=None, max_length=4000)
+    cwe_id: str | None = Field(default=None, max_length=32, pattern=r"^CWE-\d+$")
+    """Schema v2 (Phase 32): MITRE CWE identifier, e.g. ``CWE-347``."""
+    attack_id: str | None = Field(default=None, max_length=32, pattern=r"^T\d{4}(\.\d{3})?$")
+    """Schema v2 (Phase 32): MITRE ATT&CK technique id, e.g. ``T1606.001``."""
+    owasp_api_id: str | None = Field(default=None, max_length=32, pattern=r"^API-\d{4}-\d{2}$")
+    """Schema v2 (Phase 32): OWASP API Top-10 identifier, e.g. ``API-2023-01``."""
     created_at: datetime
     schema_version: str = Field(default=FINDINGS_SCHEMA_VERSION)
 

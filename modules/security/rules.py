@@ -440,6 +440,428 @@ _RULES: Final[tuple[SecurityRule, ...]] = (
         ),
         default_severity="warning",
     ),
+    # ---------------- Phase 32 — JWT weakness ----------------
+    SecurityRule(
+        rule_id="SEC-JWT-ALG-NONE",
+        category="security/jwt_weakness/sec-jwt-alg-none",
+        name="JwtAlgNone",
+        title="JWT advertises alg=none",
+        description=(
+            "Server-issued JWT advertises the unsigned `alg: none` "
+            "algorithm. Any client can forge a token by submitting an "
+            "empty signature segment. CWE-347."
+        ),
+        recommendation=("Reject `alg: none` at the verifier; pin the expected algorithm."),
+        default_severity="error",
+    ),
+    SecurityRule(
+        rule_id="SEC-JWT-WEAK-HS256-SECRET",
+        category="security/jwt_weakness/sec-jwt-weak-hs256-secret",
+        name="JwtWeakHs256Secret",
+        title="JWT signed with a well-known weak HS256 secret",
+        description=(
+            "Server-issued JWT verifies against one of the well-known "
+            "weak HS256 secrets (e.g. `secret`, `password`). The signing "
+            "key MUST be rotated to a 256-bit random value. CWE-347."
+        ),
+        recommendation=(
+            "Rotate the HS256 secret to a cryptographically random "
+            "256-bit value held in a secret manager."
+        ),
+        default_severity="error",
+    ),
+    SecurityRule(
+        rule_id="SEC-JWT-MISSING-EXP",
+        category="security/jwt_weakness/sec-jwt-missing-exp",
+        name="JwtMissingExp",
+        title="JWT has no exp claim",
+        description=(
+            "The JWT carries no `exp` (expiration) claim. Stolen tokens "
+            "remain valid forever. CWE-613."
+        ),
+        recommendation="Set `exp` on every JWT and reject expired tokens.",
+        default_severity="warning",
+    ),
+    SecurityRule(
+        rule_id="SEC-JWT-EXPIRED",
+        category="security/jwt_weakness/sec-jwt-expired",
+        name="JwtExpired",
+        title="JWT exp is in the past",
+        description=(
+            "JWT's `exp` claim is past the current wall-clock time but "
+            "the server still surfaced it; expiration is not being "
+            "enforced. CWE-613."
+        ),
+        recommendation=(
+            "Reject tokens whose `exp` is in the past with a small " "clock-skew tolerance."
+        ),
+        default_severity="warning",
+    ),
+    SecurityRule(
+        rule_id="SEC-JWT-MISSING-ISS-AUD",
+        category="security/jwt_weakness/sec-jwt-missing-iss-aud",
+        name="JwtMissingIssAud",
+        title="Multi-tenant JWT missing iss / aud claims",
+        description=(
+            "JWT carries multi-tenant claims but no `iss` or `aud`; "
+            "tokens can be replayed across tenants. CWE-345."
+        ),
+        recommendation=(
+            "Set `iss` to the issuing service and `aud` to the intended "
+            "audience; verify both at the receiver."
+        ),
+        default_severity="note",
+    ),
+    # ---------------- Phase 32 — Cookie security extended ----------------
+    SecurityRule(
+        rule_id="SEC-COOKIE-MISSING-PREFIX",
+        category="security/cookies/sec-cookie-missing-prefix",
+        name="CookieMissingPrefix",
+        title="Session cookie missing __Host- / __Secure- prefix",
+        description=(
+            "A session-shaped cookie was set without the `__Host-` or "
+            "`__Secure-` cookie name prefix. The prefixes bind the cookie "
+            "to the exact host and to HTTPS-only contexts. CWE-1004."
+        ),
+        recommendation=(
+            "Rename auth cookies with the `__Host-` prefix (Path=/ and no "
+            "Domain) or `__Secure-` prefix for cross-subdomain auth."
+        ),
+        default_severity="warning",
+    ),
+    SecurityRule(
+        rule_id="SEC-COOKIE-OVERBROAD-DOMAIN",
+        category="security/cookies/sec-cookie-overbroad-domain",
+        name="CookieOverbroadDomain",
+        title="Cookie Domain attribute is over-broad",
+        description=(
+            "A cookie set on a sub-domain declared `Domain=.parent.tld`, "
+            "making it readable by every sibling sub-domain. CWE-1275."
+        ),
+        recommendation=(
+            "Scope the cookie's `Domain` to exactly the host that needs "
+            "it (or omit `Domain` so the browser uses the strict default)."
+        ),
+        default_severity="warning",
+    ),
+    SecurityRule(
+        rule_id="SEC-COOKIE-OVERBROAD-PATH",
+        category="security/cookies/sec-cookie-overbroad-path",
+        name="CookieOverbroadPath",
+        title="Sensitive cookie scoped to Path=/",
+        description=(
+            "A sensitive-looking cookie was scoped to `Path=/`. Path "
+            "scoping is a small defence-in-depth measure for "
+            "single-purpose cookies. CWE-1275."
+        ),
+        recommendation=(
+            "Scope the cookie's `Path` to exactly the route family that "
+            "consumes it (e.g. `/admin`)."
+        ),
+        default_severity="note",
+    ),
+    # ---------------- Phase 32 — TLS posture ----------------
+    SecurityRule(
+        rule_id="SEC-TLS-VERSION-LEGACY",
+        category="security/tls_posture/sec-tls-version-legacy",
+        name="TlsVersionLegacy",
+        title="TLS handshake negotiated a legacy protocol",
+        description=(
+            "The TLS handshake negotiated a deprecated protocol version "
+            "(TLS 1.0, 1.1 or SSLv3). Modern clients should reject these. "
+            "CWE-326."
+        ),
+        recommendation="Disable TLS 1.0 / 1.1 / SSLv3 on the server.",
+        default_severity="error",
+    ),
+    SecurityRule(
+        rule_id="SEC-TLS-WEAK-CIPHER",
+        category="security/tls_posture/sec-tls-weak-cipher",
+        name="TlsWeakCipher",
+        title="TLS handshake negotiated a weak cipher suite",
+        description=(
+            "The TLS handshake negotiated a cipher suite that is "
+            "considered weak by modern standards (RC4 / DES / 3DES / "
+            "NULL / EXPORT, or CBC-mode with TLS 1.2). CWE-326."
+        ),
+        recommendation=(
+            "Restrict the server's cipher list to AEAD suites " "(GCM / CHACHA20-POLY1305)."
+        ),
+        default_severity="warning",
+    ),
+    SecurityRule(
+        rule_id="SEC-TLS-CERT-EXPIRED",
+        category="security/tls_posture/sec-tls-cert-expired",
+        name="TlsCertExpired",
+        title="TLS leaf certificate is expired",
+        description=(
+            "The presented leaf certificate's `notAfter` is in the past. "
+            "Browsers will refuse to connect. CWE-295."
+        ),
+        recommendation="Renew and deploy the certificate immediately.",
+        default_severity="error",
+    ),
+    SecurityRule(
+        rule_id="SEC-TLS-CERT-EXPIRING-SOON",
+        category="security/tls_posture/sec-tls-cert-expiring-soon",
+        name="TlsCertExpiringSoon",
+        title="TLS leaf certificate expires within 14 days",
+        description=(
+            "The presented leaf certificate's `notAfter` is less than 14 "
+            "days away. Schedule a renewal. CWE-295."
+        ),
+        recommendation="Renew the certificate before it expires.",
+        default_severity="warning",
+    ),
+    SecurityRule(
+        rule_id="SEC-TLS-HSTS-MISSING",
+        category="security/tls_posture/sec-tls-hsts-missing",
+        name="TlsHstsMissing",
+        title="HTTPS endpoint did not return HSTS",
+        description=(
+            "No `Strict-Transport-Security` header was returned over "
+            "HTTPS. Without HSTS, downgrade attacks remain feasible. "
+            "CWE-319."
+        ),
+        recommendation=(
+            "Send `Strict-Transport-Security: max-age=31536000; "
+            "includeSubDomains` on every HTTPS response."
+        ),
+        default_severity="warning",
+    ),
+    SecurityRule(
+        rule_id="SEC-TLS-HSTS-TOO-SHORT",
+        category="security/tls_posture/sec-tls-hsts-too-short",
+        name="TlsHstsTooShort",
+        title="HSTS max-age is under one year",
+        description=(
+            "The `Strict-Transport-Security` `max-age` is below the "
+            "365-day recommendation. Short windows let downgrade windows "
+            "re-open. CWE-319."
+        ),
+        recommendation=(
+            "Raise `Strict-Transport-Security` `max-age` to at least " "31536000 (one year)."
+        ),
+        default_severity="warning",
+    ),
+    # ---------------- Phase 32 — GraphQL safety ----------------
+    SecurityRule(
+        rule_id="SEC-GRAPHQL-INTROSPECTION-ENABLED",
+        category="security/graphql_safety/sec-graphql-introspection-enabled",
+        name="GraphqlIntrospectionEnabled",
+        title="GraphQL introspection is reachable in production",
+        description=(
+            "The canonical introspection query `{ __schema { types { name "
+            "} } }` returned the schema. Production deployments should "
+            "disable introspection. CWE-200."
+        ),
+        recommendation=(
+            "Disable introspection in production (e.g. Apollo `playground "
+            "false` / `introspection false`)."
+        ),
+        default_severity="error",
+    ),
+    SecurityRule(
+        rule_id="SEC-GRAPHQL-NO-DEPTH-LIMIT",
+        category="security/graphql_safety/sec-graphql-no-depth-limit",
+        name="GraphqlNoDepthLimit",
+        title="GraphQL endpoint has no query-depth limit",
+        description=(
+            "A depth-5 nested query was accepted; deeply nested queries "
+            "are a classic resource-exhaustion vector. CWE-770."
+        ),
+        recommendation=(
+            "Install a query-depth limiter (e.g. `graphql-depth-limit`) "
+            "and cap depth at a reasonable value (≤7 is typical)."
+        ),
+        default_severity="warning",
+    ),
+    SecurityRule(
+        rule_id="SEC-GRAPHQL-NO-COMPLEXITY-LIMIT",
+        category="security/graphql_safety/sec-graphql-no-complexity-limit",
+        name="GraphqlNoComplexityLimit",
+        title="GraphQL endpoint has no query-complexity limit",
+        description=(
+            "A query with five aliases for the same field was accepted; "
+            "alias-based complexity bombs remain a resource-exhaustion "
+            "risk. CWE-770."
+        ),
+        recommendation=("Install a query-cost analyser (e.g. `graphql-query-complexity`)."),
+        default_severity="warning",
+    ),
+    SecurityRule(
+        rule_id="SEC-GRAPHQL-MUTATION-NO-AUTH",
+        category="security/graphql_safety/sec-graphql-mutation-no-auth",
+        name="GraphqlMutationNoAuth",
+        title="GraphQL mutation accepts anonymous requests",
+        description=(
+            "An introspected mutation returned a non-error response when "
+            "called without authentication. CWE-862."
+        ),
+        recommendation=(
+            "Gate mutations behind authentication; assert the caller's "
+            "identity before any state-changing resolver runs."
+        ),
+        default_severity="error",
+    ),
+    # ---------------- Phase 32 — OWASP-API BOLA / BFLA ----------------
+    SecurityRule(
+        rule_id="SEC-BOLA-CROSS-TENANT-READ",
+        category="security/api_bola_bfla/sec-bola-cross-tenant-read",
+        name="BolaCrossTenantRead",
+        title="API endpoint returns identity-A data when called as identity-B",
+        description=(
+            "An API call captured under identity A returned 200 with "
+            "A's payload when replayed under identity B's auth — "
+            "object-level authorization is missing. OWASP API-2023-01 "
+            "(BOLA). CWE-639."
+        ),
+        recommendation=(
+            "Validate object ownership server-side on every read and "
+            "write; never trust client-supplied resource ids alone."
+        ),
+        default_severity="error",
+    ),
+    SecurityRule(
+        rule_id="SEC-BFLA-ELEVATED-ACTION",
+        category="security/api_bola_bfla/sec-bfla-elevated-action",
+        name="BflaElevatedAction",
+        title="Admin-shaped endpoint accepts non-admin identity",
+        description=(
+            "An endpoint scoped to admin returned 2xx when called with "
+            "a non-admin identity. OWASP API-2023-03 (BFLA). CWE-863."
+        ),
+        recommendation=(
+            "Enforce role-based authorization before the controller body " "runs; deny by default."
+        ),
+        default_severity="error",
+    ),
+    # ---------------- Phase 32 — Secret-in-bundle scanner ----------------
+    SecurityRule(
+        rule_id="SEC-BUNDLE-SECRET-AWS",
+        category="security/bundle_secrets/sec-bundle-secret-aws",
+        name="BundleSecretAws",
+        title="Possible AWS access key in JS bundle",
+        description=(
+            "A JS bundle served to the browser contains a string matching "
+            "the AWS access-key prefix `AKIA`. CWE-540."
+        ),
+        recommendation=(
+            "Move the credential server-side; invoke AWS via a backend "
+            "proxy or use IAM-Role-for-Browser identity flows."
+        ),
+        default_severity="error",
+    ),
+    SecurityRule(
+        rule_id="SEC-BUNDLE-SECRET-GCP",
+        category="security/bundle_secrets/sec-bundle-secret-gcp",
+        name="BundleSecretGcp",
+        title="Possible Google API key in JS bundle",
+        description=(
+            "A JS bundle served to the browser contains a string matching "
+            "the Google API key prefix `AIza`. CWE-540."
+        ),
+        recommendation=(
+            "Restrict the API key by HTTP referrer + API scope, or move " "API calls server-side."
+        ),
+        default_severity="warning",
+    ),
+    SecurityRule(
+        rule_id="SEC-BUNDLE-SECRET-AZURE",
+        category="security/bundle_secrets/sec-bundle-secret-azure",
+        name="BundleSecretAzure",
+        title="Possible Azure subscription key in JS bundle",
+        description=(
+            "A JS bundle includes a 32-hex string in a subscription-key " "context. CWE-540."
+        ),
+        recommendation=(
+            "Move the subscription key server-side; rotate the exposed " "key immediately."
+        ),
+        default_severity="error",
+    ),
+    SecurityRule(
+        rule_id="SEC-BUNDLE-SECRET-STRIPE",
+        category="security/bundle_secrets/sec-bundle-secret-stripe",
+        name="BundleSecretStripe",
+        title="Stripe live secret key in JS bundle",
+        description=(
+            "A JS bundle contains a `sk_live_…` Stripe secret key. "
+            "Anyone with the page source can issue arbitrary Stripe "
+            "API calls. CWE-540."
+        ),
+        recommendation=(
+            "Rotate the Stripe key immediately and route Stripe API " "calls through your backend."
+        ),
+        default_severity="error",
+    ),
+    SecurityRule(
+        rule_id="SEC-BUNDLE-SECRET-GITHUB",
+        category="security/bundle_secrets/sec-bundle-secret-github",
+        name="BundleSecretGithub",
+        title="GitHub token in JS bundle",
+        description=("A JS bundle contains a `ghp_…` / `gho_…` GitHub token. " "CWE-540."),
+        recommendation=(
+            "Rotate the token immediately; route GitHub API calls " "through a server-side proxy."
+        ),
+        default_severity="error",
+    ),
+    SecurityRule(
+        rule_id="SEC-BUNDLE-SECRET-SLACK",
+        category="security/bundle_secrets/sec-bundle-secret-slack",
+        name="BundleSecretSlack",
+        title="Slack token in JS bundle",
+        description=("A JS bundle contains a Slack `xox[abprs]-` token. CWE-540."),
+        recommendation=(
+            "Rotate the Slack token immediately; never embed Slack " "tokens in browser code."
+        ),
+        default_severity="error",
+    ),
+    SecurityRule(
+        rule_id="SEC-BUNDLE-SECRET-PRIVATE-KEY",
+        category="security/bundle_secrets/sec-bundle-secret-private-key",
+        name="BundleSecretPrivateKey",
+        title="PEM private-key header in JS bundle",
+        description=(
+            "A JS bundle contains a `-----BEGIN ... PRIVATE KEY-----` " "header. CWE-540."
+        ),
+        recommendation=(
+            "Rotate the key immediately; private keys must never reach " "the browser."
+        ),
+        default_severity="error",
+    ),
+    # ---------------- Phase 32 — SSRF / open-redirect ----------------
+    SecurityRule(
+        rule_id="SEC-SSRF-SUSPECTED",
+        category="security/ssrf_redirect/sec-ssrf-suspected",
+        name="SsrfSuspected",
+        title="Endpoint may follow attacker-controlled URLs (SSRF)",
+        description=(
+            "A URL-shaped form / query parameter accepted a canonical "
+            "internal target (loopback, link-local, file://) without a "
+            "clean rejection. CWE-918."
+        ),
+        recommendation=(
+            "Validate that user-supplied URLs resolve outside the "
+            "server's local network; deny `127.0.0.0/8`, `169.254.0.0/16`, "
+            "`fc00::/7`, and all non-HTTP schemes."
+        ),
+        default_severity="error",
+    ),
+    SecurityRule(
+        rule_id="SEC-OPEN-REDIRECT",
+        category="security/ssrf_redirect/sec-open-redirect",
+        name="OpenRedirect",
+        title="Redirect endpoint accepts attacker-controlled destination",
+        description=(
+            "A redirect endpoint emitted a 30x with an attacker-supplied "
+            "URL in `Location`. CWE-601."
+        ),
+        recommendation=(
+            "Restrict redirect destinations to an allowlist of known "
+            "callback URLs; reject `//evil.example.com`-style inputs."
+        ),
+        default_severity="warning",
+    ),
 )
 
 
