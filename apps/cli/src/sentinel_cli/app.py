@@ -78,10 +78,12 @@ def build_app() -> typer.Typer:
         name="sentinel",
         help=(
             "SentinelQA — Playwright-native release-confidence engine.\n\n"
-            "Run `sentinel doctor` first; then `sentinel audit --url ...`."
+            "Run `sentinel doctor` first; then `sentinel audit --url ...`.\n\n"
+            "Shell completions: `sentinel --install-completion`\n"
+            "(re-open your shell, or `source ~/.bashrc` / `~/.zshrc`)."
         ),
         no_args_is_help=True,
-        add_completion=False,
+        add_completion=True,
         pretty_exceptions_enable=False,
     )
 
