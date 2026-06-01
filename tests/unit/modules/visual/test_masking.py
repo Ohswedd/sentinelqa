@@ -1,4 +1,4 @@
-"""Unit tests for :mod:`modules.visual.masking` (Phase 21.04)."""
+"""Unit tests for :mod:`modules.visual.masking`."""
 
 from __future__ import annotations
 

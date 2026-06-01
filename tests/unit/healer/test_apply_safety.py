@@ -1,4 +1,4 @@
-"""Phase 20.09 — Assertion-weakening guard across all healer outputs.
+"""Assertion-weakening guard across all healer outputs.
 
 This is the conservative-by-construction test: walk every persisted
 healer proposal in a sample run and confirm none of them weaken an

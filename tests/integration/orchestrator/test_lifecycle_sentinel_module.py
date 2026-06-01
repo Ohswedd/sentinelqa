@@ -1,6 +1,6 @@
 """Lifecycle integration: SentinelModule factories run the seven-step lifecycle.
 
-Phase 10 introduced the convention that a module factory may return a
+introduced the convention that a module factory may return a
 :class:`engine.modules.base.SentinelModule` instance. When it does, the
 orchestrator calls :meth:`SentinelModule.run` and merges typed findings
 into the lifecycle's context. This test pins that behavior so future
@@ -114,7 +114,7 @@ def test_lifecycle_invokes_sentinel_module_and_collects_typed_results(
     assert outcome_record.metadata["findings"] == 1
     assert outcome_record.metadata["module_status"] == "failed"
     # And the run rolls up to "passed" because the lifecycle hasn't yet
-    # wired finding-driven gates; Phase 14 owns that.
+    # wired finding-driven gates; owns that.
     assert test_run.status in {"passed", "incomplete"}
 
 

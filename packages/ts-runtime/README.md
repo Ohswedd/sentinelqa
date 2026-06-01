@@ -1,6 +1,6 @@
 # @sentinelqa/ts-runtime
 
-Status: `Experimental` — Phase 04 in flight ().
+Status: `Experimental` — in flight.
 
 The TypeScript half of SentinelQA. Python (`engine/`) orchestrates; this
 package launches Playwright, runs spec files, captures evidence
@@ -25,13 +25,13 @@ silently rename a field.
 - `@sentinelqa/ts-runtime` — package identity, redaction helpers, event emitter / parser.
 - `@sentinelqa/ts-runtime/playwright` — `sentinelTest`, `sentinelStep`, `captureEvidence`, `redactedNetwork`.
 - `@sentinelqa/ts-runtime/protocol` — JSONL event types, emitter helpers.
-- `@sentinelqa/ts-runtime/locators` — semantic-first locator chain, brittleness audit (consumed by Phase 07 / Phase 20).
+- `@sentinelqa/ts-runtime/locators` — semantic-first locator chain, brittleness audit (consumed by /).
 
 ## Binary
 
 `sentinel-ts` (resolved to `dist/cli.js`) is the executable Python
 spawns. Today only `--help` / `--version` are wired; `run`,
-`list-tests`, `validate-helpers` exit 7 with a "lands in Phase 04.03"
+`list-tests`, `validate-helpers` exit 7 with a "lands in "
 message(no fake completion).
 
 ## Build & test

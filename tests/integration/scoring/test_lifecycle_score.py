@@ -1,4 +1,4 @@
-"""End-to-end scoring via the orchestrator (task 14.04)."""
+"""End-to-end scoring via the orchestrator."""
 
 from __future__ import annotations
 

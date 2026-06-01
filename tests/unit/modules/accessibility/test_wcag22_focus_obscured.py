@@ -1,4 +1,4 @@
-"""Phase 34.01 — SC 2.4.11 Focus Not Obscured (Minimum)."""
+"""SC 2.4.11 Focus Not Obscured (Minimum)."""
 
 from __future__ import annotations
 

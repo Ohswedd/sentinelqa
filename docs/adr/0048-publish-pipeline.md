@@ -1,4 +1,4 @@
-# ADR-0048: Publish pipeline (Phase 36)
+# ADR-0048: Publish pipeline
 
 ## Status
 
@@ -9,7 +9,7 @@ Accepted
 
 ## Context
 
-Phase 36 closes the build plan with the first publication-eligible
+closes the build plan with the first publication-eligible
 tag (`v1.0.0`). Five distinct artefacts have to move from this
 repository to public registries in lock-step on every future tag:
 
@@ -78,7 +78,7 @@ The `sentinelqa/runner` Docker image is built from a new
 Dockerfile (`apps/cli/sentinel/runner/docker/Dockerfile.publish`)
 that installs `sentinelqa-cli==<tag>` from PyPI into a dedicated
 venv at `/opt/sentinelqa`. The existing
-`Dockerfile.runner` (Phase 08, the bind-mount runner used by
+`Dockerfile.runner` (, the bind-mount runner used by
 `sentinel test --docker`) stays as-is.
 
 ## Consequences
@@ -92,7 +92,7 @@ venv at `/opt/sentinelqa`. The existing
 - **Single mega-workflow.** Rejected — one approval gate per registry forces a per-registry decision, which matches how the owner thinks about ROI vs risk. A single workflow would either require a single approval that authorises every registry simultaneously (too coarse) or four sequential approvals inside one job (too implicit).
 - **Auto-tag from `main` after CI is green.** Rejected — the our engineering rules authorisation. Auto-tagging would couple "tests pass" with "ship to the world", and they are not the same decision.
 - **Use long-lived PyPI / npm tokens.** Rejected — PyPI Trusted Publisher (OIDC) and npm `--provenance` (OIDC) are both stable in 2026 and avoid storing high-blast-radius secrets in the repo. The only registry without an OIDC option today is Docker Hub, which still uses an account access token (rotatable; scoped per-repo).
-- **Skip Docker Hub.** Rejected — the Phase 08 Playwright runner image is a stated PRD deliverable (our product spec ADR-0013); shipping it as the published `sentinelqa/runner` closes that loop.
+- **Skip Docker Hub.** Rejected — the Playwright runner image is a stated PRD deliverable (our product spec ADR-0013); shipping it as the published `sentinelqa/runner` closes that loop.
 
 ## References
 

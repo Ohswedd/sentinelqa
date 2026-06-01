@@ -1,4 +1,4 @@
-"""`sentinel ci` — Phase 17 replacement for the Phase-02 stub (task 17.04).
+"""`sentinel ci` — replacement for the Phase-02 stub.
 
 Implements the our product spec contract: a thin preset over the audit lifecycle
 that selects modules, applies a Playwright ``--grep`` tag filter, and

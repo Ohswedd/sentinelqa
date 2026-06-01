@@ -1,4 +1,4 @@
-"""Integration tests — CSRF check (Phase 13.04)."""
+"""Integration tests — CSRF check."""
 
 from __future__ import annotations
 

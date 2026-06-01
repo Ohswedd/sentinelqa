@@ -3,7 +3,7 @@
 Status: `Stable`
 
 Authority: project engineering rules
-§39 (CI rules); .
+§39 (CI rules);.
 
 This file is the **machine-checkable** spec for the
 `Ohswedd/sentinelqa` branch protection rules on `main`. It supersedes
@@ -11,7 +11,7 @@ the prose section in [`ci-and-branch-protection.md`](./ci-and-branch-protection.
 for the public-release moment.
 
 The owner applies these rules to the public repo via the GitHub UI or
-`gh api` after task 35.08 flips visibility. The
+`gh api` after flips visibility. The
 `make verify-branch-protection` target reads the live GitHub config
 and diffs it against this file — drift in either direction fails the
 verification.
@@ -40,7 +40,7 @@ respective workflow exactly — GitHub matches by string.
 | `lychee`                 | `.github/workflows/link-check.yml`     | Internal Markdown link integrity.                                        |
 | `no-ai-coauthor`         | `.github/workflows/no-ai-coauthor.yml` | Rejects any commit containing an AI tool in `Co-authored-by:`.           |
 
-The `Docs deploy` workflow (Phase 35.04) is NOT a required check —
+The `Docs deploy` workflow is NOT a required check —
 forks cannot run it, and an unreachable check would block fork PRs
 forever. The job still runs on every PR and posts the preview URL.
 

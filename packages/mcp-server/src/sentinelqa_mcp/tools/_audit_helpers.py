@@ -4,7 +4,7 @@ Every audit-shaped tool:
 
 1. Enforces safety on the URL.
 2. Calls :meth:`Sentinel.async_audit` with the appropriate module
-   subset.
+ subset.
 3. Translates the :class:`AuditResult` into the on-wire result payload.
 4. Collects evidence refs from the run dir.
 

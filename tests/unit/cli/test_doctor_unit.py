@@ -132,7 +132,7 @@ def test_check_reachability_malformed_url(tmp_path: Path) -> None:
         project=ProjectConfig(name="x"),
         target=TargetConfig(base_url="http://localhost:3000", allowed_hosts=("localhost",)),
     )
-    # Force malformed URL by patching .base_url to an empty string via dict round-trip.
+    # Force malformed URL by patching.base_url to an empty string via dict round-trip.
     cfg_dict = cfg.to_dict()
     cfg_dict["target"]["base_url"] = "://broken"
     # Reachability ignores malformed URLs as a `warn` — confirm by passing

@@ -1,11 +1,11 @@
-"""`sentinel audit` — invoke the canonical run lifecycle (task 02.04).
+"""`sentinel audit` — invoke the canonical run lifecycle.
 
-In Phase 02 no module phases have shipped yet, so audit runs the
+In no module phases have shipped yet, so audit runs the
 lifecycle with an empty module registry. The output is the artifact
 tree + `run.json` + audit log. Module phases (05+) register themselves
 into the orchestrator and audit's behavior expands automatically.
 
-Phase 34 adds ``--compliance-pack`` so operators can drive a run with
+adds ``--compliance-pack`` so operators can drive a run with
 a named (or path-resolved) compliance pack (WCAG 2.2 AA, GDPR
 baseline, CCPA baseline, SOC 2 trail). The pack composes the modules,
 per-module options, and check filter for the run.

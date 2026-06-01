@@ -1,4 +1,4 @@
-"""End-to-end sweep against the broken fixture (task 19.15).
+"""End-to-end sweep against the broken fixture.
 
 Drives :class:`LlmAuditModule` against ``tests/fixtures/llm_audit_broken/``
 and asserts that at least 11 of the 13 our product spec9 checks fire — i.e.

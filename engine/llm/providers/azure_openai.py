@@ -1,4 +1,4 @@
-"""Azure OpenAI provider (Phase 30 task 30.04, ADR-0042).
+"""Azure OpenAI provider (, ADR-0042).
 
 Calls
 ``https://<resource>.openai.azure.com/openai/deployments/<deployment>/chat/completions?api-version=<apiver>``

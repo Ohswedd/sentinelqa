@@ -3,7 +3,6 @@ name: Publish (PyPI)
 # Triggered on a `v*` tag push. Builds every Python sdist + wheel,
 # validates them with twine check, then publishes via the PyPA
 # Trusted-Publisher OIDC flow (no long-lived API token in the repo).
-#
 # The `publish` job is gated on the `pypi-release` GitHub Environment,
 # which requires manual approval from the human owner before any
 # upload takes place. See docs/release/publish-runbook.md.

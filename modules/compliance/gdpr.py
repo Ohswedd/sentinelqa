@@ -1,19 +1,19 @@
-"""GDPR cookie-consent checks (Phase 34.02, ADR-0046).
+"""GDPR cookie-consent checks.
 
 Three deterministic checks:
 
 1. **Consent banner detection** — heuristics that surface whether a
-   consent banner was on the first page load. A missing banner is
-   itself a finding (``gdpr:Art.6``) when the operator opts the
-   ``consent-banner-missing`` gate in (off by default — many B2B apps
-   legitimately do not need a banner).
+ consent banner was on the first page load. A missing banner is
+ itself a finding (``gdpr:Art.6``) when the operator opts the
+ ``consent-banner-missing`` gate in (off by default — many B2B apps
+ legitimately do not need a banner).
 2. **Cookies set before consent** — any non-essential ``Set-Cookie``
-   observed on the first page load (before the user clicked accept)
-   is flagged as ``gdpr:Art.6`` / ``cookies-before-consent``.
+ observed on the first page load (before the user clicked accept)
+ is flagged as ``gdpr:Art.6`` / ``cookies-before-consent``.
 3. **Asymmetric consent UX** — EDPB Guidelines 03/2022 require that
-   *Reject all* is as easy to find as *Accept all*. Banners that need
-   the user to drill into a settings panel to reject are flagged as
-   ``gdpr:EDPB-03/2022`` / ``asymmetric-consent``.
+ *Reject all* is as easy to find as *Accept all*. Banners that need
+ the user to drill into a settings panel to reject are flagged as
+ ``gdpr:EDPB-03/2022`` / ``asymmetric-consent``.
 
 CLAUDE §28 wording rule: descriptions begin with *"Automated GDPR
 check found …"* — never claim legal GDPR conformance.
@@ -83,7 +83,7 @@ def check_cookies_before_consent(signals: GdprPageSignals) -> tuple[GdprIssue, .
 
     The signals' ``cookies_on_first_load`` list is the capture before
     the user interacts with the consent banner. ``essential=True``
-    cookies are exempt (session, csrf, locale, ...).
+    cookies are exempt (session, csrf, locale,...).
     """
 
     if signals.banner.present:

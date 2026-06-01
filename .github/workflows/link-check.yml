@@ -24,21 +24,18 @@ jobs:
       - name: Run lychee on internal markdown links
         # Only verify relative/internal links to keep the gate deterministic
         # — external links are scanned periodically by a separate job once
-        # Phase 27 lands. Failing on a broken internal link reflects an
+        # lands. Failing on a broken internal link reflects an
         # actual repo bug.
-        #
         # `--base` is omitted: lychee 0.23 requires an absolute path or URL
         # there, and we only use relative links in this repo (no
         # root-relative `/foo/bar.md` references), so the default cwd-based
         # resolution works correctly.
-        #
         # `tests/golden/` is excluded because the Markdown goldens
-        # produced by Phase 03's writer reference forward-looking
-        # artifacts (`report.html` lands in Phase 15) and test-fixture
+        # produced by 's writer reference forward-looking
+        # artifacts (`report.html` lands in ) and test-fixture
         # evidence paths (`traces/login.har`). The goldens are
         # byte-locked outputs of the renderer, not human-authored docs —
         # broken links inside them are by design.
-        #
         # `apps/docs/src/content/docs/` is the Astro Starlight content
         # tree. Its internal links use root-relative URLs
         # (`/modules/foo/`, `/errors/`) that resolve against the built

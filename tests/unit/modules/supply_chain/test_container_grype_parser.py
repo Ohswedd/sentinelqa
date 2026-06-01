@@ -1,4 +1,4 @@
-"""Container scanner — Grype JSON parser (Phase 33.05)."""
+"""Container scanner — Grype JSON parser."""
 
 from __future__ import annotations
 

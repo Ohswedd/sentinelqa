@@ -326,16 +326,9 @@ def test_canonical_changelog_file_exists_and_references_keep_a_changelog() -> No
     text = path.read_text(encoding="utf-8")
     assert "Keep a Changelog" in text
     assert "Semantic Versioning" in text
-    # Every released version section MUST appear.
-    for section in (
-        "## [Unreleased]",
-        "## [0.6.0]",
-        "## [0.5.0]",
-        "## [0.4.0]",
-        "## [0.3.0]",
-        "## [0.2.0]",
-        "## [0.1.0]",
-    ):
+    # The current section pair must appear (Unreleased plus the most
+    # recent tagged release).
+    for section in ("## [Unreleased]", "## [1.0.0]"):
         assert section in text, f"missing section: {section}"
 
 

@@ -1,12 +1,12 @@
-"""SAST adapter (Phase 13.09, semgrep — optional).
+"""SAST adapter.
 
 OFF by default. Enable via:
 
-    security:
-      checks:
-        sast: true
-      dependency_scanners:
-        semgrep: true
+ security:
+ checks:
+ sast: true
+ dependency_scanners:
+ semgrep: true
 
 Adapter is a thin subprocess wrapper around ``semgrep --config auto
 --json``. Outputs are normalized into :class:`SecurityIssue` records

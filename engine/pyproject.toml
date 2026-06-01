@@ -61,11 +61,11 @@ build-backend = "hatchling.build"
 # The engine source lives at engine/<subpkg>/ (NOT under a src/ layout). The
 # engine/ directory IS the package: it contains __init__.py and the
 # subpackages.
-#
+
 # For editable installs, `dev-mode-dirs = [".."]` tells hatch to add the parent
 # directory to sys.path, which makes `import engine` find this directory.
-#
-# For wheel builds (Phase 28), the project root IS the package root. We
+
+# For wheel builds, the project root IS the package root. We
 # enumerate every subpackage explicitly and remap the wheel layout via
 # `sources` so `domain/foo.py` (here) becomes `engine/domain/foo.py` (wheel).
 # Resource files (Jinja2 templates + locked LLM prompts + the HTML report

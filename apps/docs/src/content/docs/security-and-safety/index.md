@@ -20,7 +20,7 @@ of forbidden capabilities.
 | ------------------- | -------------------------------------------------------------- |
 | Config load         | `engine.policy.safety.SafetyPolicy`                            |
 | CLI flag refusal    | Typer parameter validation in each `sentinel <module>` command |
-| Module entry points | `SafetyPolicy().enforce(...)` at the top of every check        |
+| Module entry points | `SafetyPolicy.enforce(...)` at the top of every check          |
 | MCP tools           | `sentinelqa_mcp.tools._safety.enforce_url`                     |
 | Plugin discovery    | Manifest permission-grammar validator                          |
 
@@ -29,7 +29,7 @@ of forbidden capabilities.
 | Test                                               | What it asserts                                                                           |
 | -------------------------------------------------- | ----------------------------------------------------------------------------------------- |
 | `tests/security/test_no_stealth_flags.py`          | No stealth/evasion options in CLI                                                         |
-| `tests/security/test_module_calls_policy.py`       | Every `run_*` function in `modules/security/` begins with `SafetyPolicy().enforce(...)`   |
+| `tests/security/test_module_calls_policy.py`       | Every `run_*` function in `modules/security/` begins with `SafetyPolicy.enforce(...)`     |
 | `tests/security/test_security_forbidden_flags.py`  | Reserved flag names not present anywhere                                                  |
 | `tests/security/test_synthetic_perf_labeling.py`   | Every perf finding labels itself synthetic                                                |
 | `tests/security/test_no_wcag_compliance_claims.py` | Every a11y output starts with "Automated accessibility check"                             |
@@ -41,7 +41,7 @@ Each runs on every CI pass. A regression turns the build red.
 
 ## Telemetry, privacy, secrets
 
-- **No telemetry** by default . If we ever add it, it will be opt-in, documented, redacted, and disableable.
+- **No telemetry** by default. If we ever add it, it will be opt-in, documented, redacted, and disableable.
 - **Secret redaction** applies to every log line, every report, every audit-log entry. Passwords, tokens, cookies, authorization headers, session IDs, API keys, private keys.
 - `.env` is gitleaks-protected; `.env.example` is the only committed sample.
 

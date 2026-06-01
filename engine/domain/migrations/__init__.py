@@ -1,6 +1,6 @@
 """Migration registry for SentinelQA artifacts.
 
-Empty in Phase 01 — every schema is at major version 1. When a constant in
+Empty in every schema is at major version 1. When a constant in
 :mod:`engine.domain.schema` bumps, a corresponding migration lives here as
 ``<artifact>_<from>_to_<to>.py``, exposing ``def migrate(data: dict) -> dict``.
 The registry below names them so ``engine.domain.migrations.run_migration``

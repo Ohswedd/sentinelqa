@@ -1,4 +1,4 @@
-"""``sentinel.ping`` — health check (task 18.01)."""
+"""``sentinel.ping`` — health check."""
 
 from __future__ import annotations
 

@@ -1,4 +1,4 @@
-"""Audit publishable package manifests for SentinelQA (Phase 28 task 28.03).
+"""Audit publishable package manifests for SentinelQA.
 
 For every publishable Python distributable (`apps/cli`, `engine`,
 `packages/python-sdk`, `packages/mcp-server`) and every publishable TypeScript
@@ -7,18 +7,18 @@ that the manifest carries the metadata a release requires:
 
 Python::
 
-    project.name, project.version, project.description, project.readme,
-    project.requires-python, project.license.text == "Apache-2.0",
-    project.authors (non-empty, no AI tools),
-    project.urls (Homepage / Documentation / Repository / Issues / Changelog),
-    project.classifiers (non-empty, includes the Apache-2.0 license trove),
-    project.keywords (non-empty).
+ project.name, project.version, project.description, project.readme,
+ project.requires-python, project.license.text == "Apache-2.0",
+ project.authors (non-empty, no AI tools),
+ project.urls (Homepage / Documentation / Repository / Issues / Changelog),
+ project.classifiers (non-empty, includes the Apache-2.0 license trove),
+ project.keywords (non-empty).
 
 TypeScript::
 
-    name, version, description, license == "Apache-2.0", repository,
-    author (non-empty string or object, no AI tools), keywords (non-empty),
-    files (non-empty array).
+ name, version, description, license == "Apache-2.0", repository,
+ author (non-empty string or object, no AI tools), keywords (non-empty),
+ files (non-empty array).
 
 Internal manifests (the monorepo root, the docs site, examples, the internal
 ``@sentinelqa/shared-schema`` workspace member) must declare ``private: true``

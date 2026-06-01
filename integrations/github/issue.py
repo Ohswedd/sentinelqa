@@ -1,4 +1,4 @@
-"""GitHub issue creator for SentinelQA findings (Phase 25, task 25.04).
+"""GitHub issue creator for SentinelQA findings (, ).
 
 Opens (or updates) an issue per ``critical`` finding when the calling
 config / CLI explicitly opts in. **Off by default** —
@@ -48,7 +48,7 @@ def render_issue_title(finding: Finding) -> str:
     base = f"{anchor} {raw_title}"
     if len(base) <= 256:
         return base
-    # f"{anchor} {raw_title[:keep]} ..." = anchor + " " + keep + " ..."
+    # f"{anchor} {raw_title[:keep]}..." = anchor + " " + keep + "..."
     # = len(anchor) + 1 + keep + 4 ; we want total <= 256.
     keep = 256 - len(anchor) - 5
     return f"{anchor} {raw_title[:keep].rstrip()} ..."

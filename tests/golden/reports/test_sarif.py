@@ -1,4 +1,4 @@
-"""Golden tests for the SARIF 2.1.0 emitter (task 03.05)."""
+"""Golden tests for the SARIF 2.1.0 emitter."""
 
 from __future__ import annotations
 

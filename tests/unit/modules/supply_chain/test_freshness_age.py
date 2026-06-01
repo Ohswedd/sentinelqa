@@ -1,4 +1,4 @@
-"""Lockfile age tests (Phase 33.03)."""
+"""Lockfile age tests."""
 
 from __future__ import annotations
 

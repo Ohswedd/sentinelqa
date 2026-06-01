@@ -1,15 +1,15 @@
-"""Pixel diff + perceptual SSIM (Phase 21.03, the documentation, CLAUDE §29).
+"""Pixel diff + perceptual SSIM.
 
 Two diff layers ship:
 
 - :func:`pixel_diff` — pure pixel comparison. Returns the number of
-  differing pixels, the diff fraction, and a coloured overlay image
-  (red where pixels differ).
+ differing pixels, the diff fraction, and a coloured overlay image
+ (red where pixels differ).
 - :func:`ssim` — single-scale structural similarity index, computed on
-  the luminance channel. Returned in ``[0.0, 1.0]`` where 1.0 means
-  identical. The perceptual layer is a *noise filter*: a finding only
-  fires when BOTH the pixel threshold AND the SSIM threshold cross,
-  so flicker / sub-pixel renderer drift doesn't generate noise.
+ the luminance channel. Returned in ``[0.0, 1.0]`` where 1.0 means
+ identical. The perceptual layer is a *noise filter*: a finding only
+ fires when BOTH the pixel threshold AND the SSIM threshold cross,
+ so flicker / sub-pixel renderer drift doesn't generate noise.
 
 Both functions operate on Pillow ``Image`` objects (RGB / RGBA). The
 images must be the same size; size-mismatch is the caller's signal to

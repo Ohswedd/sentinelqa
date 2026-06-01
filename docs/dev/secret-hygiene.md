@@ -22,8 +22,8 @@ The authority sources are our engineering rules(privacy & ownership) and our eng
 - **`.env.example`** at the repo root lists every environment variable SentinelQA reads, with safe placeholder values and one-line descriptions. Copy it to `.env` locally; never commit `.env`.
 - **`pre-commit` hooks** (`/.pre-commit-config.yaml`): - `gitleaks` scans staged diffs for tokens, keys, and high-entropy strings. - `detect-private-key` from `pre-commit-hooks` blocks SSH/PGP private-key blocks. - `check-added-large-files` blocks anything over 2 MB. - `ruff` + `ruff-format` keep Python lint-clean (so secrets hidden in comments are also harder to slip in).
 - **Pre-commit hook installation** is wired into `make install` (`make install-hooks`). New clones run `make install` before any other command.
-- **CI** runs the same gitleaks scan on every PR (Phase 00.06).
-- **Redaction primitives** live in `engine.policy.redaction` (stub today, full implementation in Phase 01) — the _only_ function any logger, report writer, or evidence collector should call before serializing untrusted strings.
+- **CI** runs the same gitleaks scan on every PR.
+- **Redaction primitives** live in `engine.policy.redaction` (stub today, full implementation in) — the _only_ function any logger, report writer, or evidence collector should call before serializing untrusted strings.
 
 ## What to do if you find a leak
 
@@ -45,4 +45,4 @@ The authority sources are our engineering rules(privacy & ownership) and our eng
 - Paste a real secret into a commit message, PR title, comment, or issue body — those are mirrored everywhere.
 - Print a secret to stdout/stderr without redaction.
 - Bypass the pre-commit hook with `--no-verify` (forbidden by our engineering rules).
-- Upload a SentinelQA trace, screenshot, or run artifact (`.sentinel/`) without auditing it for cookies, tokens, and personal data first (Phase 13 hardens this).
+- Upload a SentinelQA trace, screenshot, or run artifact (`.sentinel/`) without auditing it for cookies, tokens, and personal data first ( hardens this).

@@ -1,4 +1,4 @@
-"""Shared fixtures for Phase 23 chaos integration tests."""
+"""Shared fixtures for chaos integration tests."""
 
 from __future__ import annotations
 

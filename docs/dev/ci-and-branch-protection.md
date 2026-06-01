@@ -8,22 +8,22 @@ This doc captures the required GitHub-side configuration. The workflow files the
 
 ## Workflows in this repo
 
-| Workflow        | File                                                 | Trigger                          | What it gates                                                                                                                                                                                |
-| --------------- | ---------------------------------------------------- | -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| CI              | `.github/workflows/ci.yml`                           | `pull_request`, `push` to `main` | Python (3.11 + 3.12) and TypeScript (Node 20 + 22) matrices: ruff format-check + lint, mypy strict, pytest; prettier-check, eslint, tsc --noEmit, vitest; Playwright Chromium install smoke. |
-| Secret scan     | `.github/workflows/secret-scan.yml`                  | `pull_request`, `push` to `main` | gitleaks against the full PR diff (same pin as `.pre-commit-config.yaml`).                                                                                                                   |
-| Commitlint      | `.github/workflows/commitlint.yml`                   | `pull_request`                   | Every commit in the PR range validated against `commitlint.config.cjs`.                                                                                                                      |
-| No AI co-author | `.github/workflows/no-ai-coauthor.yml` (Phase 00.08) | `pull_request`, `push` to `main` | Rejects any commit message containing `Co-authored-by:` followed by a known AI-tool string.                                                                                                  |
+| Workflow        | File                                   | Trigger                          | What it gates                                                                                                                                                                                |
+| --------------- | -------------------------------------- | -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| CI              | `.github/workflows/ci.yml`             | `pull_request`, `push` to `main` | Python (3.11 + 3.12) and TypeScript (Node 20 + 22) matrices: ruff format-check + lint, mypy strict, pytest; prettier-check, eslint, tsc --noEmit, vitest; Playwright Chromium install smoke. |
+| Secret scan     | `.github/workflows/secret-scan.yml`    | `pull_request`, `push` to `main` | gitleaks against the full PR diff (same pin as `.pre-commit-config.yaml`).                                                                                                                   |
+| Commitlint      | `.github/workflows/commitlint.yml`     | `pull_request`                   | Every commit in the PR range validated against `commitlint.config.cjs`.                                                                                                                      |
+| No AI co-author | `.github/workflows/no-ai-coauthor.yml` | `pull_request`, `push` to `main` | Rejects any commit message containing `Co-authored-by:` followed by a known AI-tool string.                                                                                                  |
 
 ## Required branch-protection rules for `main`
 
 Configure these in **GitHub → Settings → Branches → Branch protection rules** for the `main` branch:
 
 1. **Require a pull request before merging.** - Required approving reviews: **1**. - Require review from Code Owners: **enabled**. - Dismiss stale approvals when new commits are pushed: **enabled**.
-2. **Require status checks to pass before merging.** - Require branches to be up to date before merging: **enabled**. - Required checks (the names below must match the `name:` fields in each workflow): - `python (3.11)` - `python (3.12)` - `typescript (node 20)` - `typescript (node 22)` - `gitleaks` - `commitlint` - `no-ai-coauthor` (added in Phase 00.08)
+2. **Require status checks to pass before merging.** - Require branches to be up to date before merging: **enabled**. - Required checks (the names below must match the `name:` fields in each workflow): - `python (3.11)` - `python (3.12)` - `typescript (node 20)` - `typescript (node 22)` - `gitleaks` - `commitlint` - `no-ai-coauthor` (added in )
 3. **Restrict who can push to matching branches.** Even with approvals, only repo admins may push directly — and even then only for emergencies. our engineering rules`main`.
 4. **Require linear history.** No merge commits; PR merges land as squash or rebase.
-5. **Require signed commits.** Optional but recommended (configure once Phase 28 lands the release-signing rules).
+5. **Require signed commits.** Optional but recommended (configure once lands the release-signing rules).
 6. **Restrict force-pushes.** Disallow force-push to `main` for everyone. (Force-push to feature branches is fine; our engineering rules-push to `main`.)
 7. **Lock the branch?** No — but the rules above effectively make `main` write-only via PR.
 
@@ -44,7 +44,7 @@ Configure these in **GitHub → Settings → Branches → Branch protection rule
 
 ## Verification gap
 
-The CI workflow files in this commit were written and statically validated (YAML parses; structure follows GitHub Actions schema) but have **not yet been executed against a real PR**, because the repository is local-only at the time of this Phase-00 commit. The Phase 00 gate review records this as a deferred verification: the first PR opened against `main` on the GitHub remote MUST exercise all four workflows; any divergence between the documented gates and the actual run must be fixed before Phase 01 begins.
+The CI workflow files in this commit were written and statically validated (YAML parses; structure follows GitHub Actions schema) but have **not yet been executed against a real PR**, because the repository is local-only at the time of this Phase-00 commit. The gate review records this as a deferred verification: the first PR opened against `main` on the GitHub remote MUST exercise all four workflows; any divergence between the documented gates and the actual run must be fixed before begins.
 
 ## How to add a new required check
 

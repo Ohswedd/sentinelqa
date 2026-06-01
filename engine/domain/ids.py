@@ -2,7 +2,7 @@
 
 IDs are short, human-scannable, and collision-resistant. The format is::
 
-    <PREFIX>-<SLUG>
+ <PREFIX>-<SLUG>
 
 where ``PREFIX`` identifies the entity type (e.g. ``RUN``, ``FND``, ``MOD``)
 and ``SLUG`` is 12 base32 (Crockford-style) characters drawn from
@@ -13,7 +13,7 @@ issue trackers without truncation.
 
 The full regex is anchored::
 
-    ^[A-Z]{2,4}-[A-Z0-9]{12}$
+ ^[A-Z]{2,4}-[A-Z0-9]{12}$
 
 IDs are validated by :func:`validate_id` at the model boundary, so domain
 models can use ``Field(pattern=...)`` to reject malformed inputs.
@@ -57,7 +57,7 @@ ENTITY_PREFIXES: Final[frozenset[str]] = frozenset(
         "RPR",  # RepairSuggestion
         "DG",  # DiscoveryGraph
         "RM",  # RiskMap
-        "PLN",  # TestPlan (Phase 06)
+        "PLN",  # TestPlan
     }
 )
 

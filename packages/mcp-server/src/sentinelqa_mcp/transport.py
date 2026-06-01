@@ -1,13 +1,13 @@
 """Transports for the MCP server (ADR-0023).
 
-Two transports ship in Phase 18:
+Two transports ship in :
 
 - :class:`StdioTransport` — NDJSON over stdin/stdout. The MCP base
-  transport. This is what Claude Desktop uses.
+ transport. This is what Claude Desktop uses.
 - :class:`LoopbackHttpTransport` — minimal asyncio-based HTTP loop
-  serving JSON-RPC POSTs on ``127.0.0.1``. **Loopback only**: refuses
-  any non-loopback bind. Used for local development and tests that need
-  a real socket without going through stdio.
+ serving JSON-RPC POSTs on ``127.0.0.1``. **Loopback only**: refuses
+ any non-loopback bind. Used for local development and tests that need
+ a real socket without going through stdio.
 
 Both transports speak a uniform :class:`Transport` Protocol so the
 server doesn't care which one is plugged in.

@@ -1,6 +1,6 @@
-"""``sentinel test`` — run the Playwright runner (task 08.06).
+"""``sentinel test`` — run the Playwright runner.
 
-Replaces the Phase 02 stub. The command exercises the
+Replaces the stub. The command exercises the
 config/safety/runner slice of the lifecycle: discovery / planning /
 generation are intentionally skipped unless ``--with-generate`` is
 passed (most users run ``sentinel generate`` first and ``sentinel test``
@@ -212,7 +212,7 @@ def run_test(
             sys.stderr.write(f"sentinel test: {exc}\n")
             raise typer.Exit(code=EXIT_CONFIG_ERROR) from exc
 
-    # Phase 31, ADR-0043. If the operator selected
+    # , ADR-0043. If the operator selected
     # ``auth.strategy: browser_session``, decrypt the vault entry into a
     # short-lived plaintext file under ``<run-dir>/auth/``. The file is
     # cleaned up before the command returns; the orchestrator never
@@ -277,7 +277,7 @@ def run_test(
         sys.stderr.write(f"sentinel test: runner failed: {exc}\n")
         raise typer.Exit(code=EXIT_TEST_EXECUTION_FAILED) from exc
     finally:
-        # Phase 31, ADR-0043. The plaintext storage_state file MUST NOT
+        # , ADR-0043. The plaintext storage_state file MUST NOT
         # outlive the run; we drop it as soon as the runner returns,
         # regardless of outcome (success, gate-fail, spawn-error, crash).
         if session_handle is not None:
@@ -345,7 +345,7 @@ def run_test(
 def _target_host(base_url: str) -> str:
     """Return the lower-cased host from a ``target.base_url`` value.
 
-    Phase 31, ADR-0043 — used by `auth.strategy: browser_session` to
+    Used by `auth.strategy: browser_session` (ADR-0043) to
     look the session up by host. Returns an empty string when the URL
     is malformed; the vault then raises ``VaultEntryNotFoundError`` and
     the caller surfaces a precise error to the operator.
@@ -436,7 +436,7 @@ def _discover_specs(path: Path, grep: str | None) -> list[Path]:
 
 
 def _gate_failed(outcome: object, config: RootConfig) -> bool:
-    # Phase 14 owns the full score-gate computation. For Phase 08 we
+    # owns the full score-gate computation. For we
     # surface only the flake-rate gate so quarantine is honored.
     flake_rate = float(getattr(outcome, "flake_rate", 0.0))
     return flake_rate > config.policy.max_flake_rate

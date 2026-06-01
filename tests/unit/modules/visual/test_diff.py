@@ -1,4 +1,4 @@
-"""Unit tests for :mod:`modules.visual.diff` (Phase 21.03)."""
+"""Unit tests for :mod:`modules.visual.diff`."""
 
 from __future__ import annotations
 

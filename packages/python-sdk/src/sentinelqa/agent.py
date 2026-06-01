@@ -37,7 +37,7 @@ def format(
     ``format``:
 
     - ``"ndjson"`` / ``"jsonl"`` — newline-delimited JSON (one message per
-      line, no trailing newline; identical output for both).
+    line, no trailing newline; identical output for both).
     - ``"list"`` — a single JSON array of all messages.
 
     Output is deterministic: keys sorted, no ASCII escaping. Suitable for

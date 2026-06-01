@@ -1,4 +1,4 @@
-"""Integration: rect-mask suppresses dynamic-content noise (Phase 21.04)."""
+"""Integration: rect-mask suppresses dynamic-content noise."""
 
 from __future__ import annotations
 

@@ -1,4 +1,4 @@
-"""Phase 23 — internals of :class:`ChaosModule`."""
+"""internals of :class:`ChaosModule`."""
 
 from __future__ import annotations
 

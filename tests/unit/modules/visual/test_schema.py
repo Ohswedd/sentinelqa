@@ -1,4 +1,4 @@
-"""Unit tests for the visual config schema extensions (Phase 21)."""
+"""Unit tests for the visual config schema extensions."""
 
 from __future__ import annotations
 

@@ -1,4 +1,4 @@
-"""Strict validation for the `policy.supply_chain:` config block (Phase 33, ADR-0045)."""
+"""Strict validation for the `policy.supply_chain:` config block (, ADR-0045)."""
 
 from __future__ import annotations
 

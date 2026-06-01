@@ -1,4 +1,4 @@
-"""Integration tests for the dead-button check (task 19.02)."""
+"""Integration tests for the dead-button check."""
 
 from __future__ import annotations
 

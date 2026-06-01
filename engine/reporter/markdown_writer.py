@@ -1,14 +1,14 @@
-"""Markdown report (`report.md`, task 03.06).
+"""Markdown report (`report.md`, ).
 
 A concise Markdown summary optimized for PR comments and quick scans
-(the documentation). The full HTML report lands in Phase 15. Style rules:
+(the documentation). The full HTML report lands in. Style rules:
 
 - Deterministic ordering: findings sorted by severity (critical → info)
-  then by id; modules sorted alphabetically.
+ then by id; modules sorted alphabetically.
 - All user-controlled fields are escaped via :func:`md_escape` so a
-  malicious finding title cannot inject Markdown / HTML.
+ malicious finding title cannot inject Markdown / HTML.
 - Headers fixed; tables use the same column widths every time so byte
-  comparisons hold across runs.
+ comparisons hold across runs.
 """
 
 from __future__ import annotations

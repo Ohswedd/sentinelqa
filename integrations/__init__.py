@@ -1,4 +1,4 @@
-"""SentinelQA integrations (Phase 25).
+"""SentinelQA integrations.
 
 Each subpackage adapts SentinelQA to an external service (remote
 browser runner, chat webhook, issue tracker). our engineering rules / §35:

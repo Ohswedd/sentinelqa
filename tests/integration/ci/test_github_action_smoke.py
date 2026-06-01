@@ -1,8 +1,8 @@
-"""Smoke tests for the GitHub composite action (task 17.01).
+"""Smoke tests for the GitHub composite action.
 
 The Action lives at ``integrations/github/action.yml`` and is invoked by
 the reusable workflow under ``integrations/github/workflows/``. The
-smoke target on the example Next.js app lands in Phase 26 (CLAUDE §16);
+smoke target on the example Next.js app lands in (CLAUDE §16);
 this test enforces the structural contract here so the YAML can never
 drift away from our product spec1.
 """

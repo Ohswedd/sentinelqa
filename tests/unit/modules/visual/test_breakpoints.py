@@ -1,4 +1,4 @@
-"""Unit tests for :mod:`modules.visual.breakpoints` (Phase 21.05)."""
+"""Unit tests for :mod:`modules.visual.breakpoints`."""
 
 from __future__ import annotations
 

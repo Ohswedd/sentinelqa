@@ -1,4 +1,4 @@
-"""Reporter dispatcher (task 03.07).
+"""Reporter dispatcher.
 
 The ``Reporter`` class wires every Phase-03 writer into a single entry
 point that the run lifecycle calls during step 15 (``generate_reports``).
@@ -9,7 +9,7 @@ Each successful emit produces one ``artifact_emitted`` line in the
 run's audit log, so downstream reviewers always know
 which formats were generated.
 
-Phase 24 will replace the ad-hoc dispatch with a plugin entry-point
+will replace the ad-hoc dispatch with a plugin entry-point
 discovery mechanism; the :class:`ReporterPlugin` Protocol below is the
 intended seam.
 """
@@ -92,10 +92,10 @@ class ReportInputs:
 
 @runtime_checkable
 class ReporterPlugin(Protocol):
-    """Future plugin contract (Phase 24).
+    """Future plugin contract.
 
     A plugin declares the format names it handles and a callable that
-    receives the typed inputs + the artifact directory. Phase 03 ships
+    receives the typed inputs + the artifact directory. ships
     only the protocol; the dispatcher below registers built-ins
     directly via a switch.
     """

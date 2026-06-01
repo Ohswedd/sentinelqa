@@ -4,22 +4,20 @@ Python sdist + wheel are produced via ``uv build --all-packages`` so the four
 publishable workspace members (``sentinelqa``, ``sentinelqa-cli``,
 ``sentinelqa-engine``, ``sentinelqa-mcp``) share one build invocation.
 
-The TypeScript runtime tarball is produced via ``pnpm --filter ... pack``
+The TypeScript runtime tarball is produced via ``pnpm --filter... pack``
 (``pnpm pack`` from inside the package directory). The build step first runs
-``pnpm --filter ... build`` so the compiled ``dist/`` ships in the tarball.
+``pnpm --filter... build`` so the compiled ``dist/`` ships in the tarball.
 
 The Docker runner image is opt-in (off by default) because docker may not be
 available on every CI runner. Pass ``--docker`` to include it.
 
 Usage
------
+-----.. code-block:: bash
 
-.. code-block:: bash
+ python -m scripts.release.build_all --out-dir dist/
 
-    python -m scripts.release.build_all --out-dir dist/
-
-    # With Docker runner image.
-    python -m scripts.release.build_all --out-dir dist/ --docker
+ # With Docker runner image.
+ python -m scripts.release.build_all --out-dir dist/ --docker
 
 Exit codes
 ----------

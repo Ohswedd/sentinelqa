@@ -1,4 +1,4 @@
-"""Typed performance result models (Phase 12, ADR-0017, CLAUDE §27).
+"""Typed performance result models (, ADR-0017, CLAUDE §27).
 
 The performance module follows the same shape as the accessibility
 module: per-route synthetic measurements, a dedicated runner Protocol,

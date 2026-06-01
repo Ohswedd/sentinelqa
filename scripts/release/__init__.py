@@ -1,1 +1,1 @@
-"""Release-engineering scripts (Phase 28)."""
+"""Release-engineering scripts."""

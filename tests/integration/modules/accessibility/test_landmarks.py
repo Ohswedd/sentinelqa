@@ -1,4 +1,4 @@
-"""Integration tests for the landmark structure check (Phase 11.04)."""
+"""Integration tests for the landmark structure check."""
 
 from __future__ import annotations
 

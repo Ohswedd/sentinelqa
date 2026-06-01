@@ -1,17 +1,13 @@
 # SentinelQA — drop-in GitLab CI template (product spec1, engineering rules).
-#
 # Usage (in the project's `.gitlab-ci.yml`):
-#
-#   include:
-#     - project: 'sentinelqa/sentinelqa'
-#       file: '/integrations/gitlab/.gitlab-ci.sentinel.yml'
-#
-#   sentinelqa:
-#     extends: .sentinelqa
-#     variables:
-#       SENTINELQA_URL: "https://preview-${CI_COMMIT_SHORT_SHA}.example.com"
-#       SENTINELQA_MODE: "standard"
-#
+# include:
+# - project: 'sentinelqa/sentinelqa'
+# file: '/integrations/gitlab/.gitlab-ci.sentinel.yml'
+# sentinelqa:
+# extends: .sentinelqa
+# variables:
+# SENTINELQA_URL: "https://preview-${CI_COMMIT_SHORT_SHA}.example.com"
+# SENTINELQA_MODE: "standard"
 # Or, more simply, define a job that uses `.sentinelqa` directly via
 # `extends` and override the `variables:` block. See
 # `integrations/gitlab/README.md` for the full guide.

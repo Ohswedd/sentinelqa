@@ -1,6 +1,6 @@
 # Auth flows
 
-> Status: **Stable** (Phase 31, ADR-0043).
+> Status: **Stable** (, ADR-0043).
 
 SentinelQA audits applications by sending real HTTP requests to them and
 optionally driving them through a real Playwright browser. That means

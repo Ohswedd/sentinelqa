@@ -1,4 +1,4 @@
-"""Lockfile freshness + manifest-drift checks (Phase 33.03, ADR-0045).
+"""Lockfile freshness + manifest-drift checks.
 
 A lockfile that hasn't been touched in months is almost always missing
 upstream security fixes — and lockfile↔manifest drift (a dep declared

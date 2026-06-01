@@ -1,4 +1,4 @@
-"""Trend computation across local run history (Phase 15.03)."""
+"""Trend computation across local run history."""
 
 from __future__ import annotations
 

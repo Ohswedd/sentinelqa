@@ -1,4 +1,4 @@
-"""Wire types emitted by :class:`ApiModule` (Phase 22, the documentation).
+"""Wire types emitted by :class:`ApiModule` (, the documentation).
 
 The module persists ``api/<check>.json`` per check plus an
 ``api/index.json`` aggregate (mirrors the security module's layout).
@@ -46,7 +46,7 @@ class ApiIssue(BaseModel):
 
 
 class ApiCheckResult(BaseModel):
-    """Result of one named check (contract / negative / auth / ...)."""
+    """Result of one named check (contract / negative / auth /...)."""
 
     model_config = ConfigDict(extra="forbid", frozen=True)
 
@@ -86,7 +86,7 @@ class ApiSchemaEndpoint(BaseModel):
 
 
 class ApiSchemaSnapshot(BaseModel):
-    """Wire format of ``api/api-schema.json`` (Phase 22.08 backward compat).
+    """Wire format of ``api/api-schema.json``.
 
     Captures only the structural shape needed to detect breaking changes:
     endpoints, required fields, response statuses, and (for backwards

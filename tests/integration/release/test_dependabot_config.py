@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright (c) 2026 SentinelQA contributors.
-"""Dependabot config health (Phase 35.07).
+"""Dependabot config health.
 
 Asserts `.github/dependabot.yml` covers the four ecosystems the
 task spec requires, that every watched directory exists on disk,

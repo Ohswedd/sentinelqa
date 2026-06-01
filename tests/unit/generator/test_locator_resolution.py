@@ -1,4 +1,4 @@
-"""Tests for the ``_resolve_sentinel_ts`` binary discovery (task 07.04)."""
+"""Tests for the ``_resolve_sentinel_ts`` binary discovery."""
 
 from __future__ import annotations
 

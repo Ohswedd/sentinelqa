@@ -5,7 +5,7 @@ registry; the base class :class:`SentinelError` does the work of looking up
 the message template, exit code, and suggested fix at construction time, so
 call sites stay terse::
 
-    raise ConfigSchemaError(detail="missing required key 'target.base_url'")
+ raise ConfigSchemaError(detail="missing required key 'target.base_url'")
 
 The CLI catches :class:`SentinelError` at its outermost boundary and maps it
 to an exit code via ``error.exit_code``. Anything that escapes as a plain
@@ -68,7 +68,7 @@ class SentinelError(Exception):
         self.technical_context: dict[str, Any] = dict(technical_context or {})
         if template_fields:
             # Preserve template inputs so the agent message carries enough
-            # context for the SDK consumer (Phase 16) to render them too.
+            # context for the SDK consumer to render them too.
             for key, value in template_fields.items():
                 self.technical_context.setdefault(key, value)
         self.suggested_fix: str = (
@@ -207,7 +207,7 @@ class PluginError(SentinelError):
 
 
 # ---------------------------------------------------------------------------
-# LLM adapter errors (Phase 30, ADR-0042)
+# LLM adapter errors (, ADR-0042)
 # ---------------------------------------------------------------------------
 
 
@@ -279,7 +279,7 @@ class LlmStructuredOutputUnsupportedError(LlmError):
 
 
 # ---------------------------------------------------------------------------
-# Browser-authenticated audit / vault errors (Phase 31, ADR-0043)
+# Browser-authenticated audit / vault errors (, ADR-0043)
 # ---------------------------------------------------------------------------
 
 

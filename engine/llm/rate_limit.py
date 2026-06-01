@@ -1,4 +1,4 @@
-"""Per-provider rate-limiter (Phase 30, ADR-0042).
+"""Per-provider rate-limiter (, ADR-0042).
 
 A simple monotonic-clock token bucket. Each registered provider gets its
 own bucket so a Gemini outage doesn't starve a separate Ollama call. The

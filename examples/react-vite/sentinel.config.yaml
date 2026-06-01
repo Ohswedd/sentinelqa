@@ -1,4 +1,4 @@
-# SentinelQA configuration for the React + Vite demo (Phase 26.05).
+# SentinelQA configuration for the React + Vite demo ().
 # The app binds to 127.0.0.1:5173 by default — see README.md.
 version: 1
 

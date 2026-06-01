@@ -1,4 +1,4 @@
-"""Unit tests for :mod:`modules.performance.findings` (Phase 12.04+)."""
+"""Unit tests for :mod:`modules.performance.findings`."""
 
 from __future__ import annotations
 

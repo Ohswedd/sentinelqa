@@ -1,4 +1,4 @@
-"""Integration: CI never auto-accepts (Phase 21.06, CLAUDE §29, §39).
+"""Integration: CI never auto-accepts.
 
 The CLI-layer guard is exercised in :mod:`tests.integration.cli.test_visual`.
 This module asserts the contract from the library side: the baseline

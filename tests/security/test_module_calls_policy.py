@@ -1,12 +1,12 @@
-"""Phase 13.11 — every security check enforces the safety policy.
+"""every security check enforces the safety policy.
 
 This guard reads the AST of every ``run_*`` function in
 ``modules/security/checks/`` and confirms its body begins with one of:
 
-- ``SafetyPolicy().enforce(...)`` (direct policy call).
+- ``SafetyPolicy.enforce(...)`` (direct policy call).
 - An early ``return`` of a skipped :class:`SecurityCheckResult` BEFORE
-  any HTTP call — checks that legitimately short-circuit (e.g. xss_stored
-  when destructive mode is off) are allowed to refuse the policy check.
+ any HTTP call — checks that legitimately short-circuit (e.g. xss_stored
+ when destructive mode is off) are allowed to refuse the policy check.
 
 This makes it impossible to land a probe that forgets to enforce the
 safety boundary (CLAUDE §6 / §26).
@@ -55,7 +55,7 @@ def _is_safety_enforce(node: ast.AST) -> bool:
         return False
     if func.attr != "enforce":
         return False
-    # Either SafetyPolicy().enforce(...) or self.policy.enforce(...).
+    # Either SafetyPolicy.enforce(...) or self.policy.enforce(...).
     inner = func.value
     if isinstance(inner, ast.Call) and isinstance(inner.func, ast.Name):
         return inner.func.id == "SafetyPolicy"
@@ -68,9 +68,9 @@ def _starts_with_early_skip(body: list[ast.stmt]) -> bool:
 
     Two accepted shapes:
 
-    1. ``ok, reason = _allowed_to_run(ctx)`` + ``if not ok: return ...``.
+    1. ``ok, reason = _allowed_to_run(ctx)`` + ``if not ok: return...``.
     2. ``token = _second_user_token(ctx)`` (or any precondition helper) +
-       ``if X is None: return ...``.
+    ``if X is None: return...``.
 
     The unifying signal is: a top-level call to a private precondition
     helper (``_<name>``) at body[0] or body[1] AND an ``if`` block whose
@@ -126,7 +126,7 @@ def test_security_check_starts_with_policy_enforce(path: Path) -> None:
                     "enforces SafetyPolicy on the live path."
                 )
             continue
-        # No early-skip → first statement MUST be SafetyPolicy().enforce(...)
+        # No early-skip → first statement MUST be SafetyPolicy.enforce(...)
         assert body, f"{path.name}::{func.name} has an empty body."
         assert _is_safety_enforce(body[0]), (
             f"{path.name}::{func.name} does not begin with "

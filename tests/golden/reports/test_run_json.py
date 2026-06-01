@@ -1,4 +1,4 @@
-"""Golden tests for ``run.json`` (task 03.01).
+"""Golden tests for ``run.json``.
 
 Each test builds a deterministic :class:`TestRun` (and supporting state),
 serializes it through :func:`engine.reporter.run_writer.write_run`, and

@@ -1,4 +1,4 @@
-"""Root-cause hypothesis tests (task 09.02)."""
+"""Root-cause hypothesis tests."""
 
 from __future__ import annotations
 

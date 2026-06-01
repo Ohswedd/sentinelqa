@@ -1,4 +1,4 @@
-"""Per-extractor unit tests (task 06.02)."""
+"""Per-extractor unit tests."""
 
 from __future__ import annotations
 

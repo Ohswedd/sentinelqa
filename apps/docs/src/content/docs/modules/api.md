@@ -17,7 +17,7 @@ Authority: the documentation, ADR-0027, our engineering rules §30.
 | `contract`        | OpenAPI 3.x / GraphQL SDL parse + per-request validation    |
 | `negative`        | Bounded variant catalogue (missing-required, wrong-type, …) |
 | `auth`            | Anonymous / expired-token / cross-user matrix               |
-| `latency`         | Skip-only — defers to Phase 12 perf module                  |
+| `latency`         | Skip-only — defers to perf module                           |
 | `pagination`      | Walks GETs with `page`/`cursor`/`offset`                    |
 | `error_shape`     | Detects > 1 distinct rule-id per endpoint                   |
 | `backward_compat` | Diff vs `--diff-since <run-id>` or last snapshot            |
@@ -35,5 +35,5 @@ Authority: the documentation, ADR-0027, our engineering rules §30.
 ## CLI
 
 ```bash
-uv run sentinel api --url http://127.0.0.1:5001 --openapi ./openapi.json
+uv run sentinel api --url http://127.0.0.1:5001 --openapi./openapi.json
 ```

@@ -1,4 +1,4 @@
-"""Edge cases for the scoring lifecycle hooks (task 14.04 / 14.07)."""
+"""Edge cases for the scoring lifecycle hooks."""
 
 from __future__ import annotations
 

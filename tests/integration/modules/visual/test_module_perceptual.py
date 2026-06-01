@@ -1,4 +1,4 @@
-"""Integration: perceptual SSIM filter (Phase 21.03)."""
+"""Integration: perceptual SSIM filter."""
 
 from __future__ import annotations
 

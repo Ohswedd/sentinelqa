@@ -1,4 +1,4 @@
-"""Concrete provider adapters (Phase 30, ADR-0042).
+"""Concrete provider adapters (, ADR-0042).
 
 Importing this package registers the built-in null provider plus the
 nine Phase-30 lazy factories. Concrete adapter modules are only loaded

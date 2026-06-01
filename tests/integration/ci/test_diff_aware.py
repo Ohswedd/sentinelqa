@@ -1,4 +1,4 @@
-"""Integration tests for diff-aware test selection (task 17.05).
+"""Integration tests for diff-aware test selection.
 
 Covers the pure-helper surface; CLI-level tests live in
 ``tests/integration/cli/test_ci_diff.py`` so they pick up the CLI

@@ -81,7 +81,7 @@ SECRET_KEY_NAMES: Final[frozenset[str]] = frozenset(
         "rsa_private_key",
         "ssh_key",
         "service_account_key",
-        # Phase 31, ADR-0043. Playwright `storage_state` carries cookies
+        # , ADR-0043. Playwright `storage_state` carries cookies
         # under the `cookies` key (above) and per-origin localStorage
         # under `localStorage` / `local_storage`. Redacting the whole
         # payload prevents leaking either the cookie value or any
@@ -160,7 +160,7 @@ BUILTIN_RULES: Final[tuple[RedactionRule, ...]] = (
         description="HTTP Basic auth header values.",
     ),
     RedactionRule(
-        # Phase 31, ADR-0043. A literal `Cookie:` or `Set-Cookie:`
+        # , ADR-0043. A literal `Cookie:` or `Set-Cookie:`
         # header line embedded in a log message — we redact the entire
         # name=value pair when the value is longer than 16 chars (real
         # session cookies invariably are; sub-16-char values are
@@ -226,7 +226,7 @@ BUILTIN_RULES: Final[tuple[RedactionRule, ...]] = (
 # Per-process false-positive allowlist. Tokens added here will NOT be
 # redacted by value-level rules. This exists for legitimate use cases where
 # a non-secret string happens to match a permissive rule. We deliberately
-# do not read this from config in Phase 01 — CI must never auto-allow.
+# do not read this from config in CI must never auto-allow.
 _LOCAL_OVERRIDE: set[str] = set()
 
 
@@ -382,7 +382,7 @@ _URL_SECRET_QUERY_KEYS: Final[frozenset[str]] = frozenset(
 def redact_url(url: str) -> str:
     """Strip userinfo from the netloc and redact secret-shaped query params.
 
-    **Cross-language parity note** (Phase 04, ADR-0009, the documentation): the TS
+    **Cross-language parity note** (, ADR-0009, the documentation): the TS
     mirror (``redactUrl`` in ``packages/ts-runtime/src/redact.ts``)
     canonicalises the hostname to lower case via the WHATWG ``URL`` API,
     while ``urlparse`` preserves the original hostname case. The two

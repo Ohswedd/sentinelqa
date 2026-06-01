@@ -5,16 +5,16 @@
 The source-of-truth spec lives in `docs/dev/branch-protection.md`.
 This script reads the live config via:
 
-    gh api repos/Ohswedd/sentinelqa/branches/main/protection
+ gh api repos/Ohswedd/sentinelqa/branches/main/protection
 
 …and diffs it against the documented rules.
 
 Exit codes (SentinelQA CLI grid):
 
-    0 — live config matches the spec (or the repo is still private,
-        in which case branch protection is not yet applicable).
-    5 — `gh` is missing or not authenticated.
-    6 — drift between the live config and the spec.
+ 0 — live config matches the spec (or the repo is still private,
+ in which case branch protection is not yet applicable).
+ 5 — `gh` is missing or not authenticated.
+ 6 — drift between the live config and the spec.
 
 The script does NOT mutate GitHub state. The owner re-applies rules
 via the Settings UI or `gh api -X PUT` if drift is detected.

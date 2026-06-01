@@ -1,7 +1,7 @@
-"""Typed accessibility result models (Phase 11, ADR-0016).
+"""Typed accessibility result models (, ADR-0016).
 
 The accessibility module is the first SentinelQA module that does NOT
-drive a Playwright spec set through Phase 08's runner — instead it
+drive a Playwright spec set through 's runner — instead it
 invokes ``sentinel-ts audit-a11y`` to load each route, inject axe-core,
 and run keyboard / landmark / accessible-name checks per route. The
 TS subcommand returns one ``A11yPageResult`` per route which the Python
@@ -13,10 +13,10 @@ These wire models are intentionally separated from the runner ABI in
 
 - They carry per-rule axe metadata (impact, help URL, target selectors).
 - The check set is per-route, not per-test — there is no
-  ``TestExecution`` analogue.
+ ``TestExecution`` analogue.
 - The audit runs as a single TS process for the whole module, not one
-  process per spec, so the partial-stream tolerance and quarantine
-  semantics from Phase 08 don't apply.
+ process per spec, so the partial-stream tolerance and quarantine
+ semantics from don't apply.
 
 Schema version is locked under ADR-0016 §3.
 """
@@ -105,7 +105,7 @@ class AccessibleNameIssue(BaseModel):
 
 
 class Wcag22Issue(BaseModel):
-    """One WCAG 2.2 deterministic check issue (Phase 34 / ADR-0046).
+    """One WCAG 2.2 deterministic check issue ( / ADR-0046).
 
     Categories map 1:1 to a WCAG 2.2 success criterion via
     ``success_criterion`` (e.g. ``2.5.8`` for *Target Size (Minimum)*).

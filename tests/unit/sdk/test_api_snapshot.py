@@ -1,4 +1,4 @@
-"""API-snapshot gate (ADR-0021, task 16.06).
+"""API-snapshot gate (ADR-0021, ).
 
 CI fails if the live public surface diverges from
 ``packages/python-sdk/api-snapshot.json``. Regenerate via

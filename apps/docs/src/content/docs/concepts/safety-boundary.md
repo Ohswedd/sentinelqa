@@ -47,13 +47,13 @@ SentinelQA as "undetectable."
 
 ## How the boundary is enforced
 
-| Surface                | Mechanism                                                                                                                                       |
-| ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| Config load            | `SafetyPolicy.enforce()` rejects non-local targets without explicit allowlist; refuses destructive modes without a valid proof-of-authorization |
-| Every URL-bearing tool | Re-runs `SafetyPolicy.enforce()` before issuing any request                                                                                     |
-| CLI                    | Reserved flag names (`--stealth`, `--bypass`, `--unbounded`, `--evade*`) refused by the Typer parser                                            |
-| Tests                  | `tests/security/test_*` AST guards greps the source for forbidden literals; runs on every CI pass                                               |
-| Plugins                | Manifest permission grammar rejects unscoped `fs.write`; subprocess sandbox strips env vars                                                     |
+| Surface                | Mechanism                                                                                                                                     |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| Config load            | `SafetyPolicy.enforce` rejects non-local targets without explicit allowlist; refuses destructive modes without a valid proof-of-authorization |
+| Every URL-bearing tool | Re-runs `SafetyPolicy.enforce` before issuing any request                                                                                     |
+| CLI                    | Reserved flag names (`--stealth`, `--bypass`, `--unbounded`, `--evade*`) refused by the Typer parser                                          |
+| Tests                  | `tests/security/test_*` AST guards greps the source for forbidden literals; runs on every CI pass                                             |
+| Plugins                | Manifest permission grammar rejects unscoped `fs.write`; subprocess sandbox strips env vars                                                   |
 
 A run blocked by the safety policy exits with code `4` and writes an
 audit-log entry. Nothing downstream of the policy ever sees an unsafe

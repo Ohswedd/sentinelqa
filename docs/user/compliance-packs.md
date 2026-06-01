@@ -1,6 +1,6 @@
 # Compliance packs
 
-**Status:** Stable (Phase 34, ADR-0046).
+**Status:** Stable (, ADR-0046).
 
 A _compliance pack_ is a YAML document that composes existing
 SentinelQA modules + checks under a single regime label (WCAG 2.2 AA,
@@ -32,7 +32,7 @@ sentinel audit --compliance-pack wcag-2.2-aa
 Custom packs work the same way; point the flag at a YAML file:
 
 ```bash
-sentinel audit --compliance-pack ./packs/my-app.yaml
+sentinel audit --compliance-pack./packs/my-app.yaml
 ```
 
 ## Pack schema
@@ -46,7 +46,7 @@ pack: id: wcag-2.2-aa # lower-kebab; required. label: WCAG 2.2 AA (automated) # 
 The loader is strict (`extra="forbid"`):
 
 - Unknown top-level keys (anywhere in the document) are rejected.
-- `includes[].module` must be a known module — see `engine/policy/compliance.py::known_modules()`.
+- `includes[].module` must be a known module — see `engine/policy/compliance.py::known_modules`.
 - `includes[].checks` must be a known sub-check for the named module — see `engine/policy/compliance.py::known_checks(<module>)`.
 - Modules that do not support the `checks` filter must omit it.
 
@@ -76,20 +76,20 @@ The merged compliance module gets:
 
 ### `wcag-2.2-aa`
 
-- Phase 11 accessibility module with axe-core tags: `wcag2a, wcag2aa, wcag21a, wcag21aa, wcag22a, wcag22aa, best-practice`.
-- Phase 34 compliance module's `wcag22` check, which runs the deterministic WCAG 2.2 SCs (2.4.11 Focus Not Obscured, 2.5.7 Dragging Movements, 2.5.8 Target Size (Minimum), 3.3.7 Redundant Entry, 3.3.8 Accessible Authentication (Minimum)) when signal data is present at `<run-dir>/compliance/signals/wcag22.json`.
+- accessibility module with axe-core tags: `wcag2a, wcag2aa, wcag21a, wcag21aa, wcag22a, wcag22aa, best-practice`.
+- compliance module's `wcag22` check, which runs the deterministic WCAG 2.2 SCs (2.4.11 Focus Not Obscured, 2.5.7 Dragging Movements, 2.5.8 Target Size (Minimum), 3.3.7 Redundant Entry, 3.3.8 Accessible Authentication (Minimum)) when signal data is present at `<run-dir>/compliance/signals/wcag22.json`.
 
 ### `gdpr-baseline`
 
-- Phase 34 compliance module's `gdpr` check, with `flag_missing_consent_banner: true`. Reads `<run-dir>/compliance/signals/gdpr.json` produced by discovery / the TS runtime. Emits `compliance_id: gdpr:Art.6` and `gdpr:EDPB-03/2022` findings.
+- compliance module's `gdpr` check, with `flag_missing_consent_banner: true`. Reads `<run-dir>/compliance/signals/gdpr.json` produced by discovery / the TS runtime. Emits `compliance_id: gdpr:Art.6` and `gdpr:EDPB-03/2022` findings.
 
 ### `ccpa-baseline`
 
-- Phase 34 compliance module's `ccpa` check, with `enforce_ccpa_link_presence: true`. Reads `<run-dir>/compliance/signals/ccpa.json`. Emits `compliance_id: ccpa:do-not-sell-link` / `ccpa:do-not-sell-opt-out-form` findings.
+- compliance module's `ccpa` check, with `enforce_ccpa_link_presence: true`. Reads `<run-dir>/compliance/signals/ccpa.json`. Emits `compliance_id: ccpa:do-not-sell-link` / `ccpa:do-not-sell-opt-out-form` findings.
 
 ### `soc2-trail`
 
-- Phase 34 compliance module's `soc2_trail` check, which audits SentinelQA's own `<run-dir>/audit.log` against seven gates (existence, JSONL parseability, monotonic timestamps, presence of safety decisions, paired module start/end events, artifact events, absence of unredacted secrets). Emits `compliance_id: soc2:*` findings tied to gate failures.
+- compliance module's `soc2_trail` check, which audits SentinelQA's own `<run-dir>/audit.log` against seven gates (existence, JSONL parseability, monotonic timestamps, presence of safety decisions, paired module start/end events, artifact events, absence of unredacted secrets). Emits `compliance_id: soc2:*` findings tied to gate failures.
 
 ## Signal files
 

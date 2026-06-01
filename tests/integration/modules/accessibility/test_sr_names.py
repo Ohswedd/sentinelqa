@@ -1,4 +1,4 @@
-"""Integration tests for the accessible-name check (Phase 11.04)."""
+"""Integration tests for the accessible-name check."""
 
 from __future__ import annotations
 

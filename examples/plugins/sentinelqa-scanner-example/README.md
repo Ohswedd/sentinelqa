@@ -31,7 +31,7 @@ class HeaderChecker: kind = "scanner" name = "header-checker" version = "0.1.0" 
 `capabilities` is a free-form tag set; `permissions` is the runtime
 permission grant set (see `docs/dev/plugin-permissions.md`). The
 loader rejects any plugin declaring a capability on the SentinelQA
-forbidden list .
+forbidden list.
 
 ## Run the tests
 

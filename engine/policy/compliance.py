@@ -1,4 +1,4 @@
-"""Compliance-pack DSL loader (Phase 34.05, ADR-0046).
+"""Compliance-pack DSL loader.
 
 A *compliance pack* is a strict YAML document that composes existing
 SentinelQA modules + checks under a single regime label (WCAG 2.2 AA,
@@ -9,25 +9,25 @@ nothing.
 
 Pack shape::
 
-  pack:
-    id: wcag-2.2-aa
-    label: WCAG 2.2 AA (automated)
-    description: ...
-    version: 1
-    includes:
-      - module: accessibility
-        options:
-          axe_tags: [wcag2a, wcag2aa, wcag22a, wcag22aa]
-      - module: compliance
-        checks: [wcag22]
-    fail_on:
-      - severity: critical
-      - severity: high
-    warn_on:
-      - severity: medium
+ pack:
+ id: wcag-2.2-aa
+ label: WCAG 2.2 AA (automated)
+ description:...
+ version: 1
+ includes:
+ - module: accessibility
+ options:
+ axe_tags: [wcag2a, wcag2aa, wcag22a, wcag22aa]
+ - module: compliance
+ checks: [wcag22]
+ fail_on:
+ - severity: critical
+ - severity: high
+ warn_on:
+ - severity: medium
 
-CLAUDE §28 / Phase 34 wording rule: pack metadata may say "WCAG 2.2 AA
-(automated)" but never "WCAG 2.2 compliant". The Phase 34 forbidden-
+CLAUDE §28 / wording rule: pack metadata may say "WCAG 2.2 AA
+(automated)" but never "WCAG 2.2 compliant". The forbidden-
 phrase guard at ``tests/security/test_no_compliance_claims.py``
 enforces this for the YAML files under ``policy/compliance/``.
 """
@@ -49,7 +49,7 @@ Severity = Literal["critical", "high", "medium", "low", "info"]
 
 
 _KNOWN_CHECKS: dict[str, frozenset[str]] = {
-    # Compliance module ships four sub-checks (Phase 34).
+    # Compliance module ships four sub-checks.
     "compliance": frozenset({"gdpr", "ccpa", "soc2_trail", "wcag22"}),
     # Accessibility module's check filter only meaningfully applies to
     # axe tag-set selection today; the per-rule filter is left for
@@ -208,7 +208,7 @@ def load_compliance_pack(source: str | Path) -> CompliancePack:
     Resolution order when ``source`` is a string:
 
     1. Treat as a built-in pack id (e.g. ``"wcag-2.2-aa"``) and look up
-       ``policy/compliance/<id>.yaml`` next to the repository root.
+    ``policy/compliance/<id>.yaml`` next to the repository root.
     2. Treat as a filesystem path.
 
     Always returns a fully-validated :class:`CompliancePack` or raises

@@ -1,7 +1,7 @@
-"""Shared stdlib HTTP client for the Phase 25 integrations.
+"""Shared stdlib HTTP client for the integrations.
 
 our engineering rules forbids pulling in ``requests`` just to call a REST API;
-the Phase 17 PR / MR posters proved the pattern works. Every Phase 25
+the PR / MR posters proved the pattern works. Every
 adapter reuses this client so retry, redaction, and timeout semantics
 are identical across BrowserStack, Sauce Labs, Slack, GitHub, GitLab,
 Jira, and Linear.
@@ -69,7 +69,7 @@ class AuthHeader:
 
 
 class HttpClient:
-    """Tiny ``urllib``-based HTTP client used by every Phase 25 adapter.
+    """Tiny ``urllib``-based HTTP client used by every adapter.
 
     The class is intentionally small. Tests subclass it (or its
     ``_request`` hook) to intercept calls without monkeypatching

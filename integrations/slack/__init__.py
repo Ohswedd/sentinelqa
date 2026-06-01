@@ -1,4 +1,4 @@
-"""Slack webhook poster (Phase 25.03)."""
+"""Slack webhook poster."""
 
 from __future__ import annotations
 

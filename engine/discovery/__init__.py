@@ -1,12 +1,12 @@
-"""Discovery module (the documentation, Phase 05).
+"""Discovery module (the documentation, ).
 
 The discovery package builds the upstream input every other module relies on:
 a :class:`~engine.domain.discovery_graph.DiscoveryGraph` (routes, elements,
 forms, API endpoints, auth boundaries) and a derived
 :class:`~engine.domain.risk_map.RiskMap` that lets the Planner prioritize.
 
-ADR-0010 governs the architecture: Phase 05 ships an HTTP-first MVP backend;
-the Playwright-driven backend for CSR SPAs lands in Phase 17.
+ADR-0010 governs the architecture: ships an HTTP-first release backend;
+the Playwright-driven backend for CSR SPAs lands in.
 """
 
 from __future__ import annotations

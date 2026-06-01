@@ -1,4 +1,4 @@
-# SentinelQA configuration for the Django demo (Phase 26.03).
+# SentinelQA configuration for the Django demo ().
 # The app binds to 127.0.0.1:8001 by default — see README.md.
 version: 1
 

@@ -1,6 +1,6 @@
 # Auth profiles
 
-> Status: **Stable** (Phase 31, ADR-0043).
+> Status: **Stable** (, ADR-0043).
 
 An **auth profile** is a small frozen dataclass that documents one
 sign-in flow. It is metadata only — it has no fields for usernames,
@@ -60,4 +60,4 @@ would mean SentinelQA touches credentials, and the security boundary
 between "what SentinelQA knows" and "what your browser knows" would
 collapse. The interactive login flow — operator signs in in their own
 browser, SentinelQA captures the session cookies via
-`context.storage_state()` — keeps that boundary intact.
+`context.storage_state` — keeps that boundary intact.

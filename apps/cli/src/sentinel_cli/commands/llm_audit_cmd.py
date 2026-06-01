@@ -1,6 +1,6 @@
-"""``sentinel llm-audit`` — run the LLM-code audit module (Phase 19).
+"""``sentinel llm-audit`` — run the LLM-code audit module.
 
-Replaces the Phase 02 stub. Drives the canonical
+Replaces the stub. Drives the canonical
 :class:`engine.orchestrator.run_lifecycle.RunLifecycle` restricted to
 the ``llm_audit`` module so the lifecycle steps (safety policy,
 artifact tree, reporter dispatch, exit-code mapping) run whether the
@@ -38,7 +38,7 @@ from engine.orchestrator.run_lifecycle import RunLifecycle
 from engine.policy.audit_log import write_audit_entry
 
 # Side-effect import — registers the LLM-audit module with the
-# process-wide registry. Same pattern used by every Phase 10+ module.
+# process-wide registry. Same pattern used by every + module.
 import modules.llm_audit  # noqa: F401
 from modules.llm_audit.module import ALL_CHECKS
 from sentinel_cli.json_mode import json_stdout

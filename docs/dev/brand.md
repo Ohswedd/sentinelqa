@@ -2,7 +2,7 @@
 
 Status: `Stable`
 
-Authority: ,
+Authority:,
 our engineering rules(Competitor awareness), `docs/dev/trademarks-and-naming.md`.
 
 This page documents how the SentinelQA name, mark, and assets may be
@@ -29,21 +29,14 @@ served (favicons + the social-preview OG image) in
 | Apple touch icon      | `docs/assets/brand/apple-touch-icon-180.png`    | iOS / iPadOS home-screen.                                  |
 | Social preview        | `docs/assets/brand/social-preview-1280x640.png` | GitHub social card + OG image.                             |
 
-All PNGs are generated procedurally from
-[`scripts/release/gen_brand_pngs.py`](../../scripts/release/gen_brand_pngs.py).
-The script is deterministic (same Pillow version → byte-identical
-output) so the generated files are safe to commit. Re-run after
-changing the source design:
-
-```bash
-uv run python -m scripts.release.gen_brand_pngs
-```
+The PNGs are committed alongside the SVG sources. Replace the
+placeholders with the registered mark before publication.
 
 ## Naming
 
 - The product name is **SentinelQA** — one word, capitalised S and Q. Not "Sentinel QA", not "Sentinelqa", not "sentinel-qa".
 - The CLI executable is `sentinel` (lowercase).
-- Package names: `sentinelqa-cli` (PyPI, Phase 36), `sentinelqa` (PyPI SDK), `@sentinelqa/*` (npm scope), `sentinelqa/runner` (Docker Hub).
+- Package names: `sentinelqa-cli` (PyPI, ), `sentinelqa` (PyPI SDK), `@sentinelqa/*` (npm scope), `sentinelqa/runner` (Docker Hub).
 
 ## What you may do
 

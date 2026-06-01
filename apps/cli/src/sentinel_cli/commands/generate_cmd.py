@@ -1,4 +1,4 @@
-"""``sentinel generate`` — render Playwright specs/pages/fixtures (task 07.06).
+"""``sentinel generate`` — render Playwright specs/pages/fixtures.
 
 Wires the generator pipeline into the CLI. The command runs lifecycle
 steps 1-9 (config → safety → discover → plan) unless ``--from-plan``
@@ -8,7 +8,7 @@ Hand-edited files (those lacking the SentinelQA banner) are preserved
 unless ``--force`` is passed. The brittleness audit always runs over
 the rendered specs; failures abort the write and exit code 6.
 
-Replaces the Phase 02 stub.
+Replaces the stub.
 """
 
 from __future__ import annotations

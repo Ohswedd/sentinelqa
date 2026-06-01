@@ -1,4 +1,4 @@
-"""Task 18.05 — `sentinel mcp` CLI surface."""
+"""— `sentinel mcp` CLI surface."""
 
 from __future__ import annotations
 

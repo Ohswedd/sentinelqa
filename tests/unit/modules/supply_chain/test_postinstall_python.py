@@ -1,4 +1,4 @@
-"""Postinstall scanner — Python AST patterns (Phase 33.04)."""
+"""Postinstall scanner — Python AST patterns."""
 
 from __future__ import annotations
 

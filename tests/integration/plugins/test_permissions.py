@@ -1,4 +1,4 @@
-"""Phase 24 task 24.03 — capability + permission declarations."""
+"""— capability + permission declarations."""
 
 from __future__ import annotations
 

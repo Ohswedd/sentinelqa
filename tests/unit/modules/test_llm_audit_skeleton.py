@@ -1,4 +1,4 @@
-"""Unit tests for :mod:`modules.llm_audit` (Phase 19.01)."""
+"""Unit tests for :mod:`modules.llm_audit`."""
 
 from __future__ import annotations
 

@@ -1,4 +1,4 @@
-"""Mocked tests for ``integrations.gitlab.status`` (Phase 25.05)."""
+"""Mocked tests for ``integrations.gitlab.status``."""
 
 from __future__ import annotations
 

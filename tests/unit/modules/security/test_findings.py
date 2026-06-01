@@ -1,4 +1,4 @@
-"""Findings translation tests (Phase 13)."""
+"""Findings translation tests."""
 
 from __future__ import annotations
 

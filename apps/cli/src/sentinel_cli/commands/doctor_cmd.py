@@ -1,4 +1,4 @@
-"""`sentinel doctor` command (task 02.03).
+"""`sentinel doctor` command.
 
 Read-only preflight: env versions, Playwright install, config presence,
 target reachability, env-var presence, writable `.sentinel/`, disk

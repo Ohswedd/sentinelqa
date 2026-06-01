@@ -1,4 +1,4 @@
-"""Integration tests for the localStorage / sessionStorage secrets check (task 19.09)."""
+"""Integration tests for the localStorage / sessionStorage secrets check."""
 
 from __future__ import annotations
 

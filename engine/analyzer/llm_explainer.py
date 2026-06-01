@@ -1,4 +1,4 @@
-"""Analyzer LLM explainer adapter (task 09.05, ADR-0014).
+"""Analyzer LLM explainer adapter.
 
 Mirrors the planner's adapter shape: a :class:`Protocol`, a
 :class:`NullLlmExplainer` default, and two HTTP-only provider

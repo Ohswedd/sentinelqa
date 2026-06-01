@@ -1,7 +1,7 @@
 """Wire-format models for :class:`modules.security.SecurityModule`.
 
 These mirror what the module persists under ``<run-dir>/security/`` so
-the Reporter (Phase 03 / 15) and SDK (Phase 16) can re-load a run
+the Reporter ( / 15) and SDK can re-load a run
 without re-executing it. The schema version is bumped under an ADR
 (see ADR-0018) and is enforced at parse time.
 """

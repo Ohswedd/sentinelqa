@@ -1,4 +1,4 @@
-"""Framework / package-manager detection helpers (task 02.02)."""
+"""Framework / package-manager detection helpers."""
 
 from __future__ import annotations
 

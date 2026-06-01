@@ -1,12 +1,12 @@
-"""Phase 04.05 — Python parses every TS-emitted evidence artifact.
+"""Python parses every TS-emitted evidence artifact.
 
 The TS runtime emits four evidence-shaped events during a typical
 failure:
 
-  * `evidence` (trace / screenshot / video / har / dom_snapshot)
-  * `dom.snapshot`
-  * `console`
-  * `network.request` + `network.response`
+ * `evidence` (trace / screenshot / video / har / dom_snapshot)
+ * `dom.snapshot`
+ * `console`
+ * `network.request` + `network.response`
 
 This test pulls those entries from the canonical parity fixture and
 proves the Python bridge round-trips them with the right typed model,

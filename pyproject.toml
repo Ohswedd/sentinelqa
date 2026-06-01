@@ -39,7 +39,7 @@ dev = [
     "pytest-httpserver==1.1.0",
     "jinja2==3.1.4",
     "pillow==11.0.0",
-    # Phase 30: RS256 JWT signing for the Vertex AI provider. See
+    # : RS256 JWT signing for the Vertex AI provider. See
     # engine/pyproject.toml for the dependency rationale.
     "cryptography==45.0.1",
 ]
@@ -57,7 +57,7 @@ members = [
     "packages/mcp-server",
 ]
 # engine/* and modules/* sub-packages become workspace members as their code
-# lands (Phase 01 onward). Each will ship its own pyproject.toml at that point.
+# lands (onward). Each will ship its own pyproject.toml at that point.
 # See docs/adr/0003-package-managers.md.
 
 # ---------------------------------------------------------------------------
@@ -82,7 +82,7 @@ extend-exclude = [
     "playwright-report",
     "test-results",
     ".sentinel",
-    # Phase 26 — `examples/` ships reference apps (Next.js, FastAPI,
+    # `examples/` ships reference apps (Next.js, FastAPI,
     # Django, Flask, React+Vite) whose framework idioms (e.g. Django's
     # class-level `dependencies = [...]`) deliberately diverge from the
     # SentinelQA core style. They are typed by their own toolchains.
@@ -91,13 +91,13 @@ extend-exclude = [
 
 [tool.ruff.lint]
 select = [
-    "F",   # pyflakes
-    "E",   # pycodestyle errors
-    "W",   # pycodestyle warnings
-    "I",   # isort
-    "UP",  # pyupgrade
-    "B",   # flake8-bugbear
-    "N",   # pep8-naming
+    "F", # pyflakes
+    "E", # pycodestyle errors
+    "W", # pycodestyle warnings
+    "I", # isort
+    "UP", # pyupgrade
+    "B", # flake8-bugbear
+    "N", # pep8-naming
     "SIM", # flake8-simplify
     "RET", # flake8-return
     "RUF", # ruff-specific
@@ -105,7 +105,7 @@ select = [
 # We do not silence anything globally. Per-file ignores can be added with care.
 
 [tool.ruff.lint.per-file-ignores]
-"tests/**" = ["S101"]  # asserts are fine in tests (rule not enabled but harmless)
+"tests/**" = ["S101"] # asserts are fine in tests (rule not enabled but harmless)
 
 [tool.ruff.format]
 quote-style = "double"
@@ -125,7 +125,7 @@ warn_return_any = true
 warn_unreachable = true
 no_implicit_optional = true
 # Files list grows phase by phase as engine/* and modules/* sub-packages ship
-# their first .py files (Phase 01 onward). Listing empty directories here makes
+# their first .py files (onward). Listing empty directories here makes
 # mypy error with "no .py[i] files". See docs/adr/0003-package-managers.md.
 files = [
     "apps/cli/src",
@@ -265,7 +265,7 @@ source = [
 # package floor). Adding them to the global source list would force a
 # uniform floor that doesn't match the differing risk profiles of
 # discovery (network-bound) vs deterministic codegen.
-# Phase 02 adds engine/orchestrator and apps/cli/src/sentinel_cli; both ship
+# adds engine/orchestrator and apps/cli/src/sentinel_cli; both ship
 # real code under the same 95% coverage floor.
 
 [tool.coverage.report]

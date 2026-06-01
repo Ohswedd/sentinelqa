@@ -11,18 +11,18 @@ Accepted
 
 ADR-0037 ("Provider-agnostic LLM access through adapters") committed
 SentinelQA to a Protocol-based, HTTP-only LLM surface so callers don't
-get locked to one vendor. Phase 06 (planner) and Phase 09 (analyzer)
+get locked to one vendor. (planner) and (analyzer)
 each shipped their own caller-specific Protocol — `LlmPlanner` and
 `LlmExplainer` respectively — with HTTP adapters for OpenAI Chat
 Completions and Anthropic Messages. Two providers, two duplicated
 adapter trees.
 
-Phase 30 (post-MVP ecosystem expansion, see ) needs
+(post-launch expansion, see ) needs
 seven additional providers: Google Gemini (AI Studio), Ollama (local),
 Azure OpenAI, Google Vertex AI, Mistral, Groq, and OpenRouter
 (gateway). Continuing the per-caller-Protocol pattern would have meant
 implementing each of the seven providers twice (once for the planner,
-once for the analyzer) — and three times when Phase 20's healer also
+once for the analyzer) — and three times when's healer also
 starts wanting LLM-driven repair proposals.
 
 our engineering rules/ evasion / unauthorized capabilities;
@@ -41,7 +41,7 @@ that every adapter implements:
 
 ```python
 @runtime_checkable
-class LlmProvider(Protocol): name: ClassVar[str] version: ClassVar[str] def complete(self, request: LlmRequest) -> LlmResponse: ... def doctor(self) -> ProviderHealth: ...
+class LlmProvider(Protocol): name: ClassVar[str] version: ClassVar[str] def complete(self, request: LlmRequest) -> LlmResponse:... def doctor(self) -> ProviderHealth:...
 ```
 
 Caller-specific shape is carried by the `LlmRequest`:
@@ -57,7 +57,7 @@ caller fall back to the deterministic path without raising (Ollama
 when the local server is offline).
 
 Each provider is implemented as an `httpx`-only adapter under
-`engine/llm/providers/`. Nine providers ship in Phase 30:
+`engine/llm/providers/`. Nine providers ship in:
 
 | Provider       | Endpoint                                                                                                        | Auth                                                 | Model strings                                                           |
 | -------------- | --------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- | ----------------------------------------------------------------------- |

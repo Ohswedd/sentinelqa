@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """Dump the public SDK surface to ``packages/python-sdk/api-snapshot.json``.
 
-The snapshot is the SDK's contract gate (task 16.06, ADR-0021): CI runs
+The snapshot is the SDK's contract gate : CI runs
 ``tests/unit/sdk/test_api_snapshot.py`` to diff the current public
 ``__all__`` against the snapshot. Drift fails CI until either:
 
 - the snapshot is regenerated (this script) and an ADR + minor-version
-  bump accompany the PR, or
+ bump accompany the PR, or
 - the inadvertent change is reverted.
 
 Run via ``make sdk-api-snapshot``.

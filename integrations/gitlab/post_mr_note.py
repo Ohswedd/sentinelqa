@@ -1,12 +1,12 @@
-"""Upsert a SentinelQA merge-request note via the GitLab API (task 17.03).
+"""Upsert a SentinelQA merge-request note via the GitLab API.
 
 Usage (invoked from `integrations/gitlab/.gitlab-ci.sentinel.yml`)::
 
-    python integrations/gitlab/post_mr_note.py \\
-        --report-markdown ./.sentinel/runs/<id>/report.md \\
-        --api-url $CI_API_V4_URL \\
-        --project-id $CI_PROJECT_ID \\
-        --mr $CI_MERGE_REQUEST_IID
+ python integrations/gitlab/post_mr_note.py \\
+ --report-markdown./.sentinel/runs/<id>/report.md \\
+ --api-url $CI_API_V4_URL \\
+ --project-id $CI_PROJECT_ID \\
+ --mr $CI_MERGE_REQUEST_IID
 
 Looks for an existing note whose body begins with the
 ``<!-- sentinelqa:pr-comment -->`` anchor (the same anchor the GitHub

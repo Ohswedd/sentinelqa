@@ -1,4 +1,4 @@
-"""Framework / package-manager detection for `sentinel init` (task 02.02).
+"""Framework / package-manager detection for `sentinel init`.
 
 All functions return ``None`` when uncertain — guessing produces silent
 config drift, which CLAUDE §12 forbids.

@@ -61,7 +61,7 @@ def test_module_arbitrary_exception_handled(tmp_path: Path) -> None:
 
 
 def test_module_error_is_categorized_by_analyzer(tmp_path: Path) -> None:
-    """Phase 09 rehome: every module-level exception flows through
+    """rehome: every module-level exception flows through
     :func:`engine.analyzer.categorize.categorize_module_error` so the
     Reporter / SDK can show *why* a module fell over instead of just
     "errored"."""

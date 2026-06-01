@@ -1,6 +1,6 @@
-"""Playwright-driven discovery backend (Phase 17 task 07, ADR-0010).
+"""Playwright-driven discovery backend ( 07, ADR-0010).
 
-The Phase 05 HTTP backend cannot crawl client-rendered SPAs because the
+The HTTP backend cannot crawl client-rendered SPAs because the
 landing page contains no anchor tags until the JS bundle hydrates. This
 backend drives Chromium via ``sentinel-ts discover`` (the new TS
 subcommand) and consumes its JSONL events (``discovery.page`` and
@@ -10,33 +10,32 @@ subcommand) and consumes its JSONL events (``discovery.page`` and
 Implementation discipline:
 
 - The same ``CrawlPolicy`` knobs apply: rate limit (forwarded as
-  ``--rate-limit``), max depth, max pages, respect-robots, same-host,
-  request timeout.
+ ``--rate-limit``), max depth, max pages, respect-robots, same-host,
+ request timeout.
 - Translation is one-to-one: every ``discovery.page`` event becomes one
-  :class:`engine.discovery.crawler.CrawlPage` so downstream detectors
-  (DOM map, forms, API detector) consume an identical shape regardless
-  of which backend ran.
+ :class:`engine.discovery.crawler.CrawlPage` so downstream detectors
+ (DOM map, forms, API detector) consume an identical shape regardless
+ of which backend ran.
 - Endpoints emitted by the TS subcommand are surfaced via the
-  ``extra_api_endpoints`` field on :class:`CrawlResult` (see Phase 05
-  pipeline; the field is additive). Until Phase 22 lights up API
-  contract checks, those endpoints round-trip through the audit log
-  only — never gating anything.
+ ``extra_api_endpoints`` field on :class:`CrawlResult`. Until lights up API
+ contract checks, those endpoints round-trip through the audit log
+ only — never gating anything.
 - A pluggable :class:`PlaywrightRunner` Protocol mirrors the pattern in
-  Phases 11 + 12. Production: :class:`SubprocessPlaywrightRunner`
-  spawns ``sentinel-ts discover``. Tests: a stub returning a canned
-  JSONL stream.
+ Phases 11 + 12. Production: :class:`SubprocessPlaywrightRunner`
+ spawns ``sentinel-ts discover``. Tests: a stub returning a canned
+ JSONL stream.
 
 Safety contract (our engineering rules, the documentation):
 
 - Same User-Agent + ``X-SentinelQA-Test-Run`` header policy applies;
-  the TS subcommand honors both (and is validated by its own tests).
+ the TS subcommand honors both (and is validated by its own tests).
 - The backend NEVER spawns Chromium itself — it shells out to the
-  vendored TS runtime, which is what the Phase 04 install path
-  provisioned. When the binary is missing, the backend raises
-  :class:`SentinelTsNotInstalledError` so the CLI can surface exit
-  code 5 (dependency missing).
+ vendored TS runtime, which is what the install path
+ provisioned. When the binary is missing, the backend raises
+ :class:`SentinelTsNotInstalledError` so the CLI can surface exit
+ code 5 (dependency missing).
 - Subprocess invocation uses argument vectors (``shell=False``) and
-  caps wall-clock time via the policy timeout times max_pages bound.
+ caps wall-clock time via the policy timeout times max_pages bound.
 """
 
 from __future__ import annotations
@@ -250,7 +249,7 @@ def aggregate_result(
         event = parse_event(raw)
         if not isinstance(event, DiscoveryPageEvent):
             # Endpoints + log events round-trip through the audit log
-            # only; the Phase 22 API module will start consuming them.
+            # only; the API module will start consuming them.
             continue
         if event.url in seen_urls:
             continue
@@ -283,7 +282,7 @@ def aggregate_result(
 
 
 def extract_endpoints(lines: Iterable[str]) -> tuple[dict[str, object], ...]:
-    """Return parsed endpoint events for downstream API consumers (Phase 22)."""
+    """Return parsed endpoint events for downstream API consumers."""
 
     out: list[dict[str, object]] = []
     for raw in lines:

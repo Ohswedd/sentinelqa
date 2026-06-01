@@ -4,11 +4,11 @@ Public surface:
 
 - :class:`MCPServer` — the dispatcher; constructible without a transport.
 - :func:`build_default_server` — convenience factory that wires the
-  default :class:`SentinelToolset` against a :class:`sentinelqa.Sentinel`.
+ default :class:`SentinelToolset` against a :class:`sentinelqa.Sentinel`.
 - :data:`AGENT_ENVELOPE_SCHEMA_VERSION` — the envelope schema version.
 - :data:`MCP_PROTOCOL_VERSION` — the MCP protocol version we speak.
 - :data:`SERVER_NAME` / :data:`SERVER_VERSION` — used in the
-  ``initialize`` handshake.
+ ``initialize`` handshake.
 
 Heavy imports (the transports, tool modules) are imported lazily by the
 factory so ``import sentinelqa_mcp`` stays fast for the CLI ``--help``

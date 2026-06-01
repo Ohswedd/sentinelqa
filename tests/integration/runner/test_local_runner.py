@@ -5,7 +5,7 @@ The runner is exercised end-to-end without spawning a real
 an in-memory :class:`asyncio.subprocess.Process` whose stdout / stderr
 streams emit predetermined bytes. This proves the bridge:
 
-  spawn → stdout JSONL → parser → aggregator → ModuleResult
+ spawn → stdout JSONL → parser → aggregator → ModuleResult
 
 without requiring Playwright or Chromium to be installed.
 """
@@ -181,7 +181,7 @@ def test_local_runner_streams_jsonl_into_module_result(tmp_path: Path) -> None:
     assert len(cfg_payload["spec_files"]) == 1
     assert cfg_payload["spec_files"][0].endswith("login.spec.ts")
 
-    # The module-results artifact landed where Phase 14 will look.
+    # The module-results artifact landed where will look.
     module_results_path = tmp_path / "module-results" / "functional.json"
     assert module_results_path.exists()
 

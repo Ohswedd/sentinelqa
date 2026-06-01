@@ -40,8 +40,8 @@ def _normalize_host(value: str) -> str:
 
     - Bracketed IPv6 with port (``[::1]:3000``): drop brackets and port.
     - Bare IPv6 (two or more colons, e.g. ``::1`` or ``fe80::1``): leave
-      the address alone — there is no ``host:port`` ambiguity here because
-      a bare IPv6 with a port is not valid URL syntax.
+    the address alone — there is no ``host:port`` ambiguity here because
+    a bare IPv6 with a port is not valid URL syntax.
     - IPv4/hostname (single colon followed by digits): drop the port.
     """
 

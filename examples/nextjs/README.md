@@ -2,7 +2,7 @@
 
 A Next.js 14 app (App Router) with cookie-based session auth, an
 in-memory CRUD for the "Project" entity, and an `/admin` page gated on
-the `admin` role. SentinelQA Phase 26.01.
+the `admin` role. SentinelQA
 
 ## Run
 

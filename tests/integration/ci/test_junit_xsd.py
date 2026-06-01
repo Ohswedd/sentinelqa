@@ -1,4 +1,4 @@
-"""XSD validation for emitted JUnit XML (task 03.04).
+"""XSD validation for emitted JUnit XML.
 
 Runs the SentinelQA JUnit writer through every Phase-03 fixture and
 validates the bytes against the committed XSD at

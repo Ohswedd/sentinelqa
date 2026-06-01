@@ -1,7 +1,7 @@
-"""Build :class:`FailureSignal` objects from runner outcomes (task 09.01).
+"""Build :class:`FailureSignal` objects from runner outcomes.
 
-The runner aggregator (Phase 08) produces a :class:`RunnerOutcome` with
-per-test :class:`TestExecution` records. Phase 09 layers on top: for
+The runner aggregator produces a :class:`RunnerOutcome` with
+per-test :class:`TestExecution` records. layers on top: for
 each *failed* test it enriches the execution record with the
 step / network / console events captured during the run, plus optional
 test-case metadata (route, module) from the planner.
@@ -58,17 +58,17 @@ def build_failure_signal(
     The caller threads in:
 
     * ``events`` — the parsed TS events scoped to this test (filtered
-      by ``test_id`` already; we do not re-filter to keep the analyzer
-      a pure consumer).
+    by ``test_id`` already; we do not re-filter to keep the analyzer
+    a pure consumer).
     * ``module`` — which SentinelQA module ran this test (functional,
-      a11y, security, ...). Defaults to the lifecycle's module name.
+    a11y, security,...). Defaults to the lifecycle's module name.
     * ``route`` — optional planner route the test exercised.
     * ``fixture_failed`` — True when the failure originated in a
-      setup hook (auth / data seed).
+    setup hook (auth / data seed).
     * ``error_name`` / ``error_stack`` — optional richer error data
-      that ``TestExecution`` does not currently carry.
+    that ``TestExecution`` does not currently carry.
     * ``attempts`` — per-retry attempt records. When empty, we
-      synthesize a single-attempt history from ``execution``.
+    synthesize a single-attempt history from ``execution``.
     """
 
     steps: list[StepRecord] = []

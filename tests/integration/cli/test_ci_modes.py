@@ -1,4 +1,4 @@
-"""`sentinel ci` mode integration tests (task 17.04)."""
+"""`sentinel ci` mode integration tests."""
 
 from __future__ import annotations
 

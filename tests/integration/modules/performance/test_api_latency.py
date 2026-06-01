@@ -1,4 +1,4 @@
-"""Integration test for API P95 latency budget (Phase 12.03)."""
+"""Integration test for API P95 latency budget."""
 
 from __future__ import annotations
 

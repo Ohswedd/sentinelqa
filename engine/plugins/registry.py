@@ -1,4 +1,4 @@
-"""Plugin discovery + load-time validation (Phase 24 task 24.02).
+"""Plugin discovery + load-time validation.
 
 The host calls :func:`discover` once per run; it iterates
 ``entry_points(group="sentinelqa.plugins")``, validates each
@@ -159,7 +159,7 @@ def load_from_entry_point(
     4. Reject forbidden capabilities (CLAUDE §6).
     5. Reject incompatible ``requires_protocol``.
     6. ``isinstance`` check against the Protocol for the declared
-       ``kind``.
+    ``kind``.
 
     Raises :class:`PluginManifestError` /
     :class:`PluginCapabilityForbiddenError` /

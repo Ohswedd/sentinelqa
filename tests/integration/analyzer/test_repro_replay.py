@@ -1,5 +1,5 @@
 """End-to-end: a generated repro spec parses as valid TS and lines up
-with the failure (task 09.03).
+with the failure.
 
 We don't execute the spec under Playwright in unit-grade CI — that would
 require a browser. Instead we lock the parts we can: the banner is

@@ -1,4 +1,4 @@
-"""Determinism helper for SentinelQA run artifacts (Phase 29.03).
+"""Determinism helper for SentinelQA run artifacts.
 
 Given two or more ``.sentinel/runs/<id>/`` directories, walk every artifact,
 strip the fields that are *expected* to differ between runs (timestamps,
@@ -6,8 +6,8 @@ durations, run IDs), and print any remaining diff.
 
 Usage:
 
-    uv run python -m scripts.diff_runs <run-a-dir> <run-b-dir> [<run-c-dir> ...]
-    uv run python -m scripts.diff_runs --files run-a/findings.json run-b/findings.json
+ uv run python -m scripts.diff_runs <run-a-dir> <run-b-dir> [<run-c-dir>...]
+ uv run python -m scripts.diff_runs --files run-a/findings.json run-b/findings.json
 
 Exit codes:
 

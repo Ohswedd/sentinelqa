@@ -1,7 +1,7 @@
-"""Slack summary payload generator (Phase 15, task 15.06).
+"""Slack summary payload generator (, ).
 
 Produces a Slack Block Kit JSON payload summarizing a SentinelQA run.
-The payload is NOT posted by this module — Phase 25 owns the Slack
+The payload is NOT posted by this module — owns the Slack
 integration. Here we only generate the JSON envelope so the workflow,
 shape, and contract are testable today.
 
@@ -49,7 +49,7 @@ def render_slack_payload(
     """Build the Block Kit payload.
 
     Returns a plain dict so callers can write it to JSON, pass it to a
-    HTTP client, or post it via the Slack SDK in Phase 25.
+    HTTP client, or post it via the Slack SDK in.
     """
 
     release_decision = _derive_release_decision(run, policy)

@@ -1,4 +1,4 @@
-"""Structural smoke for the end-to-end demo (Phase 26.07).
+"""Structural smoke for the end-to-end demo.
 
 The acceptance criterion ("compose up, audit, score >= threshold") is
 exercised manually via `make demo` — both Docker and the example apps'
@@ -52,4 +52,4 @@ def test_demo_readme_documents_make_targets() -> None:
     readme = read_text("end-to-end-demo", "README.md")
     assert "make demo" in readme
     assert "make demo-down" in readme
-    assert "under 10 minutes" in readme  # Phase 26.07 acceptance copy
+    assert "under 10 minutes" in readme  # acceptance copy

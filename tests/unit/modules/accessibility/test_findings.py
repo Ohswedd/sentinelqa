@@ -1,4 +1,4 @@
-"""Unit tests for :mod:`modules.accessibility.findings` (Phase 11.05)."""
+"""Unit tests for :mod:`modules.accessibility.findings`."""
 
 from __future__ import annotations
 

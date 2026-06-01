@@ -1,4 +1,4 @@
-"""Structural smoke for the React + Vite example (Phase 26.05)."""
+"""Structural smoke for the React + Vite example."""
 
 from __future__ import annotations
 

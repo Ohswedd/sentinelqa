@@ -1,7 +1,7 @@
 # SentinelQA Flask example
 
 A minimal Flask 3.x app with cookie-based session auth and an in-memory
-CRUD for the "Project" entity. SentinelQA Phase 26.04.
+CRUD for the "Project" entity. SentinelQA
 
 ## Run
 
@@ -19,7 +19,7 @@ Or, manually:
 
 ```bash
 cd examples/flask
-python -m venv .venv-demo
+python -m venv.venv-demo
 .venv-demo/bin/pip install -r requirements.txt
 .venv-demo/bin/python app.py
 ```

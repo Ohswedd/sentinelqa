@@ -4,12 +4,12 @@ Responsibilities:
 
 - Read YAML with :func:`yaml.safe_load` (no arbitrary tag execution).
 - Interpolate ``${VAR}`` / ``${VAR:-default}`` references against the
-  process environment in non-secret string values only. Keys are NEVER
-  interpolated; secret fields refuse inline values.
+ process environment in non-secret string values only. Keys are NEVER
+ interpolated; secret fields refuse inline values.
 - Reject unknown keys (Pydantic ``extra="forbid"`` already does this at the
-  model level; we surface a clear message at the CLI boundary).
+ model level; we surface a clear message at the CLI boundary).
 - Map every failure mode to a typed :class:`engine.errors.ConfigError`
-  subclass with a stable code from `engine/errors/codes.py`.
+ subclass with a stable code from `engine/errors/codes.py`.
 """
 
 from __future__ import annotations
@@ -96,9 +96,9 @@ def load_config(path: Path) -> RootConfig:
 
     - :class:`ConfigFileNotFoundError` when ``path`` does not exist.
     - :class:`ConfigSchemaError` for YAML syntax errors, unknown keys, or
-      Pydantic validation failures.
+    Pydantic validation failures.
     - :class:`ConfigSecretInlineError` when a secret-named key carries an
-      inline literal (use ``*_env`` instead).
+    inline literal (use ``*_env`` instead).
     """
 
     if not path.exists() or not path.is_file():
@@ -140,7 +140,7 @@ def load_config(path: Path) -> RootConfig:
 def dump_config(config: RootConfig) -> str:
     """Render ``config`` as a YAML string.
 
-    Used by ``sentinel init`` (Phase 02) to write a default config file.
+    Used by ``sentinel init`` to write a default config file.
     The output is deterministic (sorted keys, single-quote strings).
     """
 

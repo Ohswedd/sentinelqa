@@ -3,10 +3,10 @@
 The Docker subprocess is faked the same way as for the local runner —
 we never launch a real container. What we do verify:
 
-  - The docker command line is correctly assembled (read-only source
-    mount, writable run-dir mount, ``host.docker.internal`` alias).
-  - Safety policy is enforced again before container spawn.
-  - The container-side run-config rewrites paths to ``/sentinel/run``.
+ - The docker command line is correctly assembled (read-only source
+ mount, writable run-dir mount, ``host.docker.internal`` alias).
+ - Safety policy is enforced again before container spawn.
+ - The container-side run-config rewrites paths to ``/sentinel/run``.
 """
 
 from __future__ import annotations
@@ -149,7 +149,7 @@ def test_docker_command_includes_required_mounts_and_image(tmp_path: Path) -> No
     args = seen["args"]
     assert cmd == "/usr/local/bin/docker"
     assert args[0] == "run"
-    # The pinned image is at the end (just before `sentinel-ts ...`).
+    # The pinned image is at the end (just before `sentinel-ts...`).
     assert "mcr.microsoft.com/playwright:v1.49.0-jammy" in args
     # host.docker.internal alias is present.
     assert any(

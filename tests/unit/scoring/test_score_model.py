@@ -1,4 +1,4 @@
-"""Task 14.01 — exhaustive cases for the scoring model."""
+"""— exhaustive cases for the scoring model."""
 
 from __future__ import annotations
 
@@ -103,7 +103,7 @@ def test_compute_score_one_high_security_finding(
     assert score.severity_penalties_applied["high"] == 17.5
     assert score.severity_penalties_applied["medium"] == 0.0
     # total = (100*.30) + (82.5*.20) + (100*.15) + (100*.10) +
-    #        (100*.10) + (100*.05) + (100*.05) + (100*.05) = 96.5
+    # (100*.10) + (100*.05) + (100*.05) + (100*.05) = 96.5
     assert score.total == 96.5
 
 
@@ -122,7 +122,7 @@ def test_compute_score_two_mediums_in_accessibility(
     )
     # accessibility component = 100 - 6.5 - 6.5 = 87.0
     assert score.components["accessibility"] == 87.0
-    # 100 - 1.3 (penalty contribution from accessibility * .10) = 98.7
+    # 100 - 1.3 (penalty contribution from accessibility *.10) = 98.7
     assert score.total == 98.7
 
 

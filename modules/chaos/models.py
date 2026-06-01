@@ -1,9 +1,9 @@
-"""Wire types for :class:`ChaosModule` (Phase 23, the documentation).
+"""Wire types for :class:`ChaosModule` (, the documentation).
 
 The chaos module is Playwright-driven: TS chaos helpers inject network
 slowdowns, expired sessions, duplicate-submit races, etc., into a
 target flow and emit per-observation :class:`ChaosEvent` records via
-the standard JSONL bridge (Phase 04). The Python side ingests those
+the standard JSONL bridge. The Python side ingests those
 events, persists ``chaos/<category>.json`` per scenario category, and
 translates "bad" observations into the documentation :class:`Finding`s.
 

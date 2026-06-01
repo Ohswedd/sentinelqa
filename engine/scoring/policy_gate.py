@@ -1,4 +1,4 @@
-"""Policy gate (task 14.04, our engineering rules §39).
+"""Policy gate.
 
 Combines :mod:`engine.scoring.model`, :mod:`engine.scoring.blockers`,
 and :mod:`engine.scoring.decision` into the canonical lifecycle hooks
@@ -49,7 +49,7 @@ def apply_policy_gate(
     """Compute the score, blockers, and decision in one call.
 
     Convenience helper used by the lifecycle hook below and exercised
-    directly by the reproducibility test (task 14.05) so the
+    directly by the reproducibility test so the
     end-to-end pipeline is the same path tests + production take.
     """
 

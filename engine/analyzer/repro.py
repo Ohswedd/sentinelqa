@@ -1,10 +1,10 @@
-"""Reproduction step generation (the documentation, task 09.03).
+"""Reproduction step generation (the documentation, ).
 
 Two outputs:
 
 * :func:`reproduction` — copy-pasteable plain-text steps.
 * :func:`build_repro_spec` — optional minimal Playwright spec the user
-  can run to replay the failure.
+ can run to replay the failure.
 
 Both outputs scrub secrets: only ``*_env`` references appear, never
 literal credentials. Steps are derived from ``StepRecord`` entries

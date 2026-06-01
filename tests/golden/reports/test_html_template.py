@@ -1,8 +1,8 @@
-"""Golden test for the HTML report (Phase 15.01).
+"""Golden test for the HTML report.
 
 The HTML body is byte-locked against `report.passing.golden.html` so
 template drift is impossible without an explicit golden update. Use
-`make update-goldens` (or `SENTINELQA_UPDATE_GOLDENS=1 pytest ...`) to
+`make update-goldens` (or `SENTINELQA_UPDATE_GOLDENS=1 pytest...`) to
 regenerate the golden when an intentional change lands.
 
 To keep the golden small + reviewable we strip the inline CSS + JS

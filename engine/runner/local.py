@@ -1,4 +1,4 @@
-"""Local Playwright runner (Phase 08.01).
+"""Local Playwright runner.
 
 The :class:`LocalRunner` spawns ``sentinel-ts run --input <path>`` as a
 subprocess, streams stdout JSONL through the Phase-04 bridge into the
@@ -7,26 +7,26 @@ Phase-08.05 aggregator, and returns a typed :class:`RunnerOutcome`.
 Design choices:
 
 - **Subprocess via** :func:`asyncio.create_subprocess_exec` so we can
-  consume stdout line-by-line without blocking. The implementation is
-  also synchronous-callable through :meth:`LocalRunner.run` which wraps
-  the coroutine in :func:`asyncio.run`.
+ consume stdout line-by-line without blocking. The implementation is
+ also synchronous-callable through :meth:`LocalRunner.run` which wraps
+ the coroutine in :func:`asyncio.run`.
 - **Stderr is captured fully** and forwarded — after redaction — to
-  ``<run-dir>/logs/runner.log`` regardless of exit code, so failure
-  triage has the underlying Playwright noise. The audit log captures
-  ``runner.complete`` with exit code + duration; the log file path is
-  what users open.
+ ``<run-dir>/logs/runner.log`` regardless of exit code, so failure
+ triage has the underlying Playwright noise. The audit log captures
+ ``runner.complete`` with exit code + duration; the log file path is
+ what users open.
 - **SIGINT propagation:** when the parent receives SIGINT (or the
-  caller cancels the coroutine), we forward SIGINT to the child and
-  wait up to ``shutdown_grace_seconds`` before SIGTERM, then SIGKILL.
+ caller cancels the coroutine), we forward SIGINT to the child and
+ wait up to ``shutdown_grace_seconds`` before SIGTERM, then SIGKILL.
 - **Safety:** :meth:`LocalRunner.run` is a no-op call; the caller is
-  expected to have already enforced :class:`engine.policy.safety.SafetyPolicy`
-  via the lifecycle. The Docker runner repeats the check before
-  spawning a container because container launch crosses a more
-  expensive boundary.
+ expected to have already enforced :class:`engine.policy.safety.SafetyPolicy`
+ via the lifecycle. The Docker runner repeats the check before
+ spawning a container because container launch crosses a more
+ expensive boundary.
 - **Determinism:** every invocation gets a fresh ``run-config.json``
-  file under the run dir (`run-config/<module>.json`); the file is
-  committed to disk before the child is spawned so post-mortem
-  reproduction is possible.
+ file under the run dir (`run-config/<module>.json`); the file is
+ committed to disk before the child is spawned so post-mortem
+ reproduction is possible.
 """
 
 from __future__ import annotations

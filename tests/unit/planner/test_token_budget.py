@@ -1,4 +1,4 @@
-"""Token budget enforcement tests (task 06.04)."""
+"""Token budget enforcement tests."""
 
 from __future__ import annotations
 

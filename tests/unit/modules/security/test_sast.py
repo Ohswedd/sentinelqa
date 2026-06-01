@@ -1,4 +1,4 @@
-"""Unit tests for the SAST adapter (Phase 13.09)."""
+"""Unit tests for the SAST adapter."""
 
 from __future__ import annotations
 

@@ -1,4 +1,4 @@
-"""Phase 34.03 — CCPA module end-to-end against synthetic link-follow data.
+"""CCPA module end-to-end against synthetic link-follow data.
 
 The task spec calls for a stub server that links to a 200 privacy
 policy *without* an opt-out form. We exercise the module by writing

@@ -1,4 +1,4 @@
-"""Phase 34.05 — compliance-module-side WCAG 2.2 adapter."""
+"""compliance-module-side WCAG 2.2 adapter."""
 
 from __future__ import annotations
 

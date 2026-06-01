@@ -1,4 +1,4 @@
-"""Phase 04.02 — Python is the redaction source of truth.
+"""Python is the redaction source of truth.
 
 These checks guarantee that the JSON the TS runtime loads
 (`packages/shared-schema/redaction-rules.json`) cannot drift from the

@@ -1,10 +1,10 @@
-"""Auth boundary detection (task 05.05).
+"""Auth boundary detection.
 
 Runs two HTTP passes against the same crawl scope:
 
 1. **Anonymous** — no cookies, no credentials.
 2. **Authenticated** — POST credentials to ``auth.login_url``, persist
-   cookies, then re-crawl.
+ cookies, then re-crawl.
 
 The diff produces an :class:`AuthBoundaryReport` listing which routes are
 auth-required, which redirect to login, which have a UI-only auth smell

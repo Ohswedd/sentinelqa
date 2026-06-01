@@ -1,6 +1,6 @@
 """Coverage-gap tests for branches that the main suites don't already exercise.
 
-Phase 01 requires ≥ 95% coverage on `engine/{domain,config,policy,errors,log}`.
+requires ≥ 95% coverage on `engine/{domain,config,policy,errors,log}`.
 This file holds the small set of tests needed to close the remaining lines
 without bloating the topical test files.
 """

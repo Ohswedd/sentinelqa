@@ -1,7 +1,7 @@
 """Schema version constants for every machine-readable SentinelQA artifact.
 
-Single source of truth referenced by domain models, report writers (Phase 03),
-the SDK (Phase 16), and CI schema-validation hooks. Changing a constant here
+Single source of truth referenced by domain models, report writers,
+the SDK, and CI schema-validation hooks. Changing a constant here
 is a breaking change and requires an ADR per our engineering rules (Report schema /
 Config schema triggers) and a note in `docs/dev/schema-versioning.md`.
 

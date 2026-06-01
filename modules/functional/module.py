@@ -3,21 +3,21 @@
 Lifecycle (CLAUDE §9):
 
 - ``validate_prerequisites`` — refuses to run without a resolvable
-  ``sentinel-ts`` binary OR an injected runner factory (tests).
-- ``plan``                   — walks ``tests/sentinel/`` for
-  ``*.spec.ts`` files, applying the optional grep / path filter.
-- ``execute``                — calls the configured runner with
-  ``module_name="functional"`` and the resolved spec set.
-- ``collect_evidence``       — pass-through (evidence is already
-  attached to each ``TestExecution`` by Phase 08 aggregation).
-- ``emit_findings``          — base class default (one high-severity
-  Finding per non-quarantined failure/timeout, with our product spec evidence).
-- ``emit_metrics``           — base class default + ``flake_rate``.
-- ``summarize``              — overlays findings on the runner's
-  :class:`ModuleResult`.
+ ``sentinel-ts`` binary OR an injected runner factory (tests).
+- ``plan`` — walks ``tests/sentinel/`` for
+ ``*.spec.ts`` files, applying the optional grep / path filter.
+- ``execute`` — calls the configured runner with
+ ``module_name="functional"`` and the resolved spec set.
+- ``collect_evidence`` — pass-through (evidence is already
+ attached to each ``TestExecution`` by aggregation).
+- ``emit_findings`` — base class default (one high-severity
+ Finding per non-quarantined failure/timeout, with our product spec evidence).
+- ``emit_metrics`` — base class default + ``flake_rate``.
+- ``summarize`` — overlays findings on the runner's
+ :class:`ModuleResult`.
 
 The module exposes its runner factory as a constructor parameter so
-tests can inject a stub (the Phase 08 CLI tests use the same shape).
+tests can inject a stub (the CLI tests use the same shape).
 Production code uses :func:`_default_runner_factory`, which picks
 :class:`LocalRunner` or :class:`DockerRunner` based on
 ``config.runner.docker``.

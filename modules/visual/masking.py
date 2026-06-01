@@ -1,17 +1,17 @@
-"""Dynamic-content masking (Phase 21.04, the documentation, CLAUDE §29).
+"""Dynamic-content masking.
 
 The Python diff layer paints user-specified rectangles to a neutral
 fill colour on BOTH baseline and current before pixel comparison.
 ``visual.masks`` entries can supply either:
 
 - ``rect`` — explicit ``(x, y, w, h)``, applied at diff time. Useful
-  for fixtures that don't drive a real browser.
+ for fixtures that don't drive a real browser.
 - ``selector`` — a CSS selector the TS capture helper hides before the
-  screenshot. The diff layer can't recompute the selector's bounding
-  box without DOM access, so selector-only masks contribute their
-  ``reason`` to the recorded ``masks_applied`` list but do not paint
-  on the Python side. (The TS capture layer is responsible for hiding
-  the element before the screenshot is written.)
+ screenshot. The diff layer can't recompute the selector's bounding
+ box without DOM access, so selector-only masks contribute their
+ ``reason`` to the recorded ``masks_applied`` list but do not paint
+ on the Python side. (The TS capture layer is responsible for hiding
+ the element before the screenshot is written.)
 """
 
 from __future__ import annotations

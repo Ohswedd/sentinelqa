@@ -1,4 +1,4 @@
-"""Auth-matrix check (Phase 22.05).
+"""Auth-matrix check.
 
 For each authenticated operation in the supplied OpenAPI document we
 issue three probes:
@@ -6,7 +6,7 @@ issue three probes:
 - Anonymous (no Authorization header) → expect 401/403.
 - Expired-token sentinel ("Bearer expired-token") → expect 401.
 - Cross-user token (each configured ``auth_test_users`` entry) → still
-  expect 401/403 if the endpoint is sensitive to caller identity.
+ expect 401/403 if the endpoint is sensitive to caller identity.
 
 Any 2xx is critical (unauthorized access). The expired-token probe
 uses a fixed string so the probe never carries a valid credential; we

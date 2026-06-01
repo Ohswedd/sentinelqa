@@ -1,4 +1,4 @@
-"""Mistral provider (Phase 30 task 30.06, ADR-0042).
+"""Mistral provider (, ADR-0042).
 
 Calls Mistral La Plateforme at
 ``https://api.mistral.ai/v1/chat/completions`` via ``httpx``. No

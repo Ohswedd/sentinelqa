@@ -37,7 +37,7 @@ if TYPE_CHECKING:
     from sentinelqa._models import AuditResult, Policy
 
 # Imported lazily by `discover` / `plan` / `generate_tests` — keeps
-# `import sentinelqa` fast (the documentation + task 16.02 target: <200 ms).
+# `import sentinelqa` fast (the documentation + target: <200 ms).
 
 
 class Sentinel:
@@ -46,15 +46,15 @@ class Sentinel:
     Construct with a project path (defaults to the current working
     directory) and optionally a config override::
 
-        from sentinelqa import Sentinel
-        qa = Sentinel(project_path=".")
-        result = qa.audit(url="http://localhost:3000")
+    from sentinelqa import Sentinel
+    qa = Sentinel(project_path=".")
+    result = qa.audit(url="http://localhost:3000")
 
     For LLM-agent flows::
 
-        qa = Sentinel(project_path=".", machine_readable=True)
-        plan = qa.plan(url="http://localhost:3000")
-        result = qa.run_plan(plan)
+    qa = Sentinel(project_path=".", machine_readable=True)
+    plan = qa.plan(url="http://localhost:3000")
+    result = qa.run_plan(plan)
 
     ``machine_readable`` is advisory — agent-friendly callers pass
     ``True`` to opt out of human-tuned defaults (no progress bars, no
@@ -442,8 +442,8 @@ class Sentinel:
         recent run under ``.sentinel/runs/``. The returned path holds
         the persisted ``run.json``, ``findings.json``, ``score.json``,
         ``report.html``, and ``report.md`` written during the original
-        audit (Phase 15 reporter). Re-rendering of additional formats
-        currently lives in the CLI (`sentinel report --run-id ...`).
+        audit (reporter). Re-rendering of additional formats
+        currently lives in the CLI (`sentinel report --run-id...`).
         """
 
         return asyncio.run(self.async_report(run_id, latest=latest))
@@ -476,8 +476,8 @@ class Sentinel:
     ) -> AuditResult:
         """Re-run a prior audit with ``suggestion`` applied; return the result.
 
-        The Healer module (Phase 20) owns the application logic. Until
-        Phase 20 lands, calling this raises :class:`NotImplementedError`
+        The Healer module owns the application logic. Until
+        lands, calling this raises :class:`NotImplementedError`
         with a precise pointer (our engineering rules — no fake completion).
         """
 

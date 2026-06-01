@@ -5,9 +5,9 @@ Every feature page under ``apps/docs/src/content/docs/`` must declare a
 ``Stable | Experimental | Planned | Deprecated`` (docs/dev/status-labels.md).
 
 Exemptions are intentional:
-  * the docs landing page (`index.md`) is a hero / splash page;
-  * the ADR index is auto-generated and represents documents whose status
-    lives on the linked ADR, not on the index itself.
+ * the docs landing page (`index.md`) is a hero / splash page;
+ * the ADR index is auto-generated and represents documents whose status
+ lives on the linked ADR, not on the index itself.
 
 Both exemptions are encoded below as exact paths so missing labels remain
 loud.

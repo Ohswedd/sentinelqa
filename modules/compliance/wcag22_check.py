@@ -1,4 +1,4 @@
-"""WCAG 2.2 signal-driven check inside the compliance module (Phase 34).
+"""WCAG 2.2 signal-driven check inside the compliance module.
 
 The deterministic check functions live in
 :mod:`modules.accessibility.checks.wcag22`. This module is the
@@ -8,11 +8,11 @@ compliance-module-side adapter: it loads optional signal files from
 
 Pack DSL example::
 
-  pack:
-    id: wcag-2.2-aa
-    includes:
-      - module: compliance
-        checks: [wcag22]
+ pack:
+ id: wcag-2.2-aa
+ includes:
+ - module: compliance
+ checks: [wcag22]
 
 When no signals are available, the check reports
 ``signals_seen=False`` and emits no findings (CLAUDE §37: no fake

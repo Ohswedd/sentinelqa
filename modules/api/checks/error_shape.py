@@ -1,4 +1,4 @@
-"""Uniform error-shape check (Phase 22.07).
+"""Uniform error-shape check.
 
 Walks the evidence collected by earlier checks and asserts that every
 4xx / 5xx body observed in this run shares a single JSON envelope.

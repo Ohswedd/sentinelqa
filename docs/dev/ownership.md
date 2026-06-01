@@ -43,7 +43,7 @@ SentinelQA's product premise is **trust through evidence**. A product whose own 
 
 ### License
 
-- Apache-2.0 (`LICENSE` at repo root). The license choice is recorded in `ADR-0008` (lands in Phase 28 once a public release is in scope — for now the LICENSE file is the ground truth).
+- Apache-2.0 (`LICENSE` at repo root). The license choice is recorded in `ADR-0008` (lands in once a public release is in scope — for now the LICENSE file is the ground truth).
 - `NOTICE` accumulates third-party attributions as production dependencies are added in later phases (Apache-2.0 requirement).
 
 ### Package & artifact ownership
@@ -74,4 +74,4 @@ If a commit accidentally lands with an AI co-author trailer:
 
 ## Trademark
 
-The "SentinelQA" name has not been trademark-cleared. See `docs/dev/trademarks-and-naming.md` for the open work; Phase 28 owns the verification before any public release.
+The "SentinelQA" name has not been trademark-cleared. See `docs/dev/trademarks-and-naming.md` for the open work; owns the verification before any public release.

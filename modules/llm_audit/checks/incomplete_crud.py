@@ -4,7 +4,7 @@ Pure function over :class:`ResourceCrudSignal` records. We emit one
 finding per resource where create-style affordances exist (either an
 API or a UI button) but at least one of read/update/delete is missing.
 Severity bumps to ``high`` when the UI surfaces an Add button but
-hides edit/delete entirely (a classic generated-MVP defect).
+hides edit/delete entirely (a classic generated-release defect).
 """
 
 from __future__ import annotations

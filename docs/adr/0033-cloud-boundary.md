@@ -1,4 +1,4 @@
-# ADR-0033: Cloud boundary — no SentinelQA cloud in the MVP
+# ADR-0033: Cloud boundary — no SentinelQA cloud in the release
 
 ## Status
 
@@ -10,15 +10,15 @@ Accepted
 ## Context
 
 our engineering rules"Cloud boundary" as a required ADR trigger. PRD
-§7 (Scope), §11 (Architecture), §24 (MVP Definition), §31 (Open
-Questions #3), and §32 (Recommended Build Order) all assume the MVP
+§7 (Scope), §11 (Architecture), §24 (release Definition), §31 (Open
+Questions #3), and §32 (Recommended Build Order) all assume the release
 ships as an open-source CLI / SDK / MCP server running entirely on
 the user's machine or in their CI. The product strategy is to earn
 trust with a self-hosted core before any hosted offering.
 
-The phase plan (Phases 00–17 collectively constitute the MVP, per §5) deliberately defers any cloud orchestrator,
+The phase plan (–17 collectively constitute the release, per §5) deliberately defers any cloud orchestrator,
 hosted dashboard, multi-tenant database, or shared queue. Integrations
-that touch third-party SaaS (Phase 25 — BrowserStack, Sauce Labs,
+that touch third-party SaaS ( — BrowserStack, Sauce Labs,
 Slack, GitHub, Jira, Linear) are explicitly user-driven adapters
 with the user's own credentials, not a SentinelQA-hosted bridge.
 
@@ -28,7 +28,7 @@ component without superseding this ADR is a process error.
 
 ## Decision
 
-**No SentinelQA-hosted service ships in the MVP.** Concretely, the
+**No SentinelQA-hosted service ships in the release.** Concretely, the
 following are out of scope for any phase numbered ≤ 29:
 
 - A SentinelQA-hosted dashboard, multi-tenant database, or auth system.
@@ -38,7 +38,7 @@ following are out of scope for any phase numbered ≤ 29:
 - A hosted plugin marketplace or registry.
 - A SentinelQA-managed LLM proxy or shared API key.
 
-All cloud-shaped interactions in the MVP are **user-owned adapters**:
+All cloud-shaped interactions in the release are **user-owned adapters**:
 
 - `RunnerPlugin` instances (BrowserStack, Sauce Labs) use the user's credentials, post to the vendor's API directly, no SentinelQA intermediary (ADR-0030).
 - Slack / GitHub / GitLab / Jira / Linear posters use the user's webhook / token, posted from the user's machine or CI runner.
@@ -51,7 +51,7 @@ All cloud-shaped interactions in the MVP are **user-owned adapters**:
 - **Positive:** Open-source positioning is honest. The CLI is the product; nothing important is gated behind a closed cloud.
 - **Negative / trade-off:** Some capabilities are harder to deliver without a hosted backend — cross-team historical trend lines, cross-org plugin discovery, comparative benchmarks. These wait.
 - **Negative / trade-off:** Self-hosted ops burden falls on the user (CI minutes, disk for `.sentinel/runs/`, baseline storage). The HTML report's trend overlay reads from the local `.sentinel/runs/` directory; sharing trends across machines is the user's problem.
-- **Follow-up obligations:** Any post-MVP proposal for a hosted component must supersede this ADR (write a new ADR; reference this one as `Superseded by ADR-NNNN`) before any implementation lands.
+- **Follow-up obligations:** Any post-release proposal for a hosted component must supersede this ADR (write a new ADR; reference this one as `Superseded by ADR-NNNN`) before any implementation lands.
 
 ## Alternatives considered
 
@@ -63,7 +63,7 @@ All cloud-shaped interactions in the MVP are **user-owned adapters**:
 
 - our product spec Scope
 - our product spec Architecture
-- our product spec MVP Definition
+- our product spec release Definition
 - our product spec Open Questions #3 (Should cloud be delayed until open-source adoption exists?)
 - our product spec Recommended Build Order
 - our engineering rules(cloud boundary trigger)

@@ -1,4 +1,4 @@
-"""Integration tests — stored XSS gate (Phase 13.05)."""
+"""Integration tests — stored XSS gate."""
 
 from __future__ import annotations
 

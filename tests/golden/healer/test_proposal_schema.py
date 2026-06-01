@@ -1,4 +1,4 @@
-"""Phase 20.05 — Generated proposals validate against the JSON Schema.
+"""Generated proposals validate against the JSON Schema.
 
 The Healer's wire envelope is locked at
 ``packages/shared-schema/repair-proposal.schema.json`` (Draft 2020-12,

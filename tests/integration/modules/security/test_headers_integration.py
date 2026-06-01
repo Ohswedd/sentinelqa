@@ -1,4 +1,4 @@
-"""Integration tests — security headers against a real HTTP server (Phase 13.02)."""
+"""Integration tests — security headers against a real HTTP server."""
 
 from __future__ import annotations
 

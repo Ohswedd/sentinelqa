@@ -1,15 +1,15 @@
-"""OWASP API Top-10 BOLA / BFLA replay (Phase 32.05, ADR-0044).
+"""OWASP API Top-10 BOLA / BFLA replay.
 
 Replays observed API calls captured under identity **A** (the primary
 ``auth`` config) under identity **B** (``auth.second_user``). Two
 outcomes are findings:
 
 - **BOLA** (Broken Object-Level Authorization, OWASP API-2023-01):
-  endpoint returns 200 with payload that references A's data when
-  called as B.
+ endpoint returns 200 with payload that references A's data when
+ called as B.
 - **BFLA** (Broken Function-Level Authorization, OWASP API-2023-03):
-  an admin-shaped endpoint returns 2xx when called as a non-admin
-  identity.
+ an admin-shaped endpoint returns 2xx when called as a non-admin
+ identity.
 
 The probe is hard-gated behind ``security.mode == 'authorized_destructive'``,
 a non-empty ``target.proof_of_authorization``, and a hard endpoint cap

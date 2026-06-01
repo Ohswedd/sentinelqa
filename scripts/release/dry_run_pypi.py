@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright (c) 2026 SentinelQA contributors.
-"""PyPI publish dry-run (Phase 36.02).
+"""PyPI publish dry-run.
 
 Runs ``uv build --all-packages`` (via ``scripts.release.build_all``)
 to produce every Python sdist + wheel under ``dist/``, then validates
@@ -21,7 +21,7 @@ Exit codes
 
 * ``0`` — build + ``twine check`` both succeeded for every artifact.
 * ``2`` — build step failed, OR ``twine check`` flagged at least one
-  artifact, OR ``twine`` is not installed.
+ artifact, OR ``twine`` is not installed.
 * ``5`` — ``uv`` is not installed (required to build).
 
 Twine is invoked via ``uv run twine check dist/*`` so the project's

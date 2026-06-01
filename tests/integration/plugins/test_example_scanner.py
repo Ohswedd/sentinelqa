@@ -1,4 +1,4 @@
-"""Phase 24 task 24.06 — reference scanner example test."""
+"""— reference scanner example test."""
 
 from __future__ import annotations
 
@@ -19,7 +19,7 @@ EXAMPLE_ROOT = (
 )
 sys.path.insert(0, str(EXAMPLE_ROOT))
 
-from sentinelqa_scanner_example.plugin import HeaderChecker  # type: ignore[import-not-found]  # noqa: E402, I001
+from sentinelqa_scanner_example.plugin import HeaderChecker  # type: ignore[import-not-found] # noqa: E402, I001
 
 
 def _ctx(tmp_path: Path, *, granted: frozenset[str]) -> object:

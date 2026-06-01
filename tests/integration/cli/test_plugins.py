@@ -1,4 +1,4 @@
-"""CLI integration tests for ``sentinel plugins`` (Phase 24 task 24.07)."""
+"""CLI integration tests for ``sentinel plugins``."""
 
 from __future__ import annotations
 

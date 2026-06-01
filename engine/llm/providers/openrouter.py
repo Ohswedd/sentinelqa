@@ -1,4 +1,4 @@
-"""OpenRouter (gateway) provider (Phase 30 task 30.08, ADR-0042).
+"""OpenRouter (gateway) provider (, ADR-0042).
 
 Calls OpenRouter's OpenAI-compatible endpoint at
 ``https://openrouter.ai/api/v1/chat/completions`` via ``httpx``. No

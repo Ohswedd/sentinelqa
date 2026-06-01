@@ -73,10 +73,10 @@ def test_validate_config_catches_post_load_mutation(tmp_path: Path) -> None:
 
 
 def test_reporter_emits_findings_and_score_from_typed_ctx(tmp_path: Path) -> None:
-    """Phase 03 reporter contract: typed findings on the lifecycle
+    """reporter contract: typed findings on the lifecycle
     context surface in ``findings.json`` / ``score.json`` / ``report.md``.
 
-    Phase 14 now owns score computation; this test asserts the typed
+    now owns score computation; this test asserts the typed
     findings the test attaches drive the reporter via the canonical
     Phase-14 score (recomputed from those findings) rather than a
     hand-set placeholder.
@@ -127,7 +127,7 @@ def test_reporter_emits_findings_and_score_from_typed_ctx(tmp_path: Path) -> Non
     findings = json.loads((run_dir / "findings.json").read_text(encoding="utf-8"))
     assert findings["findings"][0]["id"] == "FND-CTXAAAAAAAAA"
     score = json.loads((run_dir / "score.json").read_text(encoding="utf-8"))
-    # Phase 14 derives the score: one high-severity finding in security
+    # derives the score: one high-severity finding in security
     # → security axis = 100-17.5 = 82.5 → total weighted = 96.5.
     assert score["total"] == 96.5
     assert score["release_decision"] == "blocked"

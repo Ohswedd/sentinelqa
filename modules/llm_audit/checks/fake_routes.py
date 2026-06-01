@@ -1,13 +1,13 @@
-"""LLM-FAKE-ROUTE + LLM-FAKE-ENDPOINT (the documentation, task 19.03).
+"""LLM-FAKE-ROUTE + LLM-FAKE-ENDPOINT (the documentation, ).
 
 Two cross-reference checks:
 
 1. Every internal link that the frontend renders or routes to must
-   resolve to a route the crawler actually reached with a 2xx/3xx
-   status code. Links pointing at known-404 routes get a finding.
+ resolve to a route the crawler actually reached with a 2xx/3xx
+ status code. Links pointing at known-404 routes get a finding.
 2. Every API endpoint the frontend code references must either be in
-   the observed traffic OR be declared by an ingested OpenAPI /
-   GraphQL schema. References without backing get a finding.
+ the observed traffic OR be declared by an ingested OpenAPI /
+ GraphQL schema. References without backing get a finding.
 
 The check is pure: it takes typed signal records and returns
 ``CheckFinding`` records.

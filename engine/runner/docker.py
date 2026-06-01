@@ -1,4 +1,4 @@
-"""Docker-isolated Playwright runner (Phase 08.02).
+"""Docker-isolated Playwright runner.
 
 The :class:`DockerRunner` shares the :class:`LocalRunner` contract but
 spawns ``docker run`` against a pinned Playwright image instead of
@@ -10,12 +10,12 @@ build.
 Safety boundary (our engineering rules, §10):
 
 - Container launch is preceded by an explicit safety-policy check
-  inside the runner. Even though the lifecycle already enforced it,
-  Docker-mounting paths means a misuse can leak host files; we
-  enforce the check twice on purpose.
+ inside the runner. Even though the lifecycle already enforced it,
+ Docker-mounting paths means a misuse can leak host files; we
+ enforce the check twice on purpose.
 - The project source is mounted **read-only**. Only the run dir is
-  writable. Network defaults to a private bridge; ``host.docker.internal``
-  is added as an alias for the local target.
+ writable. Network defaults to a private bridge; ``host.docker.internal``
+ is added as an alias for the local target.
 - No ``--privileged``, no Docker socket mounts, no ``--cap-add``.
 
 Docker absence is not a Phase-08 failure; it surfaces as
@@ -239,7 +239,7 @@ class DockerRunner:
             _to_container_relative(p, invocation.run_dir) for p in invocation.spec_files
         )
 
-        # Phase 31, ADR-0043. When the caller provided a storage_state
+        # , ADR-0043. When the caller provided a storage_state
         # file, we expose it inside the container under
         # ``/sentinel/run/auth/storage_state.json``. The actual bind-
         # mount of the run dir is set up elsewhere in this module; the

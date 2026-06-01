@@ -13,13 +13,13 @@ class SentinelModel(BaseModel):
     Properties enforced:
 
     - ``frozen=True`` — instances are hashable and immutable. Mutations
-      flow through ``model_copy(update=...)``, which keeps audit trails clean.
+    flow through ``model_copy(update=...)``, which keeps audit trails clean.
     - ``extra="forbid"`` — unknown fields raise a ``ValidationError``. This
-      protects schema stability (our engineering rules, §38) and stops silent drift.
+    protects schema stability (our engineering rules, §38) and stops silent drift.
     - ``str_strip_whitespace=True`` and ``str_min_length=0`` keep textual
-      fields predictable when they ride through YAML/JSON.
+    fields predictable when they ride through YAML/JSON.
     - ``populate_by_name=True`` allows alias-driven I/O while still keeping
-      Python attribute names canonical.
+    Python attribute names canonical.
     """
 
     model_config = ConfigDict(

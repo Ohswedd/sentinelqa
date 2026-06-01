@@ -1,4 +1,4 @@
-"""License policy tests (Phase 33.06)."""
+"""License policy tests."""
 
 from __future__ import annotations
 

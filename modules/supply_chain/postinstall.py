@@ -1,4 +1,4 @@
-"""Postinstall hook scanner (Phase 33.04, ADR-0045).
+"""Postinstall hook scanner.
 
 Walks every ``package.json`` reachable under ``<project_root>/node_modules/``
 and every Python package's ``setup.py`` / ``setup.cfg`` /
@@ -65,7 +65,7 @@ def _all_files_named(root: Path, name: str) -> Iterable[Path]:
 
     We walk only ``node_modules/`` deliberately — the project's own
     ``package.json`` is in scope via the implicit drift check rather
-    than the postinstall scan (Phase 33.03).
+    than the postinstall scan.
     """
 
     if not root.is_dir():
@@ -178,7 +178,7 @@ _PYTHON_FORBIDDEN_IMPORTS: Final[frozenset[str]] = frozenset(
 
 
 def _flatten_import_aliases(node: ast.AST) -> Iterable[str]:
-    """Yield dotted names imported by ``import`` / ``from ... import``."""
+    """Yield dotted names imported by ``import`` / ``from... import``."""
 
     if isinstance(node, ast.Import):
         for alias in node.names:

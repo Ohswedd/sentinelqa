@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright (c) 2026 SentinelQA contributors.
-"""Docs-deploy workflow health (Phase 35.04).
+"""Docs-deploy workflow health.
 
 Asserts `.github/workflows/docs-deploy.yml` is well-formed against
 the subset of the GitHub Actions schema we care about: triggers,

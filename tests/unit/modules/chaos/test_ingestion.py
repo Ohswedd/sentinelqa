@@ -1,4 +1,4 @@
-"""Phase 23 — chaos JSONL ingestion unit tests."""
+"""chaos JSONL ingestion unit tests."""
 
 from __future__ import annotations
 

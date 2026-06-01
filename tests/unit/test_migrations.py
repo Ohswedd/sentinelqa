@@ -8,7 +8,7 @@ from engine.domain.migrations import MIGRATIONS, run_migration
 
 
 def test_only_findings_migration_registered() -> None:
-    # Phase 32 / ADR-0044 registered findings 1→2; no other artifact has
+    # / ADR-0044 registered findings 1→2; no other artifact has
     # bumped yet.
     assert CONFIG_MIGRATIONS == {}
     assert set(MIGRATIONS) == {("findings", "1", "2")}

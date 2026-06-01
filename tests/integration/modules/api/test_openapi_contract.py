@@ -1,4 +1,4 @@
-"""Phase 22.02 — OpenAPI contract check integration tests."""
+"""OpenAPI contract check integration tests."""
 
 from __future__ import annotations
 

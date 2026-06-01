@@ -1,4 +1,4 @@
-"""Integration test for bundle size + CPU blocking findings (Phase 12.04)."""
+"""Integration test for bundle size + CPU blocking findings."""
 
 from __future__ import annotations
 

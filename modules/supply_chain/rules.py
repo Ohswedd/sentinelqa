@@ -1,4 +1,4 @@
-"""SARIF rule catalog for the supply-chain module (Phase 33, ADR-0045).
+"""SARIF rule catalog for the supply-chain module (, ADR-0045).
 
 Every finding the module emits carries a stable ``SUP-*`` rule id so
 SARIF readers can render help URIs and dashboards can correlate

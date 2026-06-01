@@ -1,4 +1,4 @@
-"""Phase 34.01 — SC 2.5.8 Target Size (Minimum)."""
+"""SC 2.5.8 Target Size (Minimum)."""
 
 from __future__ import annotations
 

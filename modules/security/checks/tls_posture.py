@@ -1,4 +1,4 @@
-"""TLS / cert-posture probe (Phase 32.03, ADR-0044).
+"""TLS / cert-posture probe.
 
 Read-only handshake against the configured target host on port 443
 (or ``target.port``). Records the negotiated TLS version, cipher

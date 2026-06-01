@@ -1,4 +1,4 @@
-"""OpenAPI 3.x loader + endpoint extraction (Phase 22.02).
+"""OpenAPI 3.x loader + endpoint extraction.
 
 The loader accepts JSON or YAML. We use :mod:`openapi_spec_validator`
 to refuse malformed specs at load time so every later check (contract,
@@ -6,7 +6,7 @@ negative, pagination, backward-compat) operates on a validated doc.
 
 Per-operation schema validation uses :mod:`jsonschema` against the
 ``responses[<status>].content[<media>].schema`` block. OpenAPI's Schema
-Object is a near-superset of JSON Schema; for MVP we treat unsupported
+Object is a near-superset of JSON Schema; for release we treat unsupported
 keywords as advisory rather than failing the check.
 """
 
@@ -201,12 +201,12 @@ def _extract_operations(spec: dict[str, Any]) -> list[OpenApiOperation]:
 
 
 def _resolve_refs(schema: dict[str, Any], spec: dict[str, Any]) -> dict[str, Any]:
-    """One-level ``$ref`` resolver (sufficient for MVP schemas).
+    """One-level ``$ref`` resolver (sufficient for release schemas).
 
     OpenAPI specs that nest refs through many indirections are still
     parsed, but only the first hop is resolved; jsonschema validation
     later treats remaining refs as advisory. This avoids dragging in a
-    full resolver dependency for MVP.
+    full resolver dependency for release.
     """
 
     if "$ref" not in schema:

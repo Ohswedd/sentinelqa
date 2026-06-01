@@ -1,4 +1,4 @@
-"""Canonical OpenAI Chat Completions provider (Phase 30, ADR-0042).
+"""Canonical OpenAI Chat Completions provider (, ADR-0042).
 
 Calls ``https://api.openai.com/v1/chat/completions`` via ``httpx``. No
 ``openai`` SDK is imported anywhere in the codebase; the lint guard in

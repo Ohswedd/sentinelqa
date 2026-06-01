@@ -1,20 +1,20 @@
-"""Tag conventions + slice modes for the functional module (Phase 10.03).
+"""Tag conventions + slice modes for the functional module.
 
-Generated Playwright specs (Phase 07) emit a canonical tag set that lets
-CI modes (Phase 17) target the cheap slice without re-generating the
+Generated Playwright specs emit a canonical tag set that lets
+CI modes target the cheap slice without re-generating the
 plan. The conventions:
 
-- ``@p0`` .. ``@p3``           — priority bucket (one per flow).
-- ``@flow:<extractor>``        — the planner extractor that produced the flow.
-- ``@module:<module_name>``    — the SentinelQA module that owns the test.
-- ``@risk:<level>``            — risk bucket (``critical|high|medium|low``).
+- ``@p0``.. ``@p3`` — priority bucket (one per flow).
+- ``@flow:<extractor>`` — the planner extractor that produced the flow.
+- ``@module:<module_name>`` — the SentinelQA module that owns the test.
+- ``@risk:<level>`` — risk bucket (``critical|high|medium|low``).
 
 Slice modes translate to a Playwright ``--grep`` value that the runner
-(Phase 08) passes to ``playwright test``:
+ passes to ``playwright test``:
 
-- ``smoke``    → ``@p0`` (must run on every PR).
+- ``smoke`` → ``@p0`` (must run on every PR).
 - ``standard`` → ``@p0|@p1`` (the default for ``sentinel functional``).
-- ``full``     → ``None`` (no tag filter; runs every functional spec).
+- ``full`` → ``None`` (no tag filter; runs every functional spec).
 """
 
 from __future__ import annotations

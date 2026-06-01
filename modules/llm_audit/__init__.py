@@ -1,4 +1,4 @@
-"""LLM-Code audit module (Phase 19, the documentation, our engineering rules, §31).
+"""LLM-Code audit module (, the documentation, our engineering rules, §31).
 
 Importing this package wires :class:`LlmAuditModule` into the default
 orchestrator registry so ``sentinel llm-audit`` and ``sentinel audit``

@@ -1,4 +1,4 @@
-"""Agent envelope (ADR-0023 §AgentEnvelope, task 18.03).
+"""Agent envelope (ADR-0023 §AgentEnvelope, ).
 
 Every tool — success or failure — returns the same shape. The envelope
 sits *inside* the MCP ``tools/call`` response, in the ``text`` block of
@@ -28,12 +28,12 @@ class AgentEnvelope(BaseModel):
     - ``schema_version`` — pinned to :data:`AGENT_ENVELOPE_SCHEMA_VERSION`.
     - ``tool`` — fully qualified tool name (e.g. ``"sentinel.audit"``).
     - ``result`` — tool-specific payload. ``None`` ONLY when ``errors``
-      is non-empty (an error envelope carries no result).
+    is non-empty (an error envelope carries no result).
     - ``errors`` — list of redacted error agent-messages
-      (``SentinelError.to_agent_message()`` shape). Empty on success.
+    (``SentinelError.to_agent_message()`` shape). Empty on success.
     - ``evidence_refs`` — relative paths beneath the run directory the
-      caller can fetch with ``sentinel.read_report``. Empty when the
-      tool produced no on-disk evidence.
+    caller can fetch with ``sentinel.read_report``. Empty when the
+    tool produced no on-disk evidence.
     """
 
     SCHEMA_VERSION: ClassVar[str] = AGENT_ENVELOPE_SCHEMA_VERSION

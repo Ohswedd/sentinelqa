@@ -1,29 +1,29 @@
-"""Deterministic WCAG 2.2 success-criterion checks (Phase 34 / ADR-0046).
+"""Deterministic WCAG 2.2 success-criterion checks ( / ADR-0046).
 
 axe-core 4.10 covers most of WCAG 2.1 (the ``wcag21*`` tags) but only
 some of the new 2.2 SCs, and several are page-shape dependent in ways
 that axe's rule engine struggles with. This module ships the five
-checks Task 34.01 calls out:
+checks calls out:
 
 - ``2.4.11`` Focus Not Obscured (Minimum) — bounding-box overlap test
-  between each focusable element and any element with sticky / fixed
-  positioning (typically a sticky header).
+ between each focusable element and any element with sticky / fixed
+ positioning (typically a sticky header).
 - ``2.5.7`` Dragging Movements — drag-only UI (``cursor: grab``,
-  ``draggable=true``) with no documented keyboard alternative.
+ ``draggable=true``) with no documented keyboard alternative.
 - ``2.5.8`` Target Size (Minimum) — clickable elements with a bounding
-  box smaller than 24 x 24 CSS px (and no exception applies).
+ box smaller than 24 x 24 CSS px (and no exception applies).
 - ``3.3.7`` Redundant Entry — heuristic: forms that ask for the same
-  information twice within one logical flow.
+ information twice within one logical flow.
 - ``3.3.8`` Accessible Authentication (Minimum) — login flows that
-  require cognitive function tests (CAPTCHA puzzles) with no
-  alternative.
+ require cognitive function tests (CAPTCHA puzzles) with no
+ alternative.
 
 Every check accepts simple, deterministic Python inputs (typed
 ``TypedDict`` shapes, primitives, or named tuples) so the same logic
 can be exercised from unit tests and from the TS runtime's serialised
 DOM probes without DOM dependencies.
 
-CLAUDE §28 / Phase 34 wording rule: descriptions begin with
+CLAUDE §28 / wording rule: descriptions begin with
 "Automated WCAG 2.2 check found" — never "your app is WCAG 2.2
 compliant".
 """

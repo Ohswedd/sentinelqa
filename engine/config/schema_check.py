@@ -1,4 +1,4 @@
-"""Non-raising config validation for ``sentinel doctor`` (Phase 02).
+"""Non-raising config validation for ``sentinel doctor``.
 
 The CLI ``doctor`` command wants to report every issue in one pass rather
 than aborting on the first failure. This module wraps Pydantic so a caller

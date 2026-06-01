@@ -3,9 +3,9 @@
 Two output modes:
 
 - ``human``: indented, optional ANSI color, includes the suggested fix on
-  its own line. Used by interactive ``sentinel`` invocations.
+ its own line. Used by interactive ``sentinel`` invocations.
 - ``json``: single-line JSON dict matching ``to_agent_message()``. Used by
-  ``--json`` / ``--ci`` modes; never emits ANSI.
+ ``--json`` / ``--ci`` modes; never emits ANSI.
 
 our engineering guidelines forbids verbose stack traces by default — they are gated
 behind the ``verbose`` flag.

@@ -43,8 +43,8 @@ _LABEL = "Synthetic performance check"
 
 
 # Severity policy. Page-budget exceedances are graded by overage:
-#   ≤ 50%  → medium
-#   > 50%  → high
+# ≤ 50% → medium
+# > 50% → high
 # CPU + bundle violations follow the same rule.
 # API latency is medium by default (one slow endpoint rarely blocks
 # release on its own) and escalates to high when overage > 100%.
@@ -445,7 +445,7 @@ def _nav_stability_findings(
                 module="performance",
                 category=f"perf.nav.{v.metric}_growth",
                 severity="low",
-                # Heuristic — keep confidence well below 1.0 so Phase 14
+                # Heuristic — keep confidence well below 1.0 so
                 # does not over-block on this signal.
                 confidence=0.5,
                 title=_truncate(title, 300),

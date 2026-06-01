@@ -1,4 +1,4 @@
-"""Container image scanner adapter (Phase 33.05, ADR-0045).
+"""Container image scanner adapter.
 
 Wraps Trivy (https://aquasecurity.github.io/trivy) and Grype
 (https://github.com/anchore/grype) — both are widely-deployed
@@ -9,14 +9,14 @@ on ``PATH`` is sufficient; we prefer Trivy when both are present
 Safety boundary (CLAUDE §6 / §26):
 
 - The scanner runs only against the configured
-  ``policy.supply_chain.container.image``; we never pull random images,
-  iterate registries, or scan running containers.
+ ``policy.supply_chain.container.image``; we never pull random images,
+ iterate registries, or scan running containers.
 - We never pass ``--ignore-policy`` / ``--insecure`` / any auth
-  override that would let the scanner reach into a private registry
-  unannounced.
+ override that would let the scanner reach into a private registry
+ unannounced.
 - When neither Trivy nor Grype is on ``PATH``, the report is
-  ``skipped`` with a clear ``info``-severity recommendation to install
-  one. We never silently mark the run "passed".
+ ``skipped`` with a clear ``info``-severity recommendation to install
+ one. We never silently mark the run "passed".
 
 The cap (``max_findings``, default 200) is enforced after parsing so
 the report stays consumable on CVE-heavy base images.
@@ -235,7 +235,7 @@ def scan_container(
 
     When ``image`` is ``None``, ``scanner`` resolves to ``"none"``, or
     the subprocess call returns no parseable JSON, the report is
-    ``skipped`` with a clear reason — the Phase 33 README explicitly
+    ``skipped`` with a clear reason — the README explicitly
     forbids fabricating findings or marking the run "passed".
     """
 

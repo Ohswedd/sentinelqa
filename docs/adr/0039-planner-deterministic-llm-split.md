@@ -14,11 +14,11 @@ deterministic versus LLM-based. The recommended answer was
 "deterministic discovery, LLM planning, deterministic execution." The
 shipped architecture follows that exactly:
 
-- Discovery (Phase 05, ADR-0010): pure-Python crawler, no LLM.
-- Planner (Phase 06, ADR-0011): eleven named deterministic extractors with an opt-in LLM refinement adapter.
-- Generator (Phase 07, ADR-0012): Jinja2 templates with strict undefined; no LLM.
-- Runner (Phase 08, ADR-0013): subprocess driver; no LLM.
-- Analyzer (Phase 09, ADR-0014): pure-function categorization with an optional one-sentence LLM refinement at the very end.
+- Discovery (, ADR-0010): pure-Python crawler, no LLM.
+- Planner (, ADR-0011): eleven named deterministic extractors with an opt-in LLM refinement adapter.
+- Generator (, ADR-0012): Jinja2 templates with strict undefined; no LLM.
+- Runner (, ADR-0013): subprocess driver; no LLM.
+- Analyzer (, ADR-0014): pure-function categorization with an optional one-sentence LLM refinement at the very end.
 
 This ADR is one of the eight Phase-27 open-question ADRs.
 
@@ -29,7 +29,7 @@ where the answer can be re-validated cheaply by a deterministic
 step.** Concretely:
 
 - **Discovery**: 100% deterministic. No LLM. Discovery output is the ground truth every later stage relies on.
-- **Planner**: deterministic extractors produce a complete plan. Optional LLM adapter refines confidence / suggests tags / adds variants — but every LLM-suggested flow is re-validated against the deterministic extractor catalogue (Phase 06 strict envelope validation). LLM failures fall back to the deterministic plan; the audit always proceeds.
+- **Planner**: deterministic extractors produce a complete plan. Optional LLM adapter refines confidence / suggests tags / adds variants — but every LLM-suggested flow is re-validated against the deterministic extractor catalogue ( strict envelope validation). LLM failures fall back to the deterministic plan; the audit always proceeds.
 - **Generator**: 100% deterministic. Jinja2 + StrictUndefined. No LLM. Generated specs are byte-stable across re-runs with the same inputs.
 - **Runner**: 100% deterministic. Playwright + subprocess.
 - **Analyzer**: deterministic categorization + repro generation; optional one-sentence LLM refinement (≤ 400 chars) appended at the very end. LLM failures degrade silently to deterministic output.
@@ -52,4 +52,4 @@ step.** Concretely:
 
 - our product spec Open Question #6 + recommended answer
 - the documentation Deterministic where possible
-- Related ADRs: ADR-0010 (Discovery MVP), ADR-0011 (Planner), ADR-0012 (Generator conventions), ADR-0013 (Runner), ADR-0014 (Analyzer)
+- Related ADRs: ADR-0010 (Discovery release), ADR-0011 (Planner), ADR-0012 (Generator conventions), ADR-0013 (Runner), ADR-0014 (Analyzer)

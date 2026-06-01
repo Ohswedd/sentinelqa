@@ -16,7 +16,7 @@ structure, and screen-reader name detection. CLAUDE §28 is the
 load-bearing rule: outputs must never make a full-WCAG-compliance
 claim — the product reports "Automated accessibility checks" only.
 
-The first concrete `SentinelModule` (Phase 10's `FunctionalModule`,
+The first concrete `SentinelModule` ('s `FunctionalModule`,
 ADR-0015) drives a Playwright spec set through the Phase-08 runner.
 Accessibility is fundamentally different: checks are per-route rather
 than per-spec, the runner needs to inject `axe-core` into a live
@@ -29,7 +29,7 @@ runner shape that fits the module contract without bending the Phase
 We introduce a dedicated runner abstraction for accessibility and a
 new `sentinel-ts audit-a11y` subcommand:
 
-1. **Module shape.** `modules.accessibility.AccessibilityModule` inherits from `engine.modules.base.SentinelModule` and follows the seven-step lifecycle (CLAUDE §9). `execute()` calls an injected `A11yRunner` instead of the Phase-08 Playwright runner. The runner returns a typed `A11yRunOutcome`; `emit_findings()` translates each `A11yPageResult` into the documentation findings via `modules.accessibility.findings.findings_from_pages`.
+1. **Module shape.** `modules.accessibility.AccessibilityModule` inherits from `engine.modules.base.SentinelModule` and follows the seven-step lifecycle (CLAUDE §9). `execute` calls an injected `A11yRunner` instead of the Phase-08 Playwright runner. The runner returns a typed `A11yRunOutcome`; `emit_findings` translates each `A11yPageResult` into the documentation findings via `modules.accessibility.findings.findings_from_pages`.
 2. **Runner abstraction.** `A11yRunner` is a `Protocol` with a single method `run(invocation: A11yInvocation) -> A11yRunOutcome`. Production uses `LocalA11yRunner`, which spawns `sentinel-ts audit-a11y --input
 <run-config>.json` via `subprocess.run` and reads the artifacts the TS subcommand writes under `<run-dir>/a11y/`. Tests inject `StubA11yRunner` to avoid Playwright + Chromium dependencies.
 3. **TS subcommand.** `sentinel-ts audit-a11y --input <path>` reads a deterministic JSON config (routes + axe tags + budget timings), launches Chromium via `@playwright/test`, navigates each route in sequence, injects axe-core, runs the keyboard / landmark / accessible-name helpers (`packages/ts-runtime/src/a11y/*.ts`), and writes one `<route-slug>.json` per route plus a top-level `index.json` listing them. The launcher is injectable so vitest tests run without a real browser.
@@ -39,9 +39,9 @@ new `sentinel-ts audit-a11y` subcommand:
 
 ## Consequences
 
-- **Positive:** - Accessibility module follows the same `SentinelModule` contract as `FunctionalModule` — orchestrator, audit log, and exit-code grid all work unchanged. - The runner abstraction keeps the Python side fully testable without Chromium. Heavy Playwright tests are gated by `SENTINELQA_HAS_CHROMIUM=1` on the TS side (consistent with Phase 04 / Phase 10 fixtures). - The TS subcommand is a small, focused unit — the orchestrator accepts an injected launcher so vitest covers the full dispatch path with deterministic stubs.
-- **Negative / trade-off:** - axe-core is **not** a workspace dependency. Projects that adopt SentinelQA's accessibility module install it themselves (`pnpm add axe-core`). The TS helper resolves it at runtime via `require.resolve('axe-core/axe.min.js')` and raises a typed `AxeCoreNotInstalledError` when the dep is missing. This keeps our lockfile minimal but pushes one install step onto users. - The accessibility module is the first that does NOT drive Phase 08's runner. Future audit reports must handle the two shapes side-by-side (this is fine — `ModuleResult.metrics` is a free-form dict).
-- **Follow-up obligations:** - Phase 14 (Quality Scoring) reads `policy.allow_medium_a11y` and the `accessibility` module weight — both already in the our product spec grid. - Phase 27 (Docs & ADRs) documents the explicit `pnpm add axe-core` requirement for users running `sentinel a11y` against real pages.
+- **Positive:** - Accessibility module follows the same `SentinelModule` contract as `FunctionalModule` — orchestrator, audit log, and exit-code grid all work unchanged. - The runner abstraction keeps the Python side fully testable without Chromium. Heavy Playwright tests are gated by `SENTINELQA_HAS_CHROMIUM=1` on the TS side (consistent with / fixtures). - The TS subcommand is a small, focused unit — the orchestrator accepts an injected launcher so vitest covers the full dispatch path with deterministic stubs.
+- **Negative / trade-off:** - axe-core is **not** a workspace dependency. Projects that adopt SentinelQA's accessibility module install it themselves (`pnpm add axe-core`). The TS helper resolves it at runtime via `require.resolve('axe-core/axe.min.js')` and raises a typed `AxeCoreNotInstalledError` when the dep is missing. This keeps our lockfile minimal but pushes one install step onto users. - The accessibility module is the first that does NOT drive's runner. Future audit reports must handle the two shapes side-by-side (this is fine — `ModuleResult.metrics` is a free-form dict).
+- **Follow-up obligations:** - (Quality Scoring) reads `policy.allow_medium_a11y` and the `accessibility` module weight — both already in the our product spec grid. - (Docs & ADRs) documents the explicit `pnpm add axe-core` requirement for users running `sentinel a11y` against real pages.
 
 ## Alternatives considered
 

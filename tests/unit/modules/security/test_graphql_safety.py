@@ -1,4 +1,4 @@
-"""Unit tests for :mod:`modules.security.checks.graphql_safety` (task 32.04)."""
+"""Unit tests for :mod:`modules.security.checks.graphql_safety`."""
 
 from __future__ import annotations
 

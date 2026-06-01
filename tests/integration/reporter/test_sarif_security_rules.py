@@ -1,6 +1,6 @@
 """Integration tests — SARIF output carries every triggered security rule.
 
-Phase 13.10. We synthesize a small SARIF payload via the Phase-03 writer
+We synthesize a small SARIF payload via the writer
 using a curated set of findings whose categories match registered
 security rules, then assert the resulting SARIF document includes those
 rules in ``runs[0].tool.driver.rules``.

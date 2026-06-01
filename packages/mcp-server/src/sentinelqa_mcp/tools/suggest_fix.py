@@ -1,6 +1,6 @@
 """``sentinel.suggest_fix`` — return remediation for a finding.
 
-When the Healer module (Phase 20) has persisted a concrete repair
+When the Healer module has persisted a concrete repair
 proposal for the run, this tool returns its full :class:`RepairProposal`
 payload (kind, confidence, unified_diff, requires_human_review). When no
 healer artifacts are present, it falls back to the finding's
@@ -79,7 +79,7 @@ class SuggestFixTool:
                 exit_code=3,
                 suggested_fix="List findings via sentinel.read_report.",
             )
-        # Phase 20 — if the Healer persisted proposals for this run, surface
+        # if the Healer persisted proposals for this run, surface
         # the ones whose target_test matches the finding's location.file.
         from engine.healer.writer import iter_proposals  # local import keeps startup cheap
 

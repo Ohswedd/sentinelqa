@@ -1,4 +1,4 @@
-"""Phase 31 — vault → LocalRunner → run-config storage_state plumbing."""
+"""vault → LocalRunner → run-config storage_state plumbing."""
 
 from __future__ import annotations
 

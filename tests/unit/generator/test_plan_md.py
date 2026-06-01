@@ -1,4 +1,4 @@
-"""Tests for the generated plan markdown emitter (task 07.05)."""
+"""Tests for the generated plan markdown emitter."""
 
 from __future__ import annotations
 

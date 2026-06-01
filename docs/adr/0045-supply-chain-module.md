@@ -1,4 +1,4 @@
-# ADR-0045: Supply-Chain & Dependency Audit module (Phase 33)
+# ADR-0045: Supply-Chain & Dependency Audit module
 
 ## Status
 
@@ -9,9 +9,9 @@ Accepted
 
 ## Context
 
-The Phase 13 security module audits the _running_ application — the
+The security module audits the _running_ application — the
 attack surface the documentation enumerates. Two recurring asks from the
-post-MVP review forced us to take the second half of release
+post-release review forced us to take the second half of release
 confidence seriously:
 
 1. **The build inputs are themselves an attack surface.** A clean run against a runtime that ships with a poisoned `lodash` or `colors.js` is still a regression — and modern incidents (`event-stream`, `ua-parser-js`, `node-ipc`, `xz`) all landed via dependency tampering rather than the application code path. PRD §10.7 only catches the latter.
@@ -19,7 +19,7 @@ confidence seriously:
 
 our engineering rules
 "undetectable" tooling. our engineering rules
-explicit allowlists. The Phase 33 module must therefore land entirely
+explicit allowlists. The module must therefore land entirely
 in defensive / read-only territory. The OSV API is read-only, public,
 and documented; Trivy / Grype run against the configured image only
 and never iterate registries; the postinstall scanner reads scripts —
@@ -33,12 +33,12 @@ supply-chain belongs after the core modules stabilise), our engineering rules
 
 ## Decision
 
-Phase 33 ships **seven** deliverables under a single ADR:
+ships **seven** deliverables under a single ADR:
 
 1. **CycloneDX 1.5 SBOM generation** in `modules/supply_chain/sbom.py` plus seven lockfile parsers in `modules/supply_chain/lockfiles.py` (`uv.lock`, `poetry.lock`, `Pipfile.lock`, `requirements.txt`, `package-lock.json`, `pnpm-lock.yaml`, `yarn.lock`). The writer emits a deterministic, byte-stable CycloneDX document per lockfile plus an aggregate `index.json` under `<run-dir>/sbom/`. A focused JSON Schema at `packages/shared-schema/external/cyclonedx-1.5.json` captures the shape we emit; `tests/integration/modules/supply_chain/
 test_sbom_against_examples.py` re-runs `jsonschema.validate` on every emitted SBOM as a drift guard.
 
-2. **OSV vulnerability lookup** in `modules/supply_chain/osv.py` that reads the SBOM from (1), batches up to 1 000 components per `POST /v1/querybatch` call, respects `policy.supply_chain.osv.rate_limit_rps`, and maps OSV's CVSS bands to SentinelQA severity (≥9.0 critical, ≥7.0 high, ≥4.0 medium, >0 low, 0 info). When the network is unreachable the report records `skipped=True` with a `"OSV unreachable"` reason — it never marks the run "passed" or "errored" (Phase 33 README: "Offline degradation is skipped, not errored, not passed"). Findings carry `cwe_id` from the advisory's `database_specific` field when present.
+2. **OSV vulnerability lookup** in `modules/supply_chain/osv.py` that reads the SBOM from (1), batches up to 1 000 components per `POST /v1/querybatch` call, respects `policy.supply_chain.osv.rate_limit_rps`, and maps OSV's CVSS bands to SentinelQA severity (≥9.0 critical, ≥7.0 high, ≥4.0 medium, >0 low, 0 info). When the network is unreachable the report records `skipped=True` with a `"OSV unreachable"` reason — it never marks the run "passed" or "errored" ( README: "Offline degradation is skipped, not errored, not passed"). Findings carry `cwe_id` from the advisory's `database_specific` field when present.
 
 3. **Lockfile freshness + manifest drift** in `modules/supply_chain/freshness.py`. Age is computed from the **most recent** of (filesystem mtime, last git commit touching the lockfile) so a fresh clone doesn't read as freshly-edited. Drift compares the manifest's direct deps (`package.json`, `pyproject.toml`) to the lockfile's resolved package set; findings carry `CWE-1357` (Reliance on Unmaintained Third-Party Components). Default threshold is 180 days, configurable via `policy.supply_chain.max_lockfile_age_days`.
 
@@ -56,22 +56,22 @@ test_sbom_against_examples.py` re-runs `jsonschema.validate` on every emitted SB
 - The default `policy:` config block expands; the example config in `sentinel.config.yaml.example` documents every knob.
 - New SARIF rule ids `SUP-OSV-VULNERABLE-DEP`, `SUP-FRESH-STALE-LOCKFILE`, `SUP-FRESH-MANIFEST-DRIFT`, `SUP-POSTINSTALL-NETWORK`, `SUP-POSTINSTALL-FS-WRITE`, `SUP-POSTINSTALL-PYTHON-EXEC`, `SUP-CONTAINER-CVE`, `SUP-CONTAINER-SCANNER-NOT-INSTALLED`, `SUP-LICENSE-DENY`, `SUP-LICENSE-UNKNOWN` are registered with the SARIF rule registry so downstream dashboards can resolve them to help URIs.
 - The vendored CycloneDX 1.5 JSON Schema is a focused subset of the official spec; the upstream schema (~9 000 lines, many optional fields we don't emit) is intentionally NOT redistributed. The drift guard re-validates every emitted SBOM against the subset and documents the relationship.
-- Findings reuse the Phase 32 v2 schema fields (`cwe_id`, `attack_id`, `owasp_api_id`) so the new supply-chain findings are taxonomy-aware out of the box — no schema bump needed for Phase 33.
+- Findings reuse the v2 schema fields (`cwe_id`, `attack_id`, `owasp_api_id`) so the new supply-chain findings are taxonomy-aware out of the box — no schema bump needed for.
 - The container scanner remains opt-in by configuration but is enabled by default in the schema; the no-image + no-scanner paths both downgrade to `skipped` so a CI run without Trivy / Grype doesn't fail spuriously.
-- No new third-party Python deps are added. The implementation reuses `httpx` (Phase 30 dep), `tomllib` (stdlib), `yaml` (already a transitive dep), and `jsonschema` (Phase 03 dep).
+- No new third-party Python deps are added. The implementation reuses `httpx` ( dep), `tomllib` (stdlib), `yaml` (already a transitive dep), and `jsonschema` ( dep).
 
 ## Alternatives considered
 
-- **Use `pip-audit` / `npm audit` directly via subprocess.** Rejected for three reasons: (i) shipping a Python wrapper around two ecosystem-specific tools recreates Phase 13's `sec-deps-vulnerable` surface rather than adding new coverage; (ii) `npm audit` requires network and uses npm's own (often slower) vulnerability database; (iii) the unified OSV API gives one upstream and covers both ecosystems plus Go, Rust, Ruby, Maven, Packagist — future ecosystem support is one parser away.
-- **Vendor the full official CycloneDX 1.5 schema.** Rejected as redistribution scope creep — the official schema has many optional fields we don't emit and shifting versions would require a Phase 33+ ADR each time. The focused subset captures everything we produce and is documented as such.
+- **Use `pip-audit` / `npm audit` directly via subprocess.** Rejected for three reasons: (i) shipping a Python wrapper around two ecosystem-specific tools recreates's `sec-deps-vulnerable` surface rather than adding new coverage; (ii) `npm audit` requires network and uses npm's own (often slower) vulnerability database; (iii) the unified OSV API gives one upstream and covers both ecosystems plus Go, Rust, Ruby, Maven, Packagist — future ecosystem support is one parser away.
+- **Vendor the full official CycloneDX 1.5 schema.** Rejected as redistribution scope creep — the official schema has many optional fields we don't emit and shifting versions would require a+ ADR each time. The focused subset captures everything we produce and is documented as such.
 - **Auto-install Trivy / Grype.** Rejected: SentinelQA never installs third-party scanners. Operators choose their scanner; we adapt to whatever is on PATH.
 - **Run `pip install` / `npm install` in a sandbox and observe.** Rejected as out-of-scope dynamic analysis — the static scan covers the same patterns without the cost or risk of running attacker code.
 - **Make `policy.supply_chain` a top-level block rather than nesting under `policy:`.** Rejected for consistency: `policy:` already owns every release-gate threshold and per-integration toggle. Nesting keeps the cognitive map flat.
 
 ## References
 
-- Phase 33 README —
-- Phase 33 task files —
+- README —
+- task files —
 - CycloneDX 1.5 spec — https://cyclonedx.org/specification/overview/
 - OSV API — https://google.github.io/osv.dev/post-v1-querybatch/
 - Trivy — https://aquasecurity.github.io/trivy/

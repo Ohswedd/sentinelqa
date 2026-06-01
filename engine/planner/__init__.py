@@ -2,9 +2,9 @@
 
 The planner consumes a :class:`engine.domain.DiscoveryGraph` and a
 :class:`engine.domain.RiskMap` and emits a :class:`engine.domain.TestPlan`
-that names every flow + test case the runner (Phase 08) will execute.
+that names every flow + test case the runner will execute.
 
-The MVP is a deterministic rules engine; an optional LLM adapter (Phase
+The release is a deterministic rules engine; an optional LLM adapter (Phase
 06.04) can propose additional flows behind a feature flag.
 """
 

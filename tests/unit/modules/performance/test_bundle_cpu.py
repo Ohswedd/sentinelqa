@@ -1,4 +1,4 @@
-"""Unit tests for :mod:`modules.performance.bundle_cpu` (Phase 12.04)."""
+"""Unit tests for :mod:`modules.performance.bundle_cpu`."""
 
 from __future__ import annotations
 

@@ -1,4 +1,4 @@
-"""HTML report writer (Phase 15, task 15.01).
+"""HTML report writer (, ).
 
 Produces the final `report.html` for a run by rendering the Jinja2
 template at :data:`HTML_TEMPLATE_PATH` against the typed inputs.
@@ -12,7 +12,7 @@ Determinism contract:
 - Sort order for findings + modules + audit entries is locked.
 - The rendered HTML is byte-stable across runs given identical inputs.
 - All user-controlled strings flow through Jinja2's autoescape so a
-  malicious finding title cannot inject markup.
+ malicious finding title cannot inject markup.
 
 The writer integrates with the Phase-03 :class:`Reporter` dispatcher
 via :func:`render_html_report` (called from

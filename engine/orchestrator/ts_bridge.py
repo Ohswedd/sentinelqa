@@ -3,20 +3,20 @@
 The TS runtime (`@sentinelqa/ts-runtime`) emits one JSON event per
 stdout line. This module:
 
-  - Defines a typed Pydantic model per event kind (discriminated by
-    ``type``).
-  - Parses a single line via :func:`parse_event`.
-  - Streams events from an asyncio :class:`StreamReader` via
-    :func:`stream_events`, raising :class:`ProtocolParseError` on
-    malformed lines.
+ - Defines a typed Pydantic model per event kind (discriminated by
+ ``type``).
+ - Parses a single line via :func:`parse_event`.
+ - Streams events from an asyncio :class:`StreamReader` via
+ :func:`stream_events`, raising :class:`ProtocolParseError` on
+ malformed lines.
 
 The wire format is locked by
 ``packages/shared-schema/ts-events.schema.json``. Both halves of the
 bridge are kept in sync by the cross-language parity test
 (``tests/integration/protocol/test_parity.py``).
 
-This module deliberately does *not* import Playwright. Phase 04 owns
-only the message shape; the runner (Phase 08) is responsible for
+This module deliberately does *not* import Playwright. owns
+only the message shape; the runner is responsible for
 spawning the TS process and feeding stdout into :func:`stream_events`.
 """
 
@@ -213,7 +213,7 @@ class ErrorEvent(_EventBase):
 
 
 # ---------------------------------------------------------------------------
-# Phase-17 discovery events (the documentation, task 17.07 + ADR-0010 follow-up)
+# Phase-17 discovery events (the documentation, + ADR-0010 follow-up)
 # ---------------------------------------------------------------------------
 
 
@@ -334,7 +334,7 @@ async def stream_events(reader: Any) -> AsyncIterator[_EventBase]:
 
     ``reader`` must be an asynchronous iterator yielding ``bytes`` or
     ``str`` lines — typically an :class:`asyncio.StreamReader` (we read
-    ``bytes`` and decode UTF-8). The runner (Phase 08) is responsible
+    ``bytes`` and decode UTF-8). The runner is responsible
     for spawning the TS process; this function only consumes its
     stdout. Empty lines (heartbeats) are silently skipped.
     """

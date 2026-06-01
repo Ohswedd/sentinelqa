@@ -1,4 +1,4 @@
-"""Integration tests for the GitHub PR comment poster (task 17.03).
+"""Integration tests for the GitHub PR comment poster.
 
 Strategy: load the poster module directly (it is invoked as a script
 from the composite Action), substitute a fake ``HttpClient`` that

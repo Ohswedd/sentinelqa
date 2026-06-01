@@ -9,7 +9,7 @@ Accepted
 
 ## Context
 
-Phase 23 ships the the documentation chaos / adversarial test module. the documentation
+ships the the documentation chaos / adversarial test module. the documentation
 lists thirteen scenarios across four categories — network (slow_3g,
 offline, api_500, api_timeout), session (expired token, missing
 permissions), UX (duplicate submit, double-click race, back/forward,
@@ -20,10 +20,10 @@ The module must satisfy three competing constraints:
 
 1. **our engineering rules** Chaos scenarios must never give anyone a stealth / evasion / bot-detection-bypass capability. The thirteen PRD scenarios are bounded UI / network injections — they exercise the _target's_ failure handling, never a third party.
 2. **our engineering rules** The module follows the standard seven-step lifecycle so it composes with `sentinel audit`, `sentinel ci`, and the reporter / scoring stack without special cases.
-3. **our engineering rules** Playwright instrumentation is TypeScript-owned (the chaos helpers are `page.route()` / `goBack()` / `setItem()` callers); the Python side owns config, lifecycle, findings, and reports.
+3. **our engineering rules** Playwright instrumentation is TypeScript-owned (the chaos helpers are `page.route` / `goBack` / `setItem` callers); the Python side owns config, lifecycle, findings, and reports.
 
-The cleanest split is the same one Phase 11 (a11y), Phase 12 (perf),
-and Phase 21 (visual) use: TS-side helpers emit a typed event log;
+The cleanest split is the same one (a11y), (perf),
+and (visual) use: TS-side helpers emit a typed event log;
 the Python module ingests the log and turns observations into PRD
 §18.2 findings. There is no precedent in the repo for running a chaos
 in-browser engine entirely from Python, and the alternative
@@ -44,7 +44,7 @@ backed by a TS chaos helper surface that emits the canonical
   "scenario_id": "network.api_500",
   "category": "network",
   "flow": "checkout",
-  "observation": "no_error_state | uncaught_error | ... | handled_gracefully",
+  "observation": "no_error_state | uncaught_error |... | handled_gracefully",
   "route": "/api/checkout" // optional "detail": "...", // optional human note "evidence": { "console_lines": "3" } // optional flat str->str map
 }
 ```
@@ -64,10 +64,10 @@ audit log preserves what was thrown out).
 
 **Safety boundary.**
 
-- `modules.chaos` defaults `False`. The Phase 17 CI `nightly` preset flips it on; `fast` / `standard` / `full` do not.
+- `modules.chaos` defaults `False`. The CI `nightly` preset flips it on; `fast` / `standard` / `full` do not.
 - `ChaosConfig.api_timeout_abort_ms` clamps `[1_000, 120_000]` — there is no path to "hang forever" or to a sub-second hammer.
 - `ChaosConfig.slow_3g_kbps` clamps `[100, 10_000]`. Below 100 Kbps the chaos helper _is_ a denial-of-service amplifier, which CLAUDE §6 forbids; above 10 Mbps the scenario is not "chaos" anymore.
-- Session chaos uses Playwright `route()` to rewrite outgoing `Authorization` headers. The TS helper never reads, persists, or re-signs production JWTs. `session.missing_permissions` requires the operator to supply a sandbox JWT (passed in opaque).
+- Session chaos uses Playwright `route` to rewrite outgoing `Authorization` headers. The TS helper never reads, persists, or re-signs production JWTs. `session.missing_permissions` requires the operator to supply a sandbox JWT (passed in opaque).
 - No CLI flag named `--aggressive` / `--bypass` / `--stealth` / `--undetectable` / `--no-rate-limit` / `--ignore-robots` exists. `tests/security/test_chaos_no_evasion_flags.py` greps the package + CLI for forbidden literals and introspects the Typer parameters.
 
 **Findings.** `modules.chaos.findings` maps each "bad" observation to
@@ -90,9 +90,9 @@ one of nine rule IDs:
 
 ## Consequences
 
-- **Positive:** - The module reuses the JSONL bridge already shipped for a11y / perf / visual; there is one cross-runtime contract to maintain. - The module is testable without a real browser: every integration test we ship is fixture-driven (events JSONL in, findings out). - The catalog is centralized, so adding a fourteenth scenario is a one-file change (plus an ADR + PRD update). - Findings flow through the standard scoring engine; nothing chaos- specific needs to land in Phase 14.
-- **Negative / trade-off:** - The Python module cannot, by itself, _cause_ a chaos scenario — it can only observe what the TS helpers wrote. That mirrors how a11y / perf already work and is acceptable, but it means operators must run the TS helpers via Playwright tests (Phase 08 `sentinel test --module chaos`) to populate the event log. - The 8 MiB file-size cap means a runaway TS reporter that writes gigabytes is refused with `incomplete=true` instead of streamed — intentional, since memory bounding matters more than partial ingestion here.
-- **Follow-up obligations:** - Phase 24 (plugin architecture) must ensure chaos scenarios can be added via plugins without forking `modules.chaos.scenarios`. - Phase 27 docs must surface the chaos scenario catalog so operators understand exactly what is bounded and what is not.
+- **Positive:** - The module reuses the JSONL bridge already shipped for a11y / perf / visual; there is one cross-runtime contract to maintain. - The module is testable without a real browser: every integration test we ship is fixture-driven (events JSONL in, findings out). - The catalog is centralized, so adding a fourteenth scenario is a one-file change (plus an ADR + PRD update). - Findings flow through the standard scoring engine; nothing chaos- specific needs to land in.
+- **Negative / trade-off:** - The Python module cannot, by itself, _cause_ a chaos scenario — it can only observe what the TS helpers wrote. That mirrors how a11y / perf already work and is acceptable, but it means operators must run the TS helpers via Playwright tests ( `sentinel test --module chaos`) to populate the event log. - The 8 MiB file-size cap means a runaway TS reporter that writes gigabytes is refused with `incomplete=true` instead of streamed — intentional, since memory bounding matters more than partial ingestion here.
+- **Follow-up obligations:** - (plugin architecture) must ensure chaos scenarios can be added via plugins without forking `modules.chaos.scenarios`. - docs must surface the chaos scenario catalog so operators understand exactly what is bounded and what is not.
 
 ## Alternatives considered
 

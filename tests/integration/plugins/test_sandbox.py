@@ -1,4 +1,4 @@
-"""Phase 24 task 24.04 — subprocess sandbox.
+"""— subprocess sandbox.
 
 Acceptance criteria:
 

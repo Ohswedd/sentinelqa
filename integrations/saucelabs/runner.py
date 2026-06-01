@@ -1,6 +1,6 @@
-"""Sauce Labs adapter (Phase 25, task 25.02).
+"""Sauce Labs adapter (, ).
 
-Same shape as the BrowserStack adapter (Phase 25.01): the class is
+Same shape as the BrowserStack adapter : the class is
 ``RunnerPlugin``-shaped (:mod:`sentinelqa.plugins`); it is NOT
 auto-wired into ``sentinel audit``; credentials read
 from the environment, never logged.
@@ -190,18 +190,18 @@ class SauceLabsRunner:
         """Submit a runner invocation to Sauce Labs.
 
         ``invocation`` is the same opaque mapping the local / Docker
-        runners receive (Phase 08); the adapter consumes the fields it
+        runners receive ; the adapter consumes the fields it
         needs.
 
         Returns a deterministic outcome::
 
-            {
-              "status": "submitted" | "quota_exceeded",
-              "job_id": "...",
-              "region": "us-west-1",
-              "capabilities": {...},
-              "artifacts": [{"name": "...", "url": "..."}, ...],
-            }
+        {
+        "status": "submitted" | "quota_exceeded",
+        "job_id": "...",
+        "region": "us-west-1",
+        "capabilities": {...},
+        "artifacts": [{"name": "...", "url": "..."},...],
+        }
         """
 
         browser = str(invocation.get("browser", "chromium"))

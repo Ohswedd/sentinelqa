@@ -1,11 +1,11 @@
-"""Planner writer (task 06.03, the documentation + §20.1).
+"""Planner writer.
 
 Emits two artifacts per run:
 
 - ``plan.json`` — byte-stable JSON of the :class:`TestPlan` plus its
-  ``schema_version`` envelope.
+ ``schema_version`` envelope.
 - ``plan.md`` — deterministic human-readable summary suitable for PR
-  comments and CI logs.
+ comments and CI logs.
 """
 
 from __future__ import annotations
@@ -72,7 +72,7 @@ def write_plan_artifacts(
 def read_plan(plan_json_path: Path) -> TestPlan:
     """Re-parse a ``plan.json`` file back into a :class:`TestPlan`.
 
-    Used both by the runner (Phase 08+) and by the round-trip test guards.
+    Used both by the runner (+) and by the round-trip test guards.
     """
 
     payload = json.loads(plan_json_path.read_text(encoding="utf-8"))

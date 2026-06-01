@@ -1,4 +1,4 @@
-"""Phase 13.11 — the security CLI must not accept evasion / bypass flags.
+"""the security CLI must not accept evasion / bypass flags.
 
 `tests/security/test_no_stealth_flags.py` greps the codebase for the
 forbidden stealth-flag literals. This file is the targeted check for

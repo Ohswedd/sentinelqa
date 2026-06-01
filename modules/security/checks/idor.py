@@ -1,16 +1,16 @@
-"""IDOR smoke check (Phase 13.07).
+"""IDOR smoke check.
 
 Detect endpoints whose authorization model is "any logged-in user can
 read any other user's resource". The check works by:
 
 1. Authenticating as the **second** test user (env-var pair only;
-   see :class:`engine.config.schema.AuthSecondUserConfig`).
+ see :class:`engine.config.schema.AuthSecondUserConfig`).
 2. Identifying routes whose path contains a numeric or UUID segment
-   (e.g. ``/api/users/123``, ``/orders/9f1...``).
+ (e.g. ``/api/users/123``, ``/orders/9f1...``).
 3. Replacing that segment with one of: the first-user's id (if
-   configured), a sentinel value ``1``, and ``me``. Sending GET.
+ configured), a sentinel value ``1``, and ``me``. Sending GET.
 4. If the response is 2xx for another user's id, the endpoint is
-   probably missing per-resource authorization.
+ probably missing per-resource authorization.
 
 Without a second test user configured, the check returns
 ``skipped=True`` with a clear reason — never a fabricated finding.
@@ -45,7 +45,7 @@ def _second_user_token(ctx: CheckContext) -> str | None:
 
     Resolution order: ``token_env`` first (already a token), then
     fall back to None — username/password login is out of scope for
-    the MVP because it would couple the security module to a full
+    the release because it would couple the security module to a full
     auth-orchestration layer. The IDOR check honestly reports
     ``skipped`` when a non-token strategy is configured.
     """

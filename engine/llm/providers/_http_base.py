@@ -5,21 +5,21 @@ encapsulates:
 
 - API-key lookup from an env var (never inlined; our engineering rules).
 - Structured-output enforcement (server-side hint + client-side
-  re-validation against the request's ``response_schema``).
+ re-validation against the request's ``response_schema``).
 - Latency timing.
 - Token-bucket rate-limit enforcement (via :class:`LlmRateLimit`).
 - Optional :class:`LlmBudget` integration when wired up by the caller.
 
 Concrete subclasses override:
 
-- :meth:`endpoint_url`            — final POST URL.
-- :meth:`auth_headers`            — provider-specific auth headers.
-- :meth:`build_payload`           — request body.
-- :meth:`extract_response_text`   — pull the model output text.
-- :meth:`usage_from_response`     — pull (input_tokens, output_tokens).
-- :meth:`cost_from_response`      — optional override when the provider
-                                     returns its own cost number
-                                     (e.g. OpenRouter).
+- :meth:`endpoint_url` — final POST URL.
+- :meth:`auth_headers` — provider-specific auth headers.
+- :meth:`build_payload` — request body.
+- :meth:`extract_response_text` — pull the model output text.
+- :meth:`usage_from_response` — pull (input_tokens, output_tokens).
+- :meth:`cost_from_response` — optional override when the provider
+ returns its own cost number
+ (e.g. OpenRouter).
 """
 
 from __future__ import annotations
@@ -318,7 +318,7 @@ class HttpLlmProviderBase:
             )
         # Lightweight client-side schema check: every required top-level
         # property must be present. Full draft-2020-12 validation lives
-        # in the caller (Phase 06 _ProposalEnvelope etc.) — this is a
+        # in the caller ( _ProposalEnvelope etc.) — this is a
         # provider-side belt for the suspenders.
         if "required" in schema:
             required = schema.get("required") or []

@@ -1,4 +1,4 @@
-"""GraphQL safety probes (Phase 32.04, ADR-0044).
+"""GraphQL safety probes.
 
 Defensive-only probes for the four canonical GraphQL misconfiguration
 classes the OWASP API Top-10 calls out: introspection-enabled-in-prod,

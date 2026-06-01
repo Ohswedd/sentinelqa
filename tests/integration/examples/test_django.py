@@ -1,4 +1,4 @@
-"""Structural smoke for the Django example (Phase 26.03)."""
+"""Structural smoke for the Django example."""
 
 from __future__ import annotations
 

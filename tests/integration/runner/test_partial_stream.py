@@ -2,13 +2,13 @@
 
 A real run can be interrupted at any of these boundaries:
 
-  1. Mid-test (we see test.start but no test.end).
-  2. Mid-attempt (we see one test.end but the retry never fires).
-  3. Mid-stream (we see test.end but no run.end).
+ 1. Mid-test (we see test.start but no test.end).
+ 2. Mid-attempt (we see one test.end but the retry never fires).
+ 3. Mid-stream (we see test.end but no run.end).
 
 In every case the aggregator must produce a deterministic outcome — no
 exceptions escape, and the resulting status carries enough information
-for the Analyzer (Phase 09) to triage.
+for the Analyzer to triage.
 """
 
 from __future__ import annotations

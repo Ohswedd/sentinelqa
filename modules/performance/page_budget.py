@@ -1,4 +1,4 @@
-"""Deterministic page-budget evaluation (Phase 12.02, the documentation, CLAUDE §27).
+"""Deterministic page-budget evaluation.
 
 The TS runtime collects N samples of LCP/CLS/INP/TTFB/DCL/load per route
 and reports the median back to Python. This module evaluates the median

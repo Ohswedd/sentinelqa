@@ -49,7 +49,7 @@ my-scanner = "my_pkg.plugin:MyScanner"
 Install your plugin into the same environment as `sentinel`:
 
 ```bash
-pip install -e .
+pip install -e.
 sentinel plugins list
 ```
 
@@ -58,7 +58,7 @@ sentinel plugins list
 The host calls your plugin once per audit run:
 
 ```python
-def run(self, context: PluginContext) -> ModuleResult: # context.run_id — stable run identifier # context.target_url — already safety-checked # context.run_dir — per-run artifact directory # context.config_snapshot — read-only loaded config # context.has_permission(...) — check before risky calls ...
+def run(self, context: PluginContext) -> ModuleResult: # context.run_id — stable run identifier # context.target_url — already safety-checked # context.run_dir — per-run artifact directory # context.config_snapshot — read-only loaded config # context.has_permission(...) — check before risky calls...
 ```
 
 The exact method signature depends on the plugin kind — see the
@@ -84,7 +84,7 @@ the sandbox is opt-in based on what the manifest declared.
 
 ## Discovery + validation
 
-When the host calls `engine.plugins.discover()` it:
+When the host calls `engine.plugins.discover` it:
 
 1. Iterates `importlib.metadata.entry_points(group="sentinelqa.plugins")`.
 2. Loads each target (class or instance).

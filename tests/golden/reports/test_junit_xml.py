@@ -1,4 +1,4 @@
-"""Golden tests for the JUnit XML emitter (task 03.04)."""
+"""Golden tests for the JUnit XML emitter."""
 
 from __future__ import annotations
 

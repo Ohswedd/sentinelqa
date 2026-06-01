@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright (c) 2026 SentinelQA contributors.
-"""npm dry-run gate (Phase 36.03).
+"""npm dry-run gate.
 
 ``scripts/release/dry_run_npm.py`` must exit 0 on the current
 ``main`` so the owner can validate the @sentinelqa/ts-runtime

@@ -1,4 +1,4 @@
-"""Risk map builder (task 05.07).
+"""Risk map builder.
 
 Applies the rules in :mod:`engine.discovery.risk_model` to every route in
 the discovery graph and produces a :class:`~engine.domain.risk_map.RiskMap`.

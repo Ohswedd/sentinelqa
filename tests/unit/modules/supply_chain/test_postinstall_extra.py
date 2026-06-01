@@ -1,4 +1,4 @@
-"""Final postinstall coverage gaps (Phase 33.04)."""
+"""Final postinstall coverage gaps."""
 
 from __future__ import annotations
 
@@ -35,7 +35,7 @@ def test_scan_npm_uses_dir_name_when_name_field_missing(tmp_path: Path) -> None:
 
 
 def test_scan_python_packages_walks_venv_and_tox(tmp_path: Path) -> None:
-    # Put a setup.py in venv/, .venv/ and .tox/.
+    # Put a setup.py in venv/,.venv/ and.tox/.
     for venv_dir in ("venv", ".venv", ".tox"):
         target = tmp_path / venv_dir / "pkg"
         target.mkdir(parents=True)

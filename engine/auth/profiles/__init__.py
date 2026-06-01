@@ -1,4 +1,4 @@
-"""Documented launcher recipes for the auth flow (Phase 31, Tasks 31.04 + 31.05).
+"""Documented launcher recipes for the auth flow (, Tasks 31.04 + 31.05).
 
 A profile is a small, frozen dataclass: name, label, login URL pattern,
 success URL patterns, MFA hint, and a ToS link. There is NO credential-

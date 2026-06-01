@@ -1,4 +1,4 @@
-"""Deterministic planner core tests (task 06.01)."""
+"""Deterministic planner core tests."""
 
 from __future__ import annotations
 

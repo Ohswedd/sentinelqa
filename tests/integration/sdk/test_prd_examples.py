@@ -1,4 +1,4 @@
-"""Reproduce our product spec1 and §14.2 examples verbatim (task 16.07 DoD)."""
+"""Reproduce our product spec1 and §14.2 examples verbatim."""
 
 from __future__ import annotations
 
@@ -64,9 +64,9 @@ def test_prd_14_1_basic_usage_reproduces(tmp_path: Path, patched_registry: Modul
     from sentinelqa import Sentinel
     qa = Sentinel(project_path=".")
     result = qa.audit(
-        url="http://localhost:3000",
-        modules=["functional", "accessibility", "performance", "security"],
-        safe_mode=True,
+    url="http://localhost:3000",
+    modules=["functional", "accessibility", "performance", "security"],
+    safe_mode=True,
     )
     print(result.quality_score)
     print(result.release_decision)
@@ -109,8 +109,8 @@ def test_prd_14_2_agent_friendly_usage_reproduces(
     plan = qa.plan(url="http://localhost:3000")
     result = qa.run_plan(plan)
     if not result.passed:
-        for failure in result.failures:
-            print(failure.to_agent_message())
+    for failure in result.failures:
+    print(failure.to_agent_message())
     """
 
     _write_full_config(tmp_path)

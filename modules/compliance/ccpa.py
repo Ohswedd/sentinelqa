@@ -1,12 +1,12 @@
-"""CCPA "Do Not Sell or Share" link check (Phase 34.03, ADR-0046).
+"""CCPA "Do Not Sell or Share" link check.
 
-For every page the Phase 05 crawler discovered the check looks for a
+For every page the crawler discovered the check looks for a
 *Do Not Sell or Share My Personal Information* link. Heuristics:
 
 - Link text matches one of: ``do not sell``, ``do not share``,
-  ``opt out``, ``opt-out``, ``your privacy choices``.
+ ``opt out``, ``opt-out``, ``your privacy choices``.
 - ``href`` references a path containing one of ``sell``, ``share``,
-  ``opt-out``, ``privacy-choices``.
+ ``opt-out``, ``privacy-choices``.
 
 Pages that lack such a link → :class:`CcpaIssue`
 ``do-not-sell-link-missing``.

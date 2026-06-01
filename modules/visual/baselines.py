@@ -1,13 +1,13 @@
-"""Baseline storage layout (Phase 21.02).
+"""Baseline storage layout.
 
 The baseline tree mirrors the capture tree:
 
 ::
 
-    <baselines_dir>/
-        <viewport>/
-            <route-slug>.png
-        index.json
+ <baselines_dir>/
+ <viewport>/
+ <route-slug>.png
+ index.json
 
 ``index.json`` records one row per stored baseline (sha256, captured-at,
 captured-by-run-id, masks-applied) so we can detect tampering and

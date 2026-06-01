@@ -1,8 +1,8 @@
-"""Detection-mode secret patterns (Phase 13.08).
+"""Detection-mode secret patterns.
 
-The Phase 01 redaction layer (``engine.policy.redaction``) is built for
+The redaction layer (``engine.policy.redaction``) is built for
 *redaction* (replace the secret with ``[REDACTED:<cat>]`` before it
-leaves the process). The Phase 13 frontend-secrets check needs the
+leaves the process). The frontend-secrets check needs the
 opposite shape: scan a corpus and return a list of matches with
 locations so they can become :class:`SecurityIssue` records.
 

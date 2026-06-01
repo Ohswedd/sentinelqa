@@ -1,4 +1,4 @@
-"""Phase 20.04 — Fixture refresh proposals."""
+"""Fixture refresh proposals."""
 
 from __future__ import annotations
 

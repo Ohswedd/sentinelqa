@@ -1,9 +1,9 @@
-"""Run-directory retention helper (task 02.05).
+"""Run-directory retention helper.
 
 `prune_old_runs` removes runs older than ``max_age_days`` AND keeps the
 most-recent ``keep_last`` regardless of age. A run with ``keep: true``
 in its ``run.json`` is never pruned. The helper is invoked by the CLI
-on demand (no auto-pruning in Phase 02).
+on demand (no auto-pruning in ).
 """
 
 from __future__ import annotations

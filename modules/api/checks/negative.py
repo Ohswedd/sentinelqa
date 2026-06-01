@@ -1,22 +1,22 @@
-"""Negative-case check (Phase 22.04, our engineering rules).
+"""Negative-case check.
 
 Per our engineering rules / the documentation we generate a small, bounded set of
 variants for each documented request body and assert that the server
 rejects them. We never:
 
 - Send more than ``api.negative_max_variants_per_endpoint`` variants
-  per endpoint (default 4, hard cap 16).
+ per endpoint (default 4, hard cap 16).
 - Send bodies above ``api.negative_max_payload_kb`` (default 16 KB,
-  hard cap 64 KB in :mod:`modules.api.http_client`).
+ hard cap 64 KB in :mod:`modules.api.http_client`).
 - Iterate randomly or fuzz beyond the variant catalogue below.
 
 Findings:
 
 - ``high`` when a request with a missing-required field returns 2xx
-  (validation gap).
+ (validation gap).
 - ``high`` when a request returns 5xx (server crash on invalid input).
 - ``medium`` when the error shape is inconsistent across variants (the
-  uniform-error-shape check in :mod:`pagination.py` also picks this up).
+ uniform-error-shape check in :mod:`pagination.py` also picks this up).
 """
 
 from __future__ import annotations

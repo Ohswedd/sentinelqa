@@ -1,4 +1,4 @@
-"""Cover the SupplyChainModule full-lifecycle paths (Phase 33)."""
+"""Cover the SupplyChainModule full-lifecycle paths."""
 
 from __future__ import annotations
 

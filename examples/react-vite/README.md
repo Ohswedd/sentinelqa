@@ -1,7 +1,7 @@
 # SentinelQA React + Vite example
 
 A Vite + React 18 SPA against the FastAPI demo backend. SentinelQA
-Phase 26.05.
+
 
 ## Run
 

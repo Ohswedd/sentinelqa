@@ -1,4 +1,4 @@
-"""LLM-UI-ONLY-AUTH — UI hides a route the backend still serves (task 19.07).
+"""LLM-UI-ONLY-AUTH — UI hides a route the backend still serves.
 
 Pure function over :class:`AuthRouteProbe` records. The probe is
 populated outside this check (by an HTTP probe in the production

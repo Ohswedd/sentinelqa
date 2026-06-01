@@ -1,6 +1,6 @@
 """Shared pytest fixtures and helpers for the test suite.
 
-Phase 03 introduces deterministic :class:`TestRun` / :class:`Finding` /
+introduces deterministic :class:`TestRun` / :class:`Finding` /
 :class:`QualityScore` / :class:`PolicyDecision` / :class:`ModuleResult`
 fixtures so every writer + golden test starts from the same canonical
 inputs. Promoting them to the root ``tests/conftest.py`` keeps unit,
@@ -31,7 +31,7 @@ from engine.domain.test_run import TestRun
 GOLDEN_UPDATE_ENV: str = "SENTINELQA_UPDATE_GOLDENS"
 
 
-# Phase 29 — child Python processes that pytest-cov auto-instruments via its
+# child Python processes that pytest-cov auto-instruments via its
 # `pytest-cov.pth` would otherwise read `[tool.coverage.run]` from whatever
 # directory they happened to start in. When that directory has no
 # `pyproject.toml` (e.g. a `tmp_path` used by an integration test), the

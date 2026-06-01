@@ -1,4 +1,4 @@
-"""Task 14.03 — release decision."""
+"""— release decision."""
 
 from __future__ import annotations
 
@@ -80,7 +80,7 @@ def test_blockers_force_blocked(policy_defaults: PolicyConfig) -> None:
 
 def test_score_below_minimum_is_blocked() -> None:
     # 5 high findings in functional → component score 100-5*17.5 = 12.5
-    # weighted: 12.5 * .30 + 100 * .70 = 73.75 → below 85.
+    # weighted: 12.5 *.30 + 100 *.70 = 73.75 → below 85.
     policy = PolicyConfig(min_quality_score=85, block_on_critical=False, max_failed_p1_flows=99)
     findings = tuple(
         make_finding(

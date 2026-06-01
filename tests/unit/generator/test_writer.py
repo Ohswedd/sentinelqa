@@ -1,4 +1,4 @@
-"""Tests for the generator file writer (task 07.06 — overwrite guard)."""
+"""Tests for the generator file writer."""
 
 from __future__ import annotations
 

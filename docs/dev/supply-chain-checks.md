@@ -1,8 +1,8 @@
-# Supply-Chain & Dependency Audit — Phase 33
+# Supply-Chain & Dependency Audit —
 
 This document is the operator-facing reference for the
 `sentinel supply-chain` command and the underlying
-`modules.supply_chain` package (Phase 33, the documentation.3, ADR-0045).
+`modules.supply_chain` package (, the documentation.3, ADR-0045).
 
 Every check is **defensive / read-only**. our engineering rules
 stealth, evasion, fingerprint spoofing, or aggressive scanning;
@@ -15,8 +15,8 @@ postinstall scanner reads scripts — it never executes them.
 
 ```bash
 sentinel supply-chain --url http://localhost:3000
-sentinel supply-chain sbom --out .sentinel/sbom
-sentinel supply-chain osv --sbom .sentinel/sbom/index.json
+sentinel supply-chain sbom --out.sentinel/sbom
+sentinel supply-chain osv --sbom.sentinel/sbom/index.json
 ```
 
 Exit codes follow the canonical grid (`engine/errors/codes.py`):
@@ -49,7 +49,7 @@ Exit codes follow the canonical grid (`engine/errors/codes.py`):
 ## Configuration
 
 The full config block lives under `policy.supply_chain` in
-`sentinel.config.yaml`. Defaults match the Phase 33 README — "every
+`sentinel.config.yaml`. Defaults match the README — "every
 check on with conservative thresholds". See
 `sentinel.config.yaml.example` for the worked YAML.
 
@@ -131,7 +131,7 @@ The scanner is an AST walk; we never `import` the target file.
 | Trigger                                              | Severity | Notes                                           |
 | ---------------------------------------------------- | -------- | ----------------------------------------------- |
 | `import subprocess`                                  | `high`   | Subprocess in setup.py means install-time exec. |
-| `import urllib.request` / `from ... import urlopen`  | `medium` | Network during install.                         |
+| `import urllib.request` / `from... import urlopen`   | `medium` | Network during install.                         |
 | `import requests` / `import httpx` / `import socket` | `medium` | Same.                                           |
 | Top-level call to `os.system(`                       | `high`   | Direct shell-out.                               |
 | Top-level call to `subprocess.{run,Popen,call}(`     | `high`   | Same.                                           |
@@ -167,7 +167,7 @@ For each SBOM component, the resolver returns the declared SPDX
 id(s). npm components carry the field directly in the lockfile;
 PyPI components are intentionally license-less in the SBOM because
 the alternative — fetching PyPI metadata over the network — would
-break Phase 33's offline guarantee. Operators who need PyPI
+break's offline guarantee. Operators who need PyPI
 licenses today should declare them in the project's own SBOM
 extension.
 
@@ -196,7 +196,7 @@ The same test verifies that:
 ## Related references
 
 - ADR-0045 (`docs/adr/0045-supply-chain-module.md`).
-- Phase 33 README ().
+- README.
 - CycloneDX 1.5 — https://cyclonedx.org/specification/overview/
 - OSV API — https://google.github.io/osv.dev/post-v1-querybatch/
 - Trivy — https://aquasecurity.github.io/trivy/

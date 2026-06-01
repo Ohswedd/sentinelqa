@@ -1,4 +1,4 @@
-"""Golden test for rendered templates (task 07.07).
+"""Golden test for rendered templates.
 
 Locks the byte-output of every template against a fixed context. Run
 ``SENTINELQA_UPDATE_GOLDENS=1 pytest tests/golden/generator`` to

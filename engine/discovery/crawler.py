@@ -9,11 +9,11 @@ Safety boundary (our engineering rules, the documentation):
 - Same-host-only by default; explicit allowlist for cross-host follow.
 - Transparent User-Agent (``SentinelQA/<version>``) — no spoofing.
 - ``X-SentinelQA-Test-Run`` header on every request so target operators can
-  see the traffic.
+ see the traffic.
 - Rate-limited via a deterministic token bucket.
 - Honors ``robots.txt`` for non-local hosts; only bypassed when both the
-  config opts in (``discovery.respect_robots: false``) AND a warning is
-  emitted.
+ config opts in (``discovery.respect_robots: false``) AND a warning is
+ emitted.
 - Never retries 4xx; retries 5xx with exponential backoff up to 3 times.
 """
 
@@ -171,7 +171,7 @@ class _RobotsCache:
 class CrawlBackend(Protocol):
     """Pluggable crawl backend.
 
-    The HTTP backend is the only one shipped in Phase 05; the Phase 17
+    The HTTP backend is the only one shipped in ; the
     Playwright backend (ADR-0010) implements the same Protocol.
     """
 

@@ -1,4 +1,4 @@
-"""Healer proposal writer (Phase 20.05).
+"""Healer proposal writer.
 
 Writes one JSON file per :class:`RepairProposal` under
 ``<run-dir>/healer/<suggestion-id>.json`` plus an aggregate
@@ -54,18 +54,16 @@ def write_proposal(run_dir: Path, proposal: RepairProposal) -> Path:
 def write_index(run_dir: Path, proposals: Sequence[RepairProposal]) -> Path:
     """Write the aggregate ``index.json``.
 
-    Index shape (locked under ADR-0025):
+    Index shape (locked under ADR-0025):.. code-block:: json
 
-    .. code-block:: json
-
-        {
-          "schema_version": "1",
-          "count": <int>,
-          "by_kind": {"locator": N, "wait": N, "fixture": N, "assertion": N},
-          "proposals": [{"id": "RPR-...", "kind": "locator",
-                         "confidence": 0.95, "target_test": "...",
-                         "requires_human_review": false}],
-        }
+    {
+    "schema_version": "1",
+    "count": <int>,
+    "by_kind": {"locator": N, "wait": N, "fixture": N, "assertion": N},
+    "proposals": [{"id": "RPR-...", "kind": "locator",
+    "confidence": 0.95, "target_test": "...",
+    "requires_human_review": false}],
+    }
     """
 
     healer_dir = run_dir / "healer"

@@ -1,4 +1,4 @@
-"""`sentinel report` re-render CLI (Phase 15.05)."""
+"""`sentinel report` re-render CLI."""
 
 from __future__ import annotations
 

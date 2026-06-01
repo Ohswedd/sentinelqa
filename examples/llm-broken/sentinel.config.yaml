@@ -1,4 +1,4 @@
-# SentinelQA configuration for the LLM-broken demo (Phase 26.06).
+# SentinelQA configuration for the LLM-broken demo ().
 # This app is INTENTIONALLY BROKEN. The audit should surface ≥ 8 findings.
 # Binds to 127.0.0.1:3030 by default — see README.md.
 version: 1

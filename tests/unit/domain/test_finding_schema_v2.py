@@ -1,4 +1,4 @@
-"""Finding schema v2 — round-trip + forward-compat with v1 (task 32.09)."""
+"""Finding schema v2 — round-trip + forward-compat with v1."""
 
 from __future__ import annotations
 

@@ -1,4 +1,4 @@
-"""Integration tests for the coming-soon / placeholder-text check (task 19.12)."""
+"""Integration tests for the coming-soon / placeholder-text check."""
 
 from __future__ import annotations
 

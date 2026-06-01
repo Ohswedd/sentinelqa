@@ -1,4 +1,4 @@
-"""OSV vulnerability lookup (Phase 33.02, ADR-0045).
+"""OSV vulnerability lookup.
 
 Reads the SBOM produced by :mod:`modules.supply_chain.sbom` and queries
 the public OSV API (https://api.osv.dev) via ``POST /v1/querybatch``.
@@ -7,7 +7,7 @@ parse the advisories that come back. The OSV response carries vendor
 references and CVE / GHSA ids only; we do NOT carry through any exploit
 payloads or proof-of-concept code (CLAUDE §6).
 
-Offline degradation is mandatory. The Phase 33 README is explicit:
+Offline degradation is mandatory. The README is explicit:
 "Offline degradation is ``skipped``, not ``errored``, not ``passed``."
 A network failure here means the supply-chain run records
 :class:`OsvReport.skipped=True` with a short reason; the rest of the
@@ -79,10 +79,10 @@ def severity_from_cvss(cvss_score: float | None) -> Severity:
     CVSS bands per https://nvd.nist.gov/vuln-metrics/cvss:
 
     - 9.0..10.0 → critical
-    - 7.0..8.9  → high
-    - 4.0..6.9  → medium
-    - 0.1..3.9  → low
-    - 0.0       → info (treated as a defensive note)
+    - 7.0..8.9 → high
+    - 4.0..6.9 → medium
+    - 0.1..3.9 → low
+    - 0.0 → info (treated as a defensive note)
     """
 
     if cvss_score is None:
@@ -264,7 +264,7 @@ def query_osv(
     """Query OSV for every component in ``components``.
 
     The function is synchronous so it composes with the rest of the
-    Phase 33 module (which runs in the orchestrator's main thread). It
+    module (which runs in the orchestrator's main thread). It
     drives an ``AsyncClient`` internally so the offline path can short-
     circuit on the first ``httpx.RequestError`` without needing thread
     juggling.

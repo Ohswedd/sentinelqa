@@ -1,4 +1,4 @@
-"""Inputs the CLI / orchestrator hands to :class:`ApiModule` (Phase 22)."""
+"""Inputs the CLI / orchestrator hands to :class:`ApiModule`."""
 
 from __future__ import annotations
 

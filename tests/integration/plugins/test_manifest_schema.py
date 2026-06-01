@@ -11,10 +11,10 @@ This test:
 1. Loads the JSON Schema.
 2. Compiles it through jsonschema's meta-schema check.
 3. Round-trips a small fixture set: every payload Pydantic accepts
-   must also pass the JSON Schema, and every payload Pydantic
-   rejects must also fail the JSON Schema (best-effort: some
-   semantic rules — like the duplicate-name guard — are Pydantic-only;
-   those are documented inline).
+ must also pass the JSON Schema, and every payload Pydantic
+ rejects must also fail the JSON Schema (best-effort: some
+ semantic rules — like the duplicate-name guard — are Pydantic-only;
+ those are documented inline).
 """
 
 from __future__ import annotations

@@ -1,8 +1,8 @@
 """Safety guard: the supply-chain module never imports offensive tooling.
 
-The Phase 33 README is explicit: every check is defensive / read-only.
+The README is explicit: every check is defensive / read-only.
 This grep-guard mirrors :mod:`tests.security.test_no_offensive_checks`
-(Phase 32) and keeps forbidden tokens from creeping into
+ and keeps forbidden tokens from creeping into
 ``modules/supply_chain/`` or the matching CLI command.
 """
 
@@ -40,7 +40,7 @@ def _python_sources() -> list[Path]:
 
 
 def _strip_comments_and_strings(source: str) -> str:
-    """Drop ``# ...`` comments and quoted string contents.
+    """Drop ``#...`` comments and quoted string contents.
 
     The guard exists to catch *code* that uses forbidden tokens. Sentences
     in docstrings or comments that mention the same words (e.g.

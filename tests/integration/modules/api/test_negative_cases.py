@@ -1,4 +1,4 @@
-"""Phase 22.04 — negative-case check integration tests."""
+"""negative-case check integration tests."""
 
 from __future__ import annotations
 

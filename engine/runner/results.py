@@ -1,6 +1,6 @@
-"""Aggregate JSONL events into a typed :class:`RunnerOutcome` (Phase 08.05).
+"""Aggregate JSONL events into a typed :class:`RunnerOutcome`.
 
-The TS runner (Phase 04) emits one JSON event per stdout line. The
+The TS runner emits one JSON event per stdout line. The
 aggregator consumes that stream, builds per-test execution records
 (status / duration / retries / evidence), aggregates module-level
 metrics (P50 / P95 duration, flake-rate), captures environment context
@@ -10,16 +10,16 @@ under the run artifact tree.
 Aggregator behavior:
 
 - Partial streams (process killed mid-run) produce an ``incomplete``
-  status with whatever tests we already observed. No crash.
+ status with whatever tests we already observed. No crash.
 - Pass-on-retry is recorded as ``flaky``: the test surfaced a failure
-  on attempt N and passed on attempt N+1. The Phase-14 score module
-  reads ``RunnerOutcome.flake_rate`` to apply the configured
-  ``policy.max_flake_rate`` gate.
+ on attempt N and passed on attempt N+1. The Phase-14 score module
+ reads ``RunnerOutcome.flake_rate`` to apply the configured
+ ``policy.max_flake_rate`` gate.
 - Evidence paths are stored as POSIX strings relative to the run dir
-  when possible; absolute paths are preserved otherwise.
+ when possible; absolute paths are preserved otherwise.
 - The module-results artifact is written through
-  :class:`engine.orchestrator.artifacts.ArtifactDirectory` so writes are
-  atomic and redacted.
+ :class:`engine.orchestrator.artifacts.ArtifactDirectory` so writes are
+ atomic and redacted.
 """
 
 from __future__ import annotations

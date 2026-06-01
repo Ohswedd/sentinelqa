@@ -1,4 +1,4 @@
-"""Retry / quarantine decision tests (task 09.04)."""
+"""Retry / quarantine decision tests."""
 
 from __future__ import annotations
 

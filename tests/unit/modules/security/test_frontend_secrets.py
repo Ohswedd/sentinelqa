@@ -1,4 +1,4 @@
-"""Unit tests for the frontend-secrets check (Phase 13.08)."""
+"""Unit tests for the frontend-secrets check."""
 
 from __future__ import annotations
 

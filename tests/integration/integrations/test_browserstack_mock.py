@@ -1,4 +1,4 @@
-"""Mocked end-to-end test for ``integrations.browserstack`` (Phase 25.01)."""
+"""Mocked end-to-end test for ``integrations.browserstack``."""
 
 from __future__ import annotations
 

@@ -1,23 +1,23 @@
-"""``PerformanceModule`` (Phase 12, the documentation, ADR-0017).
+"""``PerformanceModule`` (, the documentation, ADR-0017).
 
 Lifecycle (CLAUDE §9):
 
 - ``validate_prerequisites`` — no-op; the sentinel-ts probe lives in
-  ``execute`` so projects without an installed runtime still report
-  ``skipped`` instead of ``errored``.
-- ``plan``                   — resolves the route list (CLI options
-  → discovery.json → config.performance.routes → ``("/",)`` only when
-  the CLI explicitly injects it).
-- ``execute``                — calls the configured :class:`PerformanceRunner`
-  (production: :class:`LocalPerformanceRunner`).
-- ``collect_evidence``       — pass-through; the runner already wrote
-  one ``<run-dir>/perf/<route-slug>.json`` per page.
-- ``emit_findings``          — translates each :class:`PerformancePageResult`
-  via :func:`modules.performance.findings.findings_from_pages`.
-- ``emit_metrics``           — counts violations, samples, and totals.
-- ``summarize``              — overlays findings on a synthesized
-  :class:`ModuleResult` (no Playwright tests run; no
-  :class:`RunnerOutcome` exists).
+ ``execute`` so projects without an installed runtime still report
+ ``skipped`` instead of ``errored``.
+- ``plan`` — resolves the route list (CLI options
+ → discovery.json → config.performance.routes → ``("/",)`` only when
+ the CLI explicitly injects it).
+- ``execute`` — calls the configured :class:`PerformanceRunner`
+ (production: :class:`LocalPerformanceRunner`).
+- ``collect_evidence`` — pass-through; the runner already wrote
+ one ``<run-dir>/perf/<route-slug>.json`` per page.
+- ``emit_findings`` — translates each :class:`PerformancePageResult`
+ via :func:`modules.performance.findings.findings_from_pages`.
+- ``emit_metrics`` — counts violations, samples, and totals.
+- ``summarize`` — overlays findings on a synthesized
+ :class:`ModuleResult` (no Playwright tests run; no
+ :class:`RunnerOutcome` exists).
 
 CLAUDE §27 is the load-bearing rule: every finding's description begins
 with "Synthetic performance check"; the forbidden-phrase guard in

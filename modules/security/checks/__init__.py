@@ -1,4 +1,4 @@
-"""Individual security checks (Phase 13).
+"""Individual security checks.
 
 Every check is implemented as a small function that takes a
 :class:`CheckContext` and returns a :class:`SecurityCheckResult`. The

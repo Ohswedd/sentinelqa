@@ -1,17 +1,17 @@
-"""LLM redaction policy (Phase 30, ADR-0042).
+"""LLM redaction policy (, ADR-0042).
 
 Every outgoing request and incoming response passes through
 :func:`engine.policy.redaction.redact` before being logged. The wrapper
 here applies a couple of LLM-specific rules:
 
 - The literal API key value (read from the env var) is NEVER substituted
-  into any log line — providers MUST pass the key through ``auth_headers``
-  on the wire only.
+ into any log line — providers MUST pass the key through ``auth_headers``
+ on the wire only.
 - Prompt text is excluded from audit log entries entirely. The audit log
-  is for safety / accountability, not for prompt debugging; debug-mode
-  logging (off by default) is the place to surface prompts.
+ is for safety / accountability, not for prompt debugging; debug-mode
+ logging (off by default) is the place to surface prompts.
 - Response text is excluded from audit log entries for the same reason.
-  The ``usage`` block (token counts + cost) is what flows to the log.
+ The ``usage`` block (token counts + cost) is what flows to the log.
 """
 
 from __future__ import annotations

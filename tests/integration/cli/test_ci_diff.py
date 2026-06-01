@@ -1,4 +1,4 @@
-"""CLI integration tests for ``sentinel ci --diff`` (task 17.05)."""
+"""CLI integration tests for ``sentinel ci --diff``."""
 
 from __future__ import annotations
 

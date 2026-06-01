@@ -1,4 +1,4 @@
-"""Phase 24 task 24.05 — protocol versioning contract."""
+"""— protocol versioning contract."""
 
 from __future__ import annotations
 

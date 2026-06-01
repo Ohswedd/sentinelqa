@@ -1,4 +1,4 @@
-"""Exercise the per-phase hook registry (task 02.04)."""
+"""Exercise the per-phase hook registry."""
 
 from __future__ import annotations
 

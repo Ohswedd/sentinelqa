@@ -1,6 +1,6 @@
 """Sanity test: the SentinelQA codebase never registers stealth/evasion flags.
 
-Phase 02 (CLI) will define real argument parsers; until then this test
+ (CLI) will define real argument parsers; until then this test
 scans the source tree for any string that looks like a stealth flag and
 fails immediately if one shows up. The intent is to make it impossible to
 accidentally re-introduce a forbidden capability later.

@@ -1,4 +1,4 @@
-"""Google Vertex AI provider (Phase 30 task 30.05, ADR-0042).
+"""Google Vertex AI provider (, ADR-0042).
 
 Calls Vertex AI's REST endpoint at
 ``https://<region>-aiplatform.googleapis.com/v1/projects/<project>/

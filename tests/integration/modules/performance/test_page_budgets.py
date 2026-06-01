@@ -1,12 +1,12 @@
-"""Integration test for page-budget evaluation (Phase 12.02).
+"""Integration test for page-budget evaluation.
 
 The TS subcommand (``sentinel-ts audit-perf``) writes the median
 LCP/CLS/INP/TTFB/load/DCL per route. This test verifies that:
 
 - A compliant fixture → zero findings, module ``passed``.
 - A deliberately slow fixture (LCP 6000ms) → one ``perf.page.lcp_ms``
-  finding with high severity, module ``failed``, **synthetic** label
-  present in the description.
+ finding with high severity, module ``failed``, **synthetic** label
+ present in the description.
 
 We feed the module a :class:`StubPerformanceRunner` with the per-route
 shape the TS side would have written.

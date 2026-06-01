@@ -1,4 +1,4 @@
-"""Phase 20.06 — Banner / hand-edit detection tests."""
+"""Banner / hand-edit detection tests."""
 
 from __future__ import annotations
 

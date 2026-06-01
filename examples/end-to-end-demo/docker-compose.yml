@@ -1,5 +1,4 @@
-# SentinelQA Phase 26.07 — full end-to-end demo.
-#
+# SentinelQA full end-to-end demo.
 # Brings up the FastAPI backend (port 8000) and the Next.js frontend
 # (port 3000) so `sentinel audit --url http://127.0.0.1:3000` can drive
 # the full stack. Bound to the loopback interface only; the demo is for

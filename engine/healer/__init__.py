@@ -7,7 +7,7 @@ proposal carries:
 
 - ``original_behavior`` / ``proposed_change`` — what changes.
 - ``confidence`` — 0..1 scalar derived deterministically from the match
-  quality, NOT from a model call.
+ quality, NOT from a model call.
 - ``reason`` and ``evidence`` — first-class so a reviewer can judge.
 - ``requires_human_review`` — set conservatively per gating policy.
 - ``unified_diff`` — the literal patch a CI/agent would apply.

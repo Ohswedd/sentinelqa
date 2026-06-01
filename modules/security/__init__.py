@@ -1,4 +1,4 @@
-"""Safe Security audit module (Phase 13, the documentation, ADR-0018).
+"""Safe Security audit module (, the documentation, ADR-0018).
 
 Importing this package wires :class:`SecurityModule` into the default
 orchestrator registry so ``sentinel security`` and ``sentinel audit``

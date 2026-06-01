@@ -68,8 +68,8 @@
     "test": "vitest run --coverage",
     "test:no-coverage": "vitest run",
     "test:smoke": "node fixtures/smoke-driver.mjs",
-    "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format": "prettier --write.",
+    "format:check": "prettier --check."
   },
   "dependencies": {
     "@playwright/test": "1.49.0",

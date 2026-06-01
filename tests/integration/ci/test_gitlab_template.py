@@ -1,4 +1,4 @@
-"""Structural tests for the GitLab CI include (task 17.02)."""
+"""Structural tests for the GitLab CI include."""
 
 from __future__ import annotations
 

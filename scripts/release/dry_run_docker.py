@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright (c) 2026 SentinelQA contributors.
-"""Docker Hub publish dry-run (Phase 36.04).
+"""Docker Hub publish dry-run.
 
 Builds ``sentinelqa/runner:<version>`` from
 ``apps/cli/sentinel/runner/docker/Dockerfile.publish`` for both

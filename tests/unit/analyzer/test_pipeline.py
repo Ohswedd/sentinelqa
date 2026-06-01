@@ -1,4 +1,4 @@
-"""Analyzer pipeline tests (task 09.06)."""
+"""Analyzer pipeline tests."""
 
 from __future__ import annotations
 

@@ -1,4 +1,4 @@
-"""HTML + PR-comment LLM-audit section tests (Phase 19.14)."""
+"""HTML + PR-comment LLM-audit section tests."""
 
 from __future__ import annotations
 

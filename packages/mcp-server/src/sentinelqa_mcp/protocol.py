@@ -6,7 +6,7 @@ module defines:
 - The JSON-RPC 2.0 request / response / error shapes.
 - The :class:`ToolSpec` advertised in ``tools/list``.
 - Constants for the SentinelQA server identity and supported MCP
-  protocol versions.
+ protocol versions.
 
 Every type here is a frozen Pydantic model so the wire format is
 self-validating and deterministic.

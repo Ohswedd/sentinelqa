@@ -1,4 +1,4 @@
-"""Every documented exit code is reachable from the CLI (task 02.06)."""
+"""Every documented exit code is reachable from the CLI."""
 
 from __future__ import annotations
 
@@ -82,7 +82,7 @@ def test_exit_7_internal_error_from_stub(
         "target:\n  base_url: http://localhost:3000\n  allowed_hosts: [localhost]\n",
         encoding="utf-8",
     )
-    # Phase 23 retired the last Phase-02 stub (`chaos`). The stub helper
+    # retired the last Phase-02 stub (`chaos`). The stub helper
     # is still part of the CLI surface for future PRD additions and is
     # still expected to map InternalError → exit 7. We register a
     # one-off stub for this contract test only.
@@ -119,7 +119,7 @@ def test_exit_1_quality_gate_failure(fresh_project: Path, monkeypatch: pytest.Mo
     """Drive the lifecycle into a `failed` status via a phase hook to prove
     the audit command maps `failed` → exit code 1.
 
-    Phase 14 ships the real quality-score engine; here we use the registry's
+    ships the real quality-score engine; here we use the registry's
     APPLY_QUALITY_GATES hook to flip `ctx.quality_gate_passed` so the
     deterministic `failed` → exit-1 mapping is exercised today.
     """

@@ -1,4 +1,4 @@
-"""Page-object generator (task 07.02).
+"""Page-object generator.
 
 Produces one ``<RouteName>Page.ts`` per route that:
 
@@ -14,14 +14,13 @@ writer can refuse to clobber hand-edits.
 Design notes:
 
 - We *never* emit a brittle CSS selector. If the discovery element has
-  an accessible name/role, we use ``getByRole`` / ``getByLabel`` /
-  ``getByText``. Elements without semantic anchors are dropped (the
-  caller can detect this via :attr:`GeneratedPageObject.skipped_elements`).
+ an accessible name/role, we use ``getByRole`` / ``getByLabel`` /
+ ``getByText``. Elements without semantic anchors are dropped (the
+ caller can detect this via :attr:`GeneratedPageObject.skipped_elements`).
 - Naming uses :func:`route_to_page_name` so deterministic output is
-  guaranteed for a given route path.
+ guaranteed for a given route path.
 - The generator is import-free of Playwright at runtime — it only emits
-  strings. Test files exercise the output by running ``tsc --noEmit``
-  (task 07.07).
+ strings. Test files exercise the output by running ``tsc --noEmit``.
 """
 
 from __future__ import annotations

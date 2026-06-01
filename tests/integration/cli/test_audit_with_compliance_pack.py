@@ -1,4 +1,4 @@
-"""Phase 34.05 — ``sentinel audit --compliance-pack`` CLI surface."""
+"""``sentinel audit --compliance-pack`` CLI surface."""
 
 from __future__ import annotations
 
@@ -17,7 +17,7 @@ from tests.integration.cli.conftest import write_config
 def _ensure_compliance_registered() -> None:
     """Re-register the compliance module before every test.
 
-    Other tests in the suite call ``default_registry().clear()`` to
+    Other tests in the suite call ``default_registry.clear()`` to
     isolate their fixtures; that wipes the compliance module out and
     the audit lifecycle would silently skip it. Re-registering here
     guarantees the pack DSL has a module to dispatch to regardless of

@@ -1,4 +1,4 @@
-"""Quality-score computation (task 14.01).
+"""Quality-score computation.
 
 Builds :class:`engine.domain.quality_score.QualityScore` from typed
 findings + module results + the configured policy. The function is
@@ -13,13 +13,13 @@ Each the documentation component (functional, security, performance,
 accessibility, api, visual, llm_audit) gets a per-module sub-score
 in [0, 100]:
 
-    component_score = max(0, 100 - sum(penalty per finding in that module))
+ component_score = max(0, 100 - sum(penalty per finding in that module))
 
 The eighth axis is `flake_risk`, computed from the runner-reported
 `flake_rate` metric on each module result:
 
-    rate          = mean(flake_rate across reporting modules) or 0
-    flake_score   = 100 * (1 - min(1, rate / policy.max_flake_rate))
+ rate = mean(flake_rate across reporting modules) or 0
+ flake_score = 100 * (1 - min(1, rate / policy.max_flake_rate))
 
 The aggregate `total` is the weighted average of the eight axis scores
 clamped to [0, 100]. Default weights match the documentation.
@@ -91,9 +91,9 @@ SEVERITY_BUCKETS: Final[tuple[Severity, ...]] = (
     "info",
 )
 
-# Recognised priority tags in a finding title. Phase 10 generated specs
+# Recognised priority tags in a finding title. generated specs
 # bake the tag into the test name; the Finding model doesn't yet carry
-# a `priority` field (Phase 14 ADR-0019 records this MVP shortcut).
+# a `priority` field ( ADR-0019 records this release shortcut).
 PRIORITY_TAG_PATTERN: Final[re.Pattern[str]] = re.compile(r"@(p[0-3])\b", re.IGNORECASE)
 
 
@@ -135,7 +135,7 @@ def derive_penalty_table(policy: PolicyConfig) -> PenaltyTable:
 def finding_priority(finding: Finding) -> str | None:
     """Return the lowercased priority tag (``"p0".."p3"``) if present.
 
-    Looks at the finding title first (Phase 10 specs embed the tag in
+    Looks at the finding title first (specs embed the tag in
     the test name) and falls back to the description.
     """
 
@@ -232,7 +232,7 @@ def _flake_risk_score(
     """Translate runner-reported flake_rate metrics into a 0..100 score.
 
     ``flake_rate`` is the fraction of executions that passed on retry
-    (Phase 08 aggregator). If no module reports it, we treat the run as
+    (aggregator). If no module reports it, we treat the run as
     free of flake (100). When ``policy.max_flake_rate`` is zero, any
     non-zero rate scores 0.
     """

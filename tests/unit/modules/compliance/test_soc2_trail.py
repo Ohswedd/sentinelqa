@@ -1,4 +1,4 @@
-"""Phase 34.04 — SOC 2 audit-trail gate."""
+"""SOC 2 audit-trail gate."""
 
 from __future__ import annotations
 

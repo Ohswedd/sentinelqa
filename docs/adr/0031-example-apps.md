@@ -10,10 +10,10 @@ Accepted
 ## Context
 
 the documentation / §32 require SentinelQA to ship runnable example apps it can
-audit in its own CI and demos. Phase 26 delivers that surface: a small
+audit in its own CI and demos. delivers that surface: a small
 but realistic Next.js + FastAPI stack with two SPA variants (React +
 Vite, Django, Flask) plus a deliberately broken Next.js app that drives
-the Phase 19 LLM-audit demo (the documentation). The acceptance contract is
+the LLM-audit demo (the documentation). The acceptance contract is
 `make demo-<name>` for each example and a single `make demo` for the
 end-to-end stack.
 
@@ -32,19 +32,19 @@ Two cross-cutting design questions shaped the implementation:
 
 ## Consequences
 
-- **Positive:** new contributors can boot any single framework with one Make command and see SentinelQA work end-to-end. The `make demo` stack is a one-line marketing demo. The `llm-broken/` example doubles as a regression suite for Phase 19's LLM-audit module: every commit on `modules/llm_audit/` is implicitly tested against a representative app, not a synthetic JSON fixture.
+- **Positive:** new contributors can boot any single framework with one Make command and see SentinelQA work end-to-end. The `make demo` stack is a one-line marketing demo. The `llm-broken/` example doubles as a regression suite for's LLM-audit module: every commit on `modules/llm_audit/` is implicitly tested against a representative app, not a synthetic JSON fixture.
 - **Positive:** because the examples are isolated from the monorepo toolchain, upgrading Next.js / FastAPI / Django / Flask cannot cascade into SentinelQA core CI failures. Each example pins its framework versions in its own manifest.
 - **Negative / trade-off:** the default CI lane does **not** prove the examples actually score ≥ 85. The structural tests catch shape drift but not behavioural regressions. The hand-run smoke is the contract reviewers exercise before release.
-- **Follow-up obligations:** Phase 29 ("Final Hardening") should add a gated CI lane (`SENTINELQA_HAS_NODE_DOCKER=1`) that brings up the end-to-end stack and asserts the score gate against the Next.js demo. Until then, the score-gate claim stands in each example's README and is reproducible locally.
+- **Follow-up obligations:** ("Final Hardening") should add a gated CI lane (`SENTINELQA_HAS_NODE_DOCKER=1`) that brings up the end-to-end stack and asserts the score gate against the Next.js demo. Until then, the score-gate claim stands in each example's README and is reproducible locally.
 
 ## Alternatives considered
 
 - **Vendor every example into the monorepo `pnpm` workspace.** Rejected: Next.js / Vite peer-dep churn would force the SentinelQA core toolchain (Prettier 3.4 + ESLint 9.16 + TypeScript 5.7 + the strict workspace `tsconfig`) to track those projects' release cadences. Demos are reference apps, not first-class workspace members.
-- **Boot every example in CI per phase task acceptance.** Rejected: each example takes minutes to install + boot; adding seven of them to the default test lane would push wall-clock past ten minutes per CI run, on top of the existing 3 000+ tests. The gated Phase 29 lane is the correct place for that work.
+- **Boot every example in CI per phase task acceptance.** Rejected: each example takes minutes to install + boot; adding seven of them to the default test lane would push wall-clock past ten minutes per CI run, on top of the existing 3 000+ tests. The gated lane is the correct place for that work.
 - **Drop the `llm-broken/` example and rely solely on the JSON fixtures under `tests/integration/modules/llm_audit/`.** Rejected: the JSON fixtures prove the rules fire on canonical inputs, but they cannot carry a marketing demo and they don't keep the rules honest against real Next.js source. Shipping a real app forces the rules to handle React's idioms, not a Python tester's idea of them.
 
 ## References
 
-- PRD section(s): the documentation (Repository structure), §11.2.1 (Example apps — Phase 26 delivery), §10.9 (LLM-Code Audit), §32 (Recommended Build Order), §27 (Example Generated Test).
+- PRD section(s): the documentation (Repository structure), §11.2.1 (Example apps — delivery), §10.9 (LLM-Code Audit), §32 (Recommended Build Order), §27 (Example Generated Test).
 - our engineering rules rule(s): our engineering rules(Safety boundary), §14 (Docs), §16 (Testing standard), §17 (Quality gates), §31 (LLM-Code Audit Rules), §34 (Documentation Rules), §42 (Differentiation).
 - Related ADRs: ADR-0010 (Discovery), ADR-0024 (LLM-Code audit), ADR-0026 (Visual regression — gated CI lane pattern), ADR-0029 (Plugin architecture).

@@ -1,4 +1,4 @@
-"""`--version` prints the package version (task 02.01)."""
+"""`--version` prints the package version."""
 
 from __future__ import annotations
 

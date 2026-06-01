@@ -2,7 +2,7 @@
 
 A test plan packages every :class:`Flow` and :class:`TestCase` derived from
 a :class:`DiscoveryGraph` for a single run. It is the wire format the
-planner emits as ``plan.json`` and feeds the generator (Phase 07).
+planner emits as ``plan.json`` and feeds the generator.
 """
 
 from __future__ import annotations
@@ -35,7 +35,7 @@ class CoverageEstimate(SentinelModel):
     """Per-module estimate of how many planned test cases will execute.
 
     The estimate is an *intent* statement (how many cases were planned), not
-    a guaranteed outcome. The runner / scoring modules (Phase 08 / 14) own
+    a guaranteed outcome. The runner / scoring modules ( / 14) own
     the actually-executed metric.
     """
 

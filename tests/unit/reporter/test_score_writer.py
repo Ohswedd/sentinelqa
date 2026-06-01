@@ -1,4 +1,4 @@
-"""Unit tests for the ``score.json`` writer (task 03.03)."""
+"""Unit tests for the ``score.json`` writer."""
 
 from __future__ import annotations
 

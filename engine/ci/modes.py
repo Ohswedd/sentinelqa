@@ -1,14 +1,14 @@
-"""CI mode presets (the documentation, task 17.04).
+"""CI mode presets (the documentation, ).
 
 Each mode is a preset over three knobs:
 
 - **modules** — which audit modules run (subset of
-  :class:`engine.config.schema.ModulesConfig`).
+ :class:`engine.config.schema.ModulesConfig`).
 - **grep** — Playwright ``--grep`` value threaded into the functional
-  module via the lifecycle ``module_options`` channel.
+ module via the lifecycle ``module_options`` channel.
 - **policy_overrides** — a mapping of policy fields the mode raises
-  before the lifecycle starts (`release` raises
-  ``policy.min_quality_score`` to ``max(config, 90)``).
+ before the lifecycle starts (`release` raises
+ ``policy.min_quality_score`` to ``max(config, 90)``).
 
 The underlying :class:`engine.orchestrator.run_lifecycle.RunLifecycle` is
 unchanged — modes are entirely a CLI-layer concern that translates into
@@ -154,7 +154,7 @@ def mode_plan(mode: CiMode, *, config: RootConfig) -> ModePlan:
 
     if mode == "fast":
         # Smoke + impacted: functional@p0 + security headers as the cheap
-        # required gate. Diff-aware (Phase 17.05) augments the module
+        # required gate. Diff-aware augments the module
         # set when impacted modules are detected.
         requested = ("functional", "security")
         return ModePlan(
@@ -223,11 +223,11 @@ def apply_mode(
     """Return ``(effective_config, plan)`` for ``mode``.
 
     - ``fail_under`` always wins over the mode's policy override
-      (matches the documentation ``fail-under`` semantics — the user-supplied
-      override is authoritative).
+    (matches the documentation ``fail-under`` semantics — the user-supplied
+    override is authoritative).
     - The returned config has the policy fields updated; module toggles
-      are NOT mutated because the lifecycle accepts an explicit
-      ``requested_modules`` list which is the authoritative gate.
+    are NOT mutated because the lifecycle accepts an explicit
+    ``requested_modules`` list which is the authoritative gate.
     """
 
     if mode not in CI_MODES:

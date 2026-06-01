@@ -1,4 +1,4 @@
-"""JUnit XML emitter (task 03.04).
+"""JUnit XML emitter.
 
 Emits a JUnit/Surefire-compatible XML report so any CI provider can
 ingest SentinelQA results out of the box. The XSD lives at
@@ -10,16 +10,16 @@ severe / why / how to fix"):
 
 - One ``<testsuite>`` per module.
 - Modules with no findings emit a single synthetic ``<testcase>`` for
-  the module itself, so CI dashboards always show *something* for the
-  module.
+ the module itself, so CI dashboards always show *something* for the
+ module.
 - Each finding becomes one ``<testcase>``. Severity ``critical`` /
-  ``high`` produces a ``<failure>`` child; other severities pass.
+ ``high`` produces a ``<failure>`` child; other severities pass.
 - A module with ``status="errored"`` emits an ``<error>`` testcase
-  carrying the captured error messages.
+ carrying the captured error messages.
 - A module with ``status="skipped"`` emits a ``<skipped>`` testcase.
 - Redacted log excerpts ride along in ``<system-out>`` per our engineering rules
-  §33 — every payload still passes through the existing redaction
-  layer because :meth:`ArtifactDirectory.write_text` is the only sink.
+ §33 — every payload still passes through the existing redaction
+ layer because :meth:`ArtifactDirectory.write_text` is the only sink.
 """
 
 from __future__ import annotations

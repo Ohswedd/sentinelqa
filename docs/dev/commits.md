@@ -27,11 +27,11 @@ Any other type is rejected by `commitlint`.
 - `subject`: imperative present tense ("add", not "added"). Don't end with a period. No specific case is forced because of proper nouns like "SentinelQA".
 - Header (`type(scope): subject`): max 100 chars.
 - Body lines: max 200 chars. Wrap at ~72 in practice for readability.
-- Footer: machine-parseable footers like `Refs: the documentation`, `Closes: #42`, or `BREAKING CHANGE: ...`.
+- Footer: machine-parseable footers like `Refs: the documentation`, `Closes: #42`, or `BREAKING CHANGE:...`.
 
 ### Forbidden footers
 
-- `Co-authored-by: <any AI tool>` — never. CI workflow `no-ai-coauthor.yml` (Phase 00.08) blocks PRs with these.
+- `Co-authored-by: <any AI tool>` — never. CI workflow `no-ai-coauthor.yml` blocks PRs with these.
 
 ## Worked examples
 
@@ -96,10 +96,10 @@ behavior change; existing CLI tests still pass.
 ```
 security(repo): block staged commits containing private-key blocks
 
-Adds the detect-private-key pre-commit hook to .pre-commit-config.yaml
+Adds the detect-private-key pre-commit hook to.pre-commit-config.yaml
 on top of gitleaks. Verified locally: a file containing the OpenSSH
 private-key header block is rejected even when the surrounding file
-extension is .txt.
+extension is.txt.
 
 Refs: our engineering rules§23.1
 ```
@@ -128,7 +128,7 @@ green.
 perf(discovery): cap crawler concurrency at 4 to stay under budget
 
 Brings discovery on the FastAPI example from p95 ~8.4s to p95 ~3.2s
-while keeping coverage equivalent (verified with the Phase 05 perf
+while keeping coverage equivalent (verified with the perf
 gate).
 
 Refs: the documentation

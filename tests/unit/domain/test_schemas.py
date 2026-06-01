@@ -41,7 +41,7 @@ def test_schema_versions_constants_match_models() -> None:
         "agent_message",
     }
     assert set(ALL_SCHEMA_VERSIONS) == expected
-    # Phase 32 / ADR-0044 bumped ``findings`` to v2; every other artifact
+    # / ADR-0044 bumped ``findings`` to v2; every other artifact
     # remains at v1.
     expected_versions = {
         "run": "1",

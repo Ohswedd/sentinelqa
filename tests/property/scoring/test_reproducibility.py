@@ -1,4 +1,4 @@
-"""Task 14.05 — scoring reproducibility property tests.
+"""— scoring reproducibility property tests.
 
 Generates randomized Finding / ModuleResult / PolicyConfig combos and
 asserts that two consecutive calls to ``apply_policy_gate`` followed by

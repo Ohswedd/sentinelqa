@@ -1,4 +1,4 @@
-# Dependabot configuration (Phase 35.07).
+# Dependabot configuration ().
 # Covers the four ecosystems SentinelQA depends on at build / runtime:
 # uv-resolved Python lockfiles, the npm root + ts-runtime workspace,
 # GitHub Actions, and the Docker runner base image. Schedule is
@@ -137,7 +137,7 @@ updates:
       prefix: 'ci(deps)'
       include: scope
 
-  # Docker runner image (Phase 08 / 17). Pinned to
+  # Docker runner image ( / 17). Pinned to
   # mcr.microsoft.com/playwright; Dependabot upgrades the FROM tag.
   - package-ecosystem: docker
     directory: /apps/cli/sentinel/runner/docker

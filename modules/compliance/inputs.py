@@ -1,4 +1,4 @@
-"""Load compliance signals from disk (Phase 34 / ADR-0046).
+"""Load compliance signals from disk ( / ADR-0046).
 
 The compliance module reads optional signal files written by the
 discovery / runner phases (or by tests). Missing files yield empty
@@ -7,8 +7,8 @@ tuples — the corresponding check simply sees no input and reports
 
 Expected layout under ``<signals_root>``:
 
-- ``gdpr.json``  — list of :class:`GdprPageSignals`.
-- ``ccpa.json``  — list of :class:`CcpaPageSignal`.
+- ``gdpr.json`` — list of :class:`GdprPageSignals`.
+- ``ccpa.json`` — list of :class:`CcpaPageSignal`.
 """
 
 from __future__ import annotations

@@ -1,4 +1,4 @@
-"""Categorization rule tests (task 09.01)."""
+"""Categorization rule tests."""
 
 from __future__ import annotations
 
@@ -221,7 +221,7 @@ def test_secondary_categories_are_preserved():
 
 
 # ---------------------------------------------------------------------------
-# Module-error categorization (task 09.01 step 4)
+# Module-error categorization
 # ---------------------------------------------------------------------------
 
 

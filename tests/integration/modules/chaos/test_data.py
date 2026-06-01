@@ -1,8 +1,8 @@
-"""Phase 23.05 — data chaos integration tests.
+"""data chaos integration tests.
 
 Acceptance criterion (the build plan):
 
-    Fixture without empty state → finding.
+ Fixture without empty state → finding.
 """
 
 from __future__ import annotations

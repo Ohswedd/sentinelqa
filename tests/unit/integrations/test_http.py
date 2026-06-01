@@ -1,4 +1,4 @@
-"""Unit tests for ``integrations._http`` (Phase 25 shared helpers)."""
+"""Unit tests for ``integrations._http`` (shared helpers)."""
 
 from __future__ import annotations
 

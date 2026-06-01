@@ -1,18 +1,18 @@
-"""``ComplianceModule`` (Phase 34, the documentation.1, ADR-0046).
+"""``ComplianceModule`` (, the documentation.1, ADR-0046).
 
 Lifecycle (CLAUDE §9):
 
 - ``validate_prerequisites`` — re-enforces the safety policy boundary.
-- ``plan``                   — returns ``()`` (no Playwright specs).
-- ``execute``                — loads signals + audit log, runs every
-  enabled sub-check (GDPR, CCPA, SOC 2), packages the result.
-- ``collect_evidence``       — writes per-check summaries under
-  ``<run-dir>/compliance/``.
-- ``emit_findings``          — translates check reports via
-  :mod:`modules.compliance.findings`.
-- ``emit_metrics``           — counts checks run + per-check findings.
-- ``summarize``              — overlays findings on a synthesized
-  :class:`ModuleResult` (no Playwright tests).
+- ``plan`` — returns ``()`` (no Playwright specs).
+- ``execute`` — loads signals + audit log, runs every
+ enabled sub-check (GDPR, CCPA, SOC 2), packages the result.
+- ``collect_evidence`` — writes per-check summaries under
+ ``<run-dir>/compliance/``.
+- ``emit_findings`` — translates check reports via
+ :mod:`modules.compliance.findings`.
+- ``emit_metrics`` — counts checks run + per-check findings.
+- ``summarize`` — overlays findings on a synthesized
+ :class:`ModuleResult` (no Playwright tests).
 
 The compliance module reads optional signals from
 ``<run-dir>/compliance/signals/{gdpr,ccpa}.json``. Missing signals → the

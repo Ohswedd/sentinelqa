@@ -63,12 +63,12 @@ class LocalPerformanceRunner:
     The TS subcommand:
 
     - Reads its inputs from a single JSON file (written by this class
-      under ``<run-dir>/perf/run-config.json``).
+    under ``<run-dir>/perf/run-config.json``).
     - Writes one ``<route-slug>.json`` per route under ``<run-dir>/perf/``.
     - Writes ``<run-dir>/perf/index.json`` listing every page result.
     - Returns exit code 0 even when budgets are exceeded (those are
-      product output, not runtime errors). Non-zero exits indicate a
-      launch / Playwright / Chromium failure.
+    product output, not runtime errors). Non-zero exits indicate a
+    launch / Playwright / Chromium failure.
     """
 
     SENTINEL_TS_ENV = "SENTINEL_TS_BIN"

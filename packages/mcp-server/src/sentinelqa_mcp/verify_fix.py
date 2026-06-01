@@ -1,15 +1,15 @@
-"""``sentinel.verify_fix`` loop logic (ADR-0023 §verify_fix, task 18.04).
+"""``sentinel.verify_fix`` loop logic (ADR-0023 §verify_fix, ).
 
 The MCP tool does NOT apply code changes — the agent did that already.
 This module:
 
 1. Loads the prior run's persisted ``findings.json``.
 2. Runs the canonical audit again against the same URL (so the
-   findings are produced against the current working tree).
+ findings are produced against the current working tree).
 3. Diffs new findings vs prior findings using a stable fingerprint
-   (``module``-``category``-``title``-``location.file``-``location.selector``).
+ (``module``-``category``-``title``-``location.file``-``location.selector``).
 4. Returns :class:`VerifyFixResult` with the four-valued decision
-   defined in ADR-0023.
+ defined in ADR-0023.
 
 The decision matrix is deterministic. No model calls; no heuristics
 beyond the fingerprint set algebra.
@@ -47,7 +47,7 @@ def _finding_fingerprint(finding: Mapping[str, Any]) -> str:
     """Stable identity for a finding across runs.
 
     Uses module / category / title / file / selector — every field that
-    is part of the writer's deterministic ordering (Phase 03). Skips
+    is part of the writer's deterministic ordering. Skips
     the per-run ID and timestamps.
     """
 

@@ -1,7 +1,7 @@
 """Generate the SDK reference landing page from the committed API snapshot.
 
 The Python SDK's public surface is locked at
-``packages/python-sdk/api-snapshot.json`` (Phase 16, ADR-0021). This
+``packages/python-sdk/api-snapshot.json`` (, ADR-0021). This
 generator reads the snapshot and renders a Starlight page so the docs
 site reflects the SDK surface without a separate hand-edit step.
 

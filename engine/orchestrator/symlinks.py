@@ -1,4 +1,4 @@
-"""Maintain `.sentinel/runs/latest` (task 02.05).
+"""Maintain `.sentinel/runs/latest`.
 
 POSIX gets a symlink; Windows gets a regular file pointing at the run
 id (a "marker file") because creating directory symlinks requires

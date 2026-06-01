@@ -1,4 +1,4 @@
-"""Phase 24 task 24.02 — plugin discovery + load-time validation."""
+"""— plugin discovery + load-time validation."""
 
 from __future__ import annotations
 

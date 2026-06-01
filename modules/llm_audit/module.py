@@ -1,20 +1,20 @@
-"""``LlmAuditModule`` (Phase 19, the documentation, ADR-0024).
+"""``LlmAuditModule`` (, the documentation, ADR-0024).
 
 Lifecycle (CLAUDE §9):
 
 - ``validate_prerequisites`` — no-op; missing signals simply skip the
-  corresponding check (CLAUDE §37 — no fake completion, but no over-
-  reporting either).
-- ``plan``                   — reads :class:`LlmAuditModuleOptions`
-  off ``ctx.options``, locates discovery + signal artifacts.
-- ``execute``                — loads inputs, runs each enabled check,
-  collects :class:`CheckFinding` records.
-- ``emit_findings``          — translates them into typed
-  :class:`Finding` records via
-  :func:`modules.llm_audit.findings.findings_from_check_findings`.
-- ``emit_metrics``           — per-rule counts + ``checks_run``.
-- ``summarize``              — overlays findings on a synthesized
-  :class:`RunnerOutcome` (no Playwright tests).
+ corresponding check (CLAUDE §37 — no fake completion, but no over-
+ reporting either).
+- ``plan`` — reads :class:`LlmAuditModuleOptions`
+ off ``ctx.options``, locates discovery + signal artifacts.
+- ``execute`` — loads inputs, runs each enabled check,
+ collects :class:`CheckFinding` records.
+- ``emit_findings`` — translates them into typed
+ :class:`Finding` records via
+ :func:`modules.llm_audit.findings.findings_from_check_findings`.
+- ``emit_metrics`` — per-rule counts + ``checks_run``.
+- ``summarize`` — overlays findings on a synthesized
+ :class:`RunnerOutcome` (no Playwright tests).
 
 The module persists ``<run-dir>/llm_audit/index.json`` listing every
 check that ran, how many findings each produced, and the set of
@@ -85,7 +85,7 @@ class _CheckOutcome:
 
 
 class LlmAuditModule(SentinelModule):
-    """LLM-Code audit module — Phase 19 / the documentation."""
+    """LLM-Code audit module — / the documentation."""
 
     name: ClassVar[str] = "llm_audit"
 

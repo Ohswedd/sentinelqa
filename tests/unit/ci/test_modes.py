@@ -1,4 +1,4 @@
-"""Unit tests for engine.ci.modes (task 17.04)."""
+"""Unit tests for engine.ci.modes."""
 
 from __future__ import annotations
 

@@ -173,7 +173,7 @@ def test_scan_npm_packages_returns_empty_when_no_node_modules(tmp_path: Path) ->
 
 
 def test_scan_python_packages_handles_missing_dirs(tmp_path: Path) -> None:
-    # No venv / .venv / .tox -> nothing to scan.
+    # No venv /.venv /.tox -> nothing to scan.
     assert scan_python_packages(tmp_path) == ()
 
 

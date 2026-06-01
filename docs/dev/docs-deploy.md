@@ -2,7 +2,7 @@
 
 Status: `Stable`
 
-Authority: project engineering rules.md` (Astro Starlight choice), .
+Authority: project engineering rules.md` (Astro Starlight choice),.
 
 The SentinelQA docs site (`apps/docs/`, Astro Starlight) deploys to **Cloudflare Pages** on every push to `main`, with **preview deploys** on every PR. This file is the operator runbook.
 
@@ -15,7 +15,7 @@ The SentinelQA docs site (`apps/docs/`, Astro Starlight) deploys to **Cloudflare
 
 ## Provisioning (one-time, owner)
 
-These steps are run **by the human owner** before the repo flips public (task 35.08). Until then, the workflow runs the build but skips the deploy step because the secrets are missing — that's intentional, not a failure.
+These steps are run **by the human owner** before the repo flips public. Until then, the workflow runs the build but skips the deploy step because the secrets are missing — that's intentional, not a failure.
 
 ### 1. Create the Cloudflare Pages project
 

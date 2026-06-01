@@ -1,4 +1,4 @@
-"""``AuthProfile`` dataclass (Phase 31, Tasks 31.04 + 31.05).
+"""``AuthProfile`` dataclass (, Tasks 31.04 + 31.05).
 
 The fields here are intentionally minimal. Adding any field whose name
 suggests credential material (password / secret / token / key / credential
@@ -21,29 +21,29 @@ class AuthProfile:
     Parameters
     ----------
     name:
-        Stable identifier (lowercase + dashes). Used by ``--profile <name>``
-        on the CLI and by :func:`engine.auth.profiles.resolve_profile`.
+    Stable identifier (lowercase + dashes). Used by ``--profile <name>``
+    on the CLI and by :func:`engine.auth.profiles.resolve_profile`.
     label:
-        Human-readable label printed in CLI banners.
+    Human-readable label printed in CLI banners.
     login_url_pattern:
-        Canonical URL the operator is expected to start on. The login
-        flow opens a real browser at this URL by default.
+    Canonical URL the operator is expected to start on. The login
+    flow opens a real browser at this URL by default.
     success_url_patterns:
-        URL prefixes that signal sign-in completed. The login flow
-        watches ``page.url`` and auto-captures when it lands on one of
-        these — the operator does not need to press Enter.
+    URL prefixes that signal sign-in completed. The login flow
+    watches ``page.url`` and auto-captures when it lands on one of
+    these — the operator does not need to press Enter.
     mfa_hint:
-        One short sentence the CLI prints if MFA is likely (e.g.
-        "Complete 2FA in your authenticator app"). Empty when the
-        provider's flow handles MFA inline.
+    One short sentence the CLI prints if MFA is likely (e.g.
+    "Complete 2FA in your authenticator app"). Empty when the
+    provider's flow handles MFA inline.
     tos_url:
-        Link to the provider's Terms of Service. The login banner cites
-        it so the operator can verify they're authorized to audit their
-        own account on the platform.
+    Link to the provider's Terms of Service. The login banner cites
+    it so the operator can verify they're authorized to audit their
+    own account on the platform.
     category:
-        ``"oauth"`` (Task 31.04) or ``"llm-web"`` (Task 31.05). Lets the
-        ``sentinel auth list-profiles`` output and the docs group them
-        sensibly.
+    ``"oauth"`` () or ``"llm-web"``. Lets the
+    ``sentinel auth list-profiles`` output and the docs group them
+    sensibly.
     """
 
     name: str

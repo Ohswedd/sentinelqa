@@ -1,6 +1,6 @@
 # Linear issue adapter
 
-Phase 25 / task 25.06 — `create_issue(finding) -> issue_url`.
+/ — `create_issue(finding) -> issue_url`.
 
 ## Configuration
 

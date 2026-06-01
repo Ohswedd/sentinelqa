@@ -11,7 +11,7 @@ Accepted
 
 our product spec promises a plugin architecture covering eight kinds: discovery,
 scanner, runner, reporter, policy, auth, data-fixture, and
-cloud-execution. The MVP shipped through Phase 23 has every first-party
+cloud-execution. The release shipped through has every first-party
 module hard-wired through `engine.modules.base.SentinelModule` (Phase
 10, ADR-0015). For SentinelQA to fulfil our engineering rules("plugin
 requirements") and avoid forcing every integration into the monorepo,
@@ -35,7 +35,7 @@ We considered three alternatives:
 
 - The SDK exposes typed Protocols at `packages/python-sdk/src/sentinelqa/plugins.py` (`PROTOCOL_VERSION` pinned to `1.0.0`, eight `@runtime_checkable` Protocols, a `PluginContext` Protocol, and a `PLUGIN_PROTOCOLS` lookup keyed by `kind`).
 - Plugins register a class under the `sentinelqa.plugins` entry-point group: `toml [project.entry-points."sentinelqa.plugins"] my-scanner = "my_pkg.plugin:MyScanner" `
-- The host (`engine.plugins.discover()`) iterates entry points, instantiates the class (or accepts an already-constructed instance), synthesises a manifest from class-level attributes, validates it, and confirms `isinstance(obj, PLUGIN_PROTOCOLS[kind])`. Failures log and skip — a broken plugin never crashes a run.
+- The host (`engine.plugins.discover`) iterates entry points, instantiates the class (or accepts an already-constructed instance), synthesises a manifest from class-level attributes, validates it, and confirms `isinstance(obj, PLUGIN_PROTOCOLS[kind])`. Failures log and skip — a broken plugin never crashes a run.
 
 ### Manifest schema
 
@@ -93,8 +93,8 @@ Plugins funnel through the existing error registry:
 
 ## Scope notes
 
-Phase 24 ships the plugin loading + validation + sandbox surface and
-documents the contract. Whether and how `discover()` is wired into
+ships the plugin loading + validation + sandbox surface and
+documents the contract. Whether and how `discover` is wired into
 `sentinel audit`'s module scheduler is a separate decision: our product spec +
 CLAUDE §22 describe the loader contract, not an automatic-scheduling
 guarantee. Any future change that auto-runs discovered scanners as

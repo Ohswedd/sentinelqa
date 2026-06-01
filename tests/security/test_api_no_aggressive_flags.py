@@ -1,16 +1,16 @@
-"""Phase 22 — the API module must not ship an aggressive-fuzz path.
+"""the API module must not ship an aggressive-fuzz path.
 
 Two complementary guards:
 
 1. ``modules/api/`` and ``apps/cli/src/sentinel_cli/commands/api_cmd.py``
-   are grepped for forbidden literals (``aggressive``, ``fuzz``,
-   ``brute``, ``stress``, ``--unbounded``, etc.). Their presence
-   anywhere outside an allow-list signals someone tried to wire a
-   forbidden capability.
+ are grepped for forbidden literals (``aggressive``, ``fuzz``,
+ ``brute``, ``stress``, ``--unbounded``, etc.). Their presence
+ anywhere outside an allow-list signals someone tried to wire a
+ forbidden capability.
 2. ``apps/cli/src/sentinel_cli/commands/api_cmd.py`` (when present)
-   has its Typer parameters introspected to assert no CLI option
-   matches the forbidden patterns (same pattern as
-   :mod:`tests.security.test_security_forbidden_flags`).
+ has its Typer parameters introspected to assert no CLI option
+ matches the forbidden patterns (same pattern as
+ :mod:`tests.security.test_security_forbidden_flags`).
 """
 
 from __future__ import annotations
@@ -115,7 +115,7 @@ def test_api_cli_has_no_forbidden_flag(pattern: re.Pattern[str]) -> None:
     try:
         names = _all_option_names("sentinel_cli.commands.api_cmd", "run_api")
     except (ImportError, AttributeError):
-        # The CLI is wired in Phase 22.09. Until then the literal-guard
+        # The CLI is wired in. Until then the literal-guard
         # above is sufficient; this assertion no-ops to keep the test
         # green during the phase build.
         return

@@ -4,8 +4,8 @@ The test runs the generator chain end-to-end against the
 ``discovery_server`` fixture, then stubs the ``LocalRunner`` so we don't
 have to install Playwright in CI. This proves the wiring works:
 
-  sentinel test --with-generate → discovery → planner → generator
-                              → write specs → LocalRunner.run
+ sentinel test --with-generate → discovery → planner → generator
+ → write specs → LocalRunner.run
 
 without spawning real browsers.
 """

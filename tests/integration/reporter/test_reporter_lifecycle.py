@@ -1,4 +1,4 @@
-"""Reporter is wired into the run lifecycle (task 03.07).
+"""Reporter is wired into the run lifecycle.
 
 Drives the full :class:`RunLifecycle` and verifies the
 ``generate_reports`` step produces the formats configured in

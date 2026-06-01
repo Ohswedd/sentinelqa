@@ -1,4 +1,4 @@
-"""Unit tests for :mod:`modules.security.checks.frontend_only_auth_deeper` (task 32.06)."""
+"""Unit tests for :mod:`modules.security.checks.frontend_only_auth_deeper`."""
 
 from __future__ import annotations
 

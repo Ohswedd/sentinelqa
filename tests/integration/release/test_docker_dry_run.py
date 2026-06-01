@@ -1,21 +1,21 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright (c) 2026 SentinelQA contributors.
-"""Docker publish dry-run gate (Phase 36.04).
+"""Docker publish dry-run gate.
 
 The publish workflow at ``.github/workflows/publish-docker.yml``
 builds + pushes a multi-arch image to Docker Hub on every ``v*``
 tag push. This file enforces that:
 
 * the publish Dockerfile lives at the documented path and carries
-  the OCI annotations the runbook depends on (title, description,
-  source URL, version, revision, licenses, vendor);
+ the OCI annotations the runbook depends on (title, description,
+ source URL, version, revision, licenses, vendor);
 * the dry-run script exposes the documented API and exit codes;
 * the dry-run script never invokes ``docker push`` / ``--push``;
 * the workflow builds both amd64 + arm64 with provenance + SBOM and
-  pushes the four required tags (``<version>`` / ``<minor>`` /
-  ``latest`` / ``sha-<short>``);
+ pushes the four required tags (``<version>`` / ``<minor>`` /
+ ``latest`` / ``sha-<short>``);
 * the verify job pulls the image, asserts both architectures are
-  in the manifest, and runs ``sentinel --version`` inside the image.
+ in the manifest, and runs ``sentinel --version`` inside the image.
 
 The actual multi-arch build is slow and gated behind
 ``SENTINELQA_HAS_DOCKER=1`` so it does not block CI on hosts without

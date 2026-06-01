@@ -1,4 +1,4 @@
-"""Linear issue adapter (Phase 25.06)."""
+"""Linear issue adapter."""
 
 from __future__ import annotations
 

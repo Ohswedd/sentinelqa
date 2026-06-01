@@ -1,6 +1,6 @@
 """Generate the MCP reference landing page from the live tool registry.
 
-The MCP server (Phase 18, ADR-0023) registers twelve the documentation tools
+The MCP server (, ADR-0023) registers twelve the documentation tools
 plus a `sentinel.ping` health check. This generator imports the server
 module's registry helper and renders a Starlight page so the docs site
 reflects the tool surface without a separate hand-edit step.

@@ -1,4 +1,4 @@
-"""Golden plan for the canonical fixture app (task 06.01 + 06.03).
+"""Golden plan for the canonical fixture app.
 
 Locks the planner output for a representative DiscoveryGraph + RiskMap.
 A drift here means the planner changed observably; reviewers should

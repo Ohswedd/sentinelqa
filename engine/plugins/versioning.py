@@ -1,4 +1,4 @@
-"""Semver compatibility for the plugin protocol (Phase 24 task 24.05).
+"""Semver compatibility for the plugin protocol.
 
 The host pins :data:`PROTOCOL_VERSION`; plugins declare a
 ``requires_protocol`` PEP 440 specifier (e.g. ``">=1.0,<2.0"``). The

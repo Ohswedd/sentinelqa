@@ -1,9 +1,9 @@
-"""Lockfile discovery + parsers (Phase 33.01).
+"""Lockfile discovery + parsers.
 
-Seven shapes are supported (Phase 33 README):
+Seven shapes are supported ( README):
 
 - Python: ``uv.lock``, ``poetry.lock``, ``Pipfile.lock``, ``requirements.txt``
-- Node:   ``package-lock.json``, ``pnpm-lock.yaml``, ``yarn.lock``
+- Node: ``package-lock.json``, ``pnpm-lock.yaml``, ``yarn.lock``
 
 Each parser is intentionally narrow — we read only the fields we need
 (name, version, optional license, optional direct-vs-transitive marker).
@@ -59,7 +59,7 @@ class DetectedLockfile:
 def detect_lockfiles(project_root: Path) -> tuple[DetectedLockfile, ...]:
     """Walk ``project_root`` (non-recursive) for known lockfiles.
 
-    Phase 33 keeps the walk shallow on purpose: a target app may vendor
+    keeps the walk shallow on purpose: a target app may vendor
     its dependencies under ``node_modules/`` or ``vendor/`` and we don't
     want to re-parse every nested lockfile (Trivy's job, not ours).
     The aggregate SBOM still captures every distinct ``name@version``
@@ -227,7 +227,7 @@ def parse_requirements_txt(path: Path) -> tuple[SbomComponent, ...]:
     """Parse ``requirements.txt`` (only ``name==version`` pins).
 
     Range specifiers, environment markers, and editable installs are
-    skipped — the SBOM only records resolved versions (per the Phase 33
+    skipped — the SBOM only records resolved versions (per the
     README: "Parsers cover only the lockfile shape").
     """
 

@@ -1,13 +1,13 @@
-"""Discovery artifact writer (task 05.08).
+"""Discovery artifact writer.
 
 Persists the five discovery JSON artifacts plus a human-readable Markdown
 summary into the run dir:
 
-- ``discovery.json``  — full DiscoveryGraph + crawl meta
-- ``forms.json``      — FormsInventory + observations
-- ``api.json``        — endpoints + suspicions + cross-check
-- ``auth.json``       — AuthBoundaryReport (env-var names only, no secrets)
-- ``risk.json``       — RiskMap
+- ``discovery.json`` — full DiscoveryGraph + crawl meta
+- ``forms.json`` — FormsInventory + observations
+- ``api.json`` — endpoints + suspicions + cross-check
+- ``auth.json`` — AuthBoundaryReport (env-var names only, no secrets)
+- ``risk.json`` — RiskMap
 - ``discovery.report.md`` — deterministic Markdown summary
 
 All writes are byte-stable (sorted keys, fixed indent, deterministic float

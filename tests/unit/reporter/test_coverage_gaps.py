@@ -1,7 +1,7 @@
 """Targeted unit tests filling coverage holes in the Phase-03 reporter.
 
 Each test corresponds to a specific uncovered branch surfaced by
-`make coverage` after Phase 03 closed. Adding them lifts the floor
+`make coverage` after closed. Adding them lifts the floor
 margin from 95.00% to a more sustainable 95.4%+.
 """
 

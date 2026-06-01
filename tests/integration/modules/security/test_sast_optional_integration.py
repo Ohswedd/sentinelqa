@@ -1,4 +1,4 @@
-"""Integration tests — semgrep SAST adapter (Phase 13.09)."""
+"""Integration tests — semgrep SAST adapter."""
 
 from __future__ import annotations
 

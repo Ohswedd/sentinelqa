@@ -1,6 +1,6 @@
 # Slack poster
 
-Phase 25 / task 25.03 — posts the Phase 15.06 Block Kit summary to an
+/ — posts the Block Kit summary to an
 incoming Slack webhook.
 
 ## Configuration
@@ -16,7 +16,7 @@ which strips both the query string and the userinfo segment.
 ## CLI
 
 ```
-python -m integrations.slack.poster \ --payload .sentinel/runs/<run-id>/slack.json \ --webhook-env SLACK_WEBHOOK_URL \ --dedup-cache .sentinel/runs/<run-id>/slack-dedup.json
+python -m integrations.slack.poster \ --payload.sentinel/runs/<run-id>/slack.json \ --webhook-env SLACK_WEBHOOK_URL \ --dedup-cache.sentinel/runs/<run-id>/slack-dedup.json
 ```
 
 Exit codes: 0 success or dedup hit; 1 on transport / config failure.
@@ -27,7 +27,7 @@ The Phase-15 reporter generates the payload (see
 `engine.reporter.slack.render_slack_payload`). The poster takes the
 serialized dict and pushes it:: from integrations.slack import post_payload post_payload( payload=block_kit_dict, webhook_url=os.environ["SLACK_WEBHOOK_URL"], dedup_path=Path(".sentinel/runs/<id>/slack-dedup.json"), )
 
-The `sentinel report --notify slack` CLI flag (Phase 25) calls this
+The `sentinel report --notify slack` CLI flag calls this
 helper after re-rendering the report.
 
 ## Dedup window

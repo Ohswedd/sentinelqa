@@ -1,4 +1,4 @@
-"""Task 18.03 — byte-locked agent envelope goldens.
+"""— byte-locked agent envelope goldens.
 
 Pin the wire shape of the envelope for the three response classes:
 

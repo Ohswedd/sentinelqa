@@ -1,4 +1,4 @@
-"""Integration tests for fake-route / fake-endpoint checks (task 19.03)."""
+"""Integration tests for fake-route / fake-endpoint checks."""
 
 from __future__ import annotations
 

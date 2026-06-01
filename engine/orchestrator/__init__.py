@@ -1,4 +1,4 @@
-"""Run lifecycle and artifact orchestration (Phase 02).
+"""Run lifecycle and artifact orchestration.
 
 Public entry point: :class:`engine.orchestrator.run_lifecycle.RunLifecycle`.
 """

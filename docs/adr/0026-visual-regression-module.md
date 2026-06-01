@@ -19,13 +19,13 @@ evidence rather than guessing.
 
 Three structural decisions framed the implementation:
 
-1. **Where the diff math runs.** The task file (`03-diff-threshold.md`) floats both a TS-side `pixelmatch` pipeline and a Python-side Pillow pipeline. The TS path is faster on raw throughput but adds a second inter-runtime contract and forces every Phase 21 test to spin up Node, which the other modules do not require for their unit tier.
+1. **Where the diff math runs.** The task file (`03-diff-threshold.md`) floats both a TS-side `pixelmatch` pipeline and a Python-side Pillow pipeline. The TS path is faster on raw throughput but adds a second inter-runtime contract and forces every test to spin up Node, which the other modules do not require for their unit tier.
 2. **Whether the module captures.** Capture means driving Playwright through the Phase-04 TS runtime to write PNGs into a known tree. Diff means consuming PNGs that already live on disk. The other already-shipped modules (`security`, `llm_audit`) consume signals that an earlier phase captured. Mirroring that pattern keeps the visual module testable without a browser.
 3. **How baseline acceptance is gated.** CLAUDE §29 forbids CI auto-accept. The question is where the guard lives — inside the library (refuse `promote_to_baseline` when an env var is truthy) or at the CLI (refuse the `accept` subcommand). A library guard ties the policy to a global env-var read that's awkward to unit-test; a CLI guard keeps the policy at the system boundary and lets the library remain a pure-function surface.
 
 ## Decision
 
-Phase 21 ships a Pillow-driven Python module under `modules/visual/`
+ships a Pillow-driven Python module under `modules/visual/`
 that consumes PNGs already on disk. Concretely:
 
 - **Facade.** `VisualModule(SentinelModule)` follows the lifecycle every other module follows (`validate_prerequisites` → `plan` → `execute` → `emit_findings` → `emit_metrics` → `summarize`). `plan` returns an empty spec set; the work is enumerated inside `execute` from the baseline and current-capture trees.
@@ -50,7 +50,7 @@ accept` refuses to promote PNGs into the baseline tree whenever `state.ci` is tr
 
 - **Negative / trade-off.** Pillow's pixel iteration is slower than pixelmatch on large captures (the documentation reference budget is acceptable, but we'll feel the difference when a future phase captures full-page 1920×4000 PNGs at p99). Path forward: revisit the TS-side option once the capture pipeline is mature enough to amortise the inter-runtime cost.
 
-- **Follow-up obligations.** Phase 21 ships the diff + acceptance pipeline only. A future phase wires the Playwright TS runtime to populate `<run-dir>/visual/current/` and to honour selector-mask hide-before-screenshot. That capture layer is intentionally NOT a Phase 21 deliverable per the task files; it's the natural extension for the Phase 22+ TS-runtime work and is tracked there.
+- **Follow-up obligations.** ships the diff + acceptance pipeline only. A future phase wires the Playwright TS runtime to populate `<run-dir>/visual/current/` and to honour selector-mask hide-before-screenshot. That capture layer is intentionally NOT a deliverable per the task files; it's the natural extension for the+ TS-runtime work and is tracked there.
 
 ## Alternatives considered
 

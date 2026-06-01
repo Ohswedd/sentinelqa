@@ -1,4 +1,4 @@
-"""Deterministic planner core (task 06.01, the documentation).
+"""Deterministic planner core.
 
 Given a :class:`DiscoveryGraph` and a :class:`RiskMap`, the planner emits a
 :class:`TestPlan` enumerating every flow and the test types it requires.
@@ -6,13 +6,13 @@ Given a :class:`DiscoveryGraph` and a :class:`RiskMap`, the planner emits a
 Rules (audited, in the order applied):
 
 1. Every route in the graph gets a smoke flow that asserts a successful
-   page load and a stable anchor element.
+ page load and a stable anchor element.
 2. Every form gets a functional flow (P1 by default; P0 if the route looks
-   like login / signup / payment / admin).
+ like login / signup / payment / admin).
 3. Every form whose ``submit_handler_present`` is ``False`` is flagged as
-   an ``LlmAuditCandidate`` — its smoke flow gains the ``llm_audit_candidate``
-   tag so Phase 19 can pick it up.
-4. Every API endpoint gets a contract test case (Phase 22 will execute it).
+ an ``LlmAuditCandidate`` — its smoke flow gains the ``llm_audit_candidate``
+ tag so can pick it up.
+4. Every API endpoint gets a contract test case (will execute it).
 5. Every auth-required route gets an auth-boundary functional flow.
 
 Confidence is fixed at 0.95 for deterministic flows (LLM-sourced flows
@@ -61,7 +61,7 @@ _RISK_BUCKETS: tuple[tuple[float, Risk], ...] = (
 _DEFAULT_RISK: Risk = "low"
 
 # Path-substring → flow kind. The matchers are intentionally simple and
-# audited; the LLM adapter (Phase 06.04) can override or extend later.
+# audited; the LLM adapter can override or extend later.
 _LOGIN_HINTS: tuple[str, ...] = ("/login", "/sign-in", "/signin", "/log-in")
 _SIGNUP_HINTS: tuple[str, ...] = ("/signup", "/sign-up", "/register", "/create-account")
 _PAYMENT_HINTS: tuple[str, ...] = (
@@ -391,8 +391,8 @@ class DeterministicPlanner:
         )
 
     def _make_case(self, flow: Flow, *, test_type: TestType) -> TestCase:
-        # Phase 06 emits relative spec paths under tests/sentinel/. The
-        # generator (Phase 07) will overwrite the file path when it writes
+        # emits relative spec paths under tests/sentinel/. The
+        # generator will overwrite the file path when it writes
         # the actual file; we use a deterministic placeholder so plan.json
         # round-trips cleanly. Pydantic 2's Path validator rejects
         # PurePosixPath, so we use Path explicitly with forward slashes —

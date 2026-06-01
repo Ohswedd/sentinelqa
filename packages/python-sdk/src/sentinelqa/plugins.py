@@ -3,21 +3,21 @@
 This is the SDK-public surface third-party plugins implement. Each
 Protocol pins:
 
-- A short ``kind`` string (``"scanner"``, ``"reporter"``, ...).
+- A short ``kind`` string (``"scanner"``, ``"reporter"``,...).
 - The four class-level attributes every plugin must declare:
-  ``name``, ``version``, ``capabilities``, ``permissions``.
+ ``name``, ``version``, ``capabilities``, ``permissions``.
 - One or more typed methods specific to the plugin kind.
 
 The Protocols are intentionally minimal. A plugin author depends on
 :mod:`sentinelqa.plugins` and the SDK's public domain models
 (``Finding``, ``ModuleResult``, etc.) — never on :mod:`engine.*`. The
-loader in :mod:`engine.plugins` (Phase 24 task 24.02) does the actual
+loader in :mod:`engine.plugins` ( ) does the actual
 entry-point discovery, manifest validation, semver compatibility check,
 and ``PluginContext`` wiring.
 
 The ``PluginContext`` Protocol describes the runtime surface a loaded
 plugin sees; the actual implementation lives in :mod:`engine.plugins`
-and only exposes APIs the plugin's manifest declared (task 24.03).
+and only exposes APIs the plugin's manifest declared.
 """
 
 from __future__ import annotations
@@ -31,7 +31,7 @@ from engine.domain.module_result import ModuleResult
 from sentinelqa._models import AuditResult
 
 # ---------------------------------------------------------------------------
-# Versioning (Phase 24 task 24.05)
+# Versioning ( )
 # ---------------------------------------------------------------------------
 
 #: Semantic version of the plugin protocol surface. Plugins declare a
@@ -41,7 +41,7 @@ PROTOCOL_VERSION: str = "1.0.0"
 
 
 # ---------------------------------------------------------------------------
-# Runtime context (Phase 24 task 24.03)
+# Runtime context ( )
 # ---------------------------------------------------------------------------
 
 
@@ -136,8 +136,8 @@ class ScannerPlugin(_PluginBase, Protocol):
 class RunnerPlugin(_PluginBase, Protocol):
     """Custom test-runner backend (the documentation "Runner plugin").
 
-    Replaces or augments the built-in local/Docker Playwright runners
-    (Phase 08). The return value is a free-form mapping that the
+    Replaces or augments the built-in local/Docker Playwright runners.
+    The return value is a free-form mapping that the
     orchestrator hands back to the calling scanner; the SDK does not
     pin a Runner output shape because runners differ widely.
     """
@@ -182,7 +182,7 @@ class ReporterPlugin(_PluginBase, Protocol):
 class PolicyPlugin(_PluginBase, Protocol):
     """Custom policy evaluator (the documentation "Policy plugin").
 
-    Receives the same inputs as the built-in policy gate (Phase 14) and
+    Receives the same inputs as the built-in policy gate and
     returns a release decision. The orchestrator records both the
     built-in decision and any plugin decisions; the strictest verdict
     wins (CLAUDE §25).
@@ -214,7 +214,7 @@ class AuthPlugin(_PluginBase, Protocol):
         target_url: str,
         context: PluginContext,
     ) -> Mapping[str, Any]:
-        """Return ``{"cookies": ..., "storage": ..., "headers": ...}``."""
+        """Return ``{"cookies":..., "storage":..., "headers":...}``."""
 
 
 @runtime_checkable

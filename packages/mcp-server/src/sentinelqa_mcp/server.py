@@ -12,7 +12,7 @@ support the our product spec tool surface:
 - ``notifications/initialized`` — client says it's ready (we observe).
 - ``tools/list`` — return the registered :class:`ToolSpec` set.
 - ``tools/call`` — invoke a tool, wrap the result in an
-  :class:`AgentEnvelope`, return as an MCP ``content`` block.
+ :class:`AgentEnvelope`, return as an MCP ``content`` block.
 - ``ping`` — round-trip health check.
 
 Unknown / not-implemented methods raise JSON-RPC ``-32601``

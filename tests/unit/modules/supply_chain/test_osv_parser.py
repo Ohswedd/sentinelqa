@@ -1,4 +1,4 @@
-"""OSV response parser tests (Phase 33.02)."""
+"""OSV response parser tests."""
 
 from __future__ import annotations
 

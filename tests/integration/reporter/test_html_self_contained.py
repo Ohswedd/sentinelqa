@@ -1,4 +1,4 @@
-"""HTML report self-contained guarantee (Phase 15.01).
+"""HTML report self-contained guarantee.
 
 The report MUST work offline: no external URLs, no CDN references, no
 `http(s)://` references in `<link>` / `<script>` / `<img>` / `<iframe>`

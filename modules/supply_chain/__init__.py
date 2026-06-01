@@ -1,10 +1,10 @@
-"""Supply-Chain & Dependency Audit module (Phase 33, the documentation.3, ADR-0045).
+"""Supply-Chain & Dependency Audit module (, the documentation.3, ADR-0045).
 
 Importing this package wires :class:`SupplyChainModule` into the default
 orchestrator registry so ``sentinel supply-chain`` and ``sentinel audit``
 both pick it up automatically.
 
-Capabilities (Phase 33 README):
+Capabilities ( README):
 
 - CycloneDX 1.5 SBOM generation for 7 lockfile shapes.
 - OSV vulnerability lookup with graceful offline degradation.
@@ -30,7 +30,7 @@ from modules.supply_chain.module import (
 from modules.supply_chain.rules import register_supply_chain_rules
 
 # Register SARIF descriptors as an import side-effect, mirroring
-# :mod:`modules.security` (Phase 13, ADR-0018).
+# :mod:`modules.security` (, ADR-0018).
 register_supply_chain_rules()
 register_with_default_registry()
 

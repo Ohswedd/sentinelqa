@@ -1,4 +1,4 @@
-# ADR-0047: Public release readiness (Phase 35)
+# ADR-0047: Public release readiness
 
 ## Status
 
@@ -9,9 +9,9 @@ Accepted
 
 ## Context
 
-Phases 00–34 produced a feature-complete MVP plus the first four
+produced a feature-complete release plus the first four
 ecosystem phases (multi-provider LLM, browser-auth, extended security
-catalog, supply-chain audit, compliance packs). Until Phase 35 the
+catalog, supply-chain audit, compliance packs). Until the
 repository stayed private and only carried internal-
 facing docs.
 
@@ -33,14 +33,14 @@ phase's worth of artifacts, and which behaviors stay owner-gated.
 
 ## Decision
 
-Phase 35 lands eight artifacts plus their tests, in this shape:
+lands eight artifacts plus their tests, in this shape:
 
 1. **README.md** — pre-1.0 public-facing cover letter, < 250 lines, buzzword-blocked by `tests/integration/docs/test_readme_links.py`. Includes a static terminal SVG (`docs/assets/demo-audit.svg`) as the demo asset; we intentionally do NOT ship an animated GIF that could rot when the CLI output format shifts.
 2. **GitHub community files** — YAML issue forms (`bug_report.yml`, `feature_request.yml`, `security_disclosure.yml` whose body is a redirect to the private channel), `ISSUE_TEMPLATE/config.yml` disabling blank issues + surfacing the private security path, `SECURITY.md` with a coordinated-disclosure policy, `CODE_OF_CONDUCT.md` adopting Contributor Covenant 2.1 **by reference** (full text upstream).
 3. **License headers + NOTICE audit** — directory-prefix coverage (root LICENSE covers `engine/`, `apps/`, `modules/`, `integrations/`, `packages/`, `scripts/`, `tests/`); SPDX headers required outside those prefixes; foreign SPDX inside the trees fails as drift. NOTICE attributes every vendored upstream at `packages/shared-schema/external/`.
 4. **Docs deploy** — `.github/workflows/docs-deploy.yml` runs `make
 docs-build` and publishes via `cloudflare/wrangler-action`. Fork PRs can't read deploy secrets, so the workflow detects missing `CLOUDFLARE_API_TOKEN` and skips the deploy step with a GitHub `::notice` line instead of failing.
-5. **Brand assets** — placeholder design at `docs/assets/brand/` (SVG source + procedurally generated PNGs from `scripts/release/gen_brand_pngs.py`). Astro `head` wires favicons + Open Graph + Twitter Card image. The owner replaces the placeholder with the registered mark before publish.
+5. **Brand assets** — placeholder design at `docs/assets/brand/` (SVG sources + committed PNG sizes). Astro `head` wires favicons + Open Graph + Twitter Card image. The owner replaces the placeholder with the registered mark before publish.
 6. **Branch protection** — `docs/dev/branch-protection.md` is the machine-checkable spec; `scripts/release/verify_branch_
 protection.py` (+ `make verify-branch-protection`) diffs the live GitHub config against the spec. Read-only — the script never mutates GitHub state.
 7. **Security advisories + Dependabot** — `.github/dependabot.yml` covers four ecosystems (Python via uv-lockfile, npm via pnpm- lockfile, GitHub Actions, the Docker runner image) on a weekly cadence. `docs/dev/security-policy.md` documents the supported- versions matrix, CVSS v4.0 bands, and the 90-day coordinated disclosure timeline.
@@ -70,18 +70,18 @@ lives inside a fenced code block, not in an action path.
 ### Accepted cost
 
 - Two ecosystems we deliberately do NOT auto-update: the engine / modules / integrations Python manifests (covered transitively by the four pinned `pip` entries), and the docs site lockfile (changes there should land alongside docs-build edits, not as Dependabot drive-bys).
-- The PR template was already strong; Phase 35.02 only pins its invariants via test rather than rewriting it.
+- The PR template was already strong; only pins its invariants via test rather than rewriting it.
 
 ## Alternatives considered
 
 - **A single mega-PR per artifact.** Rejected — each Phase-35 task is cleanly separable; merging them as separate commits inside the same phase branch keeps history readable and lets the owner roll back a single artifact (e.g. the brand mark) without unwinding the rest.
-- **Bundle license headers + NOTICE into Phase 36.** Rejected — the audit must be in place BEFORE the repo is public; foreign SPDX drift slipping into a public repo is a worse failure mode than a delayed flip.
+- **Bundle license headers + NOTICE into.** Rejected — the audit must be in place BEFORE the repo is public; foreign SPDX drift slipping into a public repo is a worse failure mode than a delayed flip.
 - **Skip the docs-deploy workflow.** Rejected — without `docs.sentinelqa.dev` resolving on flip day, the README's docs-site link breaks and the announcement copy reads as aspirational.
 
 ## Related decisions
 
 - ADR-0032 (Docs site choice — Astro Starlight) — the deploy workflow builds on this.
-- ADR-0042..0046 (Phase 30–34 ecosystem expansion) — all referenced in the README module surface table.
+- ADR-0042..0046 ( ecosystem expansion) — all referenced in the README module surface table.
 
 ## References
 
@@ -90,5 +90,5 @@ lives inside a fenced code block, not in an action path.
 - our engineering rules(Versioning + release rules) — frames the supported-versions policy in `docs/dev/security-policy.md`.
 - our engineering rules(Competitor awareness) — frames the brand-usage doc.
 - — task spec for every Phase-35 artifact.
-- the pre-tag review process — sign-off contract for tags; Phase 35.08 references the v0.7.0 row.
+- the pre-tag review process — sign-off contract for tags; references the v0.7.0 row.
 - `docs/dev/semver.md` — supported-versions policy that the security policy doc inherits from.

@@ -1,4 +1,4 @@
-"""Typed inputs / outputs for the compliance module (Phase 34)."""
+"""Typed inputs / outputs for the compliance module."""
 
 from __future__ import annotations
 

@@ -1,6 +1,6 @@
 # Auth vault internals
 
-> Status: **Stable** (Phase 31, ADR-0043).
+> Status: **Stable** (, ADR-0043).
 
 This page is the contributor-facing reference for the encrypted vault
 backing `auth.strategy: browser_session`. The user-facing tour lives at
@@ -12,7 +12,7 @@ backing `auth.strategy: browser_session`. The user-facing tour lives at
 
 ```
 ~/.sentinel/auth/
-├── .salt # 16-byte PBKDF2 salt (passphrase fallback only)
+├──.salt # 16-byte PBKDF2 salt (passphrase fallback only)
 ├── github.com/
 │ ├── myorg.json.enc # AES-256-GCM ciphertext (0600)
 │ └── myorg.json.meta # Redacted metadata sidecar (0600)
@@ -59,7 +59,7 @@ The 32-byte AES-256-GCM master key has two acquisition paths:
 
 2. **PBKDF2 passphrase fallback.** When the keyring is unreachable (headless Linux without dbus, locked-down CI), we derive the key from a passphrase via PBKDF2-SHA256: - Salt: 16 random bytes, stored at `~/.sentinel/auth/.salt`. - Iterations: 600 000 (NIST SP 800-132 / OWASP 2026). `SENTINEL_VAULT_PBKDF2_ITERATIONS` can raise this, never lower. - Passphrase: read from `SENTINEL_VAULT_PASSPHRASE`.
 
-`MasterKey` zeros its internal bytearray on `close()` using a
+`MasterKey` zeros its internal bytearray on `close` using a
 `ctypes.memset` (best-effort; Python's GC may have copied the bytes,
 but we make the in-memory copy go away as soon as the operation
 finishes).
@@ -104,7 +104,7 @@ entry into `<run-dir>/auth/storage_state.json` (chmod `0600`). The
 path is passed through the run-config as `storage_state_path` and the
 TS runner exports it as the env var `SENTINELQA_STORAGE_STATE`.
 Generated tests (or the user's `playwright.config.ts`) call
-`getSentinelStorageStateUse()` from `@sentinelqa/ts-runtime/playwright`
+`getSentinelStorageStateUse` from `@sentinelqa/ts-runtime/playwright`
 to spread `{storageState: <path>}` into Playwright's `use` block.
 
 `sentinel discover` calls `load_storage_state_dict(...)` so cookies

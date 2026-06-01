@@ -1,11 +1,11 @@
-"""CSRF check (Phase 13.04).
+"""CSRF check.
 
 For each form discovered at a route (we GET the route and parse
 ``<form>`` elements with ``method=post|put|patch|delete``), we look for:
 
 - A hidden input whose name contains ``csrf`` / ``xsrf`` / ``_token``.
 - An action that matches ``X-CSRF-Token`` / ``X-XSRF-Token`` meta tag
-  emission.
+ emission.
 
 If neither exists AND the cookies returned with the form lack
 ``SameSite=Lax|Strict``, we emit a high-severity CSRF finding.

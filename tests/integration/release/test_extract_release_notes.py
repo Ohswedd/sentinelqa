@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright (c) 2026 SentinelQA contributors.
-"""Release-notes extractor gate (Phase 36.05).
+"""Release-notes extractor gate.
 
 ``scripts/release/extract_release_notes.py`` slices the relevant
 ``[tag]`` section out of ``CHANGELOG.md`` so the GitHub Release
@@ -16,7 +16,7 @@ The tests cover:
 * whitespace normalisation is deterministic;
 * the heading line is dropped (GitHub renders its own ``<tag>`` title);
 * the dedicated ``[Unreleased]`` and ``[0.7.0]`` sections also extract
-  cleanly, so the extractor stays accurate for future tags;
+ cleanly, so the extractor stays accurate for future tags;
 * the workflow file uses the extractor and attaches the right files.
 """
 
@@ -53,40 +53,28 @@ def test_live_v1_section_extracts() -> None:
     assert not body.startswith("## ["), (
         "rendered release notes must not start with the `## [tag]` heading; " f"got: {body[:60]!r}"
     )
-    # Body must mention every phase we shipped in v1.0.0.
-    for phrase in (
-        "phase-30",
-        "phase-31",
-        "phase-32",
-        "phase-33",
-        "phase-34",
-        "phase-35",
-        "phase-36",
-    ):
+    # Body must mention the main product surfaces shipped in v1.0.0.
+    for phrase in ("CLI", "Engine", "Modules", "Surfaces", "LLM providers"):
         assert phrase in body, f"v1.0.0 release notes must mention {phrase}"
-    # And it must stop before the next tag block (line-anchored — the
-    # prose body legitimately mentions `## [0.7.0]` inside backticks).
+    # And it must not bleed into an earlier tag block.
     import re as _re
 
     assert not _re.search(
-        r"^## \[0\.7\.0\]", body, flags=_re.MULTILINE
-    ), "extractor must not bleed into the next tag's heading"
+        r"^## \[0\.", body, flags=_re.MULTILINE
+    ), "extractor must not bleed into a previous tag's heading"
 
 
-def test_live_v07_section_also_extracts() -> None:
-    """The extractor must work for older tags too — release notes for a
-    historical tag are sometimes regenerated."""
+def test_unreleased_section_extracts() -> None:
+    """The extractor handles the `[Unreleased]` block alongside tagged sections."""
 
     from scripts.release.extract_release_notes import render_release_notes
 
     changelog = (REPO_ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
-    body = render_release_notes(changelog, "v0.7.0")
+    body = render_release_notes(changelog, "Unreleased")
     assert body is not None
-    assert "phase-28" in body or "phase-29" in body
     import re as _re
 
     assert not _re.search(r"^## \[1\.0\.0\]", body, flags=_re.MULTILINE)
-    assert not _re.search(r"^## \[0\.6\.0\]", body, flags=_re.MULTILINE)
 
 
 def test_tag_normalisation_is_idempotent() -> None:
@@ -198,7 +186,7 @@ def test_workflow_uses_extractor_and_attaches_artifacts() -> None:
     assert "fail_on_unmatched_files: true" in workflow
 
 
-@pytest.mark.parametrize("tag", ["v1.0.0", "v0.7.0", "v0.1.0"])
+@pytest.mark.parametrize("tag", ["v1.0.0", "Unreleased"])
 def test_extractor_cli_smoke(tmp_path: Path, tag: str) -> None:
     """The CLI exits 0 and writes a file for every shipped tag."""
 

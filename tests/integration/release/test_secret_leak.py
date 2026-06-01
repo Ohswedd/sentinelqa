@@ -1,4 +1,4 @@
-"""Phase 29.02 — recurring secret-leak audit over persisted run artifacts.
+"""recurring secret-leak audit over persisted run artifacts.
 
 The intent of this test is **not** to test the redactor (that is covered by
 ``tests/unit/redact/``). It is to verify, on every CI run, that **no checked-in

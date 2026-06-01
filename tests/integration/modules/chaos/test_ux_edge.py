@@ -1,8 +1,8 @@
-"""Phase 23.04 — UX edge case chaos integration tests.
+"""UX edge case chaos integration tests.
 
 Acceptance criterion (the build plan):
 
-    Fixture allowing duplicate submits → finding.
+ Fixture allowing duplicate submits → finding.
 """
 
 from __future__ import annotations

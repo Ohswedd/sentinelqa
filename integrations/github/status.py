@@ -1,4 +1,4 @@
-"""GitHub commit-status poster (Phase 25, task 25.04).
+"""GitHub commit-status poster (, ).
 
 Posts a single commit status with the SentinelQA quality score and
 release decision. Designed to be called from CI (branch protection

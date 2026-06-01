@@ -1,4 +1,4 @@
-"""Integration tests for the console-errors check (task 19.13)."""
+"""Integration tests for the console-errors check."""
 
 from __future__ import annotations
 

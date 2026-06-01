@@ -49,7 +49,7 @@ A reusable workflow lives at
 ```yaml
 include: - project: 'Ohswedd/sentinelqa' file: 'integrations/gitlab/.gitlab-ci.sentinel.yml'
 
-sentinelqa: extends: .sentinelqa variables: SENTINEL_URL: 'http://127.0.0.1:3000' SENTINEL_MODE: 'standard'
+sentinelqa: extends:.sentinelqa variables: SENTINEL_URL: 'http://127.0.0.1:3000' SENTINEL_MODE: 'standard'
 ```
 
 JUnit and Code Quality reports are uploaded natively.

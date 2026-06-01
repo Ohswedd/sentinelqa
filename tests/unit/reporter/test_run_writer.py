@@ -1,4 +1,4 @@
-"""Unit tests for the ``run.json`` writer helpers (task 03.01)."""
+"""Unit tests for the ``run.json`` writer helpers."""
 
 from __future__ import annotations
 

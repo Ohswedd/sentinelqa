@@ -1,7 +1,7 @@
 # sample-app-llm-broken
 
 A deliberately-defective sample app for testing
-:class:`modules.llm_audit.LlmAuditModule` . Each HTML file
+:class:`modules.llm_audit.LlmAuditModule`. Each HTML file
 illustrates one or more of the failure modes the LLM-Code audit module
 hunts for. The JSON fixtures under
 `tests/fixtures/llm_audit_broken/` capture the same defects in the

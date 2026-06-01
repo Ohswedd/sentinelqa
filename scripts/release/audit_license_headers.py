@@ -1,31 +1,31 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright (c) 2026 SentinelQA contributors.
-"""License-header + NOTICE auditor (Phase 35.03).
+"""License-header + NOTICE auditor.
 
 Two invariants:
 
 1. **SPDX coverage.** Every source file under the covered trees
-   (``engine/``, ``apps/``, ``modules/``, ``integrations/``,
-   ``packages/``, ``scripts/``, ``tests/``) is either:
+ (``engine/``, ``apps/``, ``modules/``, ``integrations/``,
+ ``packages/``, ``scripts/``, ``tests/``) is either:
 
-     * Declared explicitly via ``SPDX-License-Identifier: Apache-2.0``
-       in the first 30 lines, OR
-     * Implicitly covered by the root ``LICENSE`` because its directory
-       prefix is on the COVERED_PREFIXES allowlist.
+ * Declared explicitly via ``SPDX-License-Identifier: Apache-2.0``
+ in the first 30 lines, OR
+ * Implicitly covered by the root ``LICENSE`` because its directory
+ prefix is on the COVERED_PREFIXES allowlist.
 
-   Files that match neither — or files anywhere in the repo that
-   declare a non-Apache-2.0 SPDX header (license drift) — fail the
-   audit.
+ Files that match neither — or files anywhere in the repo that
+ declare a non-Apache-2.0 SPDX header (license drift) — fail the
+ audit.
 
 2. **NOTICE completeness.** Every upstream vendored under
-   ``packages/shared-schema/external/`` has a matching attribution
-   line in ``NOTICE`` (upstream name, license, source URL).
+ ``packages/shared-schema/external/`` has a matching attribution
+ line in ``NOTICE`` (upstream name, license, source URL).
 
 Run via ``make audit-license-headers`` (CI mode == ``--check``) or
 directly::
 
-    python -m scripts.release.audit_license_headers
-    python -m scripts.release.audit_license_headers --check
+ python -m scripts.release.audit_license_headers
+ python -m scripts.release.audit_license_headers --check
 
 Exit codes follow the SentinelQA CLI grid (0 success / 6 audit
 failure) so the script slots into the same CI plumbing as the other

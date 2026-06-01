@@ -1,4 +1,4 @@
-"""Golden tests for the Markdown report (task 03.06)."""
+"""Golden tests for the Markdown report."""
 
 from __future__ import annotations
 

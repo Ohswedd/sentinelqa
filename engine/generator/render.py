@@ -1,4 +1,4 @@
-"""Template renderer for generated Playwright code (task 07.01).
+"""Template renderer for generated Playwright code.
 
 Wraps Jinja2 with strict variable validation (``StrictUndefined``) and a
 single source of the SentinelQA-generated banner that the file writer

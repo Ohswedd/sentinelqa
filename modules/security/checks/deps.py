@@ -1,4 +1,4 @@
-"""Dependency-scanner adapters (Phase 13.09).
+"""Dependency-scanner adapters.
 
 Each adapter shells out to a real tool (``pip-audit``, ``npm audit``,
 ``osv-scanner``) and normalizes its JSON output into
@@ -6,11 +6,11 @@ Each adapter shells out to a real tool (``pip-audit``, ``npm audit``,
 
 Adapters are no-ops when:
 
-- The corresponding tool is not on ``$PATH``. The Phase 02 ``doctor``
-  command (extended below) surfaces missing tools to the user.
+- The corresponding tool is not on ``$PATH``. The ``doctor``
+ command (extended below) surfaces missing tools to the user.
 - The matching lockfile (``requirements.txt`` / ``poetry.lock`` /
-  ``uv.lock`` / ``package-lock.json`` / ``pnpm-lock.yaml`` /
-  ``yarn.lock``) is absent.
+ ``uv.lock`` / ``package-lock.json`` / ``pnpm-lock.yaml`` /
+ ``yarn.lock``) is absent.
 
 Each adapter accepts an optional ``run`` callable so unit tests can
 inject canned JSON without spawning subprocesses.

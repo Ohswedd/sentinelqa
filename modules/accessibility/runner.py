@@ -7,7 +7,7 @@ which spawns ``sentinel-ts audit-a11y --input <run-config>.json`` via
 artifact per route and prints the aggregate run path on stdout.
 
 Tests substitute :class:`StubA11yRunner` (and friends) so the Python
-translation layer is exercised without invoking Chromium. Phase 11
+translation layer is exercised without invoking Chromium.
 ships the canonical Python-side coverage; the TS-side integration is
 gated by ``SENTINELQA_HAS_CHROMIUM=1`` on the TS test runner.
 """
@@ -61,12 +61,12 @@ class LocalA11yRunner:
     The TS subcommand:
 
     - Reads its inputs from a single JSON file (written by this class
-      under ``<run-dir>/a11y/run-config.json``).
+    under ``<run-dir>/a11y/run-config.json``).
     - Writes one ``<route-slug>.json`` per route under ``<run-dir>/a11y/``.
     - Writes ``<run-dir>/a11y/index.json`` listing every page result.
     - Returns exit code 0 even when violations are found (violations are
-      product output, not runtime errors). Non-zero exits indicate a
-      launch / Playwright / Chromium failure.
+    product output, not runtime errors). Non-zero exits indicate a
+    launch / Playwright / Chromium failure.
     """
 
     SENTINEL_TS_ENV = "SENTINEL_TS_BIN"

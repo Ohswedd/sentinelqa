@@ -1,4 +1,4 @@
-"""Security rule catalog + SARIF registration (Phase 13.10, ADR-0018).
+"""Security rule catalog + SARIF registration.
 
 Every security finding carries a stable ``rule_id`` (e.g.
 ``SEC-HEADERS-HSTS-MISSING``) so consumers can correlate findings
@@ -10,7 +10,7 @@ by category (e.g. ``security/headers/hsts_missing``), and the
 ``register_security_rules`` function below populates that registry
 exactly once per process.
 
-Each rule's ``help_uri`` points at the SentinelQA docs (Phase 27);
+Each rule's ``help_uri`` points at the SentinelQA docs ;
 the URL is stable so security-team dashboards can deep-link.
 """
 
@@ -440,7 +440,7 @@ _RULES: Final[tuple[SecurityRule, ...]] = (
         ),
         default_severity="warning",
     ),
-    # ---------------- Phase 32 — JWT weakness ----------------
+    # ---------------- JWT weakness ----------------
     SecurityRule(
         rule_id="SEC-JWT-ALG-NONE",
         category="security/jwt_weakness/sec-jwt-alg-none",
@@ -512,7 +512,7 @@ _RULES: Final[tuple[SecurityRule, ...]] = (
         ),
         default_severity="note",
     ),
-    # ---------------- Phase 32 — Cookie security extended ----------------
+    # ---------------- Cookie security extended ----------------
     SecurityRule(
         rule_id="SEC-COOKIE-MISSING-PREFIX",
         category="security/cookies/sec-cookie-missing-prefix",
@@ -560,7 +560,7 @@ _RULES: Final[tuple[SecurityRule, ...]] = (
         ),
         default_severity="note",
     ),
-    # ---------------- Phase 32 — TLS posture ----------------
+    # ---------------- TLS posture ----------------
     SecurityRule(
         rule_id="SEC-TLS-VERSION-LEGACY",
         category="security/tls_posture/sec-tls-version-legacy",
@@ -644,7 +644,7 @@ _RULES: Final[tuple[SecurityRule, ...]] = (
         ),
         default_severity="warning",
     ),
-    # ---------------- Phase 32 — GraphQL safety ----------------
+    # ---------------- GraphQL safety ----------------
     SecurityRule(
         rule_id="SEC-GRAPHQL-INTROSPECTION-ENABLED",
         category="security/graphql_safety/sec-graphql-introspection-enabled",
@@ -704,7 +704,7 @@ _RULES: Final[tuple[SecurityRule, ...]] = (
         ),
         default_severity="error",
     ),
-    # ---------------- Phase 32 — OWASP-API BOLA / BFLA ----------------
+    # ---------------- OWASP-API BOLA / BFLA ----------------
     SecurityRule(
         rule_id="SEC-BOLA-CROSS-TENANT-READ",
         category="security/api_bola_bfla/sec-bola-cross-tenant-read",
@@ -736,7 +736,7 @@ _RULES: Final[tuple[SecurityRule, ...]] = (
         ),
         default_severity="error",
     ),
-    # ---------------- Phase 32 — Secret-in-bundle scanner ----------------
+    # ---------------- Secret-in-bundle scanner ----------------
     SecurityRule(
         rule_id="SEC-BUNDLE-SECRET-AWS",
         category="security/bundle_secrets/sec-bundle-secret-aws",
@@ -829,7 +829,7 @@ _RULES: Final[tuple[SecurityRule, ...]] = (
         ),
         default_severity="error",
     ),
-    # ---------------- Phase 32 — SSRF / open-redirect ----------------
+    # ---------------- SSRF / open-redirect ----------------
     SecurityRule(
         rule_id="SEC-SSRF-SUSPECTED",
         category="security/ssrf_redirect/sec-ssrf-suspected",

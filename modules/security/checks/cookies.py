@@ -1,9 +1,9 @@
-"""Cookie-flags check (Phase 13.03).
+"""Cookie-flags check.
 
 We GET each route once and inspect every ``Set-Cookie`` header for the
 ``HttpOnly``, ``Secure`` (HTTPS), and ``SameSite`` attributes. Auth-
 looking cookies (name matches ``session|auth|jwt|token`` or set on a
-login response — we use the name heuristic for the MVP) escalate the
+login response — we use the name heuristic for the release) escalate the
 severity to ``high``.
 
 CLAUDE §33: cookie *values* never leave the process — we read the
@@ -140,7 +140,7 @@ def evaluate_cookie(
             extra={"cookie_name": cookie.name},
         )
 
-    # ---------- Phase 32 extended rules (ADR-0044) ----------
+    # ---------- extended rules (ADR-0044) ----------
     if cookie.is_auth_like and not (cookie.has_host_prefix or cookie.has_secure_prefix):
         yield _issue(
             "SEC-COOKIE-MISSING-PREFIX",

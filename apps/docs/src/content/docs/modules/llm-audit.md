@@ -9,7 +9,7 @@ LLM-generated apps tend to ship: dead buttons, fake routes,
 mock-data shipped to production, frontend-only auth, hardcoded
 credentials, missing CRUD edges, missing loading / error states.
 
-This module is the SentinelQA differentiator .
+This module is the SentinelQA differentiator.
 
 Authority: the documentation, ADR-0024.
 
@@ -32,7 +32,7 @@ LLM-UNHANDLED-PROMISE
 Hardcoded-credential snippets are double-redacted before persistence:
 the matched span is replaced with `[REDACTED:hardcoded_credential]`,
 then the line passes through `engine.policy.redaction.redact`. A test
-asserts no literal credential survives in findings .
+asserts no literal credential survives in findings.
 
 ## Report differentiator
 

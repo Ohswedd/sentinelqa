@@ -1,4 +1,4 @@
-"""Per-lockfile parser tests (Phase 33.01).
+"""Per-lockfile parser tests.
 
 Every parser must:
 

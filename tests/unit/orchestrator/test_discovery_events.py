@@ -1,4 +1,4 @@
-"""Phase 17 task 07 — discovery.* event parity (Python side).
+"""07 — discovery.* event parity (Python side).
 
 The canonical fixture is regenerated from
 ``scripts/export-ts-events-parity.py`` and consumed by both halves.

@@ -1,4 +1,4 @@
-"""Pagination boundary check (Phase 22.07).
+"""Pagination boundary check.
 
 A GET endpoint is treated as paginated when its OpenAPI parameters
 include any of: ``page``, ``cursor``, ``offset``, or when its response

@@ -1,6 +1,6 @@
 # sentinelqa — SentinelQA Python SDK
 
-Status: `Stable` (Phase 16)
+Status: `Stable`
 
 The official Python SDK for SentinelQA. A typed, agent-friendly facade
 over the engine — `Sentinel` loads config, runs the audit lifecycle,
@@ -39,7 +39,7 @@ qa = Sentinel(project_path=".", machine_readable=True)
 plan = qa.plan(url="http://localhost:3000")
 result = qa.run_plan(plan)
 
-if not result.passed: for failure in result.failures: print(failure.to_agent_message())
+if not result.passed: for failure in result.failures: print(failure.to_agent_message)
 ```
 
 ## Async API
@@ -52,16 +52,16 @@ one implementation per method:
 import asyncio
 from sentinelqa import Sentinel
 
-async def main() -> None: qa = Sentinel(project_path=".") result = await qa.async_audit(url="http://localhost:3000") print(result.quality_score)
+async def main -> None: qa = Sentinel(project_path=".") result = await qa.async_audit(url="http://localhost:3000") print(result.quality_score)
 
-asyncio.run(main())
+asyncio.run(main)
 ```
 
 ## Error handling
 
 Every public exception is a subclass of `SentinelError`, carries a
 stable `code` (`E-CFG-001`, `E-SAFE-001`, …) and an `exit_code`
-matching the CLI, and exposes a redacted `to_agent_message()` dict:
+matching the CLI, and exposes a redacted `to_agent_message` dict:
 
 ```python
 from sentinelqa import Sentinel, UnsafeTargetError
@@ -69,7 +69,7 @@ from sentinelqa.errors import from_dict
 
 qa = Sentinel(project_path=".")
 try: qa.audit(url="http://example.com")
-except UnsafeTargetError as err: msg = err.to_agent_message() # safe to ship to an LLM rebuilt = from_dict(msg) # round-trip back to a typed exception assert rebuilt.code == err.code
+except UnsafeTargetError as err: msg = err.to_agent_message # safe to ship to an LLM rebuilt = from_dict(msg) # round-trip back to a typed exception assert rebuilt.code == err.code
 ```
 
 ## Agent messages
@@ -79,7 +79,7 @@ from sentinelqa.agent import format
 
 # `format(messages, format="ndjson")` returns newline-delimited JSON —
 # ideal for piping straight into an LLM context window.
-print(format(result.to_agent_messages(), format="ndjson"))
+print(format(result.to_agent_messages, format="ndjson"))
 ```
 
 ## Public surface

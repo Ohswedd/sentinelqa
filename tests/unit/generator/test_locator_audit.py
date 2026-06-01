@@ -1,4 +1,4 @@
-"""Tests for the Python locator audit wrapper (task 07.04)."""
+"""Tests for the Python locator audit wrapper."""
 
 from __future__ import annotations
 

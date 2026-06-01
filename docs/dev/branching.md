@@ -16,7 +16,7 @@ Pick the prefix that best fits the change. One prefix per branch.
 
 | Prefix      | When to use                                                    | Example                               |
 | ----------- | -------------------------------------------------------------- | ------------------------------------- |
-| `feature/`  | New product capability or new module phase                     | `feature/phase-05-discovery-crawler`  |
+| `feature/`  | New product capability or new module phase                     | `feature/`                            |
 | `fix/`      | Bug fix in existing behavior                                   | `fix/cli-exit-code-on-missing-config` |
 | `docs/`     | Documentation-only change (no code, no tests of code behavior) | `docs/contributing-polish`            |
 | `refactor/` | Internal restructuring without behavior change                 | `refactor/extract-policy-loader`      |
@@ -27,7 +27,7 @@ Pick the prefix that best fits the change. One prefix per branch.
 | `perf/`     | Performance work with measurable target                        | `perf/discovery-crawler-budget`       |
 | `build/`    | Build system / packaging                                       | `build/sdist-metadata`                |
 
-Phase work uses `feature/phase-<NN>-<short-slug>` (e.g. `feature/phase-00-foundation`). See §3.
+Phase work uses `feature/phase-<NN>-<short-slug>` (e.g. `feature/`). See §3.
 
 ## Authorship & ownership
 
@@ -35,7 +35,7 @@ Phase work uses `feature/phase-<NN>-<short-slug>` (e.g. `feature/phase-00-founda
 > No `Co-authored-by:` trailers for AI tools.
 > No AI tools as owners or maintainers.
 
-These are not soft conventions. CI fails any commit on a PR that lists an AI tool in a `Co-authored-by:` trailer (`.github/workflows/no-ai-coauthor.yml`, lands in Phase 00.08).
+These are not soft conventions. CI fails any commit on a PR that lists an AI tool in a `Co-authored-by:` trailer (`.github/workflows/no-ai-coauthor.yml`, lands in ).
 
 ## What gets blocked locally
 
@@ -51,7 +51,7 @@ The pre-push hook means you'll never push a branch that the CI matrix would reje
 
 ## What gets blocked on the remote
 
-Branch protection on `main` (configured in the GitHub UI, documented in `docs/dev/ci-and-branch-protection.md` once Phase 00.06 lands) requires:
+Branch protection on `main` (configured in the GitHub UI, documented in `docs/dev/ci-and-branch-protection.md` once lands) requires:
 
 - `python` CI job green.
 - `typescript` CI job green.

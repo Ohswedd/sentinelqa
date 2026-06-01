@@ -1,4 +1,4 @@
-"""Helper-level coverage for modules.llm_audit (Phase 19.15).
+"""Helper-level coverage for modules.llm_audit.
 
 Targets the defensive branches in :mod:`modules.llm_audit.inputs`,
 :mod:`modules.llm_audit.findings`, and the less-common credential

@@ -1,22 +1,22 @@
-"""``AccessibilityModule`` (Phase 11, the documentation, ADR-0016).
+"""``AccessibilityModule`` (, the documentation, ADR-0016).
 
 Lifecycle (CLAUDE §9):
 
 - ``validate_prerequisites`` — no-op; the sentinel-ts probe lives in
-  ``execute`` so projects without an installed runtime still report
-  ``skipped`` instead of ``errored``.
-- ``plan``                   — resolves the route list (CLI options
-  → discovery.json → config.accessibility.routes → ``("/",)`` default).
-- ``execute``                — calls the configured :class:`A11yRunner`
-  (production: :class:`LocalA11yRunner`).
-- ``collect_evidence``       — pass-through; the runner already wrote
-  one ``<run-dir>/a11y/<route-slug>.json`` per page.
-- ``emit_findings``          — translates each :class:`A11yPageResult`
-  via :func:`modules.accessibility.findings.findings_from_pages`.
-- ``emit_metrics``           — counts violations + issues per check.
-- ``summarize``              — overlays findings on a synthesized
-  :class:`ModuleResult` (no Playwright tests run; no
-  :class:`RunnerOutcome` exists).
+ ``execute`` so projects without an installed runtime still report
+ ``skipped`` instead of ``errored``.
+- ``plan`` — resolves the route list (CLI options
+ → discovery.json → config.accessibility.routes → ``("/",)`` default).
+- ``execute`` — calls the configured :class:`A11yRunner`
+ (production: :class:`LocalA11yRunner`).
+- ``collect_evidence`` — pass-through; the runner already wrote
+ one ``<run-dir>/a11y/<route-slug>.json`` per page.
+- ``emit_findings`` — translates each :class:`A11yPageResult`
+ via :func:`modules.accessibility.findings.findings_from_pages`.
+- ``emit_metrics`` — counts violations + issues per check.
+- ``summarize`` — overlays findings on a synthesized
+ :class:`ModuleResult` (no Playwright tests run; no
+ :class:`RunnerOutcome` exists).
 
 CLAUDE §28 is enforced everywhere: descriptions begin with "Automated
 accessibility check found" and full-compliance claims never appear.
@@ -262,7 +262,7 @@ def _routes_from_discovery(path: Path) -> tuple[str, ...]:
         return ()
     payload = json.loads(path.read_text(encoding="utf-8"))
     candidates: list[str] = []
-    # discovery.json (Phase 05) lists routes at `routes[*].path`.
+    # discovery.json lists routes at `routes[*].path`.
     raw_routes = payload.get("routes") if isinstance(payload, dict) else None
     if isinstance(raw_routes, list):
         for entry in raw_routes:

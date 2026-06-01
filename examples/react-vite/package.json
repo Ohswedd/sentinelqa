@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "SentinelQA Phase 26.05 — Vite + React SPA against the FastAPI backend.",
+  "description": "SentinelQA Vite + React SPA against the FastAPI backend.",
   "scripts": {
     "dev": "vite --host 127.0.0.1 --port 5173",
     "build": "tsc -b && vite build",

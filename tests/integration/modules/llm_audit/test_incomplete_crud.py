@@ -1,4 +1,4 @@
-"""Integration tests for the incomplete-CRUD check (task 19.06)."""
+"""Integration tests for the incomplete-CRUD check."""
 
 from __future__ import annotations
 

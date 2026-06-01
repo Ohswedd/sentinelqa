@@ -1,4 +1,4 @@
-"""Phase 20.03 — Wait-condition replacement tests."""
+"""Wait-condition replacement tests."""
 
 from __future__ import annotations
 

@@ -33,7 +33,7 @@ Empty directories are tracked with `.gitkeep` (replaced by real content as each 
 
 - **Positive:** Every the documentation path is reserved and discoverable from day one. Later phases never have to "create the folder first"; they only add code.
 - **Positive:** Layered architecture is enforceable by inspection — code in `engine/` and `modules/` can be lint-/import-checked against framework imports (Typer, FastAPI, Playwright, vendor SDKs), which must live in `apps/` or `integrations/`.
-- **Negative / trade-off:** A large empty tree at Phase 00 looks unfinished. Mitigated by per-folder `README.md` files that explain "this is empty on purpose; code lands in Phase NN."
+- **Negative / trade-off:** A large empty tree at looks unfinished. Mitigated by per-folder `README.md` files that explain "this is empty on purpose; code lands in Phase NN."
 - **Follow-up obligations:** When a `engine/*` or `modules/*` sub-package gains its first `.py` file, it must also gain a `pyproject.toml` and become a `uv` workspace member (see ADR-0003).
 
 ## Alternatives considered

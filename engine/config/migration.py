@@ -1,6 +1,6 @@
 """Config schema migrations.
 
-Empty in Phase 01 because ``CONFIG_SCHEMA_VERSION`` starts at ``"1"``. When
+Empty in because ``CONFIG_SCHEMA_VERSION`` starts at ``"1"``. When
 the constant bumps, a migration function lands here and the loader will
 attempt it before validating against the new schema. See
 ``docs/dev/schema-versioning.md`` for the policy.

@@ -1,17 +1,17 @@
-"""Frontend secrets / data-leakage check (Phase 13.08).
+"""Frontend secrets / data-leakage check.
 
 Two sub-scans:
 
 1. **JS bundle scan** (HTTP-only). For each route in ``ctx.routes``,
-   GET the page, extract every ``<script src=...>`` URL, fetch the JS
-   bundle, and run :func:`scan_for_secrets` against the body.
+ GET the page, extract every ``<script src=...>`` URL, fetch the JS
+ bundle, and run :func:`scan_for_secrets` against the body.
 2. **DOM / storage snapshot scan** (optional). Reads JSON files
-   matching ``security/snapshots/<route-slug>.json`` under the run
-   directory if any exist. The snapshot is produced by a separate
-   Playwright-side helper (see ``packages/ts-runtime/src/security/
-   capture_secrets.ts``); a Phase-26 example app will demonstrate
-   wiring. When no snapshot file is present, this scan is silently
-   skipped.
+ matching ``security/snapshots/<route-slug>.json`` under the run
+ directory if any exist. The snapshot is produced by a separate
+ Playwright-side helper (see ``packages/ts-runtime/src/security/
+ capture_secrets.ts``); a Phase-26 example app will demonstrate
+ wiring. When no snapshot file is present, this scan is silently
+ skipped.
 
 The scanner never persists the matched secret value — only a short
 masked preview (``"AKIA…"``) and the category. CLAUDE §33 forbids

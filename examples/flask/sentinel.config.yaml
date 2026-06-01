@@ -1,4 +1,4 @@
-# SentinelQA configuration for the Flask demo (Phase 26.04).
+# SentinelQA configuration for the Flask demo ().
 # The app binds to 127.0.0.1:5001 by default — see README.md.
 version: 1
 

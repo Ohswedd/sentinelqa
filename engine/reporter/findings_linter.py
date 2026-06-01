@@ -1,8 +1,8 @@
-"""Vague-finding linter (task 03.02).
+"""Vague-finding linter.
 
 our engineering rules forbids vague findings ("Security issue found." is the
 canonical bad example). The linter emits non-fatal warnings so reviewers
-and Phase 24 plugin contract tests can flag drift. Callers decide whether
+and plugin contract tests can flag drift. Callers decide whether
 to surface warnings to the user or include them in CI output.
 
 The linter is intentionally lenient: it flags obvious anti-patterns
@@ -34,7 +34,7 @@ BANNED_DESCRIPTION_PHRASES: tuple[re.Pattern[str], ...] = (
 )
 
 # A description that mentions at least one of these is considered to have
-# concrete specifics. (Approximate — Phase 19's LLM-audit module may
+# concrete specifics. (Approximate — 's LLM-audit module may
 # refine the heuristic; the goal here is to catch the worst offenders.)
 SPECIFICITY_HINTS: tuple[re.Pattern[str], ...] = (
     re.compile(r"/[a-zA-Z0-9_\-/.]+"),  # a path-like token
@@ -137,7 +137,7 @@ def first_blocking_warning(
 ) -> FindingsLinterWarning | None:
     """Return the first warning whose code blocks the writer.
 
-    Phase 03 promotes the evidence-required rule (``L-FND-004``) to a
+    promotes the evidence-required rule (``L-FND-004``) to a
     *blocking* warning. Other codes are advisory.
     """
 

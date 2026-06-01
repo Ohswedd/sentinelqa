@@ -2,7 +2,7 @@
 
 Mirrors the on-disk shapes the module writes under ``<run-dir>/sbom/``
 and ``<run-dir>/supply_chain/``. The schema version is bumped under an
-ADR (CLAUDE §34) and is enforced at parse time. Phase 33 / ADR-0045
+ADR (CLAUDE §34) and is enforced at parse time. / ADR-0045
 owns version ``"1"``.
 """
 
@@ -43,7 +43,7 @@ LockfileKind = Literal[
 class SbomComponent(SentinelModel):
     """One resolved dependency in an SBOM.
 
-    Phase 33 only emits typed components for the lockfiles it parses; we
+    only emits typed components for the lockfiles it parses; we
     intentionally avoid carrying through every optional CycloneDX field
     (hash digests, supplier metadata, vulnerability annotations) so the
     wire shape stays small and our schema-drift guard catches any future

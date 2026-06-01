@@ -1,10 +1,10 @@
-"""Auto-apply gating policy (Phase 20.06, our engineering rules).
+"""Auto-apply gating policy.
 
 The Healer never decides on its own whether a proposal applies. This
 module computes :class:`AutoApplyDecision` for one proposal given:
 
 - the operator's ``policy.healer.auto_apply`` posture (``off`` / ``safe``
-  / ``aggressive``),
+ / ``aggressive``),
 - the spec's banner status (hand-edited specs are always refused),
 - the proposal's confidence vs the configured auto-apply threshold,
 - the proposal's ``kind`` (``assertion`` repairs are aggressive-only),

@@ -1,4 +1,4 @@
-"""GraphQL SDL loader + operation extraction (Phase 22.03).
+"""GraphQL SDL loader + operation extraction.
 
 Uses :mod:`graphql` (graphql-core) to parse the SDL, build the schema,
 and enumerate top-level query / mutation fields. For each field we
@@ -10,7 +10,7 @@ response shape:
 - Missing top-level fields → high.
 - Type mismatch (object where scalar declared) → high.
 
-Subscriptions are intentionally NOT probed — the MVP skips them with
+Subscriptions are intentionally NOT probed — the release skips them with
 an info-level note rather than holding open a websocket against an
 unknown server (the documentation lists subscriptions as planned; full
 support arrives with the chaos module's session work).
@@ -93,7 +93,7 @@ def _extract_ops(obj_type: GraphQLObjectType, kind: str) -> list[GraphqlOperatio
     out: list[GraphqlOperation] = []
     for field_name, field in obj_type.fields.items():
         if _has_required_arguments(field):
-            # Skip ops that need non-default arguments — the MVP only
+            # Skip ops that need non-default arguments — the release only
             # probes safe, argument-less fields so we never fabricate
             # a payload to a server.
             continue

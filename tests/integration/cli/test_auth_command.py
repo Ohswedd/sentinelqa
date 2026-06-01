@@ -1,4 +1,4 @@
-"""CLI integration tests for ``sentinel auth`` (Phase 31 task 31.08)."""
+"""CLI integration tests for ``sentinel auth``."""
 
 from __future__ import annotations
 

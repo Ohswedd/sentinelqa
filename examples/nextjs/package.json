@@ -2,7 +2,7 @@
   "name": "sentinelqa-nextjs-example",
   "private": true,
   "version": "1.0.0",
-  "description": "SentinelQA Phase 26.01 — Next.js 14 example with auth + CRUD.",
+  "description": "SentinelQA Next.js 14 example with auth + CRUD.",
   "scripts": {
     "dev": "next dev -p 3000 -H 127.0.0.1",
     "build": "next build",

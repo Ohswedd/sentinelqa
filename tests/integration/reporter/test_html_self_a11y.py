@@ -1,6 +1,6 @@
 """Self-test: the HTML report passes our own structural a11y checks (15.07).
 
-The Phase 11 accessibility module runs axe-core inside a browser, which
+The accessibility module runs axe-core inside a browser, which
 is too heavy for a unit test. This test takes the lighter-weight path:
 it renders ``report.html`` and verifies the structural-a11y rules we
 encode in :mod:`modules.accessibility.checks.landmarks` and
@@ -10,11 +10,11 @@ encode in :mod:`modules.accessibility.checks.landmarks` and
 - A skip-link points to the main landmark.
 - Every ``<img>`` has a non-empty ``alt`` attribute.
 - Every form control (``<select>`` / ``<input>``) has either a wrapping
-  ``<label>`` or an ``aria-label`` / ``aria-labelledby`` reference.
+ ``<label>`` or an ``aria-label`` / ``aria-labelledby`` reference.
 - Headings hierarchy does not skip more than one level at a time.
 
 The intent is the same as the spec gate: "our own report passes our own
-accessibility checks." Axe-core in CI runs (Phase 11 a11y module) is
+accessibility checks." Axe-core in CI runs (a11y module) is
 still the comprehensive guard.
 """
 

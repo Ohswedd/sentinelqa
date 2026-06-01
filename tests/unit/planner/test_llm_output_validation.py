@@ -1,4 +1,4 @@
-"""LLM output validation tests (task 06.04)."""
+"""LLM output validation tests."""
 
 from __future__ import annotations
 

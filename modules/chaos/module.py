@@ -1,38 +1,38 @@
-"""``ChaosModule`` (Phase 23, the documentation, our engineering rules, §6).
+"""``ChaosModule`` (, the documentation, our engineering rules, §6).
 
 Lifecycle:
 
 - ``validate_prerequisites`` — re-enforces :class:`SafetyPolicy` so the
-  module fails closed if the orchestrator wasn't called through the
-  CLI / SDK happy path (our engineering rules: chaos scenarios stay scoped to
-  authorized targets).
-- ``plan``                   — no Playwright specs to enumerate
-  (events flow in via JSONL).
-- ``execute``                — ingests JSONL chaos events from the
-  configured / option-supplied path, groups them by scenario, and
-  synthesizes a placeholder :class:`RunnerOutcome`.
-- ``collect_evidence``       — writes ``chaos/<category>.json`` per
-  category plus ``chaos/index.json``. Raw events are NOT re-copied
-  here; the ingestion source remains the canonical event log.
-- ``emit_findings``          — translates each bad
-  :class:`ChaosEvent` via
-  :func:`modules.chaos.findings.findings_from_results`.
-- ``emit_metrics``           — counts per-category scenarios, events,
-  and bad observations.
-- ``summarize``              — overlays findings on the synthesized
-  :class:`RunnerOutcome`; status is ``skipped`` if every requested
-  category reported zero events.
+ module fails closed if the orchestrator wasn't called through the
+ CLI / SDK happy path (our engineering rules: chaos scenarios stay scoped to
+ authorized targets).
+- ``plan`` — no Playwright specs to enumerate
+ (events flow in via JSONL).
+- ``execute`` — ingests JSONL chaos events from the
+ configured / option-supplied path, groups them by scenario, and
+ synthesizes a placeholder :class:`RunnerOutcome`.
+- ``collect_evidence`` — writes ``chaos/<category>.json`` per
+ category plus ``chaos/index.json``. Raw events are NOT re-copied
+ here; the ingestion source remains the canonical event log.
+- ``emit_findings`` — translates each bad
+ :class:`ChaosEvent` via
+ :func:`modules.chaos.findings.findings_from_results`.
+- ``emit_metrics`` — counts per-category scenarios, events,
+ and bad observations.
+- ``summarize`` — overlays findings on the synthesized
+ :class:`RunnerOutcome`; status is ``skipped`` if every requested
+ category reported zero events.
 
 Safety boundary (our engineering rules, §39):
 
 - Defaults off in ``modules.chaos``. The CI ``nightly`` mode flips it
-  on explicitly; ``fast`` / ``standard`` do not.
+ on explicitly; ``fast`` / ``standard`` do not.
 - Every CLI invocation honors the standard SafetyPolicy mode (no
-  destructive scenarios escape "safe"). Session-claim manipulation is
-  Playwright-side only: the TS helpers never re-sign real JWTs.
+ destructive scenarios escape "safe"). Session-claim manipulation is
+ Playwright-side only: the TS helpers never re-sign real JWTs.
 - The module never reads CLI flags from the aggressive / evasion /
-  detection-bypass family; the ``tests/security`` guard greps the
-  package + CLI for compound forbidden literals to keep that property.
+ detection-bypass family; the ``tests/security`` guard greps the
+ package + CLI for compound forbidden literals to keep that property.
 """
 
 from __future__ import annotations

@@ -1,4 +1,4 @@
-# SentinelQA configuration for the FastAPI demo (Phase 26.02).
+# SentinelQA configuration for the FastAPI demo ().
 # The app binds to 127.0.0.1:8000 by default — see README.md.
 version: 1
 

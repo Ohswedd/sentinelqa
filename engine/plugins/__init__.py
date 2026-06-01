@@ -7,7 +7,7 @@ subprocess sandbox for plugins requesting risky permissions.
 
 Plugin AUTHORS depend on :mod:`sentinelqa.plugins` (the SDK-public
 surface). This module is the engine-internal loader; nothing here is
-part of the SDK's pinned API snapshot (task 16.06).
+part of the SDK's pinned API snapshot.
 """
 
 from __future__ import annotations

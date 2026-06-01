@@ -1,13 +1,13 @@
-"""``sentinel plugins`` — Phase 24 / our product spec plugins CLI.
+"""``sentinel plugins`` — / our product spec plugins CLI.
 
 Three subcommands:
 
 - ``list`` — show every installed plugin discovered via the
-  ``sentinelqa.plugins`` entry-point group.
+ ``sentinelqa.plugins`` entry-point group.
 - ``info <name>`` — print the manifest for one plugin in human or
-  JSON form.
+ JSON form.
 - ``validate <path>`` — validate a standalone JSON/TOML manifest
-  before publishing, without needing the plugin installed.
+ before publishing, without needing the plugin installed.
 
 Exit codes (CLAUDE §13):
 

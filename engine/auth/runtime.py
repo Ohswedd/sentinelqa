@@ -6,13 +6,13 @@ config sets ``auth.strategy: browser_session``. This module provides the
 narrow surface they need:
 
 - :func:`materialize_storage_state` — decrypt the entry, write it to
-  ``<run-dir>/auth/storage_state.json`` (chmod 0600), audit-log the use,
-  return the path. Caller is responsible for calling
-  :func:`cleanup_storage_state` on teardown so the plaintext file does
-  not survive the run.
+ ``<run-dir>/auth/storage_state.json`` (chmod 0600), audit-log the use,
+ return the path. Caller is responsible for calling
+ :func:`cleanup_storage_state` on teardown so the plaintext file does
+ not survive the run.
 - :func:`load_storage_state_dict` — same as above but returns the
-  decoded dict in-memory; used by the discovery crawler so cookies can
-  be injected into the ``httpx`` client without ever hitting disk.
+ decoded dict in-memory; used by the discovery crawler so cookies can
+ be injected into the ``httpx`` client without ever hitting disk.
 
 The audit log carries one line per use: host + name + cookie count +
 age in seconds. Cookie values and local-storage payloads NEVER appear.

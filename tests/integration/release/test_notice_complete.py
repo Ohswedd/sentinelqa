@@ -1,9 +1,9 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright (c) 2026 SentinelQA contributors.
-"""NOTICE completeness (Phase 35.03).
+"""NOTICE completeness.
 
 Every file under `packages/shared-schema/external/` must have a
-matching attribution entry in `NOTICE`. The Phase 35.03 audit script
+matching attribution entry in `NOTICE`. The audit script
 also pins the inventory in `VENDORED_EXTERNALS` — this test makes the
 contract explicit and independent of the audit's internal state.
 """

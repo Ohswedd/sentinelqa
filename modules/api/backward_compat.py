@@ -1,4 +1,4 @@
-"""Backward-compatibility check + snapshot persistence (Phase 22.08).
+"""Backward-compatibility check + snapshot persistence.
 
 Each run writes ``<run-dir>/api/api-schema.json`` capturing the
 :class:`ApiSchemaSnapshot` derived from the loaded OpenAPI / GraphQL
@@ -58,9 +58,9 @@ def load_previous_snapshot(
     Resolution order:
 
     1. ``diff_since_run_id`` if supplied; load
-       ``<artifacts_root>/<id>/api/api-schema.json``.
+    ``<artifacts_root>/<id>/api/api-schema.json``.
     2. Otherwise pick the alphabetically last run dir whose id != current
-       and which has an ``api/api-schema.json``.
+    and which has an ``api/api-schema.json``.
     """
 
     if not artifacts_root.exists():

@@ -1,6 +1,6 @@
 """Public re-export of CLI exit codes.
 
-Lives in ``engine.policy`` so the CLI (Phase 02) can import a tiny module
+Lives in ``engine.policy`` so the CLI can import a tiny module
 without pulling the entire ``engine.errors`` graph (which transitively
 imports redaction). Numbers come from ``engine.errors.codes`` — the
 single source of truth.

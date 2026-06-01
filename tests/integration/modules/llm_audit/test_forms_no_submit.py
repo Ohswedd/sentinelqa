@@ -1,4 +1,4 @@
-"""Integration tests for the forms-no-submit check (task 19.05)."""
+"""Integration tests for the forms-no-submit check."""
 
 from __future__ import annotations
 

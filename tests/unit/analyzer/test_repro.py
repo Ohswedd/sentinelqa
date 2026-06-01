@@ -1,4 +1,4 @@
-"""Reproduction step generation tests (task 09.03)."""
+"""Reproduction step generation tests."""
 
 from __future__ import annotations
 

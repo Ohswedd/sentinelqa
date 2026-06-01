@@ -2,7 +2,7 @@
   "name": "sentinelqa-llm-broken-example",
   "private": true,
   "version": "1.0.0",
-  "description": "SentinelQA Phase 26.06 — Intentionally broken AI-generated Next.js app. DO NOT DEPLOY.",
+  "description": "SentinelQA Intentionally broken AI-generated Next.js app. DO NOT DEPLOY.",
   "scripts": {
     "dev": "next dev -p 3030 -H 127.0.0.1",
     "build": "next build",

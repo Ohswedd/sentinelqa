@@ -1,7 +1,7 @@
-"""Integration tests for :mod:`modules.supply_chain.sbom` (Phase 33.01).
+"""Integration tests for :mod:`modules.supply_chain.sbom`.
 
 Run the SBOM generator against synthetic project trees that mimic the
-Phase 26 example apps' lockfile shapes, then validate every emitted
+example apps' lockfile shapes, then validate every emitted
 CycloneDX document against the vendored schema
 (``packages/shared-schema/external/cyclonedx-1.5.json``).
 """

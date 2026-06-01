@@ -1,4 +1,4 @@
-"""Integration tests — CORS check (Phase 13.04)."""
+"""Integration tests — CORS check."""
 
 from __future__ import annotations
 

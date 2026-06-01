@@ -361,7 +361,7 @@
     }
   },
   "additionalProperties": false,
-  "description": "The graph produced by the discovery module (Phase 05).",
+  "description": "The graph produced by the discovery module.",
   "properties": {
     "api_endpoints": {
       "items": {

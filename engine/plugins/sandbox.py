@@ -1,22 +1,22 @@
-"""Subprocess sandbox for risky plugins (Phase 24 task 24.04).
+"""Subprocess sandbox for risky plugins.
 
 Plugins requesting ``subprocess.spawn`` or ``network.outbound`` are
 launched in a child Python interpreter with a constrained environment.
 Communication is a small JSON-over-stdio protocol:
 
 - Host writes one line of JSON to the child's stdin (the
-  ``invocation`` payload + the granted-permissions set).
+ ``invocation`` payload + the granted-permissions set).
 - Child reads, runs the plugin's ``run(context)``, and prints one
-  line of JSON back on stdout: either ``{"ok": true, "result": ...}``
-  or ``{"ok": false, "error": "..."}``.
+ line of JSON back on stdout: either ``{"ok": true, "result":...}``
+ or ``{"ok": false, "error": "..."}``.
 - Host parses the result and returns it.
 
 The child runs ``python -m engine.plugins.sandbox_worker --plugin <ep>``
 with:
 
 - ``env`` filtered to ``PATH``, ``HOME``, ``TMPDIR``, ``LANG``,
-  ``SENTINEL_*`` keys, plus any ``env.read:<NAME>`` the plugin
-  declared. Every other variable is stripped.
+ ``SENTINEL_*`` keys, plus any ``env.read:<NAME>`` the plugin
+ declared. Every other variable is stripped.
 - ``cwd`` set to a fresh tmp directory under ``<run_dir>/plugins/<name>/``.
 - ``stdin`` / ``stdout`` piped; ``stderr`` captured for logging.
 

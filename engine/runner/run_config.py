@@ -1,7 +1,7 @@
 """``run-config.json`` shape passed from Python to ``sentinel-ts run``.
 
 This Pydantic model mirrors the ``RunConfigSchema`` defined in
-``packages/ts-runtime/src/runner.ts`` (Phase 04). Both halves of the
+``packages/ts-runtime/src/runner.ts``. Both halves of the
 bridge MUST stay in sync — the parity is exercised by
 ``tests/integration/runner/test_run_config_parity.py``.
 
@@ -43,7 +43,7 @@ class RunConfig(BaseModel):
     retries: int = Field(default=0, ge=0, le=10)
     grep: str | None = Field(default=None, max_length=512)
     env: dict[str, str] = Field(default_factory=dict)
-    #: Phase 31, ADR-0043. Absolute path to a Playwright ``storage_state``
+    #:, ADR-0043. Absolute path to a Playwright ``storage_state``
     #: JSON file. The TS runner forwards it via the env var
     #: ``SENTINELQA_STORAGE_STATE``; generated tests read that env var
     #: and configure each Playwright context accordingly. The

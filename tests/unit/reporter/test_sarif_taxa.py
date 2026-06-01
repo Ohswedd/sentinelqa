@@ -1,4 +1,4 @@
-"""SARIF taxa emission tests (Phase 32 / ADR-0044)."""
+"""SARIF taxa emission tests ( / ADR-0044)."""
 
 from __future__ import annotations
 

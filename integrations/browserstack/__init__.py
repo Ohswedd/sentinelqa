@@ -1,4 +1,4 @@
-"""BrowserStack remote-browser execution adapter (Phase 25.01)."""
+"""BrowserStack remote-browser execution adapter."""
 
 from __future__ import annotations
 

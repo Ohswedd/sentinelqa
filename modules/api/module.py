@@ -1,26 +1,26 @@
-"""``ApiModule`` (Phase 22, the documentation, our engineering rules, ADR-0020).
+"""``ApiModule`` (, the documentation, our engineering rules, ADR-0020).
 
 Lifecycle:
 
 - ``validate_prerequisites`` — re-enforces :class:`SafetyPolicy` so the
-  module fails closed if the orchestrator wasn't called through the
-  CLI / SDK happy path.
-- ``plan``                   — no specs (the module is HTTP-driven, not
-  Playwright-driven).
-- ``execute``                — dispatches to each enabled check
-  (``contract`` / ``negative`` / ``auth`` / ``latency`` / ``pagination`` /
-  ``error_shape`` / ``backward_compat``). Each check is responsible
-  for its own SafetyPolicy.enforce hop before issuing HTTP.
-- ``collect_evidence``       — writes ``api/<check>.json`` per check
-  plus ``api/index.json`` and (when an OpenAPI / GraphQL doc was
-  loaded) ``api/api-schema.json`` for backward-compat diff in future
-  runs.
-- ``emit_findings``          — translates each :class:`ApiIssue` via
-  :func:`modules.api.findings.findings_from_checks`.
-- ``emit_metrics``           — counts per-check issues + per-check
-  scanned targets + total duration.
-- ``summarize``              — overlays findings on a synthesized
-  :class:`RunnerOutcome` (no Playwright tests run).
+ module fails closed if the orchestrator wasn't called through the
+ CLI / SDK happy path.
+- ``plan`` — no specs (the module is HTTP-driven, not
+ Playwright-driven).
+- ``execute`` — dispatches to each enabled check
+ (``contract`` / ``negative`` / ``auth`` / ``latency`` / ``pagination`` /
+ ``error_shape`` / ``backward_compat``). Each check is responsible
+ for its own SafetyPolicy.enforce hop before issuing HTTP.
+- ``collect_evidence`` — writes ``api/<check>.json`` per check
+ plus ``api/index.json`` and (when an OpenAPI / GraphQL doc was
+ loaded) ``api/api-schema.json`` for backward-compat diff in future
+ runs.
+- ``emit_findings`` — translates each :class:`ApiIssue` via
+ :func:`modules.api.findings.findings_from_checks`.
+- ``emit_metrics`` — counts per-check issues + per-check
+ scanned targets + total duration.
+- ``summarize`` — overlays findings on a synthesized
+ :class:`RunnerOutcome` (no Playwright tests run).
 
 Safety boundary: aggressive fuzzing is forbidden. No
 field, option, env var, or CLI flag named ``aggressive`` / ``fuzz`` /

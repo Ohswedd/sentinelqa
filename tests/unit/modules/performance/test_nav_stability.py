@@ -1,4 +1,4 @@
-"""Unit tests for :mod:`modules.performance.nav_stability` (Phase 12.05)."""
+"""Unit tests for :mod:`modules.performance.nav_stability`."""
 
 from __future__ import annotations
 

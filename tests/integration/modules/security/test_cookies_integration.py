@@ -1,4 +1,4 @@
-"""Integration tests — cookie-flag check (Phase 13.03)."""
+"""Integration tests — cookie-flag check."""
 
 from __future__ import annotations
 

@@ -1,12 +1,12 @@
-"""Retry / quarantine decision (the documentation, task 09.04).
+"""Retry / quarantine decision (the documentation, ).
 
-The runner (Phase 08) already retries up to ``runner.retries.max`` times
+The runner already retries up to ``runner.retries.max`` times
 per the configured policy. The analyzer's job is to advise:
 
 * whether retrying is *still* useful for a given failure (a known 5xx is
-  not worth another attempt),
+ not worth another attempt),
 * when a failure looks like a stable test bug, flag it as a quarantine
-  candidate so the user can decide.
+ candidate so the user can decide.
 
 Decisions are deterministic and depend only on the signal +
 classification + optional history snapshot. They never mutate state —
@@ -30,7 +30,7 @@ class FailureHistory(BaseModel):
     """Optional history of prior runs for the same test.
 
     The runner persists per-test history under
-    ``.sentinel/runs/<run-id>/module-results/<module>.json`` (Phase 08);
+    ``.sentinel/runs/<run-id>/module-results/<module>.json`` ;
     the SDK aggregates them when calling the analyzer with a richer
     snapshot. The analyzer only uses two numbers — total recent runs and
     failed runs — so the history payload stays compact.

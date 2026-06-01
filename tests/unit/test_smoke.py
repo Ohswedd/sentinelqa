@@ -1,8 +1,8 @@
-"""Phase 00 smoke test.
+"""smoke test.
 
 Proves the test harness (pytest + pytest-asyncio + the strict pyproject config)
-runs to completion before any product code exists. Extended in Phase 02 once
-the real Typer app shipped (`sentinel_cli` exports the app) and in Phase 16
+runs to completion before any product code exists. Extended in once
+the real Typer app shipped (`sentinel_cli` exports the app) and in
 once the real SDK shipped (`sentinelqa` is now non-empty).
 """
 
@@ -17,7 +17,7 @@ def test_packages_importable() -> None:
     import sentinel_cli
     import sentinelqa
 
-    # `sentinel_cli` exports the Typer app (Phase 02).
+    # `sentinel_cli` exports the Typer app.
     assert "app" in sentinel_cli.__all__
     assert "build_app" in sentinel_cli.__all__
     # `sentinelqa` exports the Phase-16 SDK surface (ADR-0021).
