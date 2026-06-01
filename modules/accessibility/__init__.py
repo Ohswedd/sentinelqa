@@ -10,7 +10,7 @@ checks, modal traps, form errors, landmark structure, and screen-reader
 name detection — by invoking ``sentinel-ts audit-a11y`` against each
 route in the discovery graph (or the explicit ``--routes`` set).
 
-Per CLAUDE §28, descriptions always begin with "Automated accessibility
+Per the engineering guidelines, descriptions always begin with "Automated accessibility
 check found" and full-compliance phrasing is forbidden. The guard test
 in ``tests/security/test_no_wcag_compliance_claims.py`` enforces this.
 """

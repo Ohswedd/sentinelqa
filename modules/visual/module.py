@@ -1,6 +1,6 @@
 """``VisualModule`` (, the documentation, ADR-0026).
 
-Lifecycle (CLAUDE §9):
+Lifecycle:
 
 - ``validate_prerequisites`` — no-op; missing capture inputs surface as
  ``skipped`` (no PNG anywhere) or per-route ``missing_current``
@@ -23,7 +23,7 @@ PNGs into ``<run-dir>/visual/current/<viewport>/<route-slug>.png``,
 hiding any selector-mask elements before screenshot. The Python diff
 layer additionally paints any rect-masks before comparison so test
 fixtures can verify masking without driving a browser (the documentation +
-CLAUDE §29).
+the engineering guidelines).
 
 Baselines never auto-accept in CI. The CLI flag ``--accept`` refuses
 to promote ``current`` PNGs into the baseline tree when ``--ci`` (or
@@ -272,7 +272,7 @@ class VisualModule(SentinelModule):
                 # Surface the load failure as a size_mismatch finding to
                 # keep the lifecycle simple; the description is built
                 # downstream and operators will see the corrupt-file
-                # message via the run log. (CLAUDE §37 — no fake
+                # message via the run log. (the engineering guidelines— no fake
                 # completion: failing-to-load is a real defect.)
             )
 
@@ -437,7 +437,7 @@ def _synthetic_runner_outcome(
     elif any(o.status in {"differ", "size_mismatch", "missing_current"} for o in outcomes):
         # Final overlay in :meth:`summarize` may upgrade this further;
         # we mark non-passed early so the lifecycle records the right
-        # phase status (CLAUDE §10).
+        # phase status.
         status = "failed"
     else:
         status = "passed"

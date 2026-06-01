@@ -4,7 +4,7 @@
 The fixture (``tests/golden/ts-events/sample.jsonl``) contains one
 event per line, covering every event kind in
 ``packages/shared-schema/ts-events.schema.json``. Both the Python
-parser and the TS parseEvent() consume the same bytes; CI fails if
+parser and the TS parseEvent consume the same bytes; CI fails if
 either side disagrees.
 
 Modes:

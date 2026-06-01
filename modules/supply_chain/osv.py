@@ -5,7 +5,7 @@ the public OSV API (https://api.osv.dev) via ``POST /v1/querybatch``.
 The lookup is read-only: we send package + version + ecosystem and
 parse the advisories that come back. The OSV response carries vendor
 references and CVE / GHSA ids only; we do NOT carry through any exploit
-payloads or proof-of-concept code (CLAUDE §6).
+payloads or proof-of-concept code.
 
 Offline degradation is mandatory. The README is explicit:
 "Offline degradation is ``skipped``, not ``errored``, not ``passed``."

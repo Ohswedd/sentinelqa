@@ -12,7 +12,7 @@ back through the finding payload we ONLY persist the secret category,
 match location, and a one-character-redacted preview (first 4 chars +
 ``…`` for context).
 
-CLAUDE §33: the source text itself never goes to a log or report.
+the engineering guidelines: the source text itself never goes to a log or report.
 """
 
 from __future__ import annotations

@@ -2,7 +2,7 @@
 
 Status: `Stable`
 
-Authority: project engineering rules. our product spec (Recommended Build Order — ADR triggers are implicit in the phase order).
+. our product spec (Recommended Build Order — ADR triggers are implicit in the phase order).
 
 An **ADR** records _why_ a non-obvious architectural choice was made, so the next contributor (human or agent) can extend, supersede, or revisit it with context instead of re-deriving the trade-off from first principles.
 
@@ -58,7 +58,7 @@ Use [`_template.md`](./_template.md). The required headings are validated by `sc
 | [0012](./0012-generated-test-conventions.md)              | Generated test conventions (Jinja2 templates, banner safety, TS-owned audit)                                                                                   | `Accepted` | 07    |
 | [0013](./0013-runner-architecture.md)                     | Runner architecture (local + Docker, retry, quarantine, sharding)                                                                                              | `Accepted` | 08    |
 | [0014](./0014-analyzer-rules.md)                          | Analyzer rules (categorization, root cause, repro, retry, optional LLM)                                                                                        | `Accepted` | 09    |
-| [0015](./0015-module-contract-and-functional-module.md)   | Module contract + functional module (CLAUDE §9 lifecycle + `sentinel functional`)                                                                              | `Accepted` | 10    |
+| [0015](./0015-module-contract-and-functional-module.md)   | Module contract + functional module (the engineering guidelines+ `sentinel functional`)                                                                        | `Accepted` | 10    |
 | [0016](./0016-accessibility-module.md)                    | Accessibility module — axe-core + deterministic checks (`sentinel a11y`)                                                                                       | `Accepted` | 11    |
 | [0017](./0017-performance-module.md)                      | Performance module — synthetic page/API/CPU/leak budgets (`sentinel perf`)                                                                                     | `Accepted` | 12    |
 | [0018](./0018-security-module.md)                         | Security module — safe HTTP checks, gated probes, dep + SAST adapters (`sentinel security`)                                                                    | `Accepted` | 13    |

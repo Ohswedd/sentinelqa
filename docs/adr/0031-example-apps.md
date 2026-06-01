@@ -13,7 +13,7 @@ the documentation / §32 require SentinelQA to ship runnable example apps it can
 audit in its own CI and demos. delivers that surface: a small
 but realistic Next.js + FastAPI stack with two SPA variants (React +
 Vite, Django, Flask) plus a deliberately broken Next.js app that drives
-the LLM-audit demo (the documentation). The acceptance contract is
+the LLM-audit demo. The acceptance contract is
 `make demo-<name>` for each example and a single `make demo` for the
 end-to-end stack.
 
@@ -45,6 +45,6 @@ Two cross-cutting design questions shaped the implementation:
 
 ## References
 
-- PRD section(s): the documentation (Repository structure), §11.2.1 (Example apps — delivery), §10.9 (LLM-Code Audit), §32 (Recommended Build Order), §27 (Example Generated Test).
+- the documentation section(s): the documentation (Repository structure), §11.2.1 (Example apps — delivery), §10.9 (LLM-Code Audit), §32 (Recommended Build Order), §27 (Example Generated Test).
 - our engineering rules rule(s): our engineering rules(Safety boundary), §14 (Docs), §16 (Testing standard), §17 (Quality gates), §31 (LLM-Code Audit Rules), §34 (Documentation Rules), §42 (Differentiation).
 - Related ADRs: ADR-0010 (Discovery), ADR-0024 (LLM-Code audit), ADR-0026 (Visual regression — gated CI lane pattern), ADR-0029 (Plugin architecture).

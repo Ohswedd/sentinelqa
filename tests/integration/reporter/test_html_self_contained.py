@@ -69,8 +69,7 @@ def test_html_template_has_no_external_resource_urls(
         for match in pattern.finditer(body):
             url = match.group(1).strip()
             assert not _is_external(url), (
-                f"HTML report references external URL {url!r}; "
-                "report must be offline-capable (CLAUDE §41)."
+                f"HTML report references external URL {url!r}; " "report must be offline-capable."
             )
 
 

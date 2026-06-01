@@ -105,7 +105,7 @@
     }
   },
   "additionalProperties": false,
-  "description": "A specific, evidence-backed defect observed during a run.\n\nWire format aligned with PRD \u00a718.2 (extended with the bookkeeping fields\nrequired by CLAUDE.md \u00a724: ``run_id``, ``module``, ``confidence``,\n``created_at``, ``schema_version``).",
+  "description": "A specific, evidence-backed defect observed during a run.\n\nWire format aligned with the documentation (extended with the bookkeeping fields\nrequired by the engineering guidelines: ``run_id``, ``module``, ``confidence``,\n``created_at``, ``schema_version``).",
   "properties": {
     "affected_target": {
       "anyOf": [

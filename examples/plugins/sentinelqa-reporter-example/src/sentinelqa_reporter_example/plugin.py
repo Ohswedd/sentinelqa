@@ -23,7 +23,7 @@ from sentinelqa.plugins import PluginContext
 
 
 class CsvReporter:
-    """Reference reporter plugin (PRD §22.1 "Reporter plugin")."""
+    """Reference reporter plugin reference plugin."""
 
     kind = "reporter"
     name = "csv-reporter"

@@ -1,5 +1,10 @@
 {
   "schema_version": "1",
-  "endpoints": [{ "method": "GET", "path": "/api/users" }],
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/api/users"
+    }
+  ],
   "referenced_only_paths": ["/api/imaginary"]
 }

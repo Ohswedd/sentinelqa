@@ -3,7 +3,7 @@
 JSON-RPC 2.0 reserves the ``-32700..-32600`` range for transport-level
 errors. Application errors live at ``-32001`` and carry the SentinelQA
 exit code + the original agent-message payload from
-``SentinelError.to_agent_message()`` so the agent can route on
+``SentinelError.to_agent_message`` so the agent can route on
 ``code`` deterministically.
 """
 
@@ -30,9 +30,9 @@ class ToolError(Exception):
     """An error raised by a tool implementation.
 
     ``code`` is the SentinelQA error code (e.g. ``"UNSAFE_TARGET"``).
-    ``exit_code`` follows the canonical 0..7 grid (the documentation). ``data``
+    ``exit_code`` follows the canonical 0..7 grid. ``data``
     is a redacted dict shipped inside the JSON-RPC error's ``data``
-    field — typically the output of ``SentinelError.to_agent_message()``.
+    field — typically the output of ``SentinelError.to_agent_message``.
     """
 
     def __init__(

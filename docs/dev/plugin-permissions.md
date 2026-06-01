@@ -2,7 +2,7 @@
 
 Status: `Stable`
 
-Authority: the documentation, our engineering rules-0029. Wire format pinned by
+. Wire format pinned by
 `packages/shared-schema/plugin-manifest.schema.json`.
 
 A plugin's manifest declares the runtime permissions it intends to

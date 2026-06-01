@@ -1,10 +1,9 @@
-// Phase 12 — orchestrates the per-route performance audit and writes the
+// — orchestrates the per-route performance audit and writes the
 // JSON artifacts (`<run-dir>/perf/<route-slug>.json` + `index.json`)
 // the Python module reads.
-//
 // The orchestrator accepts an injectable `launcher` so the CLI subcommand
 // can wire in Playwright in production while tests substitute a
-// deterministic stub. CLAUDE §27: the per-route artifact carries the
+// deterministic stub. the engineering guidelines: the per-route artifact carries the
 // `schema_version: "1"` envelope used by both runtimes.
 
 import { existsSync } from 'node:fs';

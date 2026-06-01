@@ -6,7 +6,7 @@ module on the process-wide :class:`engine.orchestrator.registry.ModuleRegistry`
 so audits finish without spawning Playwright. The fixture is identical
 in spirit to ``tests/integration/sdk/test_audit_against_fixture.py``.
 
-The package-scoped ``_force_gc`` fixture forces a ``gc.collect()`` after
+The package-scoped ``_force_gc`` fixture forces a ``gc.collect`` after
 each MCP test runs. Each ``Sentinel.audit`` call internally spins up a
 private ``asyncio.run(...)`` loop (the SDK wraps sync methods around the
 async ones), and Python's selectors hold a kqueue fd until the loop

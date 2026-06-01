@@ -1,4 +1,4 @@
-"""ModuleResult entity (the documentation)."""
+"""ModuleResult entity."""
 
 from __future__ import annotations
 

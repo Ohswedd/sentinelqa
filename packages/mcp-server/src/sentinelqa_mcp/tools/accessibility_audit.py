@@ -24,7 +24,7 @@ class AccessibilityAuditTool:
             description=(
                 "Run axe-core + deterministic a11y checks against `url`. "
                 "Reports automated findings only — never claims full WCAG "
-                "compliance (CLAUDE §28)."
+                "compliance."
             ),
             inputSchema={
                 "$schema": "https://json-schema.org/draft/2020-12/schema",

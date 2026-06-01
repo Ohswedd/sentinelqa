@@ -1,12 +1,11 @@
 // Cross-language parity for the JSONL protocol. The fixture is
 // produced by `scripts/export-ts-events-parity.py`; this test parses
 // every line through the TS `parseEvent` and asserts:
-//
-//   1. The fixture covers every TsEvent kind (no event lost in
-//      translation).
-//   2. The TS parser accepts every line without throwing.
-//   3. seq is monotonically increasing.
-//   4. schema_version matches PROTOCOL_VERSION on every event.
+// 1. The fixture covers every TsEvent kind (no event lost in
+// translation).
+// 2. The TS parser accepts every line without throwing.
+// 3. seq is monotonically increasing.
+// 4. schema_version matches PROTOCOL_VERSION on every event.
 
 import { readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';

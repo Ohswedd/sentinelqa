@@ -96,7 +96,7 @@ Plugins funnel through the existing error registry:
 ships the plugin loading + validation + sandbox surface and
 documents the contract. Whether and how `discover` is wired into
 `sentinel audit`'s module scheduler is a separate decision: our product spec +
-CLAUDE §22 describe the loader contract, not an automatic-scheduling
+the engineering guidelines, not an automatic-scheduling
 guarantee. Any future change that auto-runs discovered scanners as
 part of `sentinel audit` MUST ship its own ADR; nothing in this ADR
 implies such an integration is planned.
@@ -110,7 +110,7 @@ implies such an integration is planned.
 
 ## References
 
-- PRD section(s): our product spec (Plugin Architecture), the documentation (Plugin interface), the documentation (Plugin requirements).
+- the documentation section(s): our product spec (Plugin Architecture), the documentation (Plugin interface), the documentation (Plugin requirements).
 - our engineering rules rule(s): our engineering rules(Non-negotiable safety boundary), our engineering rules(Generated Test Rules — referenced via "plugin requirements"), our engineering rules(Required ADR triggers — "Plugin system"), our engineering rules(Versioning and release rules).
 - External: PEP 503 (entry points), PEP 440 (version specifiers), the `packaging` library (https://packaging.pypa.io/en/stable/specifiers.html).
 - Related ADRs: ADR-0015 (Module contract and functional module — the first-party module Protocol whose pattern the plugin `ScannerPlugin` mirrors), ADR-0021 (Public SDK surface — pinning the snapshot gate the plugin Protocols now extend).

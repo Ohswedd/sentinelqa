@@ -35,7 +35,7 @@ from engine.planner.llm_adapter import (
 PROMPT_VERSION: str = "1"
 """Bump when the locked prompt at ``llm_prompts/explainer.v1.md`` changes.
 
-Version bumps require a new ADR per CLAUDE §34.
+Version bumps require a new ADR per the engineering guidelines.
 """
 
 

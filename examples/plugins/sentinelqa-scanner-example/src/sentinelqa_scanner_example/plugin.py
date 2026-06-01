@@ -25,7 +25,7 @@ from sentinelqa.plugins import PluginContext
 
 
 class HeaderChecker:
-    """Reference scanner plugin (PRD §22.2 example)."""
+    """Reference scanner plugin reference plugin."""
 
     kind = "scanner"
     name = "header-checker"

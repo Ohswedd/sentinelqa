@@ -19,7 +19,7 @@ Mode = Literal["human", "json", "quiet"]
 
 
 def detect_ci_default() -> bool:
-    """Honor environment-driven CI detection per CLAUDE §39 and."""
+    """Honor environment-driven CI detection per the engineering guidelines"""
 
     if os.environ.get("SENTINEL_CI", "").lower() in {"1", "true", "yes"}:
         return True

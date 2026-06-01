@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Postbuild: make dist/cli.js executable with a node shebang.
-// CLAUDE.md §21 — the TS runtime is owned by Node; the bin must be
+// the engineering guidelines — the TS runtime is owned by Node; the bin must be
 // runnable directly when pnpm sets up symlinks (sentinel-ts → dist/cli.js).
 import { chmodSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';

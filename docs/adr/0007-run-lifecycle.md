@@ -20,14 +20,14 @@ ships the CLI and needs the lifecycle to exist before later module phases (05+) 
 
 ## Decision
 
-The lifecycle is implemented exactly once in `engine/orchestrator/run_lifecycle.py` as `class RunLifecycle`. The class exposes a single public entry point — `execute(config, *, requested_modules, dry_run, ci) -> TestRun` — that walks the 17 CLAUDE §10 phases in order. Each phase is a method on the class so it is independently testable and so the canonical ordering is enforced by the class structure itself.
+The lifecycle is implemented exactly once in `engine/orchestrator/run_lifecycle.py` as `class RunLifecycle`. The class exposes a single public entry point — `execute(config, *, requested_modules, dry_run, ci) -> TestRun` — that walks the 17 the engineering guidelines
 
 Module phases plug in via `engine/orchestrator/registry.py`:
 
 - `ModuleRegistry.register_module(name, factory)` registers a callable invoked during step 10 (`run_modules`).
 - `ModuleRegistry.register_phase_hook(phase, hook)` registers extra hooks for steps that intentionally aggregate from many sources (discovery, evidence, scoring, gates, reports).
 
-The lifecycle never bypasses safety. Unsafe targets short-circuit at step 4 with the run marked `unsafe_blocked` and a minimal artifact tree (audit.log + run.json). Module failures during step 10 do NOT abort the lifecycle — they are captured as `ModuleOutcome(status="errored")` and the final status becomes `incomplete`, so reports stamp the run honestly (CLAUDE §10).
+The lifecycle never bypasses safety. Unsafe targets short-circuit at step 4 with the run marked `unsafe_blocked` and a minimal artifact tree (audit.log + run.json). Module failures during step 10 do NOT abort the lifecycle — they are captured as `ModuleOutcome(status="errored")` and the final status becomes `incomplete`, so reports stamp the run honestly.
 
 `--dry-run` is honored by stopping after step 9 (`build_execution_plan`) with `status="dry_run"`. CI mode (`--ci`) is recorded in the `LifecycleContext` so modules can branch on it without re-reading global state.
 
@@ -49,6 +49,6 @@ The lifecycle never bypasses safety. Unsafe targets short-circuit at step 4 with
 
 ## References
 
-- PRD section(s): our product spec (Pillars), §12 (Workflows), §13 (CLI), §17 (Configuration), §26 (Implementation Skeleton).
+- the documentation section(s): our product spec (Pillars), §12 (Workflows), §13 (CLI), §17 (Configuration), §26 (Implementation Skeleton).
 - our engineering rules rule(s): our engineering rules(Safety boundary), §9 (Module contract), §10 (Run Lifecycle), §11 (Artifact rules), §13 (CLI rules), §39 (CI rules).
 - Related ADRs: ADR-0005 (Config schema), ADR-0006 (Safety policy).

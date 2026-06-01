@@ -1,6 +1,6 @@
 """``SecurityModule`` (, the documentation, ADR-0018).
 
-Lifecycle (CLAUDE §9):
+Lifecycle:
 
 - ``validate_prerequisites`` — no-op; missing optional binaries
  (``pip-audit`` / ``semgrep``) are surfaced by ``sentinel doctor``,

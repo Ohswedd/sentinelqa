@@ -30,7 +30,7 @@ class AgentEnvelope(BaseModel):
     - ``result`` — tool-specific payload. ``None`` ONLY when ``errors``
     is non-empty (an error envelope carries no result).
     - ``errors`` — list of redacted error agent-messages
-    (``SentinelError.to_agent_message()`` shape). Empty on success.
+    (``SentinelError.to_agent_message`` shape). Empty on success.
     - ``evidence_refs`` — relative paths beneath the run directory the
     caller can fetch with ``sentinel.read_report``. Empty when the
     tool produced no on-disk evidence.

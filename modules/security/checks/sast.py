@@ -14,7 +14,7 @@ under the ``SEC-SAST-FINDING`` rule.
 
 Like the dep-scanner adapters, the binary's absence is reported via
 ``skipped_reason`` so the operator can install semgrep deliberately
-(``CLAUDE §35``: dependencies must justify themselves; semgrep is
+(``the engineering guidelines``: dependencies must justify themselves; semgrep is
 heavy, so we never auto-install).
 """
 

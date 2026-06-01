@@ -1,15 +1,12 @@
-// Phase 11 (PRD §10.4, ADR-0016) — axe-core integration.
-//
+// (the documentation, ADR-0016) — axe-core integration.
 // The helper injects axe-core into a Playwright `Page` and runs the
 // configured rule set. The axe-core source is resolved from
 // `node_modules/axe-core/axe.min.js` at runtime — when the project has
 // not added the dependency, the helper throws a clear, typed error.
-//
 // Tests inject the source via the `axeSourceOverride` option so the
 // pure DOM + axe path is exercised without requiring axe-core to be
 // installed in the workspace's lockfile.
-//
-// CLAUDE §28: this helper never makes a full-compliance claim — it
+// the engineering guidelines: this helper never makes a full-compliance claim — it
 // returns axe violations only. Compliance language belongs to humans.
 
 import { readFile } from 'node:fs/promises';

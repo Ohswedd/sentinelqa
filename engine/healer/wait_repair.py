@@ -8,7 +8,7 @@ spec untouched.
 
 Confidence tiers:
 
-- The very next assertion is ``await expect(<L>).toBeVisible()`` or
+- The very next assertion is ``await expect(<L>).toBeVisible`` or
  ``.toHaveText(...)`` — confidence ``0.9`` (auto-apply candidate).
 - The next assertion targets a *different* locator — confidence
  ``0.6`` (requires review; the timeout may have been protecting an

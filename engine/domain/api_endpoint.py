@@ -1,4 +1,4 @@
-"""ApiEndpoint entity (the documentation)."""
+"""ApiEndpoint entity."""
 
 from __future__ import annotations
 

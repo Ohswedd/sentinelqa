@@ -40,7 +40,7 @@ Next.js-only code paths in the core.
 - **Positive:** the core stays usable for any web framework, including ones we haven't tested yet. Adopters bring their stack and the audit works.
 - **Positive:** Next.js gets a polished experience without holding other frameworks back — the framework-specific code is small and isolated.
 - **Negative / trade-off:** diff-aware test selection is less precise for frameworks without dedicated heuristics. Acceptable — the fallback runs everything; precision is an additive optimization, not a correctness requirement.
-- **Negative / trade-off:** more frameworks to keep working as the PRD evolves. Mitigated by the example-app structural tests (`tests/integration/examples/`).
+- **Negative / trade-off:** more frameworks to keep working as the the documentation evolves. Mitigated by the example-app structural tests (`tests/integration/examples/`).
 - **Follow-up obligations:** when new frameworks get tested against (e.g. Remix, SvelteKit, Astro itself), add example apps and diff-aware heuristics behind the same pattern.
 
 ## Alternatives considered

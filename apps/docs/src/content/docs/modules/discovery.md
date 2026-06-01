@@ -9,7 +9,7 @@ target, builds a typed model of routes / DOM elements / forms / APIs /
 auth boundaries, and writes `discovery.json` + `forms.json` +
 `api.json` + `auth.json` + `risk.json` + `discovery.report.md`.
 
-Authority: the documentation, ADR-0010.
+.
 
 ## Backends
 

@@ -140,7 +140,7 @@ def _safe_int(value: object) -> int:
 class Vault:
     """File-backed vault. Stateless across calls.
 
-    Construct with ``Vault()`` for production code; tests pass an
+    Construct with ``Vault`` for production code; tests pass an
     explicit ``root`` and ``key_store`` so they don't touch the user's
     real keyring or home directory.
     """
@@ -214,7 +214,7 @@ class Vault:
         Caller is responsible for prompting the operator before this
         runs (the CLI gates it behind ``--all`` + a typed confirmation).
         Does NOT touch the OS-keyring master key — call
-        ``self.key_store.reset()`` separately if needed.
+        ``self.key_store.reset`` separately if needed.
         """
 
         if not self.root.exists():

@@ -1,6 +1,6 @@
 """``AccessibilityModule`` (, the documentation, ADR-0016).
 
-Lifecycle (CLAUDE §9):
+Lifecycle:
 
 - ``validate_prerequisites`` — no-op; the sentinel-ts probe lives in
  ``execute`` so projects without an installed runtime still report
@@ -18,7 +18,7 @@ Lifecycle (CLAUDE §9):
  :class:`ModuleResult` (no Playwright tests run; no
  :class:`RunnerOutcome` exists).
 
-CLAUDE §28 is enforced everywhere: descriptions begin with "Automated
+the engineering guidelines: descriptions begin with "Automated
 accessibility check found" and full-compliance claims never appear.
 The forbidden-phrase guard in
 ``tests/security/test_no_wcag_compliance_claims.py`` greps the module
@@ -195,7 +195,7 @@ class AccessibilityModule(SentinelModule):
             return runner.run(invocation)
         except A11yRunnerError:
             # Bubble the typed error up; orchestrator records the module
-            # as errored (CLAUDE §9 partial-failure contract).
+            # as errored (the engineering guidelines-failure contract).
             raise
 
 

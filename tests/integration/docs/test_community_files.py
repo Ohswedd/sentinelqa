@@ -129,7 +129,6 @@ def test_pr_template_covers_definition_of_done() -> None:
     haystack = text.lower()
     required_markers = (
         "definition of done",
-        "prd",
         "tests",
         "conventional commits",
         "co-authored-by",

@@ -1,6 +1,6 @@
-"""Canonical run lifecycle (CLAUDE §10, ).
+"""Canonical run lifecycle.
 
-This file is the ONLY place the 17 lifecycle steps from CLAUDE §10 are
+This file is the ONLY place the 17 lifecycle steps from the engineering guidelines
 spelled out end-to-end. Module phases (05+) plug into individual steps
 via :class:`engine.orchestrator.registry.ModuleRegistry`.
 
@@ -53,7 +53,7 @@ class ModuleOutcome:
 
     When a module raises, 's analyzer classifies the error into
     one of the canonical :data:`engine.analyzer.models.FailureCategory`
-    values (rehome of CLAUDE §10's broad ``except Exception`` per task
+    values (rehome of the engineering guidelines's broad ``except Exception`` per task
     09.01). The classification is exposed through ``error_category`` /
     ``error_confidence`` / ``error_rationale`` so the reporter and SDK
     can surface *why* a module fell over instead of just "errored".
@@ -106,7 +106,7 @@ class LifecycleContext:
 
 
 class RunLifecycle:
-    """Stateless executor of the 17-step CLAUDE §10 lifecycle."""
+    """Stateless executor of the 17-step the engineering guidelines"""
 
     def __init__(
         self,
@@ -184,7 +184,7 @@ class RunLifecycle:
         self.resolve_target(context)
 
         # Step 5 — create the run id early so subsequent logging has a
-        # stable correlation id. (CLAUDE §10 lists this as step 5; we
+        # stable correlation id. (the engineering guidelines; we
         # promote it slightly so the safety audit log has a run id to
         # attach. The functional ordering is preserved — id is generated
         # before any module work.)
@@ -315,7 +315,7 @@ class RunLifecycle:
                 # real interface lands in. For we
                 # invoke and tolerate any callable. wraps the
                 # SentinelModule lifecycle: if the factory returns a
-                # SentinelModule instance we drive the seven CLAUDE §9
+                # SentinelModule instance we drive the seven the engineering guidelines
                 # steps and merge findings/metrics into the context.
                 result = factory(ctx.config, ctx.safety_decision)
                 if isinstance(result, SentinelModule):
@@ -464,7 +464,7 @@ class RunLifecycle:
             ctx.status = "failed"
         elif errored:
             # Module errors mean we didn't complete every check. Mark
-            # incomplete so reports stamp the run honestly (CLAUDE §10).
+            # incomplete so reports stamp the run honestly.
             ctx.status = "incomplete"
         else:
             ctx.status = "passed"
@@ -489,7 +489,7 @@ class RunLifecycle:
         module_name: str,
         module: Any,
     ) -> ModuleResult:
-        """Drive a :class:`SentinelModule`'s seven-step lifecycle (CLAUDE §9)."""
+        """Drive a :class:`SentinelModule`'s seven-step lifecycle."""
 
         from engine.modules.base import ModuleContext
 

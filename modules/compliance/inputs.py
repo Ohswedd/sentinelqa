@@ -3,7 +3,7 @@
 The compliance module reads optional signal files written by the
 discovery / runner phases (or by tests). Missing files yield empty
 tuples — the corresponding check simply sees no input and reports
-``skipped`` (CLAUDE §37: no fake completion).
+``skipped`` (the engineering guidelines: no fake completion).
 
 Expected layout under ``<signals_root>``:
 

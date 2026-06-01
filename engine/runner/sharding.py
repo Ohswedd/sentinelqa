@@ -8,7 +8,7 @@ no overlap, no gaps — and the union of their results, after
 :func:`merge_outcomes`, matches the single-shard outcome modulo per-test
 ordering.
 
-The hash is :func:`hashlib.sha1` (NOT Python's randomized ``hash()``) so
+The hash is :func:`hashlib.sha1` (NOT Python's randomized ``hash``) so
 the same shard split is reproducible across processes, machines, and
 Python versions (our engineering rules — deterministic outputs).
 """

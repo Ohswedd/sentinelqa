@@ -324,7 +324,7 @@ def categorize(signal: FailureSignal) -> FailureClassification:
 
 
 # ---------------------------------------------------------------------------
-# Module-error categorization (CLAUDE §10 catch-all rehome, )
+# Module-error categorization (the engineering guidelines-all rehome, )
 # ---------------------------------------------------------------------------
 
 
@@ -337,7 +337,7 @@ def categorize_module_error(
     """Categorize a module-level exception caught by ``run_modules``.
 
     's lifecycle wraps every module call in a broad ``except
-    Exception`` (CLAUDE §10) and stuffs the result into a string. Phase
+    Exception`` and stuffs the result into a string. Phase
     09 adds a typed classification so the reporter / SDK can show the
     user *why* a module fell over — not just "errored".
 

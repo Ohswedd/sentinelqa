@@ -22,7 +22,7 @@ The drafter is intentionally conservative:
 
 * Strict Conventional Commits (``type(scope)?: summary`` or ``type!: summary``)
  are recognised.
-* ``Phase NN: …`` and ``phase NN: …`` (legacy phase-merge titles used pre-)
+* ``later: …`` and ``later: …`` (legacy phase-merge titles used pre-)
  are recognised and classified as ``feat`` with scope ``phase-NN``.
 * Everything else is dropped silently — drafts never invent entries.
 
@@ -43,7 +43,7 @@ from dataclasses import dataclass
 # Conventional Commits → Keep a Changelog mapping
 # --------------------------------------------------------------------------- #
 
-# Order matters — render() preserves Keep-a-Changelog's section order.
+# Order matters — render preserves Keep-a-Changelog's section order.
 CHANGELOG_ORDER: tuple[str, ...] = (
     "Added",
     "Changed",

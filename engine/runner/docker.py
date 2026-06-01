@@ -113,7 +113,7 @@ class DockerRunner:
         return asyncio.run(self.run_async(invocation))
 
     async def run_async(self, invocation: RunnerInvocation) -> RunnerOutcome:
-        # Re-enforce safety BEFORE launching a container (CLAUDE §6, §10).
+        # Re-enforce safety BEFORE launching a container.
         audit_log = invocation.run_dir / "audit.log"
         self._policy.enforce(self._target, audit_log_path=audit_log)
 

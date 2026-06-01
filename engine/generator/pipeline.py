@@ -7,7 +7,7 @@ file paths derived from auto-generated IDs).
 
 Call shape:
 
->>> pipeline = GeneratorPipeline()
+>>> pipeline = GeneratorPipeline
 >>> result = pipeline.generate(GenerationInputs(...))
 >>> # result.files contains (Path, content) pairs; the CLI writes them.
 

@@ -4,7 +4,7 @@
 forbidden stealth-flag literals. This file is the targeted check for
 ``apps/cli/src/sentinel_cli/commands/security_cmd.py``: it imports the
 Typer command, walks its parameters, and asserts none match the
-forbidden-flag patterns (CLAUDE §6).
+forbidden-flag patterns.
 """
 
 from __future__ import annotations
@@ -55,5 +55,5 @@ def test_security_cli_has_no_forbidden_flags(pattern: re.Pattern[str]) -> None:
         if pattern.match(name):
             raise AssertionError(
                 f"Forbidden CLI option {name!r} matches {pattern.pattern!r}. "
-                "CLAUDE §6 forbids stealth/evasion flags anywhere in the product."
+                "the engineering guidelines forbids stealth/evasion flags anywhere in the product."
             )

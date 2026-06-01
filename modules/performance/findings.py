@@ -1,6 +1,6 @@
 """Translate performance evaluator violations into typed :class:`Finding` records.
 
-CLAUDE §27 is load-bearing: every description begins with
+the engineering guidelines-bearing: every description begins with
 "Synthetic performance check" so consumers cannot mistake the lab
 measurement for Real-User Monitoring. The forbidden-phrase guard in
 ``tests/security/test_synthetic_perf_labeling.py`` keeps us honest.
@@ -39,7 +39,7 @@ from modules.performance.page_budget import (
 )
 
 _LABEL = "Synthetic performance check"
-"""Required prefix on every performance finding (CLAUDE §27)."""
+"""Required prefix on every performance finding."""
 
 
 # Severity policy. Page-budget exceedances are graded by overage:
@@ -48,7 +48,7 @@ _LABEL = "Synthetic performance check"
 # CPU + bundle violations follow the same rule.
 # API latency is medium by default (one slow endpoint rarely blocks
 # release on its own) and escalates to high when overage > 100%.
-# Nav-stability is always low (it is a heuristic — CLAUDE §27).
+# Nav-stability is always low (it is a heuristic — the engineering guidelines).
 def _severity_for_overage(pct: float, *, threshold: float = 50.0) -> Severity:
     return "high" if pct > threshold else "medium"
 
@@ -222,7 +222,7 @@ def _page_budget_findings(
             f"{_format_number(v.observed, unit=unit)} across {v.samples} synthetic "
             f"load(s) on route {page.route!r}, which exceeds the configured budget "
             f"of {_format_number(v.budget, unit=unit)} by {v.overage_pct:.1f}%. "
-            "These are lab measurements (CLAUDE §27): they catch regressions "
+            "These are lab measurements: they catch regressions "
             "reliably but do not represent Real-User Monitoring data."
         )
         out.append(
@@ -273,7 +273,7 @@ def _api_latency_findings(
             f"for {v.method} {v.endpoint!r} on route {page.route!r} across "
             f"{v.samples} synthetic call(s), exceeding the configured P95 "
             f"budget of {v.budget_p95_ms}ms by {v.overage_pct:.1f}%. "
-            "These are lab measurements (CLAUDE §27): they catch regressions "
+            "These are lab measurements: they catch regressions "
             "but do not represent Real-User Monitoring data."
         )
         out.append(
@@ -327,7 +327,7 @@ def _bundle_size_finding(
         f"{violation.file_count} file(s) on route {page.route!r}, exceeding the "
         f"configured budget of {violation.budget_kb}KB by {violation.overage_pct:.1f}%. "
         "Transfer size is wire bytes (post-compression). These are lab "
-        "measurements (CLAUDE §27): the budget is a release-confidence proxy, "
+        "measurements: the budget is a release-confidence proxy, "
         "not a real-user telemetry reading."
     )
     return Finding(
@@ -378,7 +378,7 @@ def _long_task_finding(
         f"route {page.route!r} (longest single task: {violation.longest_ms:.0f}ms), "
         f"exceeding the configured budget of {violation.budget_ms}ms by "
         f"{violation.overage_pct:.1f}%. These are lab measurements "
-        "(CLAUDE §27): a blocked headless main thread is a real signal but "
+        ": a blocked headless main thread is a real signal but "
         "not the same as a blocked main thread on a constrained user device."
     )
     return Finding(
@@ -434,7 +434,7 @@ def _nav_stability_findings(
             f"{_LABEL} observed {v.metric.upper() if v.metric == 'dom' else 'JS heap'} "
             f"growth of {v.observed_pct:.1f}% across {v.samples} synthetic visits "
             f"to route {page.route!r}, exceeding the configured tolerance of "
-            f"{v.threshold_pct:.1f}%. This is a heuristic (CLAUDE §27) — small "
+            f"{v.threshold_pct:.1f}%. This is a heuristic — small "
             "growth is normal as caches warm; investigate dangling listeners, "
             "detached DOM trees, or unbounded in-memory state."
         )

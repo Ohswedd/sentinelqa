@@ -11,7 +11,7 @@ Accepted
 
 our product spec Open Question #2 asked whether generated Playwright tests
 should live in the user's repository or under `.sentinel/generated/`.
-The PRD's recommended answer was "in the user repo with clear
+The the documentation's recommended answer was "in the user repo with clear
 generated-file markers," and the generator (ADR-0012) shipped
 specs to `tests/sentinel/` with a mandatory banner.
 

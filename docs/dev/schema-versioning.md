@@ -2,7 +2,7 @@
 
 Status: `Stable`
 
-Authority: project engineering rules.md` §15.4 (Stable schemas), our engineering rules(Required ADRs), our engineering rules(Versioning & release rules), our product spec/ §20.
+.md` §15.4 (Stable schemas), our engineering rules(Required ADRs), our engineering rules(Versioning & release rules), our product spec/ §20.
 
 This page is the contract for every machine-readable artifact SentinelQA emits or consumes — `run.json`, `findings.json`, `score.json`, the `RootConfig` accepted by the loader, the healer's `RepairSuggestion`, and the agent-message envelope. Skipping any rule here is a our engineering rules violation, not a style nit.
 

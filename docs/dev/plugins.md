@@ -2,7 +2,6 @@
 
 Status: `Stable`
 
-Authority: our product spec (Plugin architecture), our engineering rules-0029
 (Plugin architecture — entry-point discovery, capability/permission
 declarations, subprocess sandbox).
 

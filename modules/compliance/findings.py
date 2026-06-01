@@ -95,8 +95,7 @@ _SOC2_RECOMMENDATION: dict[Soc2Category, str] = {
         "values, and high-entropy tokens before flushing."
     ),
     "trail-missing-safety-decision": (
-        "Ensure the safety policy enforcer writes its decision to the "
-        "audit log on every run (CLAUDE §6, §10)."
+        "Ensure the safety policy enforcer writes its decision to the " "audit log on every run."
     ),
     "trail-missing-module-event": (
         "Ensure every module the run loaded emits paired module_start / "

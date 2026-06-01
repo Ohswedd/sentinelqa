@@ -11,7 +11,7 @@ credentials, missing CRUD edges, missing loading / error states.
 
 This module is the SentinelQA differentiator.
 
-Authority: the documentation, ADR-0024.
+.
 
 ## Sixteen detectors
 

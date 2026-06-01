@@ -3,7 +3,7 @@
 Every error raised by the SDK at a public boundary is a subclass of
 :class:`SentinelError`. Each has a stable ``code`` (e.g. ``E-CFG-001``),
 a CLI-style ``exit_code`` for symmetry with the CLI, and a
-``to_agent_message()`` method that returns a redacted, schema-versioned
+``to_agent_message`` method that returns a redacted, schema-versioned
 dict suitable for round-tripping to and from an LLM.
 
 This module is the **only** public surface for errors. The SDK root

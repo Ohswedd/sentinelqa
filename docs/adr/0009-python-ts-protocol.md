@@ -43,7 +43,7 @@ events` in `engine/orchestrator/ts_bridge.py`).
 3. **Schema authority.** `packages/shared-schema/ts-events.schema.json` (Draft 2020-12). The TS emitter writes against it; the Python parser is hand-aligned and CI verifies both halves accept the same fixture (`tests/golden/ts-events/sample.jsonl`). Same pattern as `packages/shared-schema/redaction-rules.json`: Python owns the canonical rule set and TS mirrors it from the exported JSON; CI's `--check` mode is the single drift gate (`scripts/export-
 redaction-rules.py`).
 4. **Versioning.** `PROTOCOL_VERSION` is a string constant in both languages. The Python parity test grep-asserts the TS constant matches. A schema change requires bumping `PROTOCOL_VERSION` and landing a new ADR (this ADR's successor). Within a major version, additive fields are allowed and Python's parser ignores unknown keys at the envelope; required-field drift is the failure mode the parity test catches.
-5. **Exit codes.** `sentinel-ts run` returns 0 (all pass), 1 (≥1 test failed/timed out), 2 (Playwright crashed / config invalid / spawn failed), 7 (sync dispatch hit an async command — programmer error). These map to the documentation / CLAUDE §13's exit-code grid.
+5. **Exit codes.** `sentinel-ts run` returns 0 (all pass), 1 (≥1 test failed/timed out), 2 (Playwright crashed / config invalid / spawn failed), 7 (sync dispatch hit an async command — programmer error). These map to the documentation / the engineering guidelines's exit-code grid.
 6. **Reporter wiring.** A Playwright `--reporter=<path>` plugin (`packages/ts-runtime/src/reporter.ts`) translates Playwright's callbacks (`onBegin`, `onTestBegin`, `onStepBegin`, `onStepEnd`, `onTestEnd`, `onEnd`) into our events. `printsToStdio: true` so Playwright suppresses its own default reporter output and our JSONL stream stays clean.
 7. **Package layout.** A single workspace package (`@sentinelqa/ts-runtime`) owns three subpath exports (`./protocol`, `./playwright`, `./locators`) so (Generator) and (Healer) consume only what they need without dragging in the runner CLI. The single-package decision (rather than a split `@sentinelqa/playwright-helpers`) keeps the build pipeline / typecheck / vitest config single-source.
 8. **Redaction symmetry.** Every event payload passes through the redaction layer **before** emission. The TS layer (`packages/ts-runtime/src/redact.ts`) loads `packages/shared-schema/redaction-rules.json` at module init; CI re-runs `scripts/export-redaction-rules.py --check` and a 19-record byte-parity fixture proves the two implementations agree on strings / dict values / headers (URL byte-form parity is out of scope — URL class lowercases the hostname, the behaviour is tested separately).
@@ -73,13 +73,13 @@ redaction-rules.py`).
 
 - **JSON-RPC over stdio.** Rejected: request/response semantics don't match the "Playwright tells us, we observe" data flow; introduces RPC framing overhead for every step event.
 - **gRPC / Unix domain socket.** Rejected: cross-platform pain (Windows), runtime/protobuf dependency, vastly more complex versioning for a problem that doesn't need bi-directional streaming.
-- **Free-form `console.log` strings parsed by regex.** Rejected on CLAUDE §38 grounds: machine-readable reports must be schema-stable and versioned. Regex-on-string is the opposite.
+- **Free-form `console.log` strings parsed by regex.** Rejected on the engineering guidelines: machine-readable reports must be schema-stable and versioned. Regex-on-string is the opposite.
 - **Single Python process driving Playwright via `playwright-python`.** Rejected: doubles the source of truth (now both `playwright-python` and `@playwright/test` need to agree on locator semantics), and the Healer wants to consume Playwright's accessibility snapshot API which is more mature in the TS runtime.
 - **Split `@sentinelqa/playwright-helpers` package.** Rejected as premature: a second workspace package doubles the build/test/lint surface for no consumer the project ships in. Re-evaluate if/when's Generator wants its own helper subset.
 
 ## References
 
-- PRD section(s): the documentation Runner, §11 Architecture, §15 TS Runtime, §20 Evidence and Reporting.
+- the documentation section(s): the documentation Runner, §11 Architecture, §15 TS Runtime, §20 Evidence and Reporting.
 - our engineering rules rule(s): our engineering rules§8 Runtime ownership, §11 Artifact and data rules, §13 CLI rules, §21 TS / Playwright rules, §33 Logging and secrets, §39 CI.
 - Schema files: - `packages/shared-schema/ts-events.schema.json` - `packages/shared-schema/redaction-rules.json`
 - Code: - `packages/ts-runtime/src/protocol.ts` (TS emitter + parser) - `engine/orchestrator/ts_bridge.py` (Python parser) - `packages/ts-runtime/src/reporter.ts` (Playwright → JSONL) - `packages/ts-runtime/src/runner.ts` (spawn + lifecycle)

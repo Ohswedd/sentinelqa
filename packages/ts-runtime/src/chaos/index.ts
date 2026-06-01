@@ -1,5 +1,4 @@
-// Phase 23 — chaos helper re-exports.
-//
+// — chaos helper re-exports.
 // Importing `@sentinelqa/ts-runtime/chaos` gives a Playwright test the
 // full helper surface for the four scenario categories (network /
 // session / ux / data).

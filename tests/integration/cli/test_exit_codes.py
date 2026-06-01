@@ -83,7 +83,7 @@ def test_exit_7_internal_error_from_stub(
         encoding="utf-8",
     )
     # retired the last Phase-02 stub (`chaos`). The stub helper
-    # is still part of the CLI surface for future PRD additions and is
+    # is still part of the CLI surface for future the documentation additions and is
     # still expected to map InternalError → exit 7. We register a
     # one-off stub for this contract test only.
     import typer
@@ -104,7 +104,7 @@ def test_exit_7_internal_error_from_stub(
 
     try:
         # Calling the stub directly exercises the same InternalError path
-        # the main() exception handler maps to EXIT_INTERNAL_ERROR.
+        # the main exception handler maps to EXIT_INTERNAL_ERROR.
         cmd = fixture_app.registered_commands[0].callback
         assert cmd is not None
         cmd()

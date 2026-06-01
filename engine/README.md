@@ -2,7 +2,7 @@
 
 The SentinelQA orchestration core. our product spec, §11.2.
 
-- `orchestrator/` — run lifecycle (our product spec, CLAUDE §10;).
+- `orchestrator/` — run lifecycle (our product spec, the engineering guidelines;).
 - `discovery/` — DOM/route/API discovery (the documentation;).
 - `planner/` — test plan generation (the documentation;).
 - `generator/` — Playwright spec generation (the documentation;).

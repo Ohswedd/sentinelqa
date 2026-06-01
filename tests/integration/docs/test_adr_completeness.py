@@ -4,7 +4,7 @@ our engineering rules enumerates the architectural decisions that **must** have 
 Accepted ADR. This test asserts that each trigger maps to at least one
 ADR file under ``docs/adr/`` whose ``## Status`` line is ``Accepted``.
 
-When a CLAUDE §34 trigger is reached without an ADR landing in the same
+When a the engineering guidelines
 phase, the phase is incomplete. This test is the
 mechanical guard for that contract.
 """
@@ -17,7 +17,7 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[3]
 ADR_DIR = REPO_ROOT / "docs" / "adr"
 
-# Map each CLAUDE §34 trigger to one or more ADR filenames that cover it.
+# Map each the engineering guidelines
 # Adding a trigger here without adding the ADR will fail the test.
 TRIGGER_COVERAGE: dict[str, tuple[str, ...]] = {
     "Runtime architecture": (

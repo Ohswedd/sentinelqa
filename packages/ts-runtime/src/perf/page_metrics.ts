@@ -1,11 +1,9 @@
-// Phase 12.02 — collect synthetic page-level performance metrics.
-//
+// — collect synthetic page-level performance metrics.
 // `collectPageMetrics` is called once per (route, sample) pair. It
 // installs PerformanceObservers BEFORE navigation, navigates, waits
 // for the page to be idle, and reads the metrics back. The returned
 // shape mirrors Pydantic's PageMetricSample.
-//
-// CLAUDE §27: these are synthetic lab measurements; they are never
+// the engineering guidelines: these are synthetic lab measurements; they are never
 // Real-User Monitoring. The Python side carries that label through
 // to the user.
 

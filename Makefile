@@ -1,6 +1,6 @@
 # SentinelQA — top-level developer task runner.
-# Targets are intentionally thin wrappers so CI and humans run the same commands
-# (CLAUDE.md §17, §39). Portable across macOS (BSD make 3.81) and Linux (GNU make).
+# Targets are intentionally thin wrappers so CI and humans run the same
+# commands. Portable across macOS (BSD make 3.81) and Linux (GNU make).
 
 .DEFAULT_GOAL := help
 

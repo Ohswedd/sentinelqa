@@ -6,7 +6,7 @@ the ``llm_audit`` module so the lifecycle steps (safety policy,
 artifact tree, reporter dispatch, exit-code mapping) run whether the
 user types ``sentinel audit`` or ``sentinel llm-audit``.
 
-Exit codes (CLAUDE §13):
+Exit codes:
 
 - ``0`` — no high/critical findings.
 - ``1`` — quality gate failed (high/critical findings).

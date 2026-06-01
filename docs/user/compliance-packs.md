@@ -8,7 +8,7 @@ GDPR baseline, CCPA baseline, SOC 2 trail). Packs give CI/CD pipelines
 a one-flag way to run the relevant subset of checks for a given
 audit posture, without hand-wiring `--modules` or per-module options.
 
-> **Wording rule (CLAUDE §28).** Pack labels say "(automated)". The
+> **Wording rule.** Pack labels say "(automated)". The
 > packs never claim a target is _compliant_ — only that the
 > automated checks ran.
 
@@ -95,7 +95,7 @@ The merged compliance module gets:
 
 The compliance module reads optional signal files written by the
 discovery / runner phases. Missing signals → the corresponding
-sub-check reports `skipped` (no fake completion per CLAUDE §37).
+sub-check reports `skipped` (no fake completion per the engineering guidelines).
 
 | Signal file path                           | Consumed by  |
 | ------------------------------------------ | ------------ |

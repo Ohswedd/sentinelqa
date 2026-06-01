@@ -2,7 +2,7 @@
 
 Status: `Stable`
 
-Authority: project engineering rules.md`§14 (SDK rules),`docs/dev/schema-versioning.md` (independent integer-major schema versions).
+.md`§14 (SDK rules),`docs/dev/schema-versioning.md` (independent integer-major schema versions).
 
 This page is the contract for how SentinelQA versions its published artefacts. It is read alongside `docs/dev/schema-versioning.md` (which governs the integer-major versions baked into every JSON artifact) and the SDK API snapshot at `packages/python-sdk/api-snapshot.json`. Skipping any rule here is a our engineering rules
 
@@ -21,7 +21,7 @@ All Python distributions are licensed Apache-2.0. The TS distributions follow th
 Until the first **1.0.0** tag is published, the project is pre-1.0 and the following apply:
 
 1. **Breaking changes are allowed in minor versions.** A breaking change is anything that would break a downstream consumer who has pinned the previous minor — removed CLI flag, renamed SDK symbol, changed exit-code mapping, removed config key, removed report field, etc.
-2. **Every breaking change must be documented.** A breaking change requires: - A `### Removed` or `### Changed` entry in `CHANGELOG.md` at the version that introduces it. - If it affects an architectural decision listed in our engineering rules - If it affects a documented PRD contract (CLI in §13, SDK in §14, MCP in §16, reports in §20, lifecycle in §10, …), an explicit PRD edit in the same branch. - For the Python SDK specifically: a refreshed `packages/python-sdk/api-snapshot.json` and a one-line entry in `packages/python-sdk/__deprecation_policy.md`.
+2. **Every breaking change must be documented.** A breaking change requires: - A `### Removed` or `### Changed` entry in `CHANGELOG.md` at the version that introduces it. - If it affects an architectural decision listed in our engineering rules - If it affects a documented the documentation contract (CLI in §13, SDK in §14, MCP in §16, reports in §20, lifecycle in §10, …), an explicit the documentation edit in the same branch. - For the Python SDK specifically: a refreshed `packages/python-sdk/api-snapshot.json` and a one-line entry in `packages/python-sdk/__deprecation_policy.md`.
 3. **No silent breaks.** A breaking change that ships without all of the above is a regression, not a release. The pre-1.0 review blocks any tag that fails this check.
 4. **Patch versions are always backwards-compatible.** A `0.X.Y → 0.X.(Y+1)` bump must not break anything documented.
 5. **Version numbers move forward only.** No re-cutting a tag. A bad release is yanked and a new patch is cut.

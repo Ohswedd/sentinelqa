@@ -2,13 +2,17 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://schemas.sentinelqa.dev/plan.schema.json",
   "title": "SentinelQA Test Plan Envelope",
-  "description": "Top-level wire format for `.sentinel/runs/<run-id>/plan.json`. PRD §9.2, §18; CLAUDE.md §11, §15.",
+  "description": "Top-level wire format for `.sentinel/runs/<run-id>/plan.json`. the documentation, §18; the engineering guidelines, §15.",
   "type": "object",
   "additionalProperties": false,
   "required": ["schema_version", "plan"],
   "properties": {
-    "schema_version": { "const": "1" },
-    "plan": { "$ref": "#/$defs/TestPlan" }
+    "schema_version": {
+      "const": "1"
+    },
+    "plan": {
+      "$ref": "#/$defs/TestPlan"
+    }
   },
   "$defs": {
     "TestPlan": {
@@ -26,21 +30,45 @@
         "schema_version"
       ],
       "properties": {
-        "id": { "type": "string", "pattern": "^PLN-[A-Z0-9]{12}$" },
-        "run_id": { "type": "string", "pattern": "^RUN-[A-Z0-9]{12}$" },
-        "discovery_graph_id": { "type": "string", "pattern": "^DG-[A-Z0-9]{12}$" },
-        "risk_map_id": { "type": "string", "pattern": "^RM-[A-Z0-9]{12}$" },
-        "target_url": { "type": "string", "minLength": 1, "maxLength": 2048 },
-        "schema_version": { "const": "1" },
+        "id": {
+          "type": "string",
+          "pattern": "^PLN-[A-Z0-9]{12}$"
+        },
+        "run_id": {
+          "type": "string",
+          "pattern": "^RUN-[A-Z0-9]{12}$"
+        },
+        "discovery_graph_id": {
+          "type": "string",
+          "pattern": "^DG-[A-Z0-9]{12}$"
+        },
+        "risk_map_id": {
+          "type": "string",
+          "pattern": "^RM-[A-Z0-9]{12}$"
+        },
+        "target_url": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        "schema_version": {
+          "const": "1"
+        },
         "flows": {
           "type": "array",
-          "items": { "$ref": "#/$defs/Flow" }
+          "items": {
+            "$ref": "#/$defs/Flow"
+          }
         },
         "test_cases": {
           "type": "array",
-          "items": { "$ref": "#/$defs/TestCase" }
+          "items": {
+            "$ref": "#/$defs/TestCase"
+          }
         },
-        "coverage_estimate": { "$ref": "#/$defs/CoverageEstimate" }
+        "coverage_estimate": {
+          "$ref": "#/$defs/CoverageEstimate"
+        }
       }
     },
     "Flow": {
@@ -57,26 +85,61 @@
         "schema_version"
       ],
       "properties": {
-        "id": { "type": "string", "pattern": "^FLW-[A-Z0-9]{12}$" },
-        "name": { "type": "string", "minLength": 1, "maxLength": 200 },
-        "description": { "type": "string", "maxLength": 2000 },
-        "extractor": { "type": "string", "maxLength": 64 },
-        "source": { "enum": ["deterministic", "llm"] },
-        "priority": { "enum": ["P0", "P1", "P2", "P3"] },
-        "risk": { "enum": ["critical", "high", "medium", "low"] },
-        "confidence": { "type": "number", "minimum": 0.0, "maximum": 1.0 },
-        "required_auth_role": { "type": ["string", "null"], "maxLength": 64 },
-        "required_data_state": { "type": ["string", "null"], "maxLength": 200 },
+        "id": {
+          "type": "string",
+          "pattern": "^FLW-[A-Z0-9]{12}$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 2000
+        },
+        "extractor": {
+          "type": "string",
+          "maxLength": 64
+        },
+        "source": {
+          "enum": ["deterministic", "llm"]
+        },
+        "priority": {
+          "enum": ["P0", "P1", "P2", "P3"]
+        },
+        "risk": {
+          "enum": ["critical", "high", "medium", "low"]
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0
+        },
+        "required_auth_role": {
+          "type": ["string", "null"],
+          "maxLength": 64
+        },
+        "required_data_state": {
+          "type": ["string", "null"],
+          "maxLength": 200
+        },
         "tags": {
           "type": "array",
-          "items": { "type": "string" }
+          "items": {
+            "type": "string"
+          }
         },
         "steps": {
           "type": "array",
           "minItems": 1,
-          "items": { "$ref": "#/$defs/FlowStep" }
+          "items": {
+            "$ref": "#/$defs/FlowStep"
+          }
         },
-        "schema_version": { "const": "1" }
+        "schema_version": {
+          "const": "1"
+        }
       }
     },
     "FlowStep": {
@@ -84,8 +147,16 @@
       "additionalProperties": false,
       "required": ["description", "expected_outcome"],
       "properties": {
-        "description": { "type": "string", "minLength": 1, "maxLength": 2000 },
-        "expected_outcome": { "type": "string", "minLength": 1, "maxLength": 2000 },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "expected_outcome": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
         "target_route_id": {
           "type": ["string", "null"],
           "pattern": "^RT-[A-Z0-9]{12}$"
@@ -101,9 +172,19 @@
       "additionalProperties": false,
       "required": ["id", "flow_id", "file_path", "test_type", "confidence", "schema_version"],
       "properties": {
-        "id": { "type": "string", "pattern": "^TC-[A-Z0-9]{12}$" },
-        "flow_id": { "type": "string", "pattern": "^FLW-[A-Z0-9]{12}$" },
-        "file_path": { "type": "string", "minLength": 1, "maxLength": 4096 },
+        "id": {
+          "type": "string",
+          "pattern": "^TC-[A-Z0-9]{12}$"
+        },
+        "flow_id": {
+          "type": "string",
+          "pattern": "^FLW-[A-Z0-9]{12}$"
+        },
+        "file_path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
         "test_type": {
           "enum": [
             "functional",
@@ -129,8 +210,14 @@
             "llm_audit"
           ]
         },
-        "confidence": { "type": "number", "minimum": 0.0, "maximum": 1.0 },
-        "schema_version": { "const": "1" }
+        "confidence": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0
+        },
+        "schema_version": {
+          "const": "1"
+        }
       }
     },
     "CoverageEstimate": {
@@ -140,10 +227,18 @@
       "properties": {
         "by_module": {
           "type": "object",
-          "additionalProperties": { "type": "integer", "minimum": 0 }
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          }
         },
-        "total": { "type": "integer", "minimum": 0 },
-        "schema_version": { "const": "1" }
+        "total": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "schema_version": {
+          "const": "1"
+        }
       }
     }
   }

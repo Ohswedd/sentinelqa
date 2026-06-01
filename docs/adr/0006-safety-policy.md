@@ -57,7 +57,7 @@ Forbidden by construction (NOT just by convention):
 
 ## References
 
-- PRD section(s): our product spec (Safety & Legal Boundary), our product spec (Threat Model), our product spec (Security Module rules), our product spec (Data Model — Target).
+- the documentation section(s): our product spec (Safety & Legal Boundary), our product spec (Threat Model), our product spec (Security Module rules), our product spec (Data Model — Target).
 - our engineering rules rule(s): our engineering rules(Safety boundary), our engineering rules(Security module rules), our engineering rules(Error handling — typed errors with codes), our engineering rules(Required ADR triggers — "Security policy").
 - External: OWASP Web Security Testing Guide (authorization-scoped DAST principles).
 - Related ADRs: ADR-0005 (Config schema — owns `target.proof_of_authorization` field), ADR-0001 (Repository structure — `engine/policy/` location).

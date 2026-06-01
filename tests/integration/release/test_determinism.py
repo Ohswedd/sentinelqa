@@ -1,7 +1,7 @@
 """determinism audit over the reporter pipeline.
 
 our engineering rules.8 / §19 require that the score and findings outputs be
-reproducible. The expensive PRD test would be ``sentinel audit`` against the
+reproducible. The expensive the documentation test would be ``sentinel audit`` against the
 Next.js example three times in a row, but that brings a Node/Playwright stack
 into CI and adds wall-clock latency without testing anything new on top of
 the reporter writers — those are the layer that converts in-memory domain

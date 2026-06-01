@@ -2,7 +2,7 @@
 
 The subprocess sandbox tests already exercise the worker end-to-end,
 but coverage doesn't see lines run in a child interpreter. This file
-calls ``main()`` in-process with stdin/stdout monkey-patched so the
+calls ``main`` in-process with stdin/stdout monkey-patched so the
 worker's branches are visible to ``coverage.py``.
 """
 

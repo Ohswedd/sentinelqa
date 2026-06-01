@@ -197,7 +197,7 @@ def test_generate_blocked_when_target_unsafe(
 ) -> None:
     monkeypatch.chdir(fresh_project)
     # Public target with no allowlist → SafetyPolicy must reject (exit 4).
-    # We invoke main() so the outermost SentinelError handler maps the
+    # We invoke main so the outermost SentinelError handler maps the
     # raised UnsafeTargetError to its deterministic exit code.
     write_config(fresh_project, base_url="http://localhost:3000")
     from sentinel_cli.main import main

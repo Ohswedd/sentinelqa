@@ -254,7 +254,7 @@ def _rerender(run_dir: Path, formats: set[str]) -> dict[str, Path]:
     )
     # Re-render does NOT write audit-log entries: the audit log is a
     # one-shot record of the original run's safety + module decisions
-    # (CLAUDE §11). Adding fresh `artifact_emitted` lines here would
+    # . Adding fresh `artifact_emitted` lines here would
     # both break idempotency (each re-render adds entries) and lie
     # about when the original run made those decisions.
     return reporter.emit(

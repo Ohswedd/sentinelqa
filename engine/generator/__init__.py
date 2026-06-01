@@ -1,4 +1,4 @@
-"""SentinelQA generator module (the documentation).
+"""SentinelQA generator module.
 
 Turns a :class:`engine.domain.TestPlan` into idiomatic Playwright spec
 files, page-object classes, fixtures, and a human-readable generated

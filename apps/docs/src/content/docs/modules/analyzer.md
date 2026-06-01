@@ -9,7 +9,7 @@ Eleven categorization rules map every failure onto the closed
 the documentation ten-category set; the highest-confidence match wins; lower
 matches are preserved as `secondary`.
 
-Authority: the documentation, ADR-0014.
+.
 
 ## Categories
 

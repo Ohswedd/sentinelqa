@@ -99,7 +99,7 @@ class SarifRuleRegistry:
 
 
 # Process-wide registry; module phases append to it. Tests build a fresh
-# registry via ``SarifRuleRegistry()`` rather than mutating this one.
+# registry via ``SarifRuleRegistry`` rather than mutating this one.
 _DEFAULT_REGISTRY = SarifRuleRegistry()
 
 

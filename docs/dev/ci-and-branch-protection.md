@@ -2,7 +2,7 @@
 
 Status: `Stable`
 
-Authority: project engineering rules. our product spec (CI/CD requirements).
+. our product spec (CI/CD requirements).
 
 This doc captures the required GitHub-side configuration. The workflow files themselves live under `.github/workflows/`; this doc tells the repo administrator what to wire up in the GitHub UI on top of them.
 

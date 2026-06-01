@@ -2,7 +2,7 @@
 
 Status: `Stable`
 
-Authority: our engineering rules (SDK rules), §40 (Versioning and release rules), our product spec, ADR-0021.
+.
 
 The SDK's **public surface** is everything you can import via:
 

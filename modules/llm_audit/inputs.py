@@ -10,14 +10,13 @@ discovery output:
 * ``llm_audit/signals.json`` — optional structured signal bundle for
  the checks that need runtime evidence (storage dumps, console
  entries, loading/error probes, validation probes, button activity).
- Tests construct this file directly; later phases (healer,
- chaos) can extend the writer.
+ Tests construct this file directly; callers can extend the writer.
 * ``llm_audit/source_files.json`` — optional source-file bodies for the
  hardcoded-credential scanner. Production wiring builds this from
  ``config.source.root`` when present.
 
 Missing files yield empty tuples — the corresponding checks see no
-input and emit no findings (CLAUDE §37: no fake completion).
+input and emit no findings (the engineering guidelines: no fake completion).
 """
 
 from __future__ import annotations

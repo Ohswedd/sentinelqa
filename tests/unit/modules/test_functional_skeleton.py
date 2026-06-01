@@ -172,7 +172,7 @@ def test_validate_prerequisites_is_noop_with_default_factory(tmp_path: Path) -> 
     ctx = _build_ctx(tmp_path)
     module = FunctionalModule(ctx.config, ctx.safety_decision)
     # validate_prerequisites is intentionally a no-op (the sentinel-ts
-    # probe was moved inside execute() — see modules/functional/module.py).
+    # probe was moved inside execute — see modules/functional/module.py).
     module.validate_prerequisites(ctx)
 
 

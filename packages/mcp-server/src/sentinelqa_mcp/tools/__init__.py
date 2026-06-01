@@ -3,7 +3,7 @@
 Each tool ships in its own module and registers itself by name with a
 :class:`SentinelToolset`. The base :class:`Tool` Protocol enforces:
 
-- A name matching ``sentinel.<lower_snake>`` (the documentation).
+- A name matching ``sentinel.<lower_snake>``.
 - A JSON Schema describing the arguments.
 - An ``invoke`` coroutine that returns an :class:`AgentEnvelope`.
 

@@ -63,7 +63,7 @@ def test_spec_round_trips_minimum_playwright_imports():
         steps=(StepRecord(step_id="s1", name="goto /", duration_ms=10, ok=True),),
     )
     spec = build_repro_spec(signal, base_url="http://localhost:3000", finding_id="FND-0001")
-    # Imports + test() shape only — Playwright TS will reject anything else.
+    # Imports + test shape only — Playwright TS will reject anything else.
     assert 'import { test, expect } from "@playwright/test";' in spec
     assert 'test("repro: basic smoke", async ({ page }) => {' in spec
     assert "await page.goto(" in spec

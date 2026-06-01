@@ -17,7 +17,7 @@ submit button, or a clearly marked toggle). Targets that show a
 generic privacy policy without the form → ``do-not-sell-link-opt-out-missing``.
 
 The CCPA detector is deliberately conservative — heuristics, not
-NLP. It mirrors the wording rule in CLAUDE §28: descriptions begin
+NLP. It mirrors the wording rule in the engineering guidelines: descriptions begin
 *"Automated CCPA check found …"*; the module never claims legal
 CCPA conformance.
 """

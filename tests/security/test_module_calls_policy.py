@@ -9,7 +9,7 @@ This guard reads the AST of every ``run_*`` function in
  when destructive mode is off) are allowed to refuse the policy check.
 
 This makes it impossible to land a probe that forgets to enforce the
-safety boundary (CLAUDE §6 / §26).
+safety boundary.
 """
 
 from __future__ import annotations
@@ -132,5 +132,5 @@ def test_security_check_starts_with_policy_enforce(path: Path) -> None:
             f"{path.name}::{func.name} does not begin with "
             "`SafetyPolicy().enforce(...)`. Every security probe must "
             "re-enforce the safety boundary at the entry-point "
-            "(CLAUDE §6, §26)."
+            "."
         )

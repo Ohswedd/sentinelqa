@@ -15,7 +15,7 @@ Three deterministic checks:
  the user to drill into a settings panel to reject are flagged as
  ``gdpr:EDPB-03/2022`` / ``asymmetric-consent``.
 
-CLAUDE §28 wording rule: descriptions begin with *"Automated GDPR
+the engineering guidelines: descriptions begin with *"Automated GDPR
 check found …"* — never claim legal GDPR conformance.
 """
 

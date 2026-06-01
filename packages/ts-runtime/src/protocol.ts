@@ -3,12 +3,11 @@
 // contract (frozen in task 04.04; this module emits against that
 // contract). Python parses these events via
 // `engine/orchestrator/ts_bridge.py`.
-//
 // Every event carries:
-//   schema_version  bumped via PROTOCOL_VERSION
-//   seq             monotonic int per emitter
-//   ts              RFC 3339 UTC timestamp
-//   type            discriminator
+// schema_version bumped via PROTOCOL_VERSION
+// seq monotonic int per emitter
+// ts RFC 3339 UTC timestamp
+// type discriminator
 // plus a `type`-specific payload.
 
 import { stdout } from 'node:process';
@@ -141,7 +140,7 @@ export interface ErrorEvent extends BaseEvent<'error'> {
   readonly stack?: string;
 }
 
-// Phase 17 task 07 — Playwright discovery backend (ADR-0010 follow-up).
+// task 07 — Playwright discovery backend (ADR-0010 follow-up).
 export type EndpointSource = 'request' | 'response' | 'introspection';
 
 export interface DiscoveryPageEvent extends BaseEvent<'discovery.page'> {
@@ -208,7 +207,7 @@ export interface EmitterOptions {
 
 /**
  * Stateful, ordered emitter for JSONL events. Each `emit*` call bumps
- * `seq`. Construct one per run; the runner (Phase 04.03) owns the
+ * `seq`. Construct one per run; the runner () owns the
  * singleton.
  */
 export class EventEmitter {

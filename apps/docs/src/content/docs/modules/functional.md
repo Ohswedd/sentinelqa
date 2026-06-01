@@ -8,7 +8,7 @@ status: Stable
 them through the [Runner](/modules/runner/), and translates failed
 executions into typed findings with our product spec evidence.
 
-Authority: the documentation, ADR-0015.
+.
 
 ## Modes
 

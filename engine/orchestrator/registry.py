@@ -2,7 +2,7 @@
 
 Modules and per-phase hooks register themselves via factories so the
 canonical lifecycle in :mod:`engine.orchestrator.run_lifecycle` stays
-the *only* place the 17 CLAUDE §10 steps are spelled out. Later phases
+the *only* place the 17 the engineering guidelines
 (05+) call :func:`default_registry.register_module(...)`;
 will replace this with an entry-point discovery mechanism.
 """
@@ -19,7 +19,7 @@ if TYPE_CHECKING:
 
 
 class LifecyclePhase(str, Enum):
-    """The 17 phases of CLAUDE §10 (Run Lifecycle)."""
+    """The 17 phases of the engineering guidelines(Run Lifecycle)."""
 
     LOAD_CONFIG = "load_config"
     VALIDATE_CONFIG = "validate_config"
@@ -74,7 +74,7 @@ class ModuleRegistry:
         Also clears the per-hook sentinel flags (``_reporter_hook_registered``,
         ``_scoring_hooks_registered``) so the next ``RunLifecycle``
         constructor re-registers the default hooks. Without this, a
-        ``clear()`` between tests strips the hooks from ``phase_hooks``
+        ``clear`` between tests strips the hooks from ``phase_hooks``
         but leaves the flags set, and downstream test runs silently lose
         the reporter / scoring pipeline.
         """

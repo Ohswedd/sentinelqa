@@ -90,7 +90,7 @@ describe('summariseApi', () => {
     const summaries = summariseApi(samples);
     expect(summaries).toHaveLength(2);
     // Sorted alphabetically by "<METHOD>|<endpoint>" key:
-    // GET|/api/users/[id]  <  POST|/api/users
+    // GET|/api/users/[id] < POST|/api/users
     expect(summaries[0]?.endpoint).toBe('/api/users/[id]');
     expect(summaries[0]?.method).toBe('GET');
     expect(summaries[0]?.count).toBe(2);

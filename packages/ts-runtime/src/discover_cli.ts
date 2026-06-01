@@ -1,5 +1,4 @@
-// CLI glue for `sentinel-ts discover` (Phase 17 task 07).
-//
+// CLI glue for `sentinel-ts discover` ( task 07).
 // Keeps the config-loader + types out of `cli.ts` so the CLI module
 // stays focused on argument routing. Importing this module never
 // pulls in Chromium — the launcher type is the only Playwright-touching

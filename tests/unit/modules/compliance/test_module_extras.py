@@ -64,7 +64,7 @@ def test_factory_returns_compliance_module(tmp_path: Path) -> None:
     ctx = _ctx(tmp_path, ComplianceModuleOptions())
     module = _factory(ctx.config, ctx.safety_decision)
     assert isinstance(module, ComplianceModule)
-    # plan() is always.
+    # plan is always.
     assert module.plan(ctx) == ()
 
 

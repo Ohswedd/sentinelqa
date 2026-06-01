@@ -57,7 +57,7 @@ def test_json_stdout_guard_rejects_non_json(
     monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
 ) -> None:
     """The optional environment-driven guard catches a stray plain-text
-    write to stdout while json_stdout() is active."""
+    write to stdout while json_stdout is active."""
 
     import sys
 

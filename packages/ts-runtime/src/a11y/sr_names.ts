@@ -1,8 +1,7 @@
-// Phase 11 accessible-name check.
-//
+// accessible-name check.
 // Mirrors `modules/accessibility/checks/sr_names.py`: every interactive
 // element must produce a computable accessible name. Placeholders are
-// NOT a sufficient fallback (CLAUDE §28 / PRD §10.4) because they
+// NOT a sufficient fallback because they
 // disappear on input.
 
 import type { AccessibleNameIssue } from './types.js';

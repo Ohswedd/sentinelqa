@@ -137,7 +137,7 @@ def test_scan_observations_walks_full_value() -> None:
 
 
 def test_weak_hs256_wordlist_is_fixed_size() -> None:
-    # CLAUDE §6: the candidate set must be a small enumerated list, not a
+    # the engineering guidelines: the candidate set must be a small enumerated list, not a
     # brute-force dictionary. This is a load-bearing assertion.
     assert len(WEAK_HS256_SECRETS) <= 8
 

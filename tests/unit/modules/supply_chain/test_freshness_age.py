@@ -41,7 +41,7 @@ def test_compute_lockfile_age_days_clamps_to_zero(tmp_path: Path) -> None:
     path = _write(tmp_path / "uv.lock")
     # mtime is "now"; backdated 0 days; check today.
     # Use UTC consistently — ``compute_lockfile_age_days`` reads the
-    # mtime as a UTC date, so a local ``date.today()`` from a host
+    # mtime as a UTC date, so a local ``date.today`` from a host
     # east of UTC reads one day in the future and would incorrectly
     # report age == 1 around the UTC midnight boundary.
     today = datetime.now(UTC).date()

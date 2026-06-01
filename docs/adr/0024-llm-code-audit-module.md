@@ -69,12 +69,12 @@ tuple[CheckFinding,...]`. No I/O, no globals, no module state. This makes every 
 
 - **Browser-driven module.** Rejected: doubles wall-clock for `sentinel audit`, requires a second `sentinel-ts` subcommand for storage/console dumps, and ties LLM-audit to Chromium being installed even when the project ships a static-site fixture.
 
-- **LLM-summarised audit.** Asking an LLM to grep the codebase for "smells" was rejected on three counts: deterministic results are preferable for release-confidence (the documentation), vendor cost would apply per-run, and the failure mode (false positives in LLM summarisation) is exactly the failure mode the module is meant to catch.
+- **LLM-summarised audit.** Asking an LLM to grep the codebase for "smells" was rejected on three counts: deterministic results are preferable for release-confidence, vendor cost would apply per-run, and the failure mode (false positives in LLM summarisation) is exactly the failure mode the module is meant to catch.
 
 - **One mega-check per audit.** Folding all signals into a single rule (`LLM-CODE-SMELL`) was rejected because the documentation enumerates the specific defects users should be able to triage independently; per-rule IDs let CI gates target individual defect classes (e.g. `LLM-UI-ONLY-AUTH` blocks; `LLM-PLACEHOLDER-TEXT` warns).
 
 ## References
 
-- PRD section(s): the documentation (LLM-Code audits), §28 (Differentiation), §20 (Evidence).
+- the documentation section(s): the documentation (LLM-Code audits), §28 (Differentiation), §20 (Evidence).
 - our engineering rules rule(s): our engineering rules(Module contract), §24 (Findings), §31 (LLM-Code Audit Rules), §33 (Logging/Secrets), §37 (No placeholder completion).
 - Related ADRs: ADR-0015 (`SentinelModule` contract), ADR-0008 (Report schemas), ADR-0018 (Security module — gated probes, applied here for hardcoded credential scanning).

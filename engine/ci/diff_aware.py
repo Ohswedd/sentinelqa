@@ -222,7 +222,7 @@ def select_from_files(
     tags: list[str] = []
     if impacted_routes or impacted_endpoints or impacted_specs or openapi_changed:
         # P0 + P1 covers smoke and "required gates". Diff-aware never
-        # drops below P0 (the SMOKE_TAG floor is enforced in ``grep()``).
+        # drops below P0 (the SMOKE_TAG floor is enforced in ``grep``).
         tags.append("@p1")
     if openapi_changed:
         # All API tests are impacted when the schema changes.

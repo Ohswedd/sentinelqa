@@ -60,7 +60,7 @@ class ScannerNeedingArtifact:
 
 
 class ForbiddenScanner:
-    """Scanner that declares a forbidden capability (CLAUDE §6)."""
+    """Scanner that declares a forbidden capability."""
 
     kind = "scanner"
     name = "bad-scanner"
@@ -88,7 +88,7 @@ class IncompatibleScanner:
 
 
 class BadShapeScanner:
-    """Scanner missing the run() method — must fail the Protocol check."""
+    """Scanner missing the run method — must fail the Protocol check."""
 
     kind = "scanner"
     name = "broken-scanner"
@@ -97,7 +97,7 @@ class BadShapeScanner:
     permissions: frozenset[str] = frozenset()
     requires_protocol = ">=1.0,<2.0"
 
-    # No run() method — isinstance(..., ScannerPlugin) must fail.
+    # No run method — isinstance(..., ScannerPlugin) must fail.
 
 
 class TinyReporter:

@@ -1,4 +1,4 @@
-"""Route entity (the documentation).
+"""Route entity.
 
 A route is one URL the app exposes — discovered by the crawler,
 referenced by every later module for finding location.

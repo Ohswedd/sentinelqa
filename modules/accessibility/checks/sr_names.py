@@ -73,7 +73,7 @@ def has_accessible_name(element: ElementSnapshot) -> bool:
         if value and value.strip():
             return True
     # `placeholder` is intentionally not a sufficient fallback —
-    # CLAUDE §28 / the documentation: placeholders disappear on input, so
+    # the engineering guidelines: placeholders disappear on input, so
     # they fail accessible-name requirements.
     return False
 

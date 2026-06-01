@@ -1,11 +1,11 @@
 """``SupplyChainModule`` (, the documentation.3, ADR-0045).
 
-Lifecycle (CLAUDE §9):
+Lifecycle:
 
 - ``validate_prerequisites`` — no-op; missing optional binaries
  (``trivy`` / ``grype``) surface as a skipped container check rather
  than a module error.
-- ``plan`` — returns ``()`` (no Playwright specs).
+- ``plan`` — returns ```` (no Playwright specs).
 - ``execute`` — runs the enabled checks against the
  project root, building a :class:`SupplyChainRunOutcome`.
 - ``collect_evidence`` — writes per-check artifacts under
@@ -16,7 +16,7 @@ Lifecycle (CLAUDE §9):
 - ``summarize`` — overlays findings on a synthesized
  :class:`ModuleResult`.
 
-All checks are defensive / read-only (CLAUDE §6, §26). The
+All checks are defensive / read-only. The
 forbidden-token guard at
 ``tests/security/test_no_offensive_supply_chain.py`` keeps stealth /
 exploit literals out of the package source.
@@ -129,7 +129,7 @@ class SupplyChainModule(SentinelModule):
             _write_json(sc_dir / "container.json", run.container.model_dump(mode="json"))
         if run.licenses is not None:
             _write_json(sc_dir / "licenses.json", run.licenses.model_dump(mode="json"))
-        # SBOM index — written by build_sbom() into <run-dir>/sbom/index.json
+        # SBOM index — written by build_sbom into <run-dir>/sbom/index.json
         # already; we re-write the aggregate run outcome so callers can
         # reload the whole audit from a single file.
         _write_json(sc_dir / "index.json", run.model_dump(mode="json"))

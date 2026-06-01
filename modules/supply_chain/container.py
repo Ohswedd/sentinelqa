@@ -6,7 +6,7 @@ defensive scanners that produce machine-readable JSON. Either binary
 on ``PATH`` is sufficient; we prefer Trivy when both are present
 (richer CVSS metadata).
 
-Safety boundary (CLAUDE §6 / §26):
+Safety boundary:
 
 - The scanner runs only against the configured
  ``policy.supply_chain.container.image``; we never pull random images,

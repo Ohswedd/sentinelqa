@@ -9,7 +9,7 @@ Public surface:
 - :class:`VaultMetadata` — redacted view returned by :meth:`Vault.list`; the
  storage state itself is never present in the metadata view.
 - :class:`MasterKey` — opaque handle around the 32-byte AEAD key (zeroed on
- ``close()``).
+ ``close``).
 - :class:`AuthProfile` — documented launcher recipe for a login URL +
  success URL patterns + ToS link (Tasks 31.04, 31.05). Profiles never
  carry credential data structurally; the AST lint guard in

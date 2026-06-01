@@ -1,4 +1,4 @@
-"""PolicyDecision entity (the documentation)."""
+"""PolicyDecision entity."""
 
 from __future__ import annotations
 

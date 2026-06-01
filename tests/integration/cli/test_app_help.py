@@ -1,4 +1,4 @@
-"""`sentinel --help` registers every our product spec1 command."""
+"""`sentinel --help` registers every documented top-level command."""
 
 from __future__ import annotations
 
@@ -6,8 +6,8 @@ import re
 
 from typer.testing import CliRunner
 
-# our product spec1 — every command name must appear in --help output.
-PRD_COMMANDS = (
+# Every command name must appear in --help output.
+EXPECTED_COMMANDS = (
     "init",
     "doctor",
     "discover",
@@ -40,11 +40,11 @@ def _strip_ansi(text: str) -> str:
     return _ANSI_RE.sub("", text)
 
 
-def test_help_lists_every_prd_command(runner: CliRunner, cli) -> None:
+def test_help_lists_every_top_level_command(runner: CliRunner, cli) -> None:
     result = runner.invoke(cli, ["--help"], terminal_width=120)
     assert result.exit_code == 0, result.output
     output = _strip_ansi(result.stdout)
-    for command in PRD_COMMANDS:
+    for command in EXPECTED_COMMANDS:
         assert re.search(
             rf"\b{re.escape(command)}\b", output
         ), f"Command {command!r} missing from --help output:\n{output}"
@@ -53,5 +53,6 @@ def test_help_lists_every_prd_command(runner: CliRunner, cli) -> None:
 def test_help_no_args_shows_help(runner: CliRunner, cli) -> None:
     # `no_args_is_help=True` — invoking with no args should print help and exit.
     result = runner.invoke(cli, [], terminal_width=120)
+    assert result.exit_code == 0
     output = _strip_ansi(result.stdout)
     assert "Usage:" in output or "Commands" in output

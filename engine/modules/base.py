@@ -15,7 +15,7 @@ Every module follows the same lifecycle:
 The orchestrator (``engine.orchestrator.run_lifecycle.RunLifecycle.run_modules``)
 detects modules whose factory returns a :class:`SentinelModule` instance and
 invokes :meth:`SentinelModule.run`, which threads the seven steps in order
-and tolerates partial failure (CLAUDE §9: "a module failure should produce
+and tolerates partial failure (the engineering guidelines: "a module failure should produce
 a typed partial result unless the failure invalidates the entire run").
 
 The module owns:
@@ -26,7 +26,7 @@ The module owns:
 
 The module does NOT own:
 
-- Run lifecycle state (CLAUDE §10).
+- Run lifecycle state.
 - Quality scoring.
 - Report generation ( / ).
 """
@@ -55,7 +55,7 @@ class ModulePrerequisiteError(RuntimeError):
     """Raised by ``validate_prerequisites`` when the environment is unfit.
 
     The orchestrator catches this and records the module as ``errored``
-    with the message + a derived category (CLAUDE §9, §10).
+    with the message + a derived category.
     """
 
 
@@ -64,7 +64,7 @@ class ModuleContext:
     """Inputs the orchestrator hands to a :class:`SentinelModule` per run.
 
     Modules MUST treat the context as immutable. Mutating state goes back
-    to the orchestrator via the returned :class:`ModuleResult` (CLAUDE §9).
+    to the orchestrator via the returned :class:`ModuleResult`.
     """
 
     module_name: str
@@ -271,7 +271,7 @@ def build_finding_from_failed_test(
     """Translate a failed :class:`TestExecution` into a :class:`Finding`.
 
     Evidence pulled from ``test.evidence`` is recorded as relative paths
-    (per CLAUDE §11), and each artifact is exposed as a typed
+    (per the engineering guidelines), and each artifact is exposed as a typed
     :class:`Evidence` record so our product spec / §24 consumers (Reporter, SDK)
     can render them.
     """

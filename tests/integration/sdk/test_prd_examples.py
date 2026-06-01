@@ -110,7 +110,7 @@ def test_prd_14_2_agent_friendly_usage_reproduces(
     result = qa.run_plan(plan)
     if not result.passed:
     for failure in result.failures:
-    print(failure.to_agent_message())
+    print(failure.to_agent_message)
     """
 
     _write_full_config(tmp_path)
@@ -136,7 +136,7 @@ def test_prd_14_2_agent_friendly_usage_reproduces(
 
 
 def test_prd_examples_are_importable_without_running() -> None:
-    """The module-level imports the PRD examples use MUST work."""
+    """The module-level imports the the documentation examples use MUST work."""
 
     from sentinelqa import Sentinel as _Sentinel
 

@@ -9,7 +9,7 @@ Accepted
 
 ## Context
 
-our engineering rules"Cloud boundary" as a required ADR trigger. PRD
+our engineering rules"Cloud boundary" as a required ADR trigger. the documentation
 §7 (Scope), §11 (Architecture), §24 (release Definition), §31 (Open
 Questions #3), and §32 (Recommended Build Order) all assume the release
 ships as an open-source CLI / SDK / MCP server running entirely on

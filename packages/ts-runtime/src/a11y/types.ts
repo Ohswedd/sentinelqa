@@ -1,5 +1,4 @@
-// Phase 11 (PRD §10.4, ADR-0016) — typed accessibility records.
-//
+// (the documentation, ADR-0016) — typed accessibility records.
 // These types are the TS-side mirror of `modules/accessibility/models.py`.
 // The wire format (one JSON file per route under <run-dir>/a11y/) is
 // locked under ADR-0016 §3.

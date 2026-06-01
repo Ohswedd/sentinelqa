@@ -39,17 +39,17 @@ template check, pytest, Prettier, ESLint, `tsc --noEmit`, and Vitest.
 ## Project layout
 
 ```
-apps/cli/            Typer CLI (sentinelqa-cli)
-apps/docs/           Astro Starlight docs site
-engine/              Domain models, orchestrator, scoring, reporter
-modules/             Concrete audit modules (functional, a11y, perf, ...)
-integrations/        BrowserStack, Sauce Labs, Slack, GitHub, GitLab, ...
+apps/cli/ Typer CLI (sentinelqa-cli)
+apps/docs/ Astro Starlight docs site
+engine/ Domain models, orchestrator, scoring, reporter
+modules/ Concrete audit modules (functional, a11y, perf,...)
+integrations/ BrowserStack, Sauce Labs, Slack, GitHub, GitLab,...
 packages/python-sdk/ Public Python SDK (sentinelqa)
 packages/mcp-server/ MCP server exposing the sentinel.* tools
 packages/ts-runtime/ Playwright runtime and JSONL bridge
-scripts/             Build / docs-gen / release scripts
-docs/                Long-form developer + user docs, ADRs
-tests/               unit + integration + property + security tests
+scripts/ Build / docs-gen / release scripts
+docs/ Long-form developer + user docs, ADRs
+tests/ unit + integration + property + security tests
 ```
 
 ## Branching and commits
@@ -57,8 +57,8 @@ tests/               unit + integration + property + security tests
 Use one of the standard prefixes:
 
 ```
-feature/<name>   fix/<name>      docs/<name>
-refactor/<name>  security/<name> ci/<name>
+feature/<name> fix/<name> docs/<name>
+refactor/<name> security/<name> ci/<name>
 chore/<name>
 ```
 

@@ -42,7 +42,7 @@ logger = logging.getLogger("sentinelqa.integrations.saucelabs")
 
 
 class SauceLabsQuotaExceededError(RuntimeError):
-    """Raised (or surfaced in run() outcome) when the account is at quota."""
+    """Raised (or surfaced in run outcome) when the account is at quota."""
 
 
 # Friendly alias kept for call-site ergonomics; canonical class name

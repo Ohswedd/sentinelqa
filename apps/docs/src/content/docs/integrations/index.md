@@ -9,7 +9,7 @@ behind a shared stdlib HTTP helper (`integrations/_http.py`). No
 third-party HTTP client. No vendor SDK. Off by default; secrets are
 read from env vars only and redacted in every log line.
 
-Authority: the documentation, ADR-0030.
+.
 
 ## Adapters
 

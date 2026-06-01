@@ -109,7 +109,7 @@ def run_mcp(
 
 
 def _configure_stderr_logger(level_name: str) -> None:
-    """Reconfigure the root logger to write to stderr (CLAUDE §13)."""
+    """Reconfigure the root logger to write to stderr."""
 
     normalized = level_name.upper()
     level = getattr(logging, normalized, logging.INFO)

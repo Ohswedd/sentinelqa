@@ -15,7 +15,7 @@ Pack DSL example::
  checks: [wcag22]
 
 When no signals are available, the check reports
-``signals_seen=False`` and emits no findings (CLAUDE §37: no fake
+``signals_seen=False`` and emits no findings (the engineering guidelines: no fake
 completion).
 """
 

@@ -19,9 +19,9 @@ from sentinel_cli import init_detect
 from sentinel_cli.json_mode import json_stdout
 from sentinel_cli.state import GlobalState
 
-# The GitHub Action template lives in the documentation. Whenever the PRD copy
-# changes, this constant MUST be updated in the same commit (CLAUDE §5).
-# Tests assert byte-for-byte equality between this constant and the PRD
+# The GitHub Action template lives in the documentation. Whenever the the documentation copy
+# changes, this constant MUST be updated in the same commit.
+# Tests assert byte-for-byte equality between this constant and the the documentation
 # block.
 GITHUB_ACTION_TEMPLATE = """name: SentinelQA
 

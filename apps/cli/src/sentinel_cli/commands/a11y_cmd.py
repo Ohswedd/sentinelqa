@@ -6,7 +6,7 @@ same lifecycle steps (safety policy, artifact tree, reporter dispatch,
 exit-code mapping) run whether the user types ``sentinel audit`` or
 ``sentinel a11y``.
 
-Exit codes (CLAUDE §13):
+Exit codes:
 
 - ``0`` — module produced no high/critical findings.
 - ``1`` — quality gate failed (high/critical findings present, or the

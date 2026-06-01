@@ -1,4 +1,4 @@
-"""DiscoveryGraph entity (the documentation)."""
+"""DiscoveryGraph entity."""
 
 from __future__ import annotations
 

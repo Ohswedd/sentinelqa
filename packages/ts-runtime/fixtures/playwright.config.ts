@@ -4,7 +4,7 @@
 // sample-app via `webServer`, points the test runner at our custom
 // reporter, and applies SENTINEL_PLAYWRIGHT_DEFAULTS so trace /
 // screenshot / video evidence is always emitted on failure
-// (CLAUDE §21).
+// (see documentation).
 //
 // The reporter path and the helper import both point at `../dist/`
 // (built artefacts). Node 24+'s strip-only TS loader doesn't accept

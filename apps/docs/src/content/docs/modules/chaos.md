@@ -9,7 +9,7 @@ offline, API 500 / timeout, session expiry, double-submit races,
 empty / large datasets, corrupted storage. Every scenario is bounded
 — no unbounded slow modes, no infinite hangs.
 
-Authority: the documentation, ADR-0028, our engineering rules §6.
+.
 
 ## Thirteen scenarios
 

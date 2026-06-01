@@ -38,7 +38,7 @@ def test_module_error_captured_not_crashed(tmp_path: Path) -> None:
     )
     test_run = lifecycle.execute(config, requested_modules=["functional"])
 
-    # Module crashed → run is `incomplete` (CLAUDE §10 honesty), not `failed`.
+    # Module crashed → run is `incomplete`, not `failed`.
     assert test_run.status == "incomplete"
     assert "functional" in test_run.modules_run
 

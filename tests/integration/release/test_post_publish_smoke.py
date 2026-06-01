@@ -175,7 +175,7 @@ def test_npm_install_and_require_succeeds(tmp_path: Path) -> None:
         capture_output=True,
     )
 
-    # `require()` smoke — ESM-import the package via Node's default
+    # `require` smoke — ESM-import the package via Node's default
     # loader. If the package's exports map is broken this fails loud.
     smoke = subprocess.run(
         [

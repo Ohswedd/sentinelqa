@@ -167,8 +167,7 @@ class Manifest(BaseModel):
         """Reject manifests that declare a forbidden capability.
 
         Forbidden capabilities are the explicit deny-list in
-        :data:`engine.policy.forbidden_features.FORBIDDEN_CAPABILITIES`
-        (CLAUDE §6). Any overlap fails the load.
+        :data:`engine.policy.forbidden_features.FORBIDDEN_CAPABILITIES`. Any overlap fails the load.
         """
 
         offending = sorted(set(self.capabilities) & FORBIDDEN_CAPABILITIES)

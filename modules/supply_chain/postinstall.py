@@ -212,7 +212,7 @@ def _flatten_calls(node: ast.AST) -> Iterable[str]:
 def scan_python_setup_py(setup_py: Path) -> tuple[PostinstallIssue, ...]:
     """Scan a single ``setup.py`` for forbidden imports / calls.
 
-    The check runs at module-load time, not when ``setup()`` is called.
+    The check runs at module-load time, not when ``setup`` is called.
     Anything that imports ``subprocess`` / ``urllib.request`` / ``requests``
     / ``socket`` at the top of ``setup.py`` is flagged because those
     modules don't belong in build metadata.

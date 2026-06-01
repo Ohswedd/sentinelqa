@@ -64,7 +64,7 @@ def make_signal(
 
 @pytest.fixture
 def make_signal_fixture() -> object:
-    """Fixture wrapper so tests can use ``make_signal_fixture()`` or call
+    """Fixture wrapper so tests can use ``make_signal_fixture`` or call
     ``make_signal`` directly. The function above is the primary surface."""
 
     return make_signal

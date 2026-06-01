@@ -2,7 +2,7 @@
 
 Status: `Stable`
 
-Authority: `SECURITY.md` (public disclosure path),
+.md` (public disclosure path),
 our engineering rules(Safety boundary), §33 (Logging and secrets),
 .
 

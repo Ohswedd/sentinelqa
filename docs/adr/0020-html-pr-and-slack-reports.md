@@ -71,7 +71,7 @@ and one new CLI surface:
 7. **`engine/reporter/dispatcher.py`** — wires the HTML writer behind the existing `Reporter.emit` flow. `SUPPORTED_FORMATS` gains `"html"`; the `_FORMAT_ALIASES` map drops the `html → ` placeholder. The dispatcher reads the audit log and computes the trend overlay before rendering so the HTML embeds them.
 
 8. **`sentinel report`** — the Phase-14 explainer is kept (`sentinel
-report --explain-score`). The new re-render path (`sentinel report --latest`, `sentinel report --run-id RUN-...`) reads the persisted artifacts and re-renders the requested formats (`--format html,json,sarif,junit,md`). The re-render is idempotent: it never writes audit-log entries (the audit log is a one-shot record of the original run's decisions per CLAUDE §11). `--open` opens the HTML in the default browser, skipped in CI.
+report --explain-score`). The new re-render path (`sentinel report --latest`, `sentinel report --run-id RUN-...`) reads the persisted artifacts and re-renders the requested formats (`--format html,json,sarif,junit,md`). The re-render is idempotent: it never writes audit-log entries (the audit log is a one-shot record of the original run's decisions per the engineering guidelines). `--open` opens the HTML in the default browser, skipped in CI.
 
 Reports stay offline by design:
 
@@ -86,7 +86,7 @@ The HTML must also pass our own structural accessibility checks:
 ## Consequences
 
 - Reports are now first-class: every run that writes `run.json` also writes `report.html` when `html` is in `config.report.formats`.
-- The HTML schema (`HTML_REPORT_SCHEMA_VERSION`) joins the locked set; any breaking template change bumps the version (CLAUDE §34).
+- The HTML schema (`HTML_REPORT_SCHEMA_VERSION`) joins the locked set; any breaking template change bumps the version.
 - The PR-comment anchor + upsert flow means the GitHub Action can edit the same comment on every push without spawning new ones.
 - The Slack payload validates against the vendored Block Kit schema; can post it directly.
 - Trend rendering is local-only — cloud remains an explicit opt-in.

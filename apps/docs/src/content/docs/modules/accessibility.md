@@ -8,7 +8,7 @@ status: Stable
 WCAG rules, plus deterministic Python-side checks for keyboard reach,
 landmark structure, and accessible-name presence.
 
-Authority: the documentation, ADR-0016, our engineering rules §28.
+.
 
 ## Wording contract
 

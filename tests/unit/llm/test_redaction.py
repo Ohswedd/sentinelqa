@@ -41,7 +41,7 @@ def test_request_with_include_prompts_true_keeps_messages() -> None:
     payload = {"messages": [{"role": "user", "content": "hi"}]}
     policy = LlmRedactionPolicy(include_prompts_in_audit=True)
     redacted = redact_request(payload, policy=policy)
-    # Still passes through redact() which masks role-aware secret keys,
+    # Still passes through redact which masks role-aware secret keys,
     # but the content survives because the array isn't collapsed.
     assert isinstance(redacted["messages"], list)
 

@@ -63,7 +63,7 @@ def test_every_sync_method_has_async_counterpart(method_name: str) -> None:
 
 
 def test_policy_view_constructable_from_config_fixture(tmp_path: Path) -> None:
-    # Construct a minimal config so policy() round-trips.
+    # Construct a minimal config so policy round-trips.
     cfg = tmp_path / "sentinel.config.yaml"
     cfg.write_text(
         "version: 1\n"

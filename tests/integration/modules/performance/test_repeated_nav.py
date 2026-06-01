@@ -108,7 +108,7 @@ def test_leaky_fixture_emits_low_confidence_finding(tmp_path: Path) -> None:
     result = module.run(ctx)
     nav_findings = [f for f in result.findings if f.category.startswith("perf.nav.")]
     assert len(nav_findings) >= 1
-    # CLAUDE §27 — heuristic with low severity + low confidence.
+    # the engineering guidelines— heuristic with low severity + low confidence.
     assert all(f.severity == "low" for f in nav_findings)
     assert all(f.confidence == 0.5 for f in nav_findings)
     assert all("potential memory leak" in f.title for f in nav_findings)

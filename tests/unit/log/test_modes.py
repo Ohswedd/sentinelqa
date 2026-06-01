@@ -17,7 +17,7 @@ def _reset() -> None:
 
 
 def test_json_mode_emits_json_on_stderr(capsys: pytest.CaptureFixture[str]) -> None:
-    # CLAUDE §13: in JSON mode stdout is reserved for the CLI's
+    # the engineering guidelines: in JSON mode stdout is reserved for the CLI's
     # machine-readable payload. All log records (including INFO) go to
     # stderr so piping stdout through `jq` stays clean.
     configure_logging(mode="json", level="INFO")

@@ -161,7 +161,7 @@ def build_module_error_signal(
     exc_message: str,
 ) -> FailureSignal:
     """Build a synthetic signal for a module that errored before any
-    test ran (CLAUDE §10 catch-all).
+    test ran (the engineering guidelines-all).
 
     The synthesized record has no steps/network/console (no test ran)
     so the analyzer falls back to :func:`categorize_module_error`. We

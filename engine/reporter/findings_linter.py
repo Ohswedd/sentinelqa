@@ -7,7 +7,7 @@ to surface warnings to the user or include them in CI output.
 
 The linter is intentionally lenient: it flags obvious anti-patterns
 (too-short titles, banned phrases, empty descriptions) without inventing
-quality thresholds the PRD has not committed to.
+quality thresholds the the documentation has not committed to.
 """
 
 from __future__ import annotations

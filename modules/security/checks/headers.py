@@ -145,7 +145,7 @@ def _issue(
 
 
 def _redacted(value: str) -> str:
-    """Run a string through the central redactor (CLAUDE §33)."""
+    """Run a string through the central redactor."""
 
     redacted = redact(value)
     assert isinstance(redacted, str)

@@ -5,7 +5,7 @@ transparent ``SentinelQA/<version>`` User-Agent, and the
 ``X-SentinelQA-Test-Run`` header so the operator of the target can
 correlate hits in their access logs.
 
-CLAUDE §6 reminder: there is no proxy rotation, no fingerprint
+the engineering guidelines: there is no proxy rotation, no fingerprint
 spoofing, no UA randomisation. Probes look like SentinelQA on the wire,
 on purpose.
 """

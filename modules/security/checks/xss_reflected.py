@@ -8,7 +8,7 @@ parameter of the route URL and looks for the marker reflected
 *together with* the literal ``<svg`` opening tag (or ``onload=``)
 indicates the value was injected raw into HTML.
 
-Safety contract (CLAUDE §6/§26):
+Safety contract:
 
 - Every probe is rate-limited by ``security.max_requests_per_second``.
 - ``SafetyPolicy.enforce`` is called once before the first probe.

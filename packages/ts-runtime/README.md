@@ -43,7 +43,7 @@ pnpm --filter @sentinelqa/ts-runtime test # vitest
 node packages/ts-runtime/dist/cli.js --version
 ```
 
-## Safety boundary (our engineering rules §6 / our product spec)
+## Safety boundary
 
 This package never imports stealth, evasion, fingerprint-spoofing,
 CAPTCHA-bypass, or proxy-rotation libraries. Locator strategy is

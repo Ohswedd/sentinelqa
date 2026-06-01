@@ -1,6 +1,6 @@
 # tests/
 
-Cross-cutting test suites. PRD §11.2, CLAUDE §16.
+Cross-cutting test suites. our published policy
 
 - `unit/` — fast, isolated, pure-domain unit tests.
 - `integration/` — multi-component tests, including Python ↔ TypeScript JSONL bridge.

@@ -131,6 +131,6 @@ def test_slow_page_emits_high_severity_synthetic_finding(tmp_path: Path) -> None
     f = result.findings[0]
     assert f.category == "perf.page.lcp_ms"
     assert f.severity == "high"  # 140% overage > 50% threshold
-    # CLAUDE §27 — synthetic labelling required.
+    # the engineering guidelines— synthetic labelling required.
     assert "Synthetic performance check" in f.description
     assert "Real-User Monitoring" in f.description

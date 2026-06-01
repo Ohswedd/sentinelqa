@@ -1,6 +1,6 @@
 """``FunctionalModule`` — the first concrete :class:`SentinelModule`.
 
-Lifecycle (CLAUDE §9):
+Lifecycle:
 
 - ``validate_prerequisites`` — refuses to run without a resolvable
  ``sentinel-ts`` binary OR an injected runner factory (tests).
@@ -178,7 +178,7 @@ def _load_quarantine(config: RootConfig) -> Quarantine:
         # If the quarantine is malformed at module-run time the CLI has
         # already surfaced the error. Inside the orchestrator (e.g.
         # `sentinel audit`) we fall back to an empty quarantine so the
-        # module run can still emit a typed partial result (CLAUDE §9).
+        # module run can still emit a typed partial result.
         return Quarantine.empty()
 
 

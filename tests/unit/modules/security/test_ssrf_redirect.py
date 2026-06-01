@@ -66,7 +66,7 @@ def test_evaluate_redirect_carries_cwe() -> None:
 
 
 def test_payload_lists_are_fixed() -> None:
-    # CLAUDE §6 + ADR-0044 safety boundary: fixed, enumerated set.
+    # the engineering guidelines+ ADR-0044 safety boundary: fixed, enumerated set.
     assert len(SSRF_PAYLOADS) == 6
     assert len(OPEN_REDIRECT_PAYLOADS) == 2
     # No random generation hooks should appear in the module — caught

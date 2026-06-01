@@ -8,7 +8,7 @@ We reuse :mod:`packaging` (already a transitive dep of pip/hatch and
 declared explicitly in ``engine/pyproject.toml``); reinventing semver
 parsing inside the engine would be both wasteful and risky.
 
-Bumping :data:`PROTOCOL_VERSION` major requires an ADR (CLAUDE §22, §40).
+Bumping :data:`PROTOCOL_VERSION` major requires an ADR.
 """
 
 from __future__ import annotations

@@ -8,7 +8,7 @@ status: Stable
 Playwright). Negative cases come from a bounded named catalogue — no
 fuzz library, no unbounded payloads.
 
-Authority: the documentation, ADR-0027, our engineering rules §30.
+.
 
 ## Seven check kinds
 

@@ -1,7 +1,7 @@
 """Framework / package-manager detection for `sentinel init`.
 
 All functions return ``None`` when uncertain — guessing produces silent
-config drift, which CLAUDE §12 forbids.
+config drift, which the engineering guidelines
 """
 
 from __future__ import annotations

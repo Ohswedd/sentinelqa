@@ -43,7 +43,7 @@ RetryDecisionKind = Literal["retry", "quarantine_candidate", "no_action"]
 
 
 class AttemptOutcome(BaseModel):
-    """One Playwright retry of a single test (CLAUDE §10, the documentation)."""
+    """One Playwright retry of a single test."""
 
     model_config = ConfigDict(extra="forbid", frozen=True)
 
@@ -68,7 +68,7 @@ class StepRecord(BaseModel):
 class NetworkRecord(BaseModel):
     """One ``network.response`` event captured while the test ran.
 
-    URLs are passed through redaction by the caller (CLAUDE §33); the
+    URLs are passed through redaction by the caller; the
     analyzer never re-redacts but never logs them either.
     """
 
@@ -143,7 +143,7 @@ class FailureClassification(BaseModel):
 
 
 class RootCauseHypothesis(BaseModel):
-    """Short, plain-English hypothesis (the documentation)."""
+    """Short, plain-English hypothesis."""
 
     model_config = ConfigDict(extra="forbid", frozen=True)
 
@@ -156,7 +156,7 @@ class RootCauseHypothesis(BaseModel):
 
 
 class RetryDecision(BaseModel):
-    """Whether the runner should retry this failure (the documentation)."""
+    """Whether the runner should retry this failure."""
 
     model_config = ConfigDict(extra="forbid", frozen=True)
 

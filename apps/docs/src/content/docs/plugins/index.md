@@ -9,7 +9,7 @@ SentinelQA discovers plugins via Python entry points
 (name, version, kind, capabilities, permissions) and implements one
 of the eight public Protocols.
 
-Authority: our product spec, ADR-0029, our engineering rules §6 (permission deny-list).
+.
 
 ## Eight protocols
 

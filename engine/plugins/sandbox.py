@@ -23,7 +23,7 @@ with:
 OS-level sandboxing (firejail / bubblewrap) is intentionally NOT
 required — the contract here is process isolation + env redaction.
 The the documentation hint about firejail is best-effort and will land in a
-later phase if needed.
+later release if needed.
 """
 
 from __future__ import annotations

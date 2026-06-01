@@ -9,13 +9,13 @@ Accepted
 
 ## Context
 
-builds the Planner module (the documentation): given a `DiscoveryGraph` + `RiskMap`, emit a `TestPlan` that names every flow + test case the runner will execute. The PRD's open questions (§31) explicitly asks whether the planner should be LLM-driven; the documentation already declares the principle that LLMs plan/explain while deterministic runners execute.
+builds the Planner module : given a `DiscoveryGraph` + `RiskMap`, emit a `TestPlan` that names every flow + test case the runner will execute. The the documentation's open questions (§31) explicitly asks whether the planner should be LLM-driven; the documentation already declares the principle that LLMs plan/explain while deterministic runners execute.
 
 Constraints we must honor:
 
-- **Determinism (the documentation, CLAUDE §19)** — same inputs must produce the same plan modulo IDs. A hosted LLM cannot guarantee that.
-- **Safety (CLAUDE §6, §32, §41)** — no source-code upload, no PII in payloads, no destructive flows ever, no production credentials.
-- **No fake completion (CLAUDE §37)** — every planned test case must be reproducible from the graph alone, regardless of LLM availability.
+- **Determinism ** — same inputs must produce the same plan modulo IDs. A hosted LLM cannot guarantee that.
+- **Safety** — no source-code upload, no PII in payloads, no destructive flows ever, no production credentials.
+- **No fake completion** — every planned test case must be reproducible from the graph alone, regardless of LLM availability.
 - **CI must work air-gapped** — CI runs without provider API keys; planning cannot become a hard dependency on a vendor's uptime.
 - **Vendor neutrality (our product spec open question 4)** — SentinelQA must not be locked into a single LLM provider.
 
@@ -37,7 +37,7 @@ Concretely:
 5. LLM proposals are re-parsed through Pydantic (`_ProposalEnvelope`). Malformed proposals are dropped silently with the request still recorded for budget accounting. Proposals are rejected when the proposed `target_route_path` is not in the graph or when the proposed name collides with an existing deterministic flow.
 6. Each accepted proposal becomes a `Flow` with `source="llm"`, `extractor="llm.v<PROMPT_VERSION>"`, and at least the `"llm"` tag. The runner (+) and scoring can therefore distinguish deterministic vs. LLM-sourced flows.
 7. **Hard per-run USD budget** is enforced (`planner.llm.max_usd_per_run`, default 0.50). When the projected cost of the next call would exceed the budget, the adapter raises `BudgetExceededError` and the CLI falls back to deterministic-only with an audit-log entry. Token-cost is estimated from response usage when present; conservative chars/4 heuristic when not.
-8. Provider credentials are read **by env-var name** from the config (`planner.llm.api_key_env`), never inlined. This matches the existing `AuthConfig` rule (CLAUDE §33).
+8. Provider credentials are read **by env-var name** from the config (`planner.llm.api_key_env`), never inlined. This matches the existing `AuthConfig` rule.
 9. Every LLM invocation writes one structured `plan.llm.usage` line to `audit.log` with provider, request count, tokens, and cost — so a security reviewer can prove what was sent to whom.
 10. CI default: `planner.llm.enabled=false`. Even if a key is set, CI must opt in explicitly per-run.
 
@@ -47,7 +47,7 @@ Concretely:
 
 - **Negative / trade-off:** - The cost estimator is conservative (chars/4) and may over-refuse under exotic prompts. We accept that — refusing is the safe failure mode. - The HTTP-direct integration means we don't get vendor SDK ergonomics (streaming, retries with jitter, structured-output mode where the SDK provides one). We deemed this acceptable because the planner is a single short request per run. - Two providers (OpenAI + Anthropic) ship now, but vendors that don't speak chat-message HTTP+JSON (Bedrock, Vertex, local Ollama) need their own subclasses later.
 
-- **Follow-up obligations:** - The MCP agent interface (`sentinel.plan_with_llm`) will route through this same adapter — no parallel LLM path. - The docs site documents the locked prompt verbatim. - The final safety audit re-reads `planner.v1.md` to confirm no flow-class has crept in that violates CLAUDE §6 (stealth, evasion, etc.). - The redaction layer (`engine.policy.redaction`) is the source of truth for what must NOT appear in the LLM payload; future changes to `build_graph_summary` MUST round-trip through redaction tests.
+- **Follow-up obligations:** - The MCP agent interface (`sentinel.plan_with_llm`) will route through this same adapter — no parallel LLM path. - The docs site documents the locked prompt verbatim. - The final safety audit re-reads `planner.v1.md` to confirm no flow-class has crept in that violates the engineering guidelines(stealth, evasion, etc.). - The redaction layer (`engine.policy.redaction`) is the source of truth for what must NOT appear in the LLM payload; future changes to `build_graph_summary` MUST round-trip through redaction tests.
 
 ## Alternatives considered
 
@@ -59,7 +59,7 @@ Concretely:
 
 ## References
 
-- PRD section(s): the documentation (Principles), the documentation (Planner), our product spec (TypeScript Runtime — separate from this ADR), our product spec open question 4 (provider-agnostic).
+- the documentation section(s): the documentation (Principles), the documentation (Planner), our product spec (TypeScript Runtime — separate from this ADR), our product spec open question 4 (provider-agnostic).
 - our engineering rules rule(s): our engineering rules(Safety boundary), §15 (Agent interface), §19 (Code quality), §32 (Error handling), §33 (Logging and secrets), §37 (No placeholder completion), §41 (Privacy and telemetry).
 - Related ADRs: ADR-0005 (Config schema), ADR-0006 (Safety policy), ADR-0008 (Report schemas), ADR-0010 (Discovery release HTTP-first).
 - External: OpenAI Chat Completions API; Anthropic Messages API.

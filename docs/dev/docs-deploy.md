@@ -2,7 +2,7 @@
 
 Status: `Stable`
 
-Authority: project engineering rules.md` (Astro Starlight choice),.
+.md` (Astro Starlight choice),.
 
 The SentinelQA docs site (`apps/docs/`, Astro Starlight) deploys to **Cloudflare Pages** on every push to `main`, with **preview deploys** on every PR. This file is the operator runbook.
 

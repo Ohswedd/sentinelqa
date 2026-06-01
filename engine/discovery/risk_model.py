@@ -62,7 +62,7 @@ def _path_contains(route_url: str, tokens: Sequence[str]) -> bool:
 
 
 def rule_login_auth_critical(ctx: RuleContext) -> RuleVerdict | None:
-    """High base risk on login / auth / signin routes (the documentation)."""
+    """High base risk on login / auth / signin routes."""
 
     if _path_contains(ctx.route_url, ("/login", "/signin", "/sign-in", "/auth")):
         return RuleVerdict("login_auth_critical", 0.6, "auth-related route")

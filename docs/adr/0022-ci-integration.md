@@ -49,6 +49,6 @@ We introduce `engine/ci/` as the integration layer:
 
 ## References
 
-- PRD section(s): the documentation (Regression suite), §12.3 (PR diff audit), §13 (CLI), §21 (CI/CD).
+- the documentation section(s): the documentation (Regression suite), §12.3 (PR diff audit), §13 (CLI), §21 (CI/CD).
 - our engineering rules rule(s): our engineering rules(Safety boundary), §10 (Run lifecycle), §13 (CLI rules), §17 (Quality gates), §33 (Logging and secrets), §35 (Dependency rules), §39 (CI rules).
 - Related ADRs: [ADR-0007](./0007-run-lifecycle.md) (Run lifecycle), [ADR-0010](./0010-discovery-mvp-http-first.md) (HTTP-first discovery, Playwright backend follow-up resolved in this phase), [ADR-0015](./0015-module-contract-and-functional-module.md) (Module contract — modes thread `--grep` into the functional module via `module_options`).

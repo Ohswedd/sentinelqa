@@ -2,7 +2,7 @@
 
 Status: `Stable`
 
-Authority: project engineering rules.
+.
 
 Every SentinelQA doc carries one of four status labels at the top so a reader can tell, at a glance, whether the doc describes something that exists, something in flight, something locked in, or something on its way out.
 
@@ -88,4 +88,4 @@ The final-hardening audit confirms every Markdown file under those roots carries
 
 - The label is not a CI gate today (it can become one if we add a markdown linter pass). It is a reader hint and a discipline.
 - The label is not a feature flag. Feature flags live in `sentinel.config.yaml`.
-- The label is not a substitute for the PRD. Behavior changes still update our product spec.
+- The label is not a substitute for the the documentation. Behavior changes still update our product spec.

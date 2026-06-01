@@ -9,7 +9,7 @@ Accepted
 
 ## Context
 
-ships the Generator module (the documentation): a `TestPlan` + `DiscoveryGraph` becomes idiomatic Playwright spec files, page objects, fixtures, and a human-readable generated plan markdown under `tests/sentinel/`. Several questions had to land in code:
+ships the Generator module : a `TestPlan` + `DiscoveryGraph` becomes idiomatic Playwright spec files, page objects, fixtures, and a human-readable generated plan markdown under `tests/sentinel/`. Several questions had to land in code:
 
 1. **Templating engine.** our engineering rules"undefined variable" mode so missing template inputs fail loudly rather than silently producing broken TypeScript. Hand-rolling those primitives is precisely the case where a "boring, stable tool" is justified.
 2. **Hand-edit safety.** Generated files MUST be re-generatable, but the project must NOT clobber files a human has edited. the documentation lists the generated tree under `tests/sentinel/` and `tests/sentinel/pages/`; users WILL hand-edit some files there.
@@ -43,6 +43,6 @@ We adopt the following conventions for the Generator module:
 
 ## References
 
-- PRD section(s): the documentation (Generator module), our product spec (Example Generated Playwright Test), our product spec (Generated Test Rules), our product spec (TypeScript Runtime)
+- the documentation section(s): the documentation (Generator module), our product spec (Example Generated Playwright Test), our product spec (Generated Test Rules), our product spec (TypeScript Runtime)
 - our engineering rules rule(s): our engineering rules(TS rules), our engineering rules(Generated test rules), our engineering rules(Self-healing rules), our engineering rules(Dependency rules), our engineering rules(No placeholder completion)
 - Related ADRs: ADR-0009 (Python ↔ TS protocol), ADR-0010 (Discovery release HTTP-first), ADR-0011 (Planner deterministic vs LLM)

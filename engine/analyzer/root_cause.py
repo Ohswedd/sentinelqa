@@ -41,7 +41,7 @@ _TEMPLATES: Final[dict[FailureCategory, tuple[str, tuple[str, ...]]]] = {
         (
             "Open the failing step in the trace viewer to see the DOM snapshot.",
             "Confirm the element name / role used by the locator still matches the UI.",
-            "Consider a more semantic locator (getByRole / getByLabel) per CLAUDE §21.",
+            "Consider a more semantic locator (getByRole / getByLabel).",
         ),
     ),
     "environment_failure": (
@@ -58,8 +58,8 @@ _TEMPLATES: Final[dict[FailureCategory, tuple[str, tuple[str, ...]]]] = {
         "non-deterministic; treat as a flake until a stable repro exists.",
         (
             "Inspect the failing-attempt trace for race conditions or animation timing.",
-            "If recurring, add the test to the quarantine list (CLAUDE §23) with an issue.",
-            "Avoid hard-coded waits — prefer Playwright auto-waiting (CLAUDE §21).",
+            "If recurring, add the test to the quarantine list with an issue.",
+            "Avoid hard-coded waits — prefer Playwright auto-waiting.",
         ),
     ),
     "data_setup_failure": (
@@ -104,7 +104,7 @@ _TEMPLATES: Final[dict[FailureCategory, tuple[str, tuple[str, ...]]]] = {
         (
             "Read the finding's recommendation for the precise header to set.",
             "Patch the application and re-run the security module in isolation.",
-            "Do NOT weaken or skip the assertion — see CLAUDE §23.",
+            "Do NOT weaken or skip the assertion — see the engineering guidelines.",
         ),
     ),
     "accessibility_violation": (
@@ -112,7 +112,7 @@ _TEMPLATES: Final[dict[FailureCategory, tuple[str, tuple[str, ...]]]] = {
         "insufficient contrast, or an ARIA misuse.",
         (
             "Open the linked rule in the axe-core ruleset documentation.",
-            "Fix the underlying markup; do not weaken the assertion (CLAUDE §28).",
+            "Fix the underlying markup; do not weaken the assertion.",
             "Re-run the a11y module to confirm the violation count dropped.",
         ),
     ),

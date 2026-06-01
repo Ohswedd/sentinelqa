@@ -2,7 +2,7 @@
 
 Status: `Stable`
 
-Authority: project engineering rules.0), `NOTICE`.
+.0), `NOTICE`.
 
 This document is the authoritative ownership policy for the SentinelQA repository. Every contributor — human or LLM agent — must comply.
 
@@ -44,7 +44,7 @@ SentinelQA's product premise is **trust through evidence**. A product whose own 
 ### License
 
 - Apache-2.0 (`LICENSE` at repo root). The license choice is recorded in `ADR-0008` (lands in once a public release is in scope — for now the LICENSE file is the ground truth).
-- `NOTICE` accumulates third-party attributions as production dependencies are added in later phases (Apache-2.0 requirement).
+- `NOTICE` accumulates third-party attributions as production dependencies are added in.
 
 ### Package & artifact ownership
 

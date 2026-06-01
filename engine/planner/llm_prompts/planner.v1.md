@@ -3,7 +3,7 @@
 Locked under ADR-0011. Any change to this prompt requires a new ADR + a
 prompt-version bump (`planner.vN.md`). The provider sends only the
 sanitized graph excerpt below; never source code, never secrets, never
-PII (our engineering rules §41, §6).
+PII.
 
 ---
 
