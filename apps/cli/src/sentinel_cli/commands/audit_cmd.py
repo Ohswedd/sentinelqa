@@ -38,6 +38,7 @@ from engine.policy.compliance import (
 import modules.compliance  # noqa: F401
 from sentinel_cli.json_mode import json_stdout
 from sentinel_cli.state import GlobalState
+from sentinel_cli.watch import WatchOptions, emit_to_stderr, watch_loop
 
 
 def run_audit(
@@ -82,6 +83,24 @@ def run_audit(
             ),
         ),
     ] = None,
+    watch: Annotated[
+        bool,
+        typer.Option(
+            "--watch",
+            help=(
+                "Re-run the audit on file changes (local dev loop). " "Refuses to start in CI mode."
+            ),
+        ),
+    ] = False,
+    watch_root: Annotated[
+        Path | None,
+        typer.Option(
+            "--watch-root",
+            help=(
+                "Directory to watch (default: current directory). " "Only meaningful with --watch."
+            ),
+        ),
+    ] = None,
 ) -> None:
     """Execute the full audit lifecycle."""
 
@@ -119,6 +138,37 @@ def run_audit(
         module_options = pack.module_options()
 
     artifacts_root = output if output is not None else Path(".sentinel") / "runs"
+
+    if watch:
+        if state.ci:
+            sys.stderr.write(
+                "--watch is intended for local development; refusing to start in CI mode.\n"
+            )
+            raise typer.Exit(code=EXIT_CONFIG_ERROR)
+
+        def _run_once() -> None:
+            lifecycle = RunLifecycle(artifacts_root=artifacts_root)
+            run = lifecycle.execute(
+                config,
+                requested_modules=requested_modules,
+                dry_run=state.dry_run,
+                ci=state.ci,
+                module_options=module_options,
+            )
+            if state.mode != "quiet":
+                sys.stdout.write(f"[watch] run {run.id} → {run.status}\n")
+                sys.stdout.flush()
+
+        root = (watch_root or Path(".")).resolve()
+        try:
+            watch_loop(
+                WatchOptions(root=root),
+                _run_once,
+                out=emit_to_stderr,
+            )
+        except KeyboardInterrupt:
+            sys.stderr.write("\n[watch] interrupted; exiting.\n")
+        return
 
     lifecycle = RunLifecycle(artifacts_root=artifacts_root)
     test_run = lifecycle.execute(

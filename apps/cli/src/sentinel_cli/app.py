@@ -33,6 +33,7 @@ from sentinel_cli.commands import (
     llm_audit_cmd,
     llm_cmd,
     mcp_cmd,
+    migrate_cmd,
     perf_cmd,
     plan_cmd,
     plugins_cmd,
@@ -78,10 +79,12 @@ def build_app() -> typer.Typer:
         name="sentinel",
         help=(
             "SentinelQA — Playwright-native release-confidence engine.\n\n"
-            "Run `sentinel doctor` first; then `sentinel audit --url ...`."
+            "Run `sentinel doctor` first; then `sentinel audit --url ...`.\n\n"
+            "Shell completions: `sentinel --install-completion`\n"
+            "(re-open your shell, or `source ~/.bashrc` / `~/.zshrc`)."
         ),
         no_args_is_help=True,
-        add_completion=False,
+        add_completion=True,
         pretty_exceptions_enable=False,
     )
 
@@ -179,6 +182,10 @@ def build_app() -> typer.Typer:
     cli.command(name="audit", help="Run the full audit lifecycle against the target.")(
         audit_cmd.run_audit
     )
+    cli.command(
+        name="migrate",
+        help="Adapt an existing Cypress or Playwright suite into SentinelQA-tagged specs.",
+    )(migrate_cmd.run_migrate)
     cli.command(
         name="discover",
         help="Crawl the target, build the discovery graph + risk map, write artifacts.",

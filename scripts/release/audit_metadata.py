@@ -71,6 +71,8 @@ INTERNAL_PY: tuple[str, ...] = (
 INTERNAL_TS: tuple[str, ...] = (
     "package.json",  # monorepo root
     "apps/docs/package.json",
+    "apps/vscode-extension/package.json",  # ships via VS Code Marketplace, not npm
+    "apps/browser-extension/package.json",  # ships via Chrome / Firefox stores, not npm
     "packages/shared-schema/package.json",
     "examples/nextjs/package.json",
     "examples/llm-broken/package.json",

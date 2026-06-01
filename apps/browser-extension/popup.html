@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>SentinelQA</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+      }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        margin: 0;
+        padding: 16px;
+        width: 320px;
+        font-size: 13px;
+      }
+      h1 {
+        font-size: 14px;
+        margin: 0 0 12px;
+      }
+      .row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        margin: 8px 0;
+      }
+      label {
+        font-weight: 500;
+      }
+      input[type='text'],
+      input[type='number'] {
+        width: 100%;
+        padding: 6px 8px;
+        font-size: 12px;
+        border: 1px solid #d0d7de;
+        border-radius: 4px;
+        font-family: ui-monospace, SFMono-Regular, monospace;
+      }
+      button {
+        padding: 8px 12px;
+        border: 0;
+        border-radius: 6px;
+        background: #0f766e;
+        color: #f0fdfa;
+        font-weight: 600;
+        cursor: pointer;
+        width: 100%;
+        margin-top: 12px;
+      }
+      button:disabled {
+        background: #94a3b8;
+        cursor: not-allowed;
+      }
+      .status {
+        margin-top: 12px;
+        padding: 8px;
+        border-radius: 4px;
+        font-family: ui-monospace, SFMono-Regular, monospace;
+        font-size: 11px;
+        white-space: pre-wrap;
+        min-height: 1.2em;
+      }
+      .status.ok {
+        background: #ecfdf5;
+        color: #064e3b;
+      }
+      .status.error {
+        background: #fef2f2;
+        color: #7f1d1d;
+      }
+      .hint {
+        color: #64748b;
+        font-size: 11px;
+        margin-top: 6px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>SentinelQA — Audit this page</h1>
+    <div>
+      <label for="url">URL</label>
+      <input id="url" type="text" readonly />
+    </div>
+    <div>
+      <label for="host">Local MCP host</label>
+      <input id="host" type="text" value="http://127.0.0.1" />
+    </div>
+    <div>
+      <label for="port">Port</label>
+      <input id="port" type="number" value="7333" min="1" max="65535" />
+    </div>
+    <button id="audit">Audit this page</button>
+    <p class="hint">
+      Requires a local <code>sentinel mcp --http --port &lt;port&gt;</code> running on 127.0.0.1.
+      The extension only posts to loopback addresses — see the SECURITY.md.
+    </p>
+    <div id="status" class="status"></div>
+    <script type="module" src="dist/popup.js"></script>
+  </body>
+</html>

@@ -32,6 +32,7 @@ from engine.errors.codes import (
 from engine.policy.safety import SafetyPolicy
 
 from sentinel_cli.json_mode import json_stdout
+from sentinel_cli.platform_install_hints import format_hint
 from sentinel_cli.state import GlobalState
 
 _MIN_PYTHON: Final[tuple[int, int]] = (3, 11)
@@ -64,7 +65,7 @@ def _check_python_version() -> DoctorCheck:
         status="fail",
         detail=f"Python {sys.version.split()[0]} < {'.'.join(map(str, _MIN_PYTHON))}",
         suggestion=(
-            f"Install Python {_MIN_PYTHON[0]}.{_MIN_PYTHON[1]} or newer (uv, pyenv, or system pkg)."
+            f"Install Python {_MIN_PYTHON[0]}.{_MIN_PYTHON[1]} or newer." + format_hint("python")
         ),
         exit_code_hint=EXIT_DEPENDENCY_MISSING,
     )
@@ -78,8 +79,8 @@ def _check_node_version() -> DoctorCheck:
             status="warn",
             detail="Node.js not found.",
             suggestion=(
-                "Install Node 20+ (https://nodejs.org). Required for the Playwright "
-                "TypeScript runtime — Phase 04+."
+                "Install Node 20+ — required for the Playwright TypeScript runtime."
+                + format_hint("node")
             ),
         )
     try:
@@ -112,7 +113,7 @@ def _check_node_version() -> DoctorCheck:
             name="node",
             status="warn",
             detail=f"Node v{version_text} < required v{_MIN_NODE_MAJOR}",
-            suggestion=f"Upgrade Node to v{_MIN_NODE_MAJOR}+.",
+            suggestion=f"Upgrade Node to v{_MIN_NODE_MAJOR}+." + format_hint("node"),
         )
     return DoctorCheck(
         name="node",
@@ -129,7 +130,10 @@ def _check_playwright() -> DoctorCheck:
             name="playwright",
             status="warn",
             detail="`npx` not found; Playwright cannot be exercised.",
-            suggestion="Install Node 20+ then run `npx playwright install --with-deps`.",
+            suggestion=(
+                "Install Node 20+ then run `npx playwright install --with-deps`."
+                + format_hint("node")
+            ),
         )
     try:
         out = subprocess.run(
@@ -151,7 +155,7 @@ def _check_playwright() -> DoctorCheck:
             name="playwright",
             status="warn",
             detail=f"`npx playwright --version` exited {out.returncode}.",
-            suggestion="Run `npx playwright install --with-deps`.",
+            suggestion="Run `npx playwright install --with-deps`." + format_hint("playwright"),
         )
     version_line = out.stdout.strip().splitlines()[0] if out.stdout.strip() else "unknown"
     return DoctorCheck(
@@ -259,7 +263,7 @@ def _check_reachability(config: object) -> DoctorCheck:
             name="reachability",
             status="warn",
             detail="httpx not installed; skipping reachability probe.",
-            suggestion="Install with `pip install httpx`.",
+            suggestion="Install httpx." + format_hint("httpx"),
         )
     try:
         response = httpx.head(url, follow_redirects=True, timeout=5.0)
