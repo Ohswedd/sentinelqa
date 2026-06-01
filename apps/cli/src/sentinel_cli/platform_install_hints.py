@@ -16,7 +16,6 @@ a wrong specific command.
 from __future__ import annotations
 
 import platform
-import sys
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -222,20 +221,6 @@ def format_hint(dependency: str, *, platform_id: str | None = None) -> str:
     if hint is None:
         return ""
     return f" Install: `{hint.command}` (docs: {hint.docs_url})"
-
-
-def _running_in_uv_venv() -> bool:
-    """Best-effort check for whether SentinelQA was launched via uv."""
-
-    if sys.prefix != sys.base_prefix:
-        # We are inside a venv — uv is one of several possible owners.
-        try:
-            import uv  # noqa: F401  # pragma: no cover
-
-            return True
-        except ImportError:
-            pass
-    return False
 
 
 __all__ = [

@@ -54,14 +54,17 @@ def test_debian_node_hint_uses_nodesource() -> None:
 
 
 def test_windows_hints_use_winget() -> None:
-    assert "winget install" in hint_for("python", platform_id="windows").command
-    assert "winget install" in hint_for("node", platform_id="windows").command
-    assert "winget install" in hint_for("docker", platform_id="windows").command
+    for dep in ("python", "node", "docker"):
+        hint = hint_for(dep, platform_id="windows")
+        assert hint is not None
+        assert "winget install" in hint.command
 
 
 def test_arch_hints_use_pacman() -> None:
-    assert "pacman -S" in hint_for("python", platform_id="arch").command
-    assert "pacman -S" in hint_for("node", platform_id="arch").command
+    for dep in ("python", "node"):
+        hint = hint_for(dep, platform_id="arch")
+        assert hint is not None
+        assert "pacman -S" in hint.command
 
 
 def test_fedora_node_hint_uses_dnf() -> None:
