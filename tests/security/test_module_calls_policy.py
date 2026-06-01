@@ -26,9 +26,21 @@ CHECKS_DIR = REPO_ROOT / "modules" / "security" / "checks"
 def _check_files() -> list[Path]:
     out: list[Path] = []
     for file in CHECKS_DIR.glob("*.py"):
-        if file.name in {"__init__.py", "context.py", "deps.py", "sast.py"}:
-            # deps + sast are local-only / shell-out adapters; they do
-            # not issue HTTP calls to the target.
+        if file.name in {
+            "__init__.py",
+            "context.py",
+            "deps.py",
+            "sast.py",
+            # v1.3.0: pure helper modules (no run_* entry points; they
+            # don't issue HTTP calls — the caller does). Each is a
+            # collection of detectors / scorers that take captured
+            # state and return findings.
+            "header_scoring.py",
+            "open_redirect.py",
+            "pii_in_responses.py",
+            "protocol_probe.py",
+            "service_worker.py",
+        }:
             continue
         out.append(file)
     return out

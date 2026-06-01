@@ -161,6 +161,33 @@ export interface DiscoveryEndpointEvent extends BaseEvent<'discovery.endpoint'> 
   readonly source: EndpointSource;
 }
 
+// v1.3.0 — JS/TS error capture. Unhandled browser exceptions caught
+// via Playwright's `pageerror` listener. ``source_url`` is the script
+// URL when available (already redacted), otherwise an empty string.
+export interface PageErrorEvent extends BaseEvent<'page.error'> {
+  readonly test_id: string | null;
+  readonly name: string;
+  readonly message: string;
+  readonly stack: string;
+  readonly source_url: string;
+}
+
+// v1.3.0 — Network forensics. Emitted (in addition to the normal
+// network.response) whenever a response status >= 500 is observed so
+// downstream consumers can attach it as evidence to the failing
+// test. Headers are already redacted.
+export interface NetworkFailureEvent extends BaseEvent<'network.failure'> {
+  readonly test_id: string | null;
+  readonly request_id: string;
+  readonly url: string;
+  readonly method: string;
+  readonly status: number;
+  readonly request_headers: Record<string, string>;
+  readonly response_headers: Record<string, string>;
+  readonly response_body_preview: string;
+  readonly duration_ms: number;
+}
+
 export interface SerializedError {
   readonly name: string;
   readonly message: string;
@@ -177,7 +204,9 @@ export type TsEvent =
   | EvidenceEvent
   | NetworkRequestEvent
   | NetworkResponseEvent
+  | NetworkFailureEvent
   | ConsoleEvent
+  | PageErrorEvent
   | DomSnapshotEvent
   | ModuleEventEvent
   | LogEvent
@@ -289,7 +318,9 @@ const VALID_TYPES = new Set<string>([
   'evidence',
   'network.request',
   'network.response',
+  'network.failure',
   'console',
+  'page.error',
   'dom.snapshot',
   'module.event',
   'log',

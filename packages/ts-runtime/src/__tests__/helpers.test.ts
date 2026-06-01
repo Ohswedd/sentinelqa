@@ -9,9 +9,16 @@ import {
   _resetStepCounterForTests,
   captureEvidence,
   redactedNetwork,
+  redactedPageErrors,
   sentinelStep,
 } from '../helpers.js';
-import type { PageLike, NetworkRequest, NetworkResponse, RoutablePage } from '../helpers.js';
+import type {
+  PageErrorEmitterPage,
+  PageLike,
+  NetworkRequest,
+  NetworkResponse,
+  RoutablePage,
+} from '../helpers.js';
 import { MemorySink, EventEmitter, parseEvent } from '../protocol.js';
 import type { LogEvent, TsEvent } from '../protocol.js';
 
@@ -175,6 +182,174 @@ describe('redactedNetwork', () => {
     expect(resEv.content_length).toBe(42);
     expect(resEv.content_type).toBe('application/json');
     expect(resEv.request_id).toBe(reqEv.request_id);
+  });
+});
+
+describe('redactedNetwork — 5xx forensics (v1.3.0)', () => {
+  it('emits a network.failure event when a 5xx response is observed', async () => {
+    const ctx = makeCtx();
+    let requestListener: ((req: NetworkRequest) => void) | undefined;
+    let responseListener: ((res: NetworkResponse) => void) | undefined;
+    const fakePage: RoutablePage = {
+      on(event, listener) {
+        if (event === 'request') requestListener = listener as (req: NetworkRequest) => void;
+        if (event === 'response') responseListener = listener as (res: NetworkResponse) => void;
+      },
+    };
+    redactedNetwork(fakePage, ctx);
+
+    const req: NetworkRequest = {
+      url: () => 'https://api.example.com/users',
+      method: () => 'POST',
+      headers: () => ({ Authorization: 'Bearer xyz' }),
+      postDataBuffer: () => null,
+      resourceType: () => 'fetch',
+    };
+    requestListener!(req);
+
+    const fakeRes = {
+      url: () => 'https://api.example.com/users',
+      status: () => 500,
+      headers: () => ({ 'content-type': 'text/html' }),
+      request: () => req,
+      body: () => Promise.resolve(Buffer.from('<html>oops Bearer abc.DEF.ghi leaked</html>')),
+    };
+    responseListener!(fakeRes as unknown as NetworkResponse);
+    // Allow the queued microtask for capturePreview to drain.
+    await new Promise((r) => setTimeout(r, 0));
+
+    const types = ctx.sink.events().map((e) => e.type);
+    expect(types).toContain('network.failure');
+    const failure = ctx.sink
+      .events()
+      .find(
+        (e): e is Extract<TsEvent, { type: 'network.failure' }> => e.type === 'network.failure',
+      );
+    expect(failure?.status).toBe(500);
+    expect(failure?.method).toBe('POST');
+    expect(failure?.request_headers).toBeDefined();
+    // Authorization must have been redacted by redactHeaders.
+    expect(JSON.stringify(failure?.request_headers)).not.toContain('Bearer xyz');
+    // Body preview should be present and redacted.
+    expect(failure?.response_body_preview).toContain('REDACTED');
+    expect(failure?.response_body_preview).not.toContain('abc.DEF.ghi');
+  });
+
+  it('does not emit network.failure on a 2xx response', async () => {
+    const ctx = makeCtx();
+    let requestListener: ((req: NetworkRequest) => void) | undefined;
+    let responseListener: ((res: NetworkResponse) => void) | undefined;
+    const fakePage: RoutablePage = {
+      on(event, listener) {
+        if (event === 'request') requestListener = listener as (req: NetworkRequest) => void;
+        if (event === 'response') responseListener = listener as (res: NetworkResponse) => void;
+      },
+    };
+    redactedNetwork(fakePage, ctx);
+    const req: NetworkRequest = {
+      url: () => 'https://api.example.com/ok',
+      method: () => 'GET',
+      headers: () => ({}),
+      postDataBuffer: () => null,
+      resourceType: () => 'fetch',
+    };
+    requestListener!(req);
+    responseListener!({
+      url: () => 'https://api.example.com/ok',
+      status: () => 200,
+      headers: () => ({}),
+      request: () => req,
+    } as NetworkResponse);
+
+    const types = ctx.sink.events().map((e) => e.type);
+    expect(types).not.toContain('network.failure');
+  });
+
+  it('survives a response body() that rejects (consumed / redirected)', async () => {
+    const ctx = makeCtx();
+    let requestListener: ((req: NetworkRequest) => void) | undefined;
+    let responseListener: ((res: NetworkResponse) => void) | undefined;
+    const fakePage: RoutablePage = {
+      on(event, listener) {
+        if (event === 'request') requestListener = listener as (req: NetworkRequest) => void;
+        if (event === 'response') responseListener = listener as (res: NetworkResponse) => void;
+      },
+    };
+    redactedNetwork(fakePage, ctx);
+    const req: NetworkRequest = {
+      url: () => 'https://api.example.com/redirect',
+      method: () => 'GET',
+      headers: () => ({}),
+      postDataBuffer: () => null,
+      resourceType: () => 'fetch',
+    };
+    requestListener!(req);
+    responseListener!({
+      url: () => 'https://api.example.com/redirect',
+      status: () => 502,
+      headers: () => ({}),
+      request: () => req,
+      body: () => Promise.reject(new Error('consumed')),
+    } as unknown as NetworkResponse);
+    await new Promise((r) => setTimeout(r, 0));
+
+    const failure = ctx.sink
+      .events()
+      .find(
+        (e): e is Extract<TsEvent, { type: 'network.failure' }> => e.type === 'network.failure',
+      );
+    expect(failure).toBeDefined();
+    expect(failure?.response_body_preview).toBe('');
+  });
+});
+
+describe('redactedPageErrors (v1.3.0)', () => {
+  it('emits a page.error event with redacted message + stack', () => {
+    const ctx = makeCtx();
+    let listener: ((err: Error) => void) | undefined;
+    const fakePage: PageErrorEmitterPage = {
+      on(event, l) {
+        if (event === 'pageerror') listener = l;
+      },
+    };
+    redactedPageErrors(fakePage, ctx);
+
+    const err = new Error('Bearer abc.DEF-ghi_jklmno0123456789 not authorised');
+    err.stack =
+      'TypeError: Bearer abc.DEF-ghi_jklmno0123456789 not authorised\n' +
+      '    at https://example.com/app.js:42:12';
+    listener!(err);
+
+    const ev = ctx.sink
+      .events()
+      .find((e): e is Extract<TsEvent, { type: 'page.error' }> => e.type === 'page.error');
+    expect(ev).toBeDefined();
+    expect(ev?.name).toBe('Error');
+    expect(ev?.message).toContain('REDACTED');
+    expect(ev?.message).not.toContain('abc.DEF-ghi_jklmno0123456789');
+    expect(ev?.stack).toContain('REDACTED');
+    expect(ev?.source_url).toContain('example.com');
+  });
+
+  it('handles errors with no stack', () => {
+    const ctx = makeCtx();
+    let listener: ((err: Error) => void) | undefined;
+    const fakePage: PageErrorEmitterPage = {
+      on(event, l) {
+        if (event === 'pageerror') listener = l;
+      },
+    };
+    redactedPageErrors(fakePage, ctx);
+    const err = new Error('boom');
+    // Browsers can deliver page errors with no ``stack`` (Safari ≤ 16,
+    // production-mode minified bundles). Simulate that here.
+    Object.defineProperty(err, 'stack', { value: undefined });
+    listener!(err);
+    const ev = ctx.sink
+      .events()
+      .find((e): e is Extract<TsEvent, { type: 'page.error' }> => e.type === 'page.error');
+    expect(ev?.stack).toBe('');
+    expect(ev?.source_url).toBe('');
   });
 });
 
