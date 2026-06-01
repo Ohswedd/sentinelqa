@@ -1,4 +1,4 @@
-"""AEAD primitives for the auth vault (Phase 31, ADR-0043).
+"""AEAD primitives for the auth vault (, ADR-0043).
 
 The vault stores Playwright ``storage_state`` blobs encrypted with
 AES-256-GCM via the PyCA :mod:`cryptography` library (already a direct

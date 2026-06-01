@@ -9,7 +9,7 @@ Accepted
 
 ## Context
 
-Phase 13 already supports `auth.strategy: test_user`, where the
+already supports `auth.strategy: test_user`, where the
 operator stores a username + password in env vars and a Phase-13 login
 fixture re-authenticates on every audit. That covers about 70 % of
 self-hosted apps — anything with a plain HTML login form, a fixed test
@@ -36,7 +36,7 @@ sentinel auth login github-myorg --url https://github.com/login
 
 The CLI opens a headed Chromium (or Firefox / WebKit), the operator
 signs in normally — including MFA and CAPTCHA, which SentinelQA never
-sees — and on completion SentinelQA captures `context.storage_state()`
+sees — and on completion SentinelQA captures `context.storage_state`
 and encrypts it into the per-user vault at
 `~/.sentinel/auth/<host-slug>/<name>.json.enc`.
 
@@ -50,14 +50,14 @@ and encrypts it into the per-user vault at
 
 - New config branch: `auth.strategy: browser_session` plus `auth.session_name: <name>`. The host is taken from `target.base_url`. A Pydantic `model_validator` rejects inconsistent combinations.
 - The Phase-08 orchestrator materializes the vault entry into `<run-dir>/auth/storage_state.json` (chmod `0600`), passes the path in the run-config envelope as `storage_state_path`, and deletes the file on teardown regardless of run outcome (try/finally). The plaintext file MUST NOT outlive the run.
-- The TypeScript runner extends its `RunConfigSchema` with the same `storage_state_path` field, exports `SENTINELQA_STORAGE_STATE` to child Playwright processes, and ships a new `getSentinelStorageStateUse()` helper the user's `playwright.config.ts` can spread into the `use` block. A `--storage-state
+- The TypeScript runner extends its `RunConfigSchema` with the same `storage_state_path` field, exports `SENTINELQA_STORAGE_STATE` to child Playwright processes, and ships a new `getSentinelStorageStateUse` helper the user's `playwright.config.ts` can spread into the `use` block. A `--storage-state
 <path>` CLI flag overrides the run-config value.
 - The Phase-05 crawler accepts a pre-loaded cookies dict via the existing `extra_cookies` argument — when the strategy is `browser_session`, `sentinel discover` reads the vault in-memory (never to disk), filters cookies to the target host, and passes them in.
 - Plugins must declare a new scoped permission, `auth.read:<host>`, before they can call `ctx.auth_session(host, name)`. Cross-host reads are refused at the runtime boundary.
 
 ### Safety guards
 
-1. `Vault.get()` refuses any entry whose recorded host is not in the active target's allowlist — a `VaultHostMismatchError` (`E-AUTH-003`) is raised; the run aborts at exit 4.
+1. `Vault.get` refuses any entry whose recorded host is not in the active target's allowlist — a `VaultHostMismatchError` (`E-AUTH-003`) is raised; the run aborts at exit 4.
 2. Expired entries raise `VaultEntryExpiredError` (`E-AUTH-002`). The vault never extends or refreshes a session.
 3. AEAD failures (tampered ciphertext, wrong key) raise `VaultIntegrityError` (`E-AUTH-004`).
 4. The login flow refuses to capture if the post-login URL host differs from the start URL host AND is not on the allowlist (`LoginOriginChangedError`, `E-AUTH-005`) — defense against phishing redirects.
@@ -78,11 +78,11 @@ even look like credentials.
 ## Consequences
 
 - **Positive:** SentinelQA can now audit ~95 % of real-world apps (the existing 70 % plus the SSO and personal-LLM-workflow 25 %). The operator's password / OTP / OAuth bearer token never touches SentinelQA. The encrypted vault makes "ship a teammate the session for an offline audit" a documented, auditable workflow with an explicit `--i-acknowledge` flag.
-- **Positive:** The vault sits behind a single Python boundary (`engine.auth.Vault`); the TS runner only receives a path. Future remote-execution surfaces (Phase 35+) can stream the storage-state over the same path-based contract without re-deriving the cryptography.
+- **Positive:** The vault sits behind a single Python boundary (`engine.auth.Vault`); the TS runner only receives a path. Future remote-execution surfaces (+) can stream the storage-state over the same path-based contract without re-deriving the cryptography.
 - **Negative / trade-off:** We add the `keyring` library as a soft dependency. When it isn't usable, the operator MUST set a strong passphrase via env var; we refuse to fall back to an unencrypted blob. That's a friction cost on locked-down CI runners.
 - **Negative / trade-off:** Storage states expire. We default the TTL to 24 h so a forgotten capture cannot keep an audit running against a stale session indefinitely; operators must re-run `sentinel auth
 login` when an audit fails with `E-AUTH-002`. We accept the friction — silent extension would be a safety regression.
-- **Follow-up obligations:** Phase 35 (public release engineering) will need to surface the vault's PBKDF2-iteration knob in the docs site and pin the `keyring` library at a version that ships Apple-Keychain / Secret-Service / Windows-Credential-Manager backends out of the box. Tracked in `docs/dev/auth-internals.md`.
+- **Follow-up obligations:** (public release engineering) will need to surface the vault's PBKDF2-iteration knob in the docs site and pin the `keyring` library at a version that ships Apple-Keychain / Secret-Service / Windows-Credential-Manager backends out of the box. Tracked in `docs/dev/auth-internals.md`.
 
 ## Alternatives considered
 

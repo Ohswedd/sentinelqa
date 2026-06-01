@@ -1,21 +1,21 @@
-"""Safe SQLi probe (Phase 13.06).
+"""Safe SQLi probe.
 
 OFF by default. Enabled only when:
 
 - ``config.security.checks.sqli == True`` AND
 - ``target.mode == "local"`` (i.e. host is loopback / RFC1918), OR
 - ``security.mode == "authorized_destructive"`` with a valid proof-of-
-  authorization document.
+ authorization document.
 
 The probe technique is **behavioural, not exploitative**:
 
 - Send ``true`` and ``false`` boolean payloads (`' OR '1'='1` vs
-  `' AND '1'='2`).
+ `' AND '1'='2`).
 - Send one short time-based payload, capped at a 2-second pg_sleep
-  equivalent so we cannot exhaust resources.
+ equivalent so we cannot exhaust resources.
 - Compare status code + body length + elapsed time across the
-  baseline, true, and false probes. A statistically clear divergence
-  raises a critical finding.
+ baseline, true, and false probes. A statistically clear divergence
+ raises a critical finding.
 
 We do NOT extract data, NOT enumerate database schema, NOT chain into
 a follow-up payload. Confirmation requires manual review.

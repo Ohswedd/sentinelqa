@@ -1,4 +1,4 @@
-"""Generator file writer (task 07.06).
+"""Generator file writer.
 
 Writes generated TypeScript files to disk while respecting hand-edits.
 A file is considered SentinelQA-managed only if it contains

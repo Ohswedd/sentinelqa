@@ -1,4 +1,4 @@
-"""Structural smoke for the FastAPI example (Phase 26.02)."""
+"""Structural smoke for the FastAPI example."""
 
 from __future__ import annotations
 

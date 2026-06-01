@@ -1,4 +1,4 @@
-"""`sentinel --help` registers every our product spec1 command (task 02.01)."""
+"""`sentinel --help` registers every our product spec1 command."""
 
 from __future__ import annotations
 

@@ -1,4 +1,4 @@
-"""End-to-end smoke for the security module (Phase 13.13).
+"""End-to-end smoke for the security module.
 
 Drives ``SecurityModule.run`` against an ``HTTPServer`` configured to
 expose a deliberately-vulnerable fixture surface: missing security
@@ -122,11 +122,11 @@ def test_security_module_e2e_against_vulnerable_fixture(
     findings = result.findings
     rule_ids = {f.category.split("/")[-1] for f in findings}
     # We expect at minimum:
-    #   - csp_missing (headers)
-    #   - cookie httponly / secure (cookies)
-    #   - cors wildcard (cors)
-    #   - csrf missing token (csrf)
-    #   - frontend secret in bundle
+    # - csp_missing (headers)
+    # - cookie httponly / secure (cookies)
+    # - cors wildcard (cors)
+    # - csrf missing token (csrf)
+    # - frontend secret in bundle
     assert "sec-headers-csp-missing" in rule_ids
     assert "sec-cookie-missing-httponly" in rule_ids
     assert any("cors" in r for r in rule_ids)

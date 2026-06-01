@@ -1,18 +1,18 @@
-"""``sentinel visual`` — Phase 21 / the documentation visual-regression CLI.
+"""``sentinel visual`` — / the documentation visual-regression CLI.
 
-Replaces the Phase 02 stub. Three subcommands:
+Replaces the stub. Three subcommands:
 
 - ``diff`` (default) — diff ``current/`` PNGs against baselines via
-  the canonical :class:`RunLifecycle`.
-- ``accept``           — promote ``current/`` PNGs into the baseline
-  tree. Refused in CI (CLAUDE §29, §39): every CI-mode invocation of
-  ``accept`` exits with :data:`EXIT_UNSAFE_TARGET` and writes an
-  audit-log entry.
-- ``capture``          — record an externally-supplied PNG tree as
-  ``current/`` so a downstream ``diff`` can run. The capture
-  pipeline (Playwright TS) is wired through the run-lifecycle's
-  visual sub-tree; this subcommand wraps the bookkeeping so users
-  can feed PNGs from another tool in the interim.
+ the canonical :class:`RunLifecycle`.
+- ``accept`` — promote ``current/`` PNGs into the baseline
+ tree. Refused in CI (CLAUDE §29, §39): every CI-mode invocation of
+ ``accept`` exits with :data:`EXIT_UNSAFE_TARGET` and writes an
+ audit-log entry.
+- ``capture`` — record an externally-supplied PNG tree as
+ ``current/`` so a downstream ``diff`` can run. The capture
+ pipeline (Playwright TS) is wired through the run-lifecycle's
+ visual sub-tree; this subcommand wraps the bookkeeping so users
+ can feed PNGs from another tool in the interim.
 
 Exit codes (CLAUDE §13):
 

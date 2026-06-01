@@ -1,6 +1,6 @@
-"""Healer facade (Phase 20.01, ADR-0025).
+"""Healer facade.
 
-The Healer is invoked by the Analyzer (Phase 09) for failures
+The Healer is invoked by the Analyzer for failures
 categorized as ``test_bug``. The facade is a thin orchestrator over
 the three repair proposers; it does NOT decide whether a proposal
 auto-applies (see :mod:`engine.healer.gating`) and it does NOT write

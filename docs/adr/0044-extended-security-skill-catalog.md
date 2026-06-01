@@ -1,4 +1,4 @@
-# ADR-0044: Extended security skill catalog (Phase 32)
+# ADR-0044: Extended security skill catalog
 
 ## Status
 
@@ -9,9 +9,9 @@ Accepted
 
 ## Context
 
-The Phase 13 security module landed the OWASP basics (headers, cookies,
+The security module landed the OWASP basics (headers, cookies,
 CORS, CSRF, safe XSS, IDOR smoke, secret scan, SARIF export). Two
-years of community feedback plus the post-MVP review surfaced three
+years of community feedback plus the post-release review surfaced three
 recurring asks:
 
 1. **Standards mapping** — security teams want `cwe_id`, `attack_id`, `owasp_api_id` on findings so SARIF dashboards and incident triage tools can deep-link to canonical references. Today every Phase-13 finding category is "SentinelQA jargon".
@@ -24,7 +24,7 @@ the documentation (Security testing), §10.9 (LLM-code-specific audits), §13
 
 ## Decision
 
-Phase 32 ships **nine** deliverables under a single ADR:
+ships **nine** deliverables under a single ADR:
 
 1. **`FINDINGS_SCHEMA_VERSION` bumped `"1"` → `"2"`** in `engine/domain/schema.py`. The `Finding` Pydantic model gains three optional fields — `cwe_id`, `attack_id`, `owasp_api_id` — each with strict regex validation (`^CWE-\d+$`, `^T\d{4}(\.\d{3})?$`, `^API-\d{4}-\d{2}$`). The bump is forward-compatible: v1 documents parse cleanly into the v2 model (the new fields default to `None`). An explicit `engine.domain.migrations.findings_1_to_2.migrate` helper is registered in the `MIGRATIONS` map so callers that need to re-stamp a v1 doc as v2 can do it deterministically.
 
@@ -32,17 +32,17 @@ Phase 32 ships **nine** deliverables under a single ADR:
 
 3. **SARIF taxa emission** in `engine/reporter/sarif_writer.py`: `runs[].taxonomies` lists the distinct CWE / ATT&CK / OWASP-API identifiers referenced by the finding set with stable per-id help URIs (`https://cwe.mitre.org/data/definitions/<n>.html`, `https://attack.mitre.org/techniques/<id>/`, OWASP-API editions index). Each result that carries a taxonomy id gets a `taxa` reference plus a redundant `properties.cwe_id` / `properties.attack_id` / `properties.owasp_api_id` pair so downstream consumers can pivot without a `toolComponent` lookup.
 
-4. **Eight new check modules** under `modules/security/checks/`: - `jwt_weakness.py` (Phase 32.01) — fixed 6-entry HS256 weak-secret wordlist, `alg=none` detection, missing/expired `exp`, missing `iss`/`aud` for multi-tenant tokens. - `cookies.py` (Phase 32.02, extended) — `__Host-` / `__Secure-` prefix check, over-broad `Domain` detection, over-broad `Path` detection (modulo the `__Host-` carve-out that REQUIRES Path=/). - `tls_posture.py` (Phase 32.03) — read-only TLS handshake; version / cipher / cert-expiry / HSTS posture. - `graphql_safety.py` (Phase 32.04) — fixed 3-query probe set (introspection, depth-5, alias bomb) + optional anonymous mutation probe (one request per discovered mutation). - `api_bola_bfla.py` (Phase 32.05) — replays observed identity-A calls under identity B; hard-gated behind `security.mode=authorized_destructive` + a non-empty `target.proof_of_authorization`; capped at 50 endpoints per run. - `frontend_only_auth_deeper.py` (Phase 32.06) — replays observed XHR / fetch URLs anonymously; flags 200-with-body responses. - `bundle_secrets.py` (Phase 32.07) — streamed JS-bundle scan, 50 MiB cap, fixed 7-pattern set, redacted match prefixes only. - `ssrf_redirect.py` (Phase 32.08) — fixed 6-payload SSRF list + 2-payload open-redirect list; same destructive-mode gate as `api_bola_bfla`.
+4. **Eight new check modules** under `modules/security/checks/`: - `jwt_weakness.py` — fixed 6-entry HS256 weak-secret wordlist, `alg=none` detection, missing/expired `exp`, missing `iss`/`aud` for multi-tenant tokens. - `cookies.py` — `__Host-` / `__Secure-` prefix check, over-broad `Domain` detection, over-broad `Path` detection (modulo the `__Host-` carve-out that REQUIRES Path=/). - `tls_posture.py` — read-only TLS handshake; version / cipher / cert-expiry / HSTS posture. - `graphql_safety.py` — fixed 3-query probe set (introspection, depth-5, alias bomb) + optional anonymous mutation probe (one request per discovered mutation). - `api_bola_bfla.py` — replays observed identity-A calls under identity B; hard-gated behind `security.mode=authorized_destructive` + a non-empty `target.proof_of_authorization`; capped at 50 endpoints per run. - `frontend_only_auth_deeper.py` — replays observed XHR / fetch URLs anonymously; flags 200-with-body responses. - `bundle_secrets.py` — streamed JS-bundle scan, 50 MiB cap, fixed 7-pattern set, redacted match prefixes only. - `ssrf_redirect.py` — fixed 6-payload SSRF list + 2-payload open-redirect list; same destructive-mode gate as `api_bola_bfla`.
 
-5. **One CI safety guard** at `tests/security/test_no_offensive_checks.py` greps the new modules for forbidden tokens (`exploit`, `bypass`, `shellcode`, `obfuscate`, `evade`, `captcha_bypass`, `stealth`, etc.) and asserts per-module load-bearing invariants: JWT module never loads an external wordlist; SSRF module's payload list is a module-level `Final[tuple[str, ...]]`; TLS module never sends application-layer bytes outside the SSL handshake; GraphQL module's probe shapes are a fixed `Final[tuple[str, ...]]`.
+5. **One CI safety guard** at `tests/security/test_no_offensive_checks.py` greps the new modules for forbidden tokens (`exploit`, `bypass`, `shellcode`, `obfuscate`, `evade`, `captcha_bypass`, `stealth`, etc.) and asserts per-module load-bearing invariants: JWT module never loads an external wordlist; SSRF module's payload list is a module-level `Final[tuple[str,...]]`; TLS module never sends application-layer bytes outside the SSL handshake; GraphQL module's probe shapes are a fixed `Final[tuple[str,...]]`.
 
 ## Consequences
 
 - **Positive.** - Every security finding now carries a `cwe_id` (and frequently `attack_id` / `owasp_api_id`). SARIF dashboards (GitHub code-scanning, Defect Dojo, SonarQube) can deep-link to `cwe.mitre.org`, `attack.mitre.org`, and the OWASP API editions index without custom wiring. - The catalog grows from 7 OWASP basics to 15 standards-anchored classes, materially expanding the "did we ship a credential by accident?" coverage SentinelQA can offer LLM-built apps. - The forward-compat v1→v2 reader means existing dashboards that persisted v1 `findings.json` keep working; the migration helper gives operators an explicit re-stamp path when needed.
 
-- **Negative / trade-off.** - Wire format is now v2. Downstream readers that hard-coded `schema_version: "1"` (e.g. external SIEMs ingesting `findings.json` directly) need to update. The Phase 02 schema-versioning policy (`docs/dev/schema-versioning.md`) covers this; the changelog entry for v0.8.0 calls it out. - The `Finding` JSON Schema's `required` list now includes the three new fields. v1 documents validated against the v2 schema will fail; consumers re-validating old data must run the v1→v2 migration first. - The SDK API snapshot (`packages/python-sdk/api-snapshot.json`) surfaces three new public model fields. The Phase-16 deprecation policy treats `model_fields` additions as backwards-compatible surface changes; no public method or class is removed or renamed.
+- **Negative / trade-off.** - Wire format is now v2. Downstream readers that hard-coded `schema_version: "1"` (e.g. external SIEMs ingesting `findings.json` directly) need to update. The schema-versioning policy (`docs/dev/schema-versioning.md`) covers this; the changelog entry for v0.8.0 calls it out. - The `Finding` JSON Schema's `required` list now includes the three new fields. v1 documents validated against the v2 schema will fail; consumers re-validating old data must run the v1→v2 migration first. - The SDK API snapshot (`packages/python-sdk/api-snapshot.json`) surfaces three new public model fields. The Phase-16 deprecation policy treats `model_fields` additions as backwards-compatible surface changes; no public method or class is removed or renamed.
 
-- **Follow-up obligations.** - Phase 33 (Supply-Chain & Dependency Audit) is the next phase that consumes the new SARIF `taxa` emission; ADR-0044 commits Phase 33's findings to surface `cwe_id` from day one. Phase 33's task files already enumerate this requirement. - The eight new check functions are exposed as importable `run_<name>_check(ctx, ...)` entry points behind the existing `SecurityCheck` Protocol. Operator-facing CLI subcommands and config toggles for each check are an SDK / orchestrator surface-area decision and are intentionally **out of scope** for this ADR — the catalog adds capability, it does not extend the CLI surface. The safety guard in `tests/security/test_no_offensive_checks.py` MUST stay green regardless of any future wiring.
+- **Follow-up obligations.** - (Supply-Chain & Dependency Audit) is the next phase that consumes the new SARIF `taxa` emission; ADR-0044 commits's findings to surface `cwe_id` from day one.'s task files already enumerate this requirement. - The eight new check functions are exposed as importable `run_<name>_check(ctx,...)` entry points behind the existing `SecurityCheck` Protocol. Operator-facing CLI subcommands and config toggles for each check are an SDK / orchestrator surface-area decision and are intentionally **out of scope** for this ADR — the catalog adds capability, it does not extend the CLI surface. The safety guard in `tests/security/test_no_offensive_checks.py` MUST stay green regardless of any future wiring.
 
 ## Alternatives considered
 
@@ -56,4 +56,4 @@ Phase 32 ships **nine** deliverables under a single ADR:
 - PRD section(s): - the documentation (Security testing) — extended with §10.7.1 "Extended Security Skill Catalog" by this ADR. - the documentation (LLM-code-specific audits). - our product spec (Finding schema) — v2 fields documented.
 - our engineering rules rule(s): - our engineering rules(Non-Negotiable Safety Boundary). - our engineering rules(Artifact and Data Rules) — schema versioning. - our engineering rules(Findings Rules) — every finding has evidence and now a taxonomy reference. - our engineering rules(Security Module Rules) — safe-by-default, allowlisted targets. - our engineering rules(Documentation Rules) — Report-schema trigger met.
 - External: - <https://cwe.mitre.org> — Common Weakness Enumeration. - <https://attack.mitre.org> — MITRE ATT&CK technique catalog. - <https://owasp.org/API-Security/editions/2023/en/0x11-t10/> — OWASP API Top-10 (2023). - <https://docs.oasis-open.org/sarif/sarif/v2.1.0/errata01/os/schemas/sarif-schema-2.1.0.json> — SARIF 2.1.0 schema; `runs[].taxonomies` shape.
-- Related ADRs: - ADR-0018 (Phase 13 security module). - ADR-0042 (multi-provider LLM adapter layer). - ADR-0043 (browser-authenticated audits).
+- Related ADRs: - ADR-0018 ( security module). - ADR-0042 (multi-provider LLM adapter layer). - ADR-0043 (browser-authenticated audits).

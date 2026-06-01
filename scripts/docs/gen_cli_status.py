@@ -1,7 +1,7 @@
 """Generate the CLI reference page with per-command status sourced from
 `the build plan`.
 
-Task 27.03 demands that the CLI reference accurately reflects which
+ demands that the CLI reference accurately reflects which
 commands are implemented vs. registered-stubs at the time the doc-site
 is built. The source of truth is `the build plan` (the live phase
 tracker). This generator parses STATUS to derive implemented commands,

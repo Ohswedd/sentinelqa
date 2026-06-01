@@ -1,8 +1,8 @@
-"""BrowserStack Automate adapter (Phase 25, task 25.01).
+"""BrowserStack Automate adapter (, ).
 
 The adapter implements the SDK ``RunnerPlugin`` Protocol
 (:mod:`sentinelqa.plugins`). The shape lets a third-party config opt
-into BrowserStack via the Phase 24 plugin loader OR call the adapter
+into BrowserStack via the plugin loader OR call the adapter
 directly from a custom runner. SentinelQA does NOT auto-route audit
 runs through BrowserStack; the engine remains location-agnostic.
 
@@ -180,18 +180,18 @@ class BrowserStackRunner:
         """Submit a runner invocation to BrowserStack.
 
         ``invocation`` is the same opaque mapping the local / Docker
-        runners receive (Phase 08); the adapter pulls the fields it
+        runners receive ; the adapter pulls the fields it
         needs (browser, headless, build) and ignores the rest.
 
         Returns a deterministic outcome dict shaped like::
 
-            {
-              "status": "submitted" | "quota_exceeded",
-              "session_id": "...",
-              "build_id": "...",
-              "capabilities": {...},
-              "traces": [{"url": "..."}, ...],
-            }
+        {
+        "status": "submitted" | "quota_exceeded",
+        "session_id": "...",
+        "build_id": "...",
+        "capabilities": {...},
+        "traces": [{"url": "..."},...],
+        }
 
         Trace upload is best-effort: if BrowserStack returns 429 the
         outcome's ``status`` is ``"quota_exceeded"`` rather than an

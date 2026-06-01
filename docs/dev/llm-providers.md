@@ -2,7 +2,7 @@
 
 SentinelQA's planner, analyzer, healer, and future LLM-augmented
 modules speak to a fleet of LLM providers behind one canonical Protocol
-— `engine.llm.LlmProvider` (Phase 30, ADR-0042). Ten providers ship
+— `engine.llm.LlmProvider` (, ADR-0042). Ten providers ship
 out of the box:
 
 | Provider       | Env var                          | Auth                    | Default model                 | Notes                                                                |
@@ -21,7 +21,7 @@ out of the box:
 ## Hard constraints
 
 - **HTTP-only.** Every adapter speaks REST via `httpx`. No vendor SDK is imported anywhere in the codebase.
-- **Bring your own credentials.** API keys come from env vars by name only. Inline secrets are never accepted in `sentinel.config.yaml` .
+- **Bring your own credentials.** API keys come from env vars by name only. Inline secrets are never accepted in `sentinel.config.yaml`.
 - **Per-run cost budget.** Every call passes through `LlmBudget`. The default cap is **$0.50 per run**; per-caller sub-caps (planner / analyzer / healer) are optional. Budget overrun raises `LlmBudgetExceededError` (exit `E-LLM-003`) and the caller falls back to its deterministic path.
 - **Rate-limit.** Each provider has its own token-bucket; default 60 requests/min.
 - **Audit-log redaction.** Outgoing request bodies and incoming response bodies are summarized before logging — prompt text and response text NEVER touch the audit log by default.
@@ -84,7 +84,7 @@ for that caller.
 ## Adding a new provider
 
 1. Create `engine/llm/providers/<name>.py`. Subclass `HttpLlmProviderBase`. Override: - `endpoint_url` — the POST URL. - `auth_headers(*, api_key)` — auth headers. - `build_payload(*, request, model)` — request body. - `extract_response_text(body)` — model output as a string. - Optional: `usage_from_response`, `cost_from_response`, `doctor`.
-2. Add an entry to `engine/llm/providers/__init__.py::_bootstrap()`.
+2. Add an entry to `engine/llm/providers/__init__.py::_bootstrap`.
 3. Add a `_PRICING_USD_PER_1K` table if the provider has a known cost surface.
 4. Write `tests/unit/llm/providers/test_<name>.py` with `httpx.MockTransport` — happy path, 401, 429, 4xx/5xx, schema validation.
 5. Update this page.

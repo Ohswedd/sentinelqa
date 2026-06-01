@@ -15,7 +15,7 @@ Status: `Stable`
 
 Optional but recommended:
 
-- [Playwright system deps](https://playwright.dev/docs/cli#install-system-dependencies) (`npx playwright install --with-deps`) — needed for Phase 04 onward to run real browsers.
+- [Playwright system deps](https://playwright.dev/docs/cli#install-system-dependencies) (`npx playwright install --with-deps`) — needed for onward to run real browsers.
 - [`gitleaks`](https://github.com/gitleaks/gitleaks) ≥ 8.21.4 — the pre-commit hook installs its own copy, but a local CLI is useful for ad-hoc scans.
 
 ## Quick install
@@ -44,7 +44,7 @@ If everything is green, you're set up.
 - The dev tooling (`ruff`, `mypy`, `pytest`, `pytest-cov`, `pytest-asyncio`, `pydantic`, `typer`, `pyyaml`, `pre-commit`) from `[dependency-groups.dev]`.
 - The workspace members in editable mode: `packages/python-sdk` (the SDK placeholder) and `apps/cli` (the CLI placeholder).
 
-To activate the venv manually: `source .venv/bin/activate`. But you don't usually need to — `make` targets and `uv run <command>` work without activation.
+To activate the venv manually: `source.venv/bin/activate`. But you don't usually need to — `make` targets and `uv run <command>` work without activation.
 
 Lockfile: `uv.lock` (committed). To bump a dep: edit `pyproject.toml`, run `uv lock`, commit the diff.
 
@@ -70,7 +70,7 @@ Bypassing hooks with `--no-verify` is forbidden by our engineering rules
 
 ### Playwright
 
-Phase 04 brings the Playwright runtime. To prepare your machine for the first browser run:
+brings the Playwright runtime. To prepare your machine for the first browser run:
 
 ```bash
 pnpm exec playwright install --with-deps chromium
@@ -84,21 +84,21 @@ CI does this in every TypeScript job (`.github/workflows/ci.yml`), so a stale lo
 | ------------------- | --------------------------------------------------- |
 | `make help`         | Lists every target.                                 |
 | `make install`      | Python + TS + pre-commit hooks.                     |
-| `make lint`         | `ruff check .` + `pnpm -r run lint`.                |
-| `make format`       | `ruff format .` + Prettier (in-place).              |
+| `make lint`         | `ruff check.` + `pnpm -r run lint`.                 |
+| `make format`       | `ruff format.` + Prettier (in-place).               |
 | `make format-check` | Both formatters, fail-on-diff.                      |
 | `make typecheck`    | `mypy --strict` + `tsc --noEmit` per package.       |
 | `make adr-check`    | `scripts/check-adrs.sh`.                            |
 | `make test`         | `pytest` + `vitest`.                                |
-| `make coverage`     | `pytest --cov` (Phase 01 wires it into `make ci`).  |
+| `make coverage`     | `pytest --cov` ( wires it into `make ci`).          |
 | `make ci`           | format-check + lint + typecheck + adr-check + test. |
 | `make clean`        | Remove caches and build artifacts.                  |
 
 ## Troubleshooting
 
 - **`make install` fails on `uv sync` with a lockfile mismatch.** Someone bumped a dep but did not commit the new `uv.lock`. Run `uv lock` and check in the diff (in a `chore(tooling)` commit if it's a clean re-lock).
-- **`make ci` fails on `ruff format --check`.** Run `make format` (or `pnpm exec prettier --write .` for TS/Markdown) and re-stage.
-- **Pre-commit complains about `pre-commit-config.yaml` being unstaged.** Stage it (`git add .pre-commit-config.yaml`) and retry.
+- **`make ci` fails on `ruff format --check`.** Run `make format` (or `pnpm exec prettier --write.` for TS/Markdown) and re-stage.
+- **Pre-commit complains about `pre-commit-config.yaml` being unstaged.** Stage it (`git add.pre-commit-config.yaml`) and retry.
 - **`tsc --noEmit` errors about config files (`vitest.config.ts`, etc.).** They are intentionally outside per-package `tsconfig.include`. ESLint handles them via the `disableTypeChecked` override in `eslint.config.js`. If a new config file fails, add it to the override.
 - **macOS BSD `make` complains about a rule.** All Makefile rules are written to be portable across BSD `make 3.81` (macOS default) and GNU `make`. If a target breaks on macOS, that's a bug — file an issue.
 - **Pre-commit / gitleaks blocks a commit you believe is safe.** Re-read [`docs/dev/secret-hygiene.md`](./secret-hygiene.md). False positives go in the gitleaks allowlist with an inline comment explaining why; never `--no-verify`.

@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright (c) 2026 SentinelQA contributors.
-"""PyPI dry-run gate (Phase 36.02).
+"""PyPI dry-run gate.
 
 ``scripts/release/dry_run_pypi.py`` must exit 0 on the current
 ``main`` so the owner can run it locally before pushing the

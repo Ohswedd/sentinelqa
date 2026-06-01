@@ -1,28 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  SentinelQA demo terminal — representative output of:
-      $ sentinel audit --url http://localhost:3000
-
-  This is a static SVG; the output mirrors the CLI's actual human-mode
-  banner, lifecycle progress, and exit-code summary. Run the command
-  yourself to reproduce.
--->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 460" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13" role="img" aria-labelledby="title desc">
   <title id="title">SentinelQA terminal demo — sentinel audit</title>
-  <desc id="desc">Representative output of running `sentinel audit --url http://localhost:3000`. The CLI prints a banner, runs the canonical 17-step lifecycle, and exits with a deterministic exit code (0 = pass).</desc>
+  <desc id="desc">Representative output of running sentinel audit against a local app. The CLI prints a banner, runs the canonical lifecycle, and exits with a deterministic exit code.</desc>
   <rect width="880" height="460" rx="10" fill="#0d1117"/>
   <g transform="translate(20,18)">
     <circle cx="0" cy="0" r="6" fill="#ff5f56"/>
     <circle cx="20" cy="0" r="6" fill="#ffbd2e"/>
     <circle cx="40" cy="0" r="6" fill="#27c93f"/>
-    <text x="380" y="5" fill="#8b949e" text-anchor="middle" font-size="12">sentinelqa — audit</text>
+    <text x="380" y="5" fill="#8b949e" text-anchor="middle" font-size="12">sentinelqa · audit</text>
   </g>
   <g transform="translate(20,60)" fill="#c9d1d9">
-    <text y="0"><tspan fill="#7ee787">$</tspan> sentinel audit --url http://localhost:3000</text>
-    <text y="22">SentinelQA <tspan fill="#79c0ff">v0.7.0</tspan>  •  authorized-testing-only</text>
-    <text y="44">target  : http://localhost:3000  <tspan fill="#7ee787">(local: allowed)</tspan></text>
-    <text y="66">run id  : 2026-05-31T20-30-12Z-7c4e</text>
-    <text y="88">artifacts: .sentinel/runs/2026-05-31T20-30-12Z-7c4e/</text>
+    <text y="0"><tspan fill="#7ee787">$</tspan> sentinel audit <tspan fill="#79c0ff">--url</tspan> http://localhost:3000</text>
+    <text y="22">SentinelQA <tspan fill="#79c0ff">v1.0.0</tspan>  ·  authorized testing only</text>
+    <text y="44">target   http://localhost:3000  <tspan fill="#7ee787">(local: allowed)</tspan></text>
+    <text y="66">run id   2026-06-01T20-30-12Z-7c4e</text>
+    <text y="88">artifacts .sentinel/runs/2026-06-01T20-30-12Z-7c4e/</text>
     <text y="118" fill="#8b949e">─── lifecycle ────────────────────────────────────────────</text>
     <text y="140"><tspan fill="#7ee787">✓</tspan> safety policy enforced       <tspan fill="#8b949e">(local target on allowlist)</tspan></text>
     <text y="162"><tspan fill="#7ee787">✓</tspan> discovery                    <tspan fill="#8b949e">12 routes · 4 forms · 6 APIs</tspan></text>
@@ -32,9 +24,9 @@
     <text y="250"><tspan fill="#7ee787">✓</tspan> functional · a11y · perf · security · llm-audit</text>
     <text y="272"><tspan fill="#7ee787">✓</tspan> analyzer · reporter · score</text>
     <text y="302" fill="#8b949e">─── result ───────────────────────────────────────────────</text>
-    <text y="324">findings: <tspan fill="#7ee787">0 high</tspan> · <tspan fill="#d2a8ff">2 medium</tspan> · <tspan fill="#79c0ff">5 low</tspan></text>
-    <text y="346">score   : <tspan fill="#7ee787" font-weight="bold">94 / 100</tspan>  release decision: <tspan fill="#7ee787" font-weight="bold">PASS</tspan></text>
-    <text y="368">reports : report.md · findings.json · score.json · junit.xml · sarif.json</text>
+    <text y="324">findings <tspan fill="#7ee787">0 high</tspan> · <tspan fill="#d2a8ff">2 medium</tspan> · <tspan fill="#79c0ff">5 low</tspan></text>
+    <text y="346">score    <tspan fill="#7ee787" font-weight="bold">94 / 100</tspan>  release <tspan fill="#7ee787" font-weight="bold">PASS</tspan></text>
+    <text y="368">reports  report.md · findings.json · score.json · junit.xml · sarif.json</text>
     <text y="398"><tspan fill="#7ee787">$</tspan> echo $?</text>
     <text y="420">0</text>
   </g>

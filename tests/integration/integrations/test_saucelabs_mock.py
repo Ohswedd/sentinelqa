@@ -1,4 +1,4 @@
-"""Mocked end-to-end test for ``integrations.saucelabs`` (Phase 25.02)."""
+"""Mocked end-to-end test for ``integrations.saucelabs``."""
 
 from __future__ import annotations
 
@@ -164,7 +164,7 @@ def test_run_submits_job_and_uploads_artifacts() -> None:
         "https://sl/trace1",
         "https://sl/trace2",
     ]
-    # First call is POST to .../jobs scoped to the user.
+    # First call is POST to.../jobs scoped to the user.
     method, url, body = client.calls[0]
     assert method == "POST"
     assert url.endswith("/rest/v1/alice/jobs")

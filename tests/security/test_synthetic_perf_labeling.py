@@ -6,15 +6,15 @@ proxy for release confidence — calling them RUM would mislead users.
 This test has two parts:
 
 1. **Required-phrase coverage** — every Finding emitted by the
-   performance module begins with the prefix "Synthetic performance
-   check". We verify this by importing the findings module and checking
-   the constant the translator pulls in.
+ performance module begins with the prefix "Synthetic performance
+ check". We verify this by importing the findings module and checking
+ the constant the translator pulls in.
 2. **Forbidden-phrase audit** — we grep the performance Python package
-   and the TS perf helper package for the literal claim that the module
-   reports "Real User Monitoring" / "real-user telemetry" / etc. as
-   product output. The phrase "Real-User Monitoring" appears in the
-   findings text to *deny* that interpretation; the guard exempts that
-   exact phrasing.
+ and the TS perf helper package for the literal claim that the module
+ reports "Real User Monitoring" / "real-user telemetry" / etc. as
+ product output. The phrase "Real-User Monitoring" appears in the
+ findings text to *deny* that interpretation; the guard exempts that
+ exact phrasing.
 """
 
 from __future__ import annotations

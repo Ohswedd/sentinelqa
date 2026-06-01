@@ -1,4 +1,4 @@
-"""Phase 34.01 — SC 2.5.7, 3.3.7, 3.3.8 deterministic checks."""
+"""SC 2.5.7, 3.3.7, 3.3.8 deterministic checks."""
 
 from __future__ import annotations
 

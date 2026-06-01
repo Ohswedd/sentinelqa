@@ -1,4 +1,4 @@
-"""Blocker computation (task 14.02, our engineering rules).
+"""Blocker computation.
 
 A blocker is a finding (or a structural condition) that forces the
 release decision to ``blocked`` regardless of the numeric score.
@@ -6,9 +6,9 @@ Rules:
 
 1. Any ``critical`` severity finding when ``policy.block_on_critical``.
 2. Any ``high`` severity finding in the ``security`` module when
-   ``policy.block_on_high_security``.
+ ``policy.block_on_high_security``.
 3. Any failed test in a P0 functional flow (detected via the
-   ``@p0`` tag in the finding title — see :func:`engine.scoring.model.finding_priority`).
+ ``@p0`` tag in the finding title — see :func:`engine.scoring.model.finding_priority`).
 4. More than ``policy.max_failed_p1_flows`` P1 functional failures.
 
 Each :class:`Blocker` carries the rule name, the originating finding

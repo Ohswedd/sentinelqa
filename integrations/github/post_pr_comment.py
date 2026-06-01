@@ -1,12 +1,12 @@
-"""Upsert a SentinelQA PR comment via the GitHub REST API (task 17.03).
+"""Upsert a SentinelQA PR comment via the GitHub REST API.
 
 Usage (invoked from the composite Action — see
 ``integrations/github/workflows/sentinel-pr.yml``)::
 
-    python integrations/github/post_pr_comment.py \\
-        --report-markdown ./.sentinel/runs/<id>/report.md \\
-        --repo owner/repo \\
-        --pr 42
+ python integrations/github/post_pr_comment.py \\
+ --report-markdown./.sentinel/runs/<id>/report.md \\
+ --repo owner/repo \\
+ --pr 42
 
 Reads the Markdown body from disk, locates an existing comment whose
 body begins with the ``<!-- sentinelqa:pr-comment -->`` anchor (from

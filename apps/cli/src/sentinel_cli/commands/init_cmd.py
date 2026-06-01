@@ -1,4 +1,4 @@
-"""`sentinel init` command (task 02.02).
+"""`sentinel init` command.
 
 Scaffolds a new SentinelQA project: writes `sentinel.config.yaml`,
 patches `.gitignore`, creates `.sentinel/` runtime tree, and drops a

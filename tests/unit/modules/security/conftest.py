@@ -1,4 +1,4 @@
-"""Shared fixtures for security-module unit tests (Phase 13)."""
+"""Shared fixtures for security-module unit tests."""
 
 from __future__ import annotations
 

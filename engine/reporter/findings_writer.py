@@ -1,4 +1,4 @@
-"""``findings.json`` writer (task 03.02).
+"""``findings.json`` writer.
 
 Serializes the findings envelope from a sequence of :class:`Finding`
 instances. Schema lives at ``packages/shared-schema/findings.schema.json``.

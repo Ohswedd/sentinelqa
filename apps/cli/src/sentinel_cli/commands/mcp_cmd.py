@@ -1,10 +1,10 @@
-"""`sentinel mcp` — start the SentinelQA MCP server (task 18.05, ADR-0023).
+"""`sentinel mcp` — start the SentinelQA MCP server.
 
 Replaces the Phase-02 stub. Options:
 
 - ``--stdio`` (default) — speak the MCP stdio transport on this process.
 - ``--http <PORT>`` — bind a loopback HTTP transport on
-  ``127.0.0.1:<PORT>``. Refuses any non-loopback bind (exit 4).
+ ``127.0.0.1:<PORT>``. Refuses any non-loopback bind (exit 4).
 - ``--config`` — override the ``sentinel.config.yaml`` path.
 - ``--log-level`` — engine log level, written to stderr only.
 

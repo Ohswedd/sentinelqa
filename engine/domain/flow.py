@@ -1,7 +1,7 @@
 """Flow entity (the documentation).
 
 A flow is an end-to-end user journey assembled from routes and elements.
-The planner (Phase 06) produces flows; the generator (Phase 07) turns each
+The planner produces flows; the generator turns each
 into one or more :class:`TestCase` files.
 """
 

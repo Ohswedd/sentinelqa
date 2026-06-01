@@ -1,4 +1,4 @@
-"""CORS misconfiguration check (Phase 13.04).
+"""CORS misconfiguration check.
 
 For each route in ``ctx.routes`` we send an ``OPTIONS`` preflight from
 a synthetic ``Origin`` (``https://sentinelqa.invalid``). We then read
@@ -6,7 +6,7 @@ a synthetic ``Origin`` (``https://sentinelqa.invalid``). We then read
 ``Access-Control-Allow-Credentials`` (ACAC):
 
 - ACAO=``*`` + ACAC=``true`` → critical (modern browsers ignore the
-  combination, but the server announcing it indicates a misconfig).
+ combination, but the server announcing it indicates a misconfig).
 - ACAO echoes our synthetic origin → high (reflective).
 
 The synthetic origin is a non-routable invalid TLD so the probe never

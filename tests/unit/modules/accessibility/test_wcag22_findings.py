@@ -1,4 +1,4 @@
-"""Phase 34.01 — Wcag22Issue → Finding translation."""
+"""Wcag22Issue → Finding translation."""
 
 from __future__ import annotations
 

@@ -1,17 +1,17 @@
-"""End-to-end build + install smoke test (Phase 28 task 28.04).
+"""End-to-end build + install smoke test.
 
 This test:
 
 1. Builds every Python sdist + wheel (``uv build --all-packages``) and the TS
-   tarball (``pnpm pack``) into a temp dir.
-2. Inspects every artifact for forbidden contents (.git, .env, secrets,
-   __pycache__, …).
+ tarball (``pnpm pack``) into a temp dir.
+2. Inspects every artifact for forbidden contents (.git,.env, secrets,
+ __pycache__, …).
 3. Installs the four published Python wheels into a fresh venv via
-   ``uv pip install`` and runs ``sentinel --version`` to prove the sdist /
-   wheel layout actually lands a working CLI.
+ ``uv pip install`` and runs ``sentinel --version`` to prove the sdist /
+ wheel layout actually lands a working CLI.
 
 The full cycle takes ~30s, so the slow marker keeps it out of the default
-``make ci`` test sweep. ``make test-full`` runs it; the Phase 28 gate review
+``make ci`` test sweep. ``make test-full`` runs it; the gate review
 runs it explicitly.
 
 Lighter, faster tests (the inspector unit-tests + a synthetic-tarball fixture)
@@ -209,7 +209,7 @@ def test_build_inspect_install_and_run_sentinel_version(tmp_path: Path) -> None:
     assert findings == {}, f"forbidden files in artifacts: {findings}"
 
     # Wheels must include their METADATA file with the Apache-2.0 trove
-    # classifier (proves Phase 28.03's polish actually reached the wheel).
+    # classifier (proves 's polish actually reached the wheel).
     for wheel in artifacts.python_wheels:
         with zipfile.ZipFile(wheel) as zf:
             metadata_paths = [n for n in zf.namelist() if n.endswith(".dist-info/METADATA")]

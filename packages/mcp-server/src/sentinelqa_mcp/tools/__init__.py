@@ -1,4 +1,4 @@
-"""Tool registry + base contract for MCP tools (ADR-0023, task 18.02).
+"""Tool registry + base contract for MCP tools (ADR-0023, ).
 
 Each tool ships in its own module and registers itself by name with a
 :class:`SentinelToolset`. The base :class:`Tool` Protocol enforces:

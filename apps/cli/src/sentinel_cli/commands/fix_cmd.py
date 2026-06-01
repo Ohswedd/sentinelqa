@@ -1,16 +1,16 @@
-"""``sentinel fix`` — apply or surface healer proposals (Phase 20.07).
+"""``sentinel fix`` — apply or surface healer proposals.
 
 Reads ``<run-dir>/healer/*.json`` for an existing run (default
 ``--latest``) and:
 
 - prints each proposal as a unified diff (review mode),
 - optionally applies the proposals the gating policy approves
-  (``--apply safe|aggressive``),
+ (``--apply safe|aggressive``),
 - always logs every applied repair through the run's ``audit.log``
-  with the gating decision reason verbatim,
+ with the gating decision reason verbatim,
 - refuses to touch hand-edited specs (banner absence or post-generation
-  mtime drift), and refuses to weaken assertions unless
-  ``--allow-weaken`` is set.
+ mtime drift), and refuses to weaken assertions unless
+ ``--allow-weaken`` is set.
 
 The command never runs modules — it strictly operates on the
 materialized run directory. Re-running tests after applying is a
@@ -22,7 +22,7 @@ Exit codes:
 - ``0`` — success (proposals listed, applied, or none found).
 - ``2`` — config / CLI usage error (missing run dir, unknown id).
 - ``6`` — applying a proposal failed (file became unwritable,
-  unified-diff did not apply cleanly).
+ unified-diff did not apply cleanly).
 - ``7`` — internal error.
 """
 
@@ -85,7 +85,7 @@ def _apply_unified_diff(
     """Apply the single-line replacement encoded in the diff.
 
     The Healer's diff is always a one-line replacement on a known file
-    (the generator never emits multi-hunk patches in Phase 20). We do
+    (the generator never emits multi-hunk patches in ). We do
     the swap via a direct string substitution against the source file
     so the apply path stays portable and does not depend on the
     `patch(1)` binary.

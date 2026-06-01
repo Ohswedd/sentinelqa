@@ -4,17 +4,17 @@ The module deliberately reuses signals captured by earlier phases. The
 loader walks a few well-known paths under ``<signals_root>`` and the
 discovery output:
 
-* ``discovery.json``       — link references + observed routes
-* ``api.json``             — observed + OpenAPI endpoints
-* ``forms.json``           — forms inventory
+* ``discovery.json`` — link references + observed routes
+* ``api.json`` — observed + OpenAPI endpoints
+* ``forms.json`` — forms inventory
 * ``llm_audit/signals.json`` — optional structured signal bundle for
-  the checks that need runtime evidence (storage dumps, console
-  entries, loading/error probes, validation probes, button activity).
-  Tests construct this file directly; later phases (Phase 20 healer,
-  Phase 23 chaos) can extend the writer.
+ the checks that need runtime evidence (storage dumps, console
+ entries, loading/error probes, validation probes, button activity).
+ Tests construct this file directly; later phases (healer,
+ chaos) can extend the writer.
 * ``llm_audit/source_files.json`` — optional source-file bodies for the
-  hardcoded-credential scanner. Production wiring builds this from
-  ``config.source.root`` when present.
+ hardcoded-credential scanner. Production wiring builds this from
+ ``config.source.root`` when present.
 
 Missing files yield empty tuples — the corresponding checks see no
 input and emit no findings (CLAUDE §37: no fake completion).
@@ -209,7 +209,7 @@ def _api_endpoints(
                 observed.append((method, path))
     openapi = api_payload.get("openapi", {})
     if isinstance(openapi, Mapping):
-        # Phase 05 writer only includes summary counts; production
+        # writer only includes summary counts; production
         # wiring re-walks `discovery.openapi_ingest_result` if needed.
         endpoint_paths = openapi.get("expected_but_not_observed", []) or []
         if isinstance(endpoint_paths, list):

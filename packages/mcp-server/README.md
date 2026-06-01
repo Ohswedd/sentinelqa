@@ -44,7 +44,7 @@ sentinelqa-mcp
 # Local HTTP debug loop (loopback only, refuses public binds).
 sentinelqa-mcp --http 8765
 
-# Via the CLI (replaces the Phase 02 stub):
+# Via the CLI (replaces the stub):
 sentinel mcp
 sentinel mcp --http 8765 --log-level debug
 ```

@@ -4,7 +4,6 @@ name: Publish (npm)
 # validates the tarball via the dry-run script, then publishes
 # with `pnpm publish --access public --provenance`. The OIDC
 # token (id-token: write) is required for npm provenance.
-#
 # The `publish` job is gated on the `npm-release` GitHub Environment,
 # which requires manual approval from the human owner before any
 # upload takes place. See docs/release/publish-runbook.md.

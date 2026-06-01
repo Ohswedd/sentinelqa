@@ -11,7 +11,7 @@ Accepted
 
 our product spec Open Question #4 asked which LLM providers should be supported
 first. The recommended answer was "provider-agnostic through an
-adapter interface." The Phase 06 planner (ADR-0011) and Phase 09
+adapter interface." The planner (ADR-0011) and
 analyzer explainer (ADR-0014) both shipped that way: a Protocol
 plus two HTTP-only reference adapters (OpenAI, Anthropic) and a
 `NullLlmPlanner` / `NullLlmExplainer` default.

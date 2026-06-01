@@ -1,8 +1,8 @@
-"""``score.json`` writer (task 03.03).
+"""``score.json`` writer.
 
 Persists the quality score with **deterministic float formatting** so the
 JSON output is byte-stable across runs (our engineering rules — score must be
-reproducible). Phase 14 owns the actual score *computation*; this module
+reproducible). owns the actual score *computation*; this module
 only writes whatever is handed to it.
 """
 
@@ -43,7 +43,7 @@ SEVERITY_BUCKETS: Final[tuple[str, ...]] = (
 )
 
 # Default policy values mirror the documentation and our engineering rules. They are
-# applied when the caller hasn't yet wired the real policy (Phase 14+),
+# applied when the caller hasn't yet wired the real policy (+),
 # so the file always has a complete record.
 DEFAULT_POLICY: Final[Mapping[str, Any]] = {
     "min_quality_score": 80.0,

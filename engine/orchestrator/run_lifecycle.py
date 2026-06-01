@@ -1,4 +1,4 @@
-"""Canonical run lifecycle (CLAUDE §10, task 02.04).
+"""Canonical run lifecycle (CLAUDE §10, ).
 
 This file is the ONLY place the 17 lifecycle steps from CLAUDE §10 are
 spelled out end-to-end. Module phases (05+) plug into individual steps
@@ -51,7 +51,7 @@ _LOGGER = get_logger("orchestrator.lifecycle")
 class ModuleOutcome:
     """In-memory record of a single module invocation.
 
-    When a module raises, Phase 09's analyzer classifies the error into
+    When a module raises, 's analyzer classifies the error into
     one of the canonical :data:`engine.analyzer.models.FailureCategory`
     values (rehome of CLAUDE §10's broad ``except Exception`` per task
     09.01). The classification is exposed through ``error_category`` /
@@ -94,14 +94,14 @@ class LifecycleContext:
     quality_gate_passed: bool = True
     status: RunStatus = "incomplete"
     early_exit: bool = False
-    # Phase 03+: typed domain objects passed to the Reporter when modules
+    # +: typed domain objects passed to the Reporter when modules
     # produce them. Raw `findings` / `quality_score` above stay around
-    # for the legacy dict path until Phase 14 retires them.
+    # for the legacy dict path until retires them.
     typed_findings: tuple[Finding, ...] = field(default_factory=tuple)
     typed_module_results: tuple[ModuleResult, ...] = field(default_factory=tuple)
     typed_score: QualityScore | None = None
     typed_policy: PolicyDecision | None = None
-    # Phase 10+: per-module options threaded from the CLI / SDK.
+    # +: per-module options threaded from the CLI / SDK.
     module_options: dict[str, Mapping[str, Any]] = field(default_factory=dict)
 
 
@@ -281,12 +281,12 @@ class RunLifecycle:
         ctx.config_snapshot_path = ctx.artifacts.write_yaml("config.snapshot.yaml", ctx.config)
 
     def discover_app(self, ctx: LifecycleContext) -> None:
-        # Stub until Phase 05. Phase hooks can override.
+        # Stub until. Phase hooks can override.
         for hook in ctx.registry.phase_hooks.get(LifecyclePhase.DISCOVER_APP, []):
             hook(ctx)
 
     def build_execution_plan(self, ctx: LifecycleContext) -> None:
-        # Phase 06 owns the real planner. For now: surface the enabled
+        # owns the real planner. For now: surface the enabled
         # modules so dry-run output is informative.
         ctx.plan["modules"] = sorted(self._modules_to_run(ctx))
         ctx.plan["dry_run"] = ctx.dry_run
@@ -312,8 +312,8 @@ class RunLifecycle:
                 continue
             try:
                 # Modules receive the config + safety decision; their
-                # real interface lands in Phase 24. For Phase 02 we
-                # invoke and tolerate any callable. Phase 10 wraps the
+                # real interface lands in. For we
+                # invoke and tolerate any callable. wraps the
                 # SentinelModule lifecycle: if the factory returns a
                 # SentinelModule instance we drive the seven CLAUDE §9
                 # steps and merge findings/metrics into the context.
@@ -409,7 +409,7 @@ class RunLifecycle:
                 )
 
     def collect_evidence(self, ctx: LifecycleContext) -> None:
-        # Stub: when modules emit evidence (Phase 03+), aggregate it here.
+        # Stub: when modules emit evidence (+), aggregate it here.
         for hook in ctx.registry.phase_hooks.get(LifecyclePhase.COLLECT_EVIDENCE, []):
             hook(ctx)
 
@@ -427,7 +427,7 @@ class RunLifecycle:
 
     def generate_reports(self, ctx: LifecycleContext) -> None:
         # Reports must carry the final status, so finalize before any
-        # report hooks run. Phase 03's Reporter (registered on this
+        # report hooks run. 's Reporter (registered on this
         # phase) writes run.json + report.md etc. with the correct
         # status; persist_artifacts then only handles the latest
         # pointer.
@@ -437,7 +437,7 @@ class RunLifecycle:
             hook(ctx)
 
     def persist_artifacts(self, ctx: LifecycleContext) -> None:
-        # Phase 03 moved run.json / findings.json / score.json into the
+        # moved run.json / findings.json / score.json into the
         # Reporter (called from `generate_reports`). This step now only
         # finalizes the artifact directory (latest pointer) so the
         # canonical write path is single-source-of-truth.

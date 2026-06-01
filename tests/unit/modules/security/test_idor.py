@@ -1,4 +1,4 @@
-"""Unit tests for the IDOR smoke check (Phase 13.07)."""
+"""Unit tests for the IDOR smoke check."""
 
 from __future__ import annotations
 

@@ -1,4 +1,4 @@
-"""Unit tests for :mod:`modules.performance.page_budget` (Phase 12.02)."""
+"""Unit tests for :mod:`modules.performance.page_budget`."""
 
 from __future__ import annotations
 

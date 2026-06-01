@@ -1,12 +1,12 @@
 """Every committed `*.schema.json` is itself a valid JSON Schema.
 
-Task 03.08 final-tier guard: a malformed schema would silently break
+ final-tier guard: a malformed schema would silently break
 runtime validation in CI without these checks. We:
 
 1. Load each schema file under `packages/shared-schema/`.
 2. Verify it's syntactically valid JSON.
 3. Compile it with `jsonschema.Validator.check_schema(...)` so the
-   *meta-schema* itself signs off on the structure.
+ *meta-schema* itself signs off on the structure.
 """
 
 from __future__ import annotations
@@ -22,7 +22,7 @@ SHARED_SCHEMA_ROOT = REPO_ROOT / "packages" / "shared-schema"
 
 
 def _phase03_schemas() -> list[Path]:
-    """Top-level Phase 03 wire schemas (run/findings/score)."""
+    """Top-level wire schemas (run/findings/score)."""
 
     return sorted(SHARED_SCHEMA_ROOT.glob("*.schema.json"))
 

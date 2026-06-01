@@ -1,4 +1,4 @@
-"""Anthropic planner adapter integration tests (task 06.04)."""
+"""Anthropic planner adapter integration tests."""
 
 from __future__ import annotations
 

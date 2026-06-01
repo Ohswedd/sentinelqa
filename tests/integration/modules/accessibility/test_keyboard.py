@@ -1,4 +1,4 @@
-"""Integration tests for keyboard checks (Phase 11.03).
+"""Integration tests for keyboard checks.
 
 The TS helper walks the focus order and writes one
 :class:`KeyboardIssue` per defect. These tests cover the deterministic

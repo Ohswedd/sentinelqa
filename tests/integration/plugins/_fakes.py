@@ -1,4 +1,4 @@
-"""Concrete plugin classes used across the Phase 24 integration tests.
+"""Concrete plugin classes used across the integration tests.
 
 Kept out of conftest so we can also import them directly from tests
 without worrying about pytest fixture state.

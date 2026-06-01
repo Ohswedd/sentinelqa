@@ -1,4 +1,4 @@
-"""Plugin-loader exceptions (Phase 24).
+"""Plugin-loader exceptions.
 
 Every plugin error inherits :class:`engine.errors.base.PluginError` so
 the CLI exit-code grid stays consistent: load-time failures map to

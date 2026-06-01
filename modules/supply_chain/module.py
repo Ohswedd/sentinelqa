@@ -1,20 +1,20 @@
-"""``SupplyChainModule`` (Phase 33, the documentation.3, ADR-0045).
+"""``SupplyChainModule`` (, the documentation.3, ADR-0045).
 
 Lifecycle (CLAUDE §9):
 
 - ``validate_prerequisites`` — no-op; missing optional binaries
-  (``trivy`` / ``grype``) surface as a skipped container check rather
-  than a module error.
-- ``plan``                   — returns ``()`` (no Playwright specs).
-- ``execute``                — runs the enabled checks against the
-  project root, building a :class:`SupplyChainRunOutcome`.
-- ``collect_evidence``       — writes per-check artifacts under
-  ``<run-dir>/sbom/`` and ``<run-dir>/supply_chain/``.
-- ``emit_findings``          — translates each check's typed report
-  via :mod:`modules.supply_chain.findings`.
-- ``emit_metrics``           — counts findings, lockfiles, advisories.
-- ``summarize``              — overlays findings on a synthesized
-  :class:`ModuleResult`.
+ (``trivy`` / ``grype``) surface as a skipped container check rather
+ than a module error.
+- ``plan`` — returns ``()`` (no Playwright specs).
+- ``execute`` — runs the enabled checks against the
+ project root, building a :class:`SupplyChainRunOutcome`.
+- ``collect_evidence`` — writes per-check artifacts under
+ ``<run-dir>/sbom/`` and ``<run-dir>/supply_chain/``.
+- ``emit_findings`` — translates each check's typed report
+ via :mod:`modules.supply_chain.findings`.
+- ``emit_metrics`` — counts findings, lockfiles, advisories.
+- ``summarize`` — overlays findings on a synthesized
+ :class:`ModuleResult`.
 
 All checks are defensive / read-only (CLAUDE §6, §26). The
 forbidden-token guard at

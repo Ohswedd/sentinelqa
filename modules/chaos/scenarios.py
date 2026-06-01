@@ -1,4 +1,4 @@
-"""Canonical chaos scenario catalog (Phase 23, the documentation).
+"""Canonical chaos scenario catalog (, the documentation).
 
 Each :class:`ChaosScenario` is a *named, bounded* injection the TS
 chaos helpers know how to perform via Playwright's ``route()`` API

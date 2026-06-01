@@ -1,4 +1,4 @@
-"""Mocked tests for ``integrations.linear`` (Phase 25.06)."""
+"""Mocked tests for ``integrations.linear``."""
 
 from __future__ import annotations
 

@@ -1,4 +1,4 @@
-"""Mocked tests for ``integrations.jira`` (Phase 25.06)."""
+"""Mocked tests for ``integrations.jira``."""
 
 from __future__ import annotations
 

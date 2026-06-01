@@ -1,4 +1,4 @@
-"""`--dry-run` behavior (task 02.07)."""
+"""`--dry-run` behavior."""
 
 from __future__ import annotations
 

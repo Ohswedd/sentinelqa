@@ -1,7 +1,7 @@
 # SentinelQA FastAPI example
 
 A small typed FastAPI app exposing a `Project` CRUD with auto-generated
-OpenAPI. SentinelQA Phase 26.02.
+OpenAPI. SentinelQA
 
 This service is the backend for the Next.js (`examples/nextjs/`) and
 React + Vite (`examples/react-vite/`) examples.
@@ -22,7 +22,7 @@ Or, manually:
 
 ```bash
 cd examples/fastapi
-python -m venv .venv-demo
+python -m venv.venv-demo
 .venv-demo/bin/pip install -r requirements.txt
 .venv-demo/bin/uvicorn app.main:app --host 127.0.0.1 --port 8000
 ```

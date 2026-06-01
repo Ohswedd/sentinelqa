@@ -1,4 +1,4 @@
-"""Safe API testing module (Phase 22, the documentation, ADR-0020).
+"""Safe API testing module (, the documentation, ADR-0020).
 
 Importing this package wires :class:`ApiModule` into the default
 orchestrator registry so ``sentinel api`` and ``sentinel audit`` both
@@ -10,7 +10,7 @@ Capabilities (the documentation, our engineering rules):
 - GraphQL contract validation (SDL operation probe).
 - Negative cases (bounded variant generation).
 - Auth-matrix probing (anonymous / expired / cross-user).
-- API latency budget evaluation (dedup'd with the Phase 12 perf module).
+- API latency budget evaluation (dedup'd with the perf module).
 - Pagination boundary + uniform error-shape detection.
 - Backward-compatibility diff against the previous snapshot.
 

@@ -1,4 +1,4 @@
-"""Phase 22.08 — backward-compatibility diff + snapshot persistence."""
+"""backward-compatibility diff + snapshot persistence."""
 
 from __future__ import annotations
 

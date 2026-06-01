@@ -1,4 +1,4 @@
-"""Lockfile parser defensive-shape coverage (Phase 33.01)."""
+"""Lockfile parser defensive-shape coverage."""
 
 from __future__ import annotations
 

@@ -29,7 +29,7 @@ class AuthBoundary(SentinelModel):
 
 
 class DiscoveryGraph(SentinelModel):
-    """The graph produced by the discovery module (Phase 05)."""
+    """The graph produced by the discovery module."""
 
     SCHEMA_VERSION: ClassVar[str] = CONFIG_SCHEMA_VERSION
 

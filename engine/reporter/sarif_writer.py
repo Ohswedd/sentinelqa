@@ -1,4 +1,4 @@
-"""SARIF 2.1.0 emitter (task 03.05).
+"""SARIF 2.1.0 emitter.
 
 Serializes SentinelQA findings as a SARIF 2.1.0 log so GitHub
 code-scanning and other SARIF-aware security tools can ingest results
@@ -16,7 +16,7 @@ Each unique category produces one ``reportingDescriptor`` in
 :class:`engine.reporter.sarif_rules.SarifRuleRegistry` for the rule
 attached to a category; unregistered categories fall back to a
 synthesized placeholder so the SARIF document is always schema-valid
-even before Phase 13+ registers concrete rules.
+even before + registers concrete rules.
 """
 
 from __future__ import annotations
@@ -48,7 +48,7 @@ SEVERITY_TO_LEVEL: Final[dict[Severity, str]] = {
 }
 
 # Taxonomy descriptors emitted under ``tool.driver.taxa`` when any finding
-# carries a CWE / ATT&CK / OWASP-API id (Phase 32, ADR-0044). SARIF 2.1.0
+# carries a CWE / ATT&CK / OWASP-API id (, ADR-0044). SARIF 2.1.0
 # §3.19 ``toolComponent.taxa`` is the canonical way to attach standards
 # references to results.
 _TAXA_CWE_NAME: Final[str] = "CWE"
@@ -336,7 +336,7 @@ def _location_uri(finding: Finding, run: TestRun) -> str:
     1. ``finding.location.file`` — a workspace-relative source ref.
     2. ``finding.location.route`` — joined onto the run's ``base_url``.
     3. The run's ``base_url`` host as a last resort so the URI is never
-       empty (the SARIF schema requires a non-empty uri).
+    empty (the SARIF schema requires a non-empty uri).
     """
 
     if finding.location.file:

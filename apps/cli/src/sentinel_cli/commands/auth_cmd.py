@@ -1,27 +1,27 @@
-"""``sentinel auth`` — Phase 31 browser-authenticated audit CLI.
+"""``sentinel auth`` — browser-authenticated audit CLI.
 
 Subcommands:
 
 - ``login`` — interactive flow that opens a headed Playwright browser,
-  waits for the operator to sign in, captures ``storage_state``, and
-  encrypts it into the vault. Forbidden in CI mode.
+ waits for the operator to sign in, captures ``storage_state``, and
+ encrypts it into the vault. Forbidden in CI mode.
 - ``list`` — show every vault entry with redacted metadata only (no
-  cookie values, no localStorage payloads).
+ cookie values, no localStorage payloads).
 - ``list-profiles`` — show the built-in OAuth and LLM-web auth
-  profiles (Tasks 31.04 / 31.05).
+ profiles (Tasks 31.04 / 31.05).
 - ``revoke`` — delete one entry (or every entry with ``--all`` and a
-  typed confirmation).
+ typed confirmation).
 - ``export`` — decrypt and write the plaintext storage_state to a file
-  so the operator can copy it to a teammate's machine. Mandatory
-  ``--i-acknowledge`` flag with a stderr warning banner.
+ so the operator can copy it to a teammate's machine. Mandatory
+ ``--i-acknowledge`` flag with a stderr warning banner.
 
 Exit codes (CLAUDE §13):
 
 - ``0`` — success.
 - ``2`` — invalid CLI usage / unsafe host / CI mode rejection /
-  vault-entry-not-found.
+ vault-entry-not-found.
 - ``4`` — safety-boundary refusal (expired entry, host mismatch,
-  integrity failure, cross-origin login redirect).
+ integrity failure, cross-origin login redirect).
 - ``5`` — dependency missing (Playwright / cryptography / keyring).
 - ``7`` — internal error.
 """

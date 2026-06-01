@@ -1,9 +1,9 @@
-"""Pluggable module + lifecycle-phase registries (task 02.04).
+"""Pluggable module + lifecycle-phase registries.
 
 Modules and per-phase hooks register themselves via factories so the
 canonical lifecycle in :mod:`engine.orchestrator.run_lifecycle` stays
 the *only* place the 17 CLAUDE §10 steps are spelled out. Later phases
-(05+) call :func:`default_registry().register_module(...)`; Phase 24
+(05+) call :func:`default_registry.register_module(...)`;
 will replace this with an entry-point discovery mechanism.
 """
 
@@ -47,7 +47,7 @@ class LifecyclePhase(str, Enum):
 # lifecycle to merge results back, which has bitten us in earlier drafts.
 PhaseHook = Callable[["LifecycleContext"], None]
 
-# Module factory: builds a module instance from the config. Phase 02
+# Module factory: builds a module instance from the config.
 # leaves the actual interface unspecified — module phases (05+) refine
 # it via abstract base classes and override here.
 ModuleFactory = Callable[..., Any]

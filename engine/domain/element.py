@@ -1,7 +1,7 @@
 """Element entity (the documentation).
 
-A semantic DOM element captured by discovery (Phase 05) and referenced by
-generated tests (Phase 07) so selectors can be regenerated from the
+A semantic DOM element captured by discovery and referenced by
+generated tests so selectors can be regenerated from the
 accessibility tree rather than brittle CSS paths.
 """
 

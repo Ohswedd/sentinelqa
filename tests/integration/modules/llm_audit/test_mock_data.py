@@ -1,4 +1,4 @@
-"""Integration tests for the mock-data check (task 19.04)."""
+"""Integration tests for the mock-data check."""
 
 from __future__ import annotations
 

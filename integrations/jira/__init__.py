@@ -1,4 +1,4 @@
-"""Jira issue adapter (Phase 25.06)."""
+"""Jira issue adapter."""
 
 from __future__ import annotations
 

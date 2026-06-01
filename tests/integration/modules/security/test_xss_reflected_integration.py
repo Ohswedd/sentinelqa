@@ -1,4 +1,4 @@
-"""Integration tests — reflected XSS (Phase 13.05)."""
+"""Integration tests — reflected XSS."""
 
 from __future__ import annotations
 

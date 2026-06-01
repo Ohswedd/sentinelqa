@@ -1,4 +1,4 @@
-"""Unit tests for the cookies check (Phase 13.03)."""
+"""Unit tests for the cookies check."""
 
 from __future__ import annotations
 
@@ -53,7 +53,7 @@ def test_evaluate_samesite_none_without_secure_is_high() -> None:
 
 
 def test_evaluate_fully_protected_cookie_yields_nothing() -> None:
-    # Phase 32 (ADR-0044): session cookies must also carry __Host- prefix.
+    # (ADR-0044): session cookies must also carry __Host- prefix.
     cookie = parse_set_cookie("__Host-session=abc; HttpOnly; Secure; SameSite=Strict; Path=/")
     assert list(evaluate_cookie(cookie, route="/", is_https=True)) == []
 

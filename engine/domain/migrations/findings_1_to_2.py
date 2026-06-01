@@ -1,4 +1,4 @@
-"""Findings v1 → v2 migration (Phase 32 / ADR-0044).
+"""Findings v1 → v2 migration ( / ADR-0044).
 
 v2 adds three optional taxonomy ids — ``cwe_id``, ``attack_id``,
 ``owasp_api_id`` — and bumps the envelope's ``schema_version`` from

@@ -1,11 +1,11 @@
-"""LLM-MOCK-DATA-SHIPPED — mock fixtures shipped to production (task 19.04).
+"""LLM-MOCK-DATA-SHIPPED — mock fixtures shipped to production.
 
 Two complementary signals:
 
 1. JS bundles / source files contain mock indicators — explicit names
-   (``mockData``, ``__MOCK__``), faker / placeholder values
-   (``lorem ipsum``, ``John Doe``, ``jane@example.com``), or hardcoded
-   imports of mock JSON files.
+ (``mockData``, ``__MOCK__``), faker / placeholder values
+ (``lorem ipsum``, ``John Doe``, ``jane@example.com``), or hardcoded
+ imports of mock JSON files.
 2. Rendered text on a route contains the same placeholder values.
 
 The check returns one finding per (file, indicator) so the report can

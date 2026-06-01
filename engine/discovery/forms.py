@@ -1,13 +1,13 @@
-"""Forms inventory (task 05.04).
+"""Forms inventory.
 
 Walks every HTML page in the crawl result and produces typed
 :class:`~engine.domain.form.Form` records: id, action URL, method, fields,
 submit-handler presence, client-side validation presence.
 
-The HTTP-first MVP can only see attributes present in the rendered HTML.
+The HTTP-first release can only see attributes present in the rendered HTML.
 JS-attached ``addEventListener`` handlers are not detectable without
 executing the page — that case is flagged when there's no ``action``, no
-``onsubmit`` attribute, and no JS reference to the form id. The Phase 17
+``onsubmit`` attribute, and no JS reference to the form id. The
 Playwright backend will replace those inferences with real signal
 (ADR-0010).
 """
@@ -121,7 +121,7 @@ class FormsInventory:
                     )
 
             # reCAPTCHA presence — SentinelQA NEVER bypasses CAPTCHA, but we
-            # flag forms that have it so Phase 19 understands the UX.
+            # flag forms that have it so understands the UX.
             if any(
                 isinstance(s, str) and "recaptcha" in s.lower()
                 for s in (*page.discovered_script_srcs, *page.inline_scripts)

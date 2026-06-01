@@ -1,4 +1,4 @@
-"""Phase 34.02 — GDPR consent-banner detection + cookies-before-consent."""
+"""GDPR consent-banner detection + cookies-before-consent."""
 
 from __future__ import annotations
 

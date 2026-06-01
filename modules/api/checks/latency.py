@@ -1,15 +1,15 @@
-"""API latency budget check (Phase 22.06).
+"""API latency budget check.
 
-Dedup contract with the Phase 12 performance module: if the performance
+Dedup contract with the performance module: if the performance
 module already raised a ``perf/api_latency`` finding for an endpoint at
 or above the configured ``policy.api_p95_ms``, the API module's
 latency check **does not** raise a duplicate. Instead it records the
 finding as ``info`` referencing the perf-module finding so the operator
 sees the cross-module context.
 
-For MVP the API module does not run its own latency sampling: latency
+For release the API module does not run its own latency sampling: latency
 samples come from the contract check above (each probe records its
-duration in :attr:`httpx.Response.elapsed`). Phase 22.06's role is to
+duration in :attr:`httpx.Response.elapsed`). 's role is to
 evaluate those samples against ``performance.budgets.api_p95_ms`` only
 for endpoints the performance module did NOT cover.
 """
@@ -34,7 +34,7 @@ def run_latency_check(
 ) -> ApiCheckResult:
     """Compute the latency-budget summary using prior check artifacts.
 
-    The API module relies on the perf module (Phase 12) for the canonical
+    The API module relies on the perf module for the canonical
     latency story. This check therefore always returns ``skipped`` with
     a precise reason when no in-module samples have been collected and
     the perf module owns the budget. Operators who explicitly disable
@@ -45,7 +45,7 @@ def run_latency_check(
     started = perf_counter()
     # The dedup contract is conservative: the API module's latency check
     # exists to avoid silent gaps when the perf module is disabled. The
-    # Phase 12 perf module already enforces `performance.budgets.api_p95_ms`
+    # perf module already enforces `performance.budgets.api_p95_ms`
     # for every sampled endpoint, so when both modules are enabled the
     # API latency check intentionally short-circuits to `skipped` with
     # a precise reason that names the perf-module finding category.

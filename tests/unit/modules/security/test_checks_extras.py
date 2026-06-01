@@ -1,4 +1,4 @@
-"""Extra coverage tests for individual checks (Phase 13.13)."""
+"""Extra coverage tests for individual checks."""
 
 from __future__ import annotations
 

@@ -1,4 +1,4 @@
-"""Discovery pipeline (task 05.08).
+"""Discovery pipeline.
 
 The pipeline runs the steps of the Discovery module in deterministic order
 and assembles a typed :class:`DiscoveryResult` for the CLI to persist.
@@ -7,7 +7,7 @@ Order:
 
 1. Anonymous crawl.
 2. Optional authenticated crawl (if credentials supplied) — driven by
-   :class:`engine.discovery.auth_boundary.AuthBoundaryDetector`.
+ :class:`engine.discovery.auth_boundary.AuthBoundaryDetector`.
 3. DOM map extraction.
 4. Forms inventory.
 5. JS-bundle fetch + API detection.
@@ -65,7 +65,7 @@ class DiscoveryInputs:
     openapi_url: str | None = None
     graphql_sdl_path: Path | None = None
     graphql_endpoint_url: str | None = None
-    #: Phase 31, ADR-0043. Cookies pre-loaded from the encrypted vault
+    #:, ADR-0043. Cookies pre-loaded from the encrypted vault
     #: (``auth.strategy: browser_session``). Injected into the anonymous
     #: crawl's HTTP client so the crawler sees the same authenticated
     #: pages the operator's browser sees.
@@ -116,7 +116,7 @@ class DiscoveryPipeline:
 
     def run(self, inputs: DiscoveryInputs) -> DiscoveryResult:
         # 1) Anonymous crawl.
-        # Phase 31, ADR-0043: when the caller pre-loaded cookies from
+        # , ADR-0043: when the caller pre-loaded cookies from
         # the auth vault, inject them so the "anonymous" crawl actually
         # sees the operator's authenticated session.
         anon = self._crawler.crawl(
@@ -153,7 +153,7 @@ class DiscoveryPipeline:
         forms_result = self._forms_inventory.build(anon)
         forms_by_route: dict[str, tuple[Form, ...]] = {}
         # Forms aren't yet attached to routes — attach by URL via re-walk.
-        # (Phase 06 will use this map.)
+        # (will use this map.)
         # Simple heuristic: every form lives on whatever route shows it.
         # We approximate by iterating the crawl pages and re-running the
         # extractor — but to keep things deterministic and cheap, we just

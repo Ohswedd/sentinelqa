@@ -1,4 +1,4 @@
-"""Performance audit module (Phase 12, the documentation, our engineering rules, §27).
+"""Performance audit module (, the documentation, our engineering rules, §27).
 
 Importing this package wires :class:`PerformanceModule` into the default
 orchestrator registry so ``sentinel perf`` and ``sentinel audit`` both

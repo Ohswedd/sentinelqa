@@ -1,8 +1,8 @@
-"""Phase 22.06 — API latency dedup check.
+"""API latency dedup check.
 
-The API module defers latency-budget enforcement to the Phase 12 perf
+The API module defers latency-budget enforcement to the perf
 module to avoid duplicate findings (one of the two phase-22 task
-requirements is "no duplicate findings across modules"). Phase 22's
+requirements is "no duplicate findings across modules"). 's
 contribution is therefore an explicit, evidence-bearing skip that
 references the perf-module finding category.
 """

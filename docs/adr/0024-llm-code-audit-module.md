@@ -21,8 +21,8 @@ ignores.
 
 We have two structural choices:
 
-1. **Browser-driven.** Spin up Playwright, exercise each route, watch the network, dump storage, intercept console output. Highest fidelity but adds a second runner harness, doubles wall-clock for `sentinel audit`, and tightly couples the audit to Phase 04 / 08 runtime.
-2. **Signal-driven.** Consume what earlier phases already capture (Phase 05 discovery output, optional Phase 08 runner evidence, optional source-root scan), plus a small set of HTTP probes the module can perform itself for fake-route and UI-only-auth checks. Lower wall-clock, no new harness, deterministic and hermetic test suite, but each check skips honestly when its signal isn't present.
+1. **Browser-driven.** Spin up Playwright, exercise each route, watch the network, dump storage, intercept console output. Highest fidelity but adds a second runner harness, doubles wall-clock for `sentinel audit`, and tightly couples the audit to / 08 runtime.
+2. **Signal-driven.** Consume what earlier phases already capture ( discovery output, optional runner evidence, optional source-root scan), plus a small set of HTTP probes the module can perform itself for fake-route and UI-only-auth checks. Lower wall-clock, no new harness, deterministic and hermetic test suite, but each check skips honestly when its signal isn't present.
 
 the documentation leaves the implementation open. our engineering rules
 completion: a check that emits success without evidence is worse than
@@ -43,7 +43,7 @@ Concrete decisions:
 1. **Thirteen checks, one rule catalogue.** Sixteen stable `LLM-*` rule IDs live in `modules.llm_audit.rules`. Severity and confidence defaults are part of the catalogue; checks override per-finding only when a specific signal warrants it. Bumping a default severity or wording is a our engineering rules amendment.
 
 2. **Pure-function checks.** Every check is `Iterable[X] →
-tuple[CheckFinding, ...]`. No I/O, no globals, no module state. This makes every check independently testable and keeps the module under 200 lines per check.
+tuple[CheckFinding,...]`. No I/O, no globals, no module state. This makes every check independently testable and keeps the module under 200 lines per check.
 
 3. **Typed `LlmAuditInputs`.** A single dataclass enumerates every signal source. Missing signals (the runner never captured them, the source root wasn't supplied) leave the corresponding field empty; the matching check produces no findings, and the module's per-run `llm_audit/index.json` records `signal_available=false` so the audit trail is honest.
 
@@ -55,7 +55,7 @@ tuple[CheckFinding, ...]`. No I/O, no globals, no module state. This makes every
 
 7. **Reporter differentiator.** A new context block (`build_template_context.llm_audit`) drives a dedicated "LLM-Code Audit" section in `report.html` and a Markdown table in the PR comment. The section appears only when the module ran OR produced findings — clean runs against an unrelated codebase stay silent so non-LLM workflows don't see an empty differentiator block.
 
-8. **No new TS subcommand.** Phase 19 deliberately reuses existing signal sources (discovery output, optional runner artifacts) and adds nothing to `packages/ts-runtime`. If a future phase wants richer per-route browser instrumentation (long-task timing, storage dumps, console capture) it can extend the existing `sentinel-ts` reporter rather than spawning a parallel run.
+8. **No new TS subcommand.** deliberately reuses existing signal sources (discovery output, optional runner artifacts) and adds nothing to `packages/ts-runtime`. If a future phase wants richer per-route browser instrumentation (long-task timing, storage dumps, console capture) it can extend the existing `sentinel-ts` reporter rather than spawning a parallel run.
 
 ## Consequences
 
@@ -63,7 +63,7 @@ tuple[CheckFinding, ...]`. No I/O, no globals, no module state. This makes every
 
 - **Negative / trade-off.** Some checks require runtime signals the default discovery + runner pipeline doesn't yet capture (browser storage dumps, console output post-auth, validation probes against malformed payloads). When those signals are absent the check reports `signal_available=false`; the audit answers honestly ("we didn't observe this dimension") rather than overclaiming.
 
-- **Follow-up obligations.** Phase 20 (Healer) and Phase 23 (Chaos) can extend the captured signal set by emitting matching JSON payloads into `<run-dir>/llm_audit/signals.json`. No protocol or schema change is needed — the loader already ingests every section defined here. If/when a Phase-XX cleanup wants to remove the defensive `isinstance` branches in `inputs.py`, the schema would need to be locked under a wire-format ADR and validated up front.
+- **Follow-up obligations.** (Healer) and (Chaos) can extend the captured signal set by emitting matching JSON payloads into `<run-dir>/llm_audit/signals.json`. No protocol or schema change is needed — the loader already ingests every section defined here. If/when a Phase-XX cleanup wants to remove the defensive `isinstance` branches in `inputs.py`, the schema would need to be locked under a wire-format ADR and validated up front.
 
 ## Alternatives considered
 

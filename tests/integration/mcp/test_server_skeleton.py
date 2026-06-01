@@ -1,4 +1,4 @@
-"""Task 18.01 — MCP server boots, lists tools, and answers ping.
+"""— MCP server boots, lists tools, and answers ping.
 
 Drives the dispatcher in-process rather than spawning a subprocess so
 tests stay fast and deterministic. The wire bytes flowing through

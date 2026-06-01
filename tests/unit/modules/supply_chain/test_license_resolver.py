@@ -1,4 +1,4 @@
-"""License resolver tests (Phase 33.06)."""
+"""License resolver tests."""
 
 from __future__ import annotations
 
@@ -34,7 +34,7 @@ def test_resolve_license_ids_canonicalizes_expression() -> None:
 
 
 def test_resolve_license_ids_empty_for_pypi_components() -> None:
-    """PyPI lockfiles don't carry license metadata; resolver returns ()."""
+    """PyPI lockfiles don't carry license metadata; resolver returns."""
 
     component = _component("flask", ecosystem="PyPI")
     assert resolve_license_ids(component) == ()

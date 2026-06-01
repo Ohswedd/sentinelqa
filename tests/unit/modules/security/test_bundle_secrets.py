@@ -1,4 +1,4 @@
-"""Unit tests for :mod:`modules.security.checks.bundle_secrets` (task 32.07)."""
+"""Unit tests for :mod:`modules.security.checks.bundle_secrets`."""
 
 from __future__ import annotations
 
@@ -21,7 +21,10 @@ def test_aws_pattern_matches() -> None:
 
 
 def test_stripe_live_key_matches() -> None:
-    text = "stripe.setKey('sk_live_4eC39HqLyjWDarjtT1zdp7dc');"
+    # Synthetic fixture that matches the `sk_live_[A-Za-z0-9]{24,}` regex
+    # without resembling any real Stripe sample (GitHub's secret-scanning
+    # push protection rejects the documented example).
+    text = "stripe.setKey('sk_live_" + "A" * 30 + "');"
     result = scan_bundle_text("https://app.example/main.js", text)
     rules = {rid for rid, _ in result.matches}
     assert "SEC-BUNDLE-SECRET-STRIPE" in rules

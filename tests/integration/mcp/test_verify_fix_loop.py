@@ -1,4 +1,4 @@
-"""Task 18.04 — sentinel.verify_fix end-to-end fixture loop.
+"""— sentinel.verify_fix end-to-end fixture loop.
 
 The agent applies a fix; the MCP tool re-runs the audit, diffs prior
 findings against the new findings, and reports a four-valued decision

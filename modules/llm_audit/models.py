@@ -1,7 +1,7 @@
 """Typed signal models the LLM-Code audit module consumes.
 
 The module deliberately does NOT spawn a parallel Playwright session.
-Every check operates on already-captured signals (Phase 05 discovery
+Every check operates on already-captured signals (discovery
 output, optional runner-collected runtime evidence, optional source
 root scan). Tests construct these models directly; production wiring
 reads what is available from the run directory and skips checks whose
@@ -44,7 +44,7 @@ class ButtonObservation:
 
 
 # ---------------------------------------------------------------------------
-# Routes / endpoints (Phase 05 cross-reference signal sources)
+# Routes / endpoints (cross-reference signal sources)
 # ---------------------------------------------------------------------------
 
 
@@ -91,7 +91,7 @@ class RenderedTextSample:
 
 
 # ---------------------------------------------------------------------------
-# Forms inventory (Phase 05 forms.json compatible shape)
+# Forms inventory (forms.json compatible shape)
 # ---------------------------------------------------------------------------
 
 

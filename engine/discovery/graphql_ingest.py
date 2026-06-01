@@ -1,4 +1,4 @@
-"""GraphQL ingestion (task 05.06).
+"""GraphQL ingestion.
 
 Reads either a local SDL file or runs an introspection query against a
 GraphQL endpoint, and emits one :class:`ApiEndpoint` per top-level field

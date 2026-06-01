@@ -1,19 +1,19 @@
-"""`sentinel report` command (Phase 14 explain + Phase 15 re-render).
+"""`sentinel report` command (explain + re-render).
 
-Phase 14 introduced ``--explain-score``: read ``score.json``, expand the
+introduced ``--explain-score``: read ``score.json``, expand the
 math, write ``score-explanation.md``.
 
-Phase 15 adds the broader re-render workflow:
+adds the broader re-render workflow:
 
 - ``sentinel report --latest`` or ``sentinel report --run-id RUN-...``
-  re-renders the report set (run/findings/score/junit/sarif/markdown/html)
-  for an existing run by reading the persisted artifacts (no module
-  re-execution).
+ re-renders the report set (run/findings/score/junit/sarif/markdown/html)
+ for an existing run by reading the persisted artifacts (no module
+ re-execution).
 - ``--format`` limits which formats to (re)write.
 - ``--open`` opens the HTML in the default browser (skipped in CI mode).
 
 The two paths share argument parsing; ``--explain-score`` continues to
-work exactly as it did in Phase 14.
+work exactly as it did in.
 """
 
 from __future__ import annotations
@@ -425,7 +425,7 @@ def _load_json(path: Path) -> dict[str, Any]:
 
 
 # ---------------------------------------------------------------------------
-# Explain (Phase 14 path)
+# Explain (path)
 # ---------------------------------------------------------------------------
 
 
@@ -614,7 +614,7 @@ def _dispatch_notifications(
 ) -> None:
     """Push the re-rendered summary out via each requested notifier.
 
-    Phase 25.03: only ``slack`` is wired. Unknown channels raise
+    : only ``slack`` is wired. Unknown channels raise
     ``_ReportError`` so the caller can surface exit-code 2.
     """
 

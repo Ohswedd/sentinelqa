@@ -1,4 +1,4 @@
-"""Unit tests for the SQLi safe probe (Phase 13.06)."""
+"""Unit tests for the SQLi safe probe."""
 
 from __future__ import annotations
 

@@ -1,7 +1,7 @@
 """Generate the SentinelQA error-code reference page.
 
 Reads :mod:`engine.errors.codes` (the single source of truth, registered
-in Phase 01 and frozen for the CLI exit-code contract) and writes the
+in and frozen for the CLI exit-code contract) and writes the
 Starlight page at ``apps/docs/src/content/docs/errors/index.md``.
 
 Wired into ``make docs-gen-error-codes`` and exercised by

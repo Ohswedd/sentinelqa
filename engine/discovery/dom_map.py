@@ -1,13 +1,13 @@
-"""DOM map builder (the documentation, task 05.02).
+"""DOM map builder (the documentation, ).
 
 For each crawled HTML page, extract a structured list of interactive elements
 plus auxiliary observations the Planner cares about:
 
 - Unreachable internal anchors (links pointing at routes that returned 4xx).
 - Repeated components (same accessible name + role appearing on ≥3 routes —
-  heuristic for shared layout components).
-- Elements missing accessible labels (consumed by Phase 11 a11y, but flagged
-  here so the risk model can lift them up).
+ heuristic for shared layout components).
+- Elements missing accessible labels (consumed by a11y, but flagged
+ here so the risk model can lift them up).
 """
 
 from __future__ import annotations
@@ -58,7 +58,7 @@ _INTERACTIVE_TAGS = frozenset({"a", "button", "input", "textarea", "select"})
 
 @dataclass(frozen=True)
 class DomObservation:
-    """Aux signal the risk model and Phase 11 a11y consume."""
+    """Aux signal the risk model and a11y consume."""
 
     route_url: str
     element_id: str

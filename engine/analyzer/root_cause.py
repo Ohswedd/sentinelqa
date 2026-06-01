@@ -1,9 +1,9 @@
-"""Root-cause hypothesis generation (the documentation, task 09.02).
+"""Root-cause hypothesis generation (the documentation, ).
 
 For each ``FailureClassification`` we produce a 1-2 sentence hypothesis
 plus an ordered ``next_actions`` checklist. Templates are intentionally
 modest in confidence — the analyzer should under-claim ("Likely cause:
-…") rather than overstate ("This is definitely…"). The Healer (Phase 20)
+…") rather than overstate ("This is definitely…"). The Healer
 gates its own auto-repair on the analyzer's confidence, so this layer
 must NOT inflate it.
 

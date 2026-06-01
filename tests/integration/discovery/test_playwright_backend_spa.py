@@ -1,7 +1,7 @@
-"""Gated CSR-SPA test for the Playwright discovery backend (task 17.07).
+"""Gated CSR-SPA test for the Playwright discovery backend.
 
 Runs only when ``SENTINELQA_HAS_CHROMIUM=1`` is set in the environment
-(mirroring the Phase 04 chromium-smoke gating). Skipped by default in
+(mirroring the chromium-smoke gating). Skipped by default in
 local + CI runs that don't provision Chromium.
 
 The test points the real :class:`SubprocessPlaywrightRunner` at the CSR

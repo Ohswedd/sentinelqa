@@ -59,7 +59,7 @@ class TargetConfig(SentinelModel):
 
 
 class AuthSecondUserConfig(SentinelModel):
-    """`auth.second_user:` block (Phase 13.07, IDOR check).
+    """`auth.second_user:` block.
 
     Names env vars holding the credentials for a *second* test user, used
     by the IDOR smoke check to compare resource access across accounts.
@@ -79,16 +79,16 @@ class AuthConfig(SentinelModel):
     Secrets are NEVER inlined here — only env-var names are accepted via
     the ``*_env`` keys. The loader enforces this via :class:`ConfigSecretInlineError`.
 
-    Strategies (Phase 31, ADR-0043):
+    Strategies (, ADR-0043):
 
     - ``test_user`` — env-var-named credentials replayed via the Phase
-      13 login fixture (~70 % of self-hosted apps).
+    13 login fixture (~70 % of self-hosted apps).
     - ``api_key`` — bearer token from an env var (the ``token_env`` key).
     - ``oauth`` — placeholder for the Phase-22 OAuth client-credentials
-      flow.
-    - ``browser_session`` — Phase 31. Replay a real, human-captured
-      Playwright ``storage_state`` from the encrypted vault. Requires
-      ``session_name``; the host is inferred from ``target.base_url``.
+    flow.
+    - ``browser_session`` —. Replay a real, human-captured
+    Playwright ``storage_state`` from the encrypted vault. Requires
+    ``session_name``; the host is inferred from ``target.base_url``.
     - ``none`` — no auth.
     """
 
@@ -138,16 +138,16 @@ class ModulesConfig(SentinelModel):
 
 
 class SecurityChecksConfig(SentinelModel):
-    """`security.checks:` block (Phase 13, ADR-0018).
+    """`security.checks:` block (, ADR-0018).
 
     Boolean per-check toggles. Defaults follow CLAUDE §26 "safe by default":
 
     - Always-on safe HTTP checks: headers, cookies, CORS, CSRF, reflected
-      XSS, IDOR, frontend secrets.
+    XSS, IDOR, frontend secrets.
     - Off by default (require explicit opt-in + mode/proof escalation):
-      stored XSS (``authorized_destructive`` + proof), SQLi (local mode
-      or ``authorized_destructive`` + proof), SAST (semgrep is opt-in
-      because it has heavy runtime cost).
+    stored XSS (``authorized_destructive`` + proof), SQLi (local mode
+    or ``authorized_destructive`` + proof), SAST (semgrep is opt-in
+    because it has heavy runtime cost).
     """
 
     headers: bool = True
@@ -164,7 +164,7 @@ class SecurityChecksConfig(SentinelModel):
 
 
 class DependencyScannersConfig(SentinelModel):
-    """`security.dependency_scanners:` block (Phase 13.09).
+    """`security.dependency_scanners:` block.
 
     Per-tool toggles. ``pip-audit`` and ``npm audit`` default ON because
     every modern project ships at least one of the matching lockfiles;
@@ -182,7 +182,7 @@ class DependencyScannersConfig(SentinelModel):
 
 
 class SecurityConfig(SentinelModel):
-    """`security:` block (Phase 13, ADR-0018).
+    """`security:` block (, ADR-0018).
 
     The Phase-13 SecurityModule reads ``checks`` to decide which probes
     to run, ``dependency_scanners`` to drive the dep-scan adapters, and
@@ -240,7 +240,7 @@ class PerformanceBudgets(SentinelModel):
 
 
 class PerformanceConfig(SentinelModel):
-    """`performance:` block (Phase 12, ADR-0017).
+    """`performance:` block (, ADR-0017).
 
     Performance checks are explicitly **synthetic** lab measurements (CLAUDE §27);
     the module never claims to mirror Real-User Monitoring. Routes default to
@@ -261,7 +261,7 @@ class PerformanceConfig(SentinelModel):
 
 
 class VisualViewportConfig(SentinelModel):
-    """One entry in ``visual.viewports`` (Phase 21.05).
+    """One entry in ``visual.viewports``.
 
     The viewport ``name`` is also the directory segment under
     ``baselines_dir`` and the file segment in the run's ``visual/``
@@ -274,7 +274,7 @@ class VisualViewportConfig(SentinelModel):
 
 
 class VisualMaskConfig(SentinelModel):
-    """One entry in ``visual.masks`` (Phase 21.04).
+    """One entry in ``visual.masks``.
 
     ``route`` matches the captured route slug (the same value used by
     the baseline filename); ``selector`` is the CSS selector the TS
@@ -299,7 +299,7 @@ class VisualMaskConfig(SentinelModel):
 
 
 class VisualPerceptualConfig(SentinelModel):
-    """`visual.perceptual:` block (Phase 21.03).
+    """`visual.perceptual:` block.
 
     SSIM-based perceptual diff. When enabled, a finding only fires when
     BOTH the pixel threshold AND the SSIM threshold are exceeded — the
@@ -369,13 +369,13 @@ class DiscoveryConfig(SentinelModel):
 
     Two backends ship:
 
-    - ``engine: "http"`` (default) — the Phase 05 HTTP-first crawler.
-      Lightweight; works for SSR apps; produces an empty graph for
-      client-rendered SPAs.
-    - ``engine: "playwright"`` (Phase 17 task 07) — drives Chromium via
-      ``sentinel-ts discover`` and consumes ``discovery.page`` /
-      ``discovery.endpoint`` JSONL events. Requires the Phase 04 TS
-      runtime to be installed (``pnpm install`` + browser provisioning).
+    - ``engine: "http"`` (default) — the HTTP-first crawler.
+    Lightweight; works for SSR apps; produces an empty graph for
+    client-rendered SPAs.
+    - ``engine: "playwright"`` ( 07) — drives Chromium via
+    ``sentinel-ts discover`` and consumes ``discovery.page`` /
+    ``discovery.endpoint`` JSONL events. Requires the TS
+    runtime to be installed (``pnpm install`` + browser provisioning).
     """
 
     engine: Literal["http", "playwright"] = "http"
@@ -391,9 +391,9 @@ class DiscoveryConfig(SentinelModel):
 
 
 class PlannerLlmConfig(SentinelModel):
-    """`planner.llm:` block (Phase 06.04, ADR-0011).
+    """`planner.llm:` block.
 
-    The deterministic planner ships in Phase 06; the LLM adapter is opt-in
+    The deterministic planner ships in ; the LLM adapter is opt-in
     behind ``enabled``. Provider keys are never inlined — only env-var
     names go in YAML, in line with :class:`AuthConfig` and CLAUDE §33.
     """
@@ -414,9 +414,9 @@ class PlannerConfig(SentinelModel):
 
 
 class AnalyzerLlmConfig(SentinelModel):
-    """`analyzer.llm:` block (Phase 09.05, ADR-0014).
+    """`analyzer.llm:` block.
 
-    The deterministic analyzer ships in Phase 09; the LLM explainer is
+    The deterministic analyzer ships in ; the LLM explainer is
     opt-in behind ``enabled``. Provider keys are never inlined — only
     env-var names go in YAML, in line with :class:`AuthConfig` and
     CLAUDE §33. The explainer adds at most one sentence of refinement
@@ -433,13 +433,13 @@ class AnalyzerLlmConfig(SentinelModel):
 
 
 class AnalyzerConfig(SentinelModel):
-    """`analyzer:` block (Phase 09, ADR-0014)."""
+    """`analyzer:` block (, ADR-0014)."""
 
     llm: AnalyzerLlmConfig = Field(default_factory=lambda: AnalyzerLlmConfig())
 
 
 # ---------------------------------------------------------------------------
-# Multi-provider LLM block (Phase 30, ADR-0042)
+# Multi-provider LLM block (, ADR-0042)
 # ---------------------------------------------------------------------------
 
 
@@ -458,7 +458,7 @@ _LLM_PROVIDER_NAMES = Literal[
 
 
 class LlmProviderConfig(SentinelModel):
-    """One entry in the ``llm.providers:`` map (Phase 30, ADR-0042).
+    """One entry in the ``llm.providers:`` map (, ADR-0042).
 
     Each registered provider takes its credential env-var name (never the
     raw value) plus per-caller model strings. Provider-
@@ -502,7 +502,7 @@ class LlmRateLimitConfig(SentinelModel):
 
 
 class LlmConfig(SentinelModel):
-    """`llm:` block (Phase 30, ADR-0042).
+    """`llm:` block (, ADR-0042).
 
     Top-level LLM-provider config. Existing per-caller blocks
     (:class:`PlannerLlmConfig` / :class:`AnalyzerLlmConfig`) remain the
@@ -517,11 +517,11 @@ class LlmConfig(SentinelModel):
 
 
 class AccessibilityAxeConfig(SentinelModel):
-    """`accessibility.axe:` block (Phase 11, ADR-0016; Phase 34 / ADR-0046).
+    """`accessibility.axe:` block (, ADR-0016; / ADR-0046).
 
-    Phase 34 (compliance packs) extends the default tag set to cover the
+    (compliance packs) extends the default tag set to cover the
     WCAG 2.1 and 2.2 success criteria axe-core 4.10+ supports. Operators
-    can still override ``tags`` to a narrower set (Phase 11 behavior).
+    can still override ``tags`` to a narrower set (behavior).
     """
 
     tags: tuple[str, ...] = Field(
@@ -549,7 +549,7 @@ class AccessibilityAxeConfig(SentinelModel):
 
 
 class AccessibilityConfig(SentinelModel):
-    """`accessibility:` block (Phase 11, ADR-0016).
+    """`accessibility:` block (, ADR-0016).
 
     Drives the AccessibilityModule. ``axe.tags`` defaults to the WCAG 2.0
     A + AA rule sets plus axe's curated best-practice set so the module
@@ -565,7 +565,7 @@ class AccessibilityConfig(SentinelModel):
 
 
 class ApiAuthTestUser(SentinelModel):
-    """One entry in ``api.auth_test_users`` (Phase 22.05).
+    """One entry in ``api.auth_test_users``.
 
     Names env vars holding bearer tokens for the auth-matrix check.
     Secrets are NEVER inlined — only ``token_env`` is accepted, matching
@@ -581,7 +581,7 @@ class ApiAuthTestUser(SentinelModel):
 
 
 class ApiConfig(SentinelModel):
-    """`api:` block (Phase 22, the documentation, our engineering rules).
+    """`api:` block (, the documentation, our engineering rules).
 
     Drives the ApiModule. Contract / negative / auth / latency /
     pagination / error-shape / backward-compat checks are individually
@@ -651,13 +651,13 @@ class ApiConfig(SentinelModel):
 
 
 class ChaosConfig(SentinelModel):
-    """`chaos:` block (Phase 23, the documentation, our engineering rules, ADR-0028).
+    """`chaos:` block (, the documentation, our engineering rules, ADR-0028).
 
     Drives the ChaosModule. The module is OFF by default in
     :class:`ModulesConfig` (``modules.chaos = false``); this block only
     configures which categories / scenarios the module exercises *when*
-    it is opted in (via ``modules.chaos = true``, ``sentinel chaos
-    ...``, or the CI ``nightly`` preset). Defaults mirror the documentation:
+    it is opted in (via ``modules.chaos = true``, ``sentinel chaos``,
+    or the CI ``nightly`` preset). Defaults mirror the documentation:
     all four categories enabled with no scenario subsetting.
 
     Safety boundary: no field here lets an operator
@@ -705,9 +705,9 @@ class ChaosConfig(SentinelModel):
 
 
 class PolicyGitHubIntegrationConfig(SentinelModel):
-    """`policy.github:` block (Phase 25.04).
+    """`policy.github:` block.
 
-    Controls the Phase 25 deeper GitHub integration. Off by default —
+    Controls the deeper GitHub integration. Off by default —
     flipping ``auto_create_issue`` to ``true`` lets the caller open
     GitHub issues for critical findings via
     :func:`integrations.github.issue.create_issue_for_finding`. The
@@ -719,27 +719,27 @@ class PolicyGitHubIntegrationConfig(SentinelModel):
 
 
 class PolicyJiraIntegrationConfig(SentinelModel):
-    """`policy.integrations.jira:` block (Phase 25.06)."""
+    """`policy.integrations.jira:` block."""
 
     project_key: str | None = Field(default=None, max_length=64)
     base_url: str | None = Field(default=None, max_length=256)
 
 
 class PolicyLinearIntegrationConfig(SentinelModel):
-    """`policy.integrations.linear:` block (Phase 25.06)."""
+    """`policy.integrations.linear:` block."""
 
     team_id: str | None = Field(default=None, max_length=64)
 
 
 class PolicySlackIntegrationConfig(SentinelModel):
-    """`policy.integrations.slack:` block (Phase 25.03)."""
+    """`policy.integrations.slack:` block."""
 
     enabled: bool = False
     webhook_env: str = Field(default="SLACK_WEBHOOK_URL", max_length=128)
 
 
 class PolicyIntegrationsConfig(SentinelModel):
-    """`policy.integrations:` umbrella for Phase 25 adapters."""
+    """`policy.integrations:` umbrella for adapters."""
 
     jira: PolicyJiraIntegrationConfig = Field(default_factory=lambda: PolicyJiraIntegrationConfig())
     linear: PolicyLinearIntegrationConfig = Field(
@@ -751,13 +751,13 @@ class PolicyIntegrationsConfig(SentinelModel):
 
 
 class SupplyChainSbomConfig(SentinelModel):
-    """`policy.supply_chain.sbom:` block (Phase 33.01, ADR-0045)."""
+    """`policy.supply_chain.sbom:` block."""
 
     enabled: bool = True
 
 
 class SupplyChainOsvConfig(SentinelModel):
-    """`policy.supply_chain.osv:` block (Phase 33.02, ADR-0045).
+    """`policy.supply_chain.osv:` block.
 
     OSV lookups go against ``api.osv.dev`` over HTTPS. The rate limit
     protects the public endpoint even though we batch up to 1 000
@@ -773,19 +773,19 @@ class SupplyChainOsvConfig(SentinelModel):
 
 
 class SupplyChainFreshnessConfig(SentinelModel):
-    """`policy.supply_chain.freshness:` block (Phase 33.03, ADR-0045)."""
+    """`policy.supply_chain.freshness:` block."""
 
     enabled: bool = True
 
 
 class SupplyChainPostinstallConfig(SentinelModel):
-    """`policy.supply_chain.postinstall:` block (Phase 33.04, ADR-0045)."""
+    """`policy.supply_chain.postinstall:` block."""
 
     enabled: bool = True
 
 
 class SupplyChainContainerConfig(SentinelModel):
-    """`policy.supply_chain.container:` block (Phase 33.05, ADR-0045).
+    """`policy.supply_chain.container:` block.
 
     When ``image`` is ``None`` (the default), the container check is
     automatically skipped. Set it to the digest-pinned image you ship
@@ -799,7 +799,7 @@ class SupplyChainContainerConfig(SentinelModel):
 
 
 class SupplyChainLicensesConfig(SentinelModel):
-    """`policy.supply_chain.licenses:` block (Phase 33.06, ADR-0045).
+    """`policy.supply_chain.licenses:` block.
 
     SPDX allow / deny lists for the license audit. Empty allowlist
     means "no whitelisting policy" (only denylist gates). Unknown
@@ -819,13 +819,13 @@ class SupplyChainLicensesConfig(SentinelModel):
 
 
 class SupplyChainConfig(SentinelModel):
-    """`policy.supply_chain:` block (Phase 33, the documentation.3, ADR-0045).
+    """`policy.supply_chain:` block (, the documentation.3, ADR-0045).
 
-    Drives the SupplyChainModule. Defaults match the Phase 33 README:
+    Drives the SupplyChainModule. Defaults match the README:
     every check on, conservative thresholds, OSV at 5 rps, default
-    SPDX allow/deny lists drawn from the Phase 33 README example.
+    SPDX allow/deny lists drawn from the README example.
 
-    Each per-check sub-block is its own model so future Phase 33+ work
+    Each per-check sub-block is its own model so future + work
     can add per-check options without re-shaping this block.
     """
 
@@ -873,14 +873,14 @@ class PolicyConfig(SentinelModel):
 
 
 class RunnerRetriesConfig(SentinelModel):
-    """`runner.retries:` block (Phase 08.04)."""
+    """`runner.retries:` block."""
 
     max: int = Field(default=1, ge=0, le=10)
     backoff_ms: int = Field(default=1000, ge=0, le=60_000)
 
 
 class RunnerQuarantineConfig(SentinelModel):
-    """`runner.quarantine:` block (Phase 08.04, our engineering rules).
+    """`runner.quarantine:` block.
 
     Quarantined tests run but their result does NOT block the quality gate.
     The list is enforced strictly: each entry must include an ``expires_at``
@@ -893,7 +893,7 @@ class RunnerQuarantineConfig(SentinelModel):
 
 
 class RunnerConfig(SentinelModel):
-    """`runner:` block (Phase 08, ADR-0013).
+    """`runner:` block (, ADR-0013).
 
     Drives both the local Playwright runner and the Docker runner. The
     shape is stable across executors so users can flip ``runner.docker``
@@ -926,18 +926,18 @@ class RunnerConfig(SentinelModel):
 
 
 class HealerConfig(SentinelModel):
-    """`healer:` block (Phase 20, ADR-0025, our engineering rules).
+    """`healer:` block (, ADR-0025, our engineering rules).
 
     Drives the self-repair pipeline. ``auto_apply`` is the operator's
     posture toward applying healer proposals without review:
 
     - ``off``: never auto-apply; every proposal goes to the human
-      review queue (default).
+    review queue (default).
     - ``safe``: auto-apply ``locator`` and ``wait`` repairs at or above
-      ``auto_apply_threshold``. Never assertion-stabilization repairs.
+    ``auto_apply_threshold``. Never assertion-stabilization repairs.
     - ``aggressive``: also auto-apply ``fixture`` repairs and
-      ``assertion`` repairs (the latter still require
-      ``sentinel fix --allow-weaken``).
+    ``assertion`` repairs (the latter still require
+    ``sentinel fix --allow-weaken``).
 
     ``auto_apply_threshold`` is the minimum confidence a proposal must
     carry to be eligible for auto-apply. Anything below the threshold

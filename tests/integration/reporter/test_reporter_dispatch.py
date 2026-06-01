@@ -1,12 +1,12 @@
-"""Reporter dispatcher integration tests (task 03.07).
+"""Reporter dispatcher integration tests.
 
 Verifies that:
 
 - A passing run with rich data emits every requested format and writes
-  one audit-log entry per artifact.
+ one audit-log entry per artifact.
 - Disabling a format in config skips its writer (and its audit entry).
 - A run with no findings still emits run.json + score.json + markdown
-  (no findings.json — empty findings produce no file).
+ (no findings.json — empty findings produce no file).
 - Format aliases (`json` → run+findings+score, `html` → no-op) work.
 - The dispatcher returns a deterministic Path map keyed by format name.
 """
@@ -154,7 +154,7 @@ def test_emit_json_alias_expands_to_trio(
         artifacts,
         formats=["json"],
     )
-    # html alias expands to nothing in Phase 03 (placeholder).
+    # html alias expands to nothing in (placeholder).
     assert set(outputs.keys()) == {"run", "findings", "score"}
 
 
@@ -162,7 +162,7 @@ def test_emit_html_writes_self_contained_report(
     tmp_path: Path,
     fixture_test_run_passed: TestRun,
 ) -> None:
-    """Phase 15: `html` is a real format. Requesting only `html` still
+    """: `html` is a real format. Requesting only `html` still
     writes `run.json` (canonical lifecycle artifact) plus `report.html`."""
     artifacts = ArtifactDirectory.create(tmp_path, fixture_test_run_passed.id)
     reporter = Reporter()

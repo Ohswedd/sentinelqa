@@ -1,4 +1,4 @@
-"""Audit trail view (Phase 15.04)."""
+"""Audit trail view."""
 
 from __future__ import annotations
 

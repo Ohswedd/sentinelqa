@@ -1,4 +1,4 @@
-"""Deeper frontend-only-auth detector (Phase 32.06, ADR-0044).
+"""Deeper frontend-only-auth detector.
 
 The Phase-19 LLM-audit module flags "the gate is purely a frontend
 redirect" via DOM heuristics. This Phase-32 deeper probe takes that a

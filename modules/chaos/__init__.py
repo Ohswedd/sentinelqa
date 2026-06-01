@@ -1,4 +1,4 @@
-"""Safe chaos / adversarial testing module (Phase 23, the documentation, ADR-0028).
+"""Safe chaos / adversarial testing module (, the documentation, ADR-0028).
 
 Importing this package wires :class:`ChaosModule` into the default
 orchestrator registry so ``sentinel chaos`` and ``sentinel audit``
@@ -14,15 +14,15 @@ Scenarios (the documentation):
 Safety boundary:
 
 - ``modules.chaos`` is OFF by default in :class:`ModulesConfig` — the
-  scenarios above are surfaced only by explicit opt-in or via the CI
-  ``nightly`` preset (the documentation).
+ scenarios above are surfaced only by explicit opt-in or via the CI
+ ``nightly`` preset (the documentation).
 - Session-claim manipulation runs Playwright-side only; the helpers
-  never re-sign or forge production JWTs.
+ never re-sign or forge production JWTs.
 - No aggressive / evasion / detection-bypass knob exists on the CLI
-  or in :class:`engine.config.schema.ChaosConfig`;
-  ``tests/security/test_chaos_no_evasion_flags.py`` greps the package
-  + CLI for compound forbidden literals and introspects the Typer
-  parameters to keep that property.
+ or in :class:`engine.config.schema.ChaosConfig`;
+ ``tests/security/test_chaos_no_evasion_flags.py`` greps the package
+ + CLI for compound forbidden literals and introspects the Typer
+ parameters to keep that property.
 """
 
 from __future__ import annotations

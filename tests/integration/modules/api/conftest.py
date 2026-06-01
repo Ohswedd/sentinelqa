@@ -1,7 +1,7 @@
-"""Shared fixtures for Phase 22 integration tests.
+"""Shared fixtures for integration tests.
 
 The API module is HTTP-driven, so integration tests spin up a
-:mod:`pytest_httpserver`-backed local server (same pattern Phase 13
+:mod:`pytest_httpserver`-backed local server (same pattern
 security tests use). The server's ``url_for(path)`` is treated as the
 target base URL; each test wires the OpenAPI / GraphQL doc inline.
 """

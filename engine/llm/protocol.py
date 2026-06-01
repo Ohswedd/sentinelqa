@@ -1,4 +1,4 @@
-"""Canonical :class:`LlmProvider` Protocol (Phase 30, ADR-0042).
+"""Canonical :class:`LlmProvider` Protocol (, ADR-0042).
 
 Every provider adapter — Anthropic, OpenAI, Gemini, Ollama, Azure OpenAI,
 Vertex AI, Mistral, Groq, OpenRouter — implements this single shape. The
@@ -31,31 +31,31 @@ class LlmRequest:
     Parameters
     ----------
     system:
-        System / instruction message. Almost always a locked prompt loaded
-        from the caller's ``llm_prompts/*.md`` tree (Phase 06, Phase 09).
+    System / instruction message. Almost always a locked prompt loaded
+    from the caller's ``llm_prompts/*.md`` tree (, ).
     messages:
-        Conversation messages in chronological order. Each message is a
-        dict with ``role`` (``"user"`` / ``"assistant"``) and ``content``
-        (string). Multi-modal content is out of scope for MVP.
+    Conversation messages in chronological order. Each message is a
+    dict with ``role`` (``"user"`` / ``"assistant"``) and ``content``
+    (string). Multi-modal content is out of scope for release.
     response_schema:
-        JSON Schema (Draft 2020-12 subset) the response MUST satisfy.
-        Required: providers that natively support structured output (most
-        do) ask the provider to enforce it; providers that don't fall
-        back to client-side validation. Either way the caller can rely on
-        :attr:`LlmResponse.parsed` having been validated.
+    JSON Schema (Draft 2020-12 subset) the response MUST satisfy.
+    Required: providers that natively support structured output (most
+    do) ask the provider to enforce it; providers that don't fall
+    back to client-side validation. Either way the caller can rely on
+    :attr:`LlmResponse.parsed` having been validated.
     max_output_tokens:
-        Soft upper bound on the response length. Defaults to 1024 — keep
-        prompts narrow.
+    Soft upper bound on the response length. Defaults to 1024 — keep
+    prompts narrow.
     temperature:
-        0.0..1.0. Lower is more deterministic. Tests and CI default to
-        ``0.0`` so locked prompts can byte-equal their golden responses.
+    0.0..1.0. Lower is more deterministic. Tests and CI default to
+    ``0.0`` so locked prompts can byte-equal their golden responses.
     caller:
-        Which subsystem owns this call. Used for cost attribution and
-        audit-log routing.
+    Which subsystem owns this call. Used for cost attribution and
+    audit-log routing.
     run_id:
-        The active SentinelQA run-id. Carried through to the audit log so
-        a single line can be cross-referenced with the run's audit
-        timeline.
+    The active SentinelQA run-id. Carried through to the audit log so
+    a single line can be cross-referenced with the run's audit
+    timeline.
     """
 
     system: str
@@ -77,27 +77,27 @@ class LlmResponse:
     Parameters
     ----------
     text:
-        Raw model output text. For structured-output calls this is the
-        JSON string before parsing; tests and audit logs use it.
+    Raw model output text. For structured-output calls this is the
+    JSON string before parsing; tests and audit logs use it.
     parsed:
-        Pre-validated JSON object. ``None`` only when the response failed
-        validation and the caller is expected to fall back. ``available``
-        below covers the unreachable-server / missing-model case.
+    Pre-validated JSON object. ``None`` only when the response failed
+    validation and the caller is expected to fall back. ``available``
+    below covers the unreachable-server / missing-model case.
     usage:
-        Token accounting for cost computation.
+    Token accounting for cost computation.
     cost_usd:
-        Provider-derived USD cost for THIS call. ``0.0`` for local
-        providers (Ollama) and unauthenticated free-tier calls (Groq).
+    Provider-derived USD cost for THIS call. ``0.0`` for local
+    providers (Ollama) and unauthenticated free-tier calls (Groq).
     latency_ms:
-        Wall-clock latency of the HTTP round-trip in milliseconds.
+    Wall-clock latency of the HTTP round-trip in milliseconds.
     provider:
-        The :attr:`LlmProvider.name` that produced this response.
+    The :attr:`LlmProvider.name` that produced this response.
     model:
-        The exact model string requested (e.g. ``"claude-3-5-sonnet"``).
+    The exact model string requested (e.g. ``"claude-3-5-sonnet"``).
     available:
-        ``False`` only for graceful-degradation paths (Ollama server
-        offline, model not pulled, etc.). On ``False`` the caller is
-        expected to fall back to the deterministic path without raising.
+    ``False`` only for graceful-degradation paths (Ollama server
+    offline, model not pulled, etc.). On ``False`` the caller is
+    expected to fall back to the deterministic path without raising.
     """
 
     text: str
@@ -112,7 +112,7 @@ class LlmResponse:
 
 # `LlmUsage` is imported lazily below to avoid circular-import pain on
 # the engine.llm package's __init__.py.
-from engine.llm.budget import LlmUsage  # noqa: E402  (intentional: shared dataclass)
+from engine.llm.budget import LlmUsage  # noqa: E402 (intentional: shared dataclass)
 
 # ---------------------------------------------------------------------------
 # Health probe

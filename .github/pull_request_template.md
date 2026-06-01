@@ -10,7 +10,7 @@ SentinelQA PR template. Authority: our engineering rules (Definition of Done) an
 
 ## Linked
 
-- Phase / task: <!-- e.g.  -->
+- Phase / task: <!-- e.g. -->
 - PRD section(s): <!-- e.g. the documentation -->
 - ADR(s) added/updated: <!-- docs/adr/0007-…md, or "none" -->
 - Closes: <!-- #123 or "none" -->

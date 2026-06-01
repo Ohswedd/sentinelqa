@@ -9,7 +9,7 @@ Accepted
 
 ## Context
 
-Phase 17 lights up the CI integration surface (our product spec, our engineering rules):
+lights up the CI integration surface (our product spec, our engineering rules):
 
 - A `sentinel ci` command with five preset modes — `fast`, `standard`, `full`, `nightly`, `release` — that cover the the documentation contract.
 - A diff-aware test selector that turns a git diff range into impacted routes / endpoints / test files (the documentation, §12.3).
@@ -30,15 +30,15 @@ We introduce `engine/ci/` as the integration layer:
 - `engine.ci.modes.apply_mode(config, mode, fail_under=None)` returns a `(RootConfig, ModePlan)` pair. Each mode is a recipe over three knobs: `modules` (which audit modules to run), `grep` (Playwright tag filter threaded through `module_options["functional"]["grep"]`), and `policy_overrides` (the `release` mode raises `policy.min_quality_score` to `max(config, 90)`). Module presets always intersect with the user's enabled module set so the config remains authoritative for the safety boundary.
 - `engine.ci.diff_aware.select_from_files(diff_range, changed_files)` is a pure helper that walks the file list with deterministic framework-shape heuristics (Next.js App Router, Next.js Pages Router, Vite). A broad-impact tripwire — lockfiles, framework configs, Dockerfile — forces fallback to full mode. A volume tripwire (`> 50` changed files) does the same. The smoke tag (`@p0`) is the floor — every diff still runs smoke.
 - The `sentinel ci` CLI command translates these into the existing `RunLifecycle.execute` inputs (`requested_modules`, `module_options`); the lifecycle itself is unchanged. A new `<run-dir>/ci.json` sidecar persists the mode, the diff range, and the resolved selection so the PR comment / HTML report can show what ran.
-- The GitHub composite action (`integrations/github/action.yml`) and reusable workflow (`integrations/github/workflows/sentinel-pr.yml`) exist in-repo so projects can either `uses: ./integrations/github` (for development branches) or pin a version tag (post Phase 28 release). The Action's output reads `quality-score` / `release-decision` / `report-html-url` from the latest `score.json`.
-- PR / MR posters use `urllib` (no `requests` dep), honor a `<!-- sentinelqa:pr-comment -->` upsert anchor (Phase 15 contract), and read tokens from env vars only. Retries: 3 attempts with exponential backoff on `429` / `5xx`; `Retry-After` headers honored.
-- The Phase 17 `sentinel ci` command always forces `--ci=True` so JSON output is deterministic regardless of how it's invoked .
+- The GitHub composite action (`integrations/github/action.yml`) and reusable workflow (`integrations/github/workflows/sentinel-pr.yml`) exist in-repo so projects can either `uses:./integrations/github` (for development branches) or pin a version tag (post release). The Action's output reads `quality-score` / `release-decision` / `report-html-url` from the latest `score.json`.
+- PR / MR posters use `urllib` (no `requests` dep), honor a `<!-- sentinelqa:pr-comment -->` upsert anchor ( contract), and read tokens from env vars only. Retries: 3 attempts with exponential backoff on `429` / `5xx`; `Retry-After` headers honored.
+- The `sentinel ci` command always forces `--ci=True` so JSON output is deterministic regardless of how it's invoked.
 
 ## Consequences
 
-- **Positive:** - Modes stay declarative — adding a sixth mode is a one-recipe change in `engine.ci.modes`, no lifecycle edits. - Diff-aware selection is pure: the same file list deterministically produces the same selection, which is testable without any git setup. - GitHub and GitLab posters share an anchor with the Phase 15 `engine.reporter.pr_comment` writer, so the entire poster flow can upsert without parsing rendered Markdown. - The composite Action and template are testable structurally — a YAML-load + assertions test guarantees the documentation conformance.
+- **Positive:** - Modes stay declarative — adding a sixth mode is a one-recipe change in `engine.ci.modes`, no lifecycle edits. - Diff-aware selection is pure: the same file list deterministically produces the same selection, which is testable without any git setup. - GitHub and GitLab posters share an anchor with the `engine.reporter.pr_comment` writer, so the entire poster flow can upsert without parsing rendered Markdown. - The composite Action and template are testable structurally — a YAML-load + assertions test guarantees the documentation conformance.
 - **Negative / trade-off:** - The diff-aware heuristics are framework-shape-aware (Next.js, Vite); less-common layouts fall back to full mode. We accept this — the tripwire defaults to safety over precision, and adding new shapes is a future plug-in opportunity rather than a fragile guess. - The `_RELEASE_MIN_QUALITY_SCORE = 90` constant lives in `engine.ci.modes` rather than the config schema. Projects that want a different release floor should pass `--fail-under` explicitly; that override is authoritative.
-- **Follow-up obligations:** - When Phase 22 ships API testing, the diff-aware OpenAPI tag (`@module:api`) should start a real selection chain through the new API module's tag set rather than relying on the full-module-run fallback.
+- **Follow-up obligations:** - When ships API testing, the diff-aware OpenAPI tag (`@module:api`) should start a real selection chain through the new API module's tag set rather than relying on the full-module-run fallback.
 
 ## Alternatives considered
 

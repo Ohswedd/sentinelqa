@@ -1,4 +1,4 @@
-"""Secret-in-bundle scanner (Phase 32.07, ADR-0044).
+"""Secret-in-bundle scanner.
 
 For every JS bundle Playwright loaded during the run, fetch the bundle
 (streamed, capped at ``max_bytes`` — default 50 MiB) and scan for the
@@ -8,7 +8,7 @@ operator knows a tail was not inspected.
 
 The pattern set deliberately re-uses the rule ids the Phase-29 audit
 codified (CWE-540) plus the Anthropic-Skills-derived additions called
-out in the Phase 32 README. No bundle bytes are persisted in the audit
+out in the README. No bundle bytes are persisted in the audit
 log; only the bundle URL + redacted prefix of each match.
 """
 
@@ -44,7 +44,7 @@ class SecretPattern:
 
 # Pattern order is fixed; the safety guard at
 # ``tests/security/test_no_offensive_checks.py`` greps the module to
-# prove no `for ... in <external resource>` loop exists.
+# prove no `for... in <external resource>` loop exists.
 _PATTERNS: Final[tuple[SecretPattern, ...]] = (
     SecretPattern(
         rule_id="SEC-BUNDLE-SECRET-AWS",

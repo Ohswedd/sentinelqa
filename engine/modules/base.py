@@ -3,12 +3,12 @@
 Every module follows the same lifecycle:
 
 1. ``validate_prerequisites`` — refuse to run when the environment is wrong
-   (missing binary, missing fixture, etc.).
+ (missing binary, missing fixture, etc.).
 2. ``plan`` — pick the subset of work this run cares about.
 3. ``execute`` — drive the runner / external tool.
 4. ``collect_evidence`` — gather artifacts (already on disk from the runner).
 5. ``emit_findings`` — translate failures into typed :class:`Finding` records
-   with our product spec evidence.
+ with our product spec evidence.
 6. ``emit_metrics`` — derived from the runner outcome.
 7. ``summarize`` — return the final :class:`ModuleResult`.
 
@@ -20,15 +20,15 @@ a typed partial result unless the failure invalidates the entire run").
 
 The module owns:
 
-- Its own runner invocation (Phase 08).
+- Its own runner invocation.
 - Its own findings translation (our product spec, §20).
 - Its own metrics derivation.
 
 The module does NOT own:
 
 - Run lifecycle state (CLAUDE §10).
-- Quality scoring (Phase 14).
-- Report generation (Phase 03 / Phase 15).
+- Quality scoring.
+- Report generation ( / ).
 """
 
 from __future__ import annotations
@@ -224,7 +224,7 @@ class SentinelModule(ABC):
         """Default severity assigned to a failed/timed-out test.
 
         Functional failures are treated as ``high`` by default; the spec
-        author can override via tag annotations once Phase 14 wires
+        author can override via tag annotations once wires
         severity overrides into the scoring layer.
         """
 
@@ -245,7 +245,7 @@ def derive_module_status(
     Rules:
 
     - If the runner reported ``incomplete`` / ``errored`` / ``skipped``,
-      preserve it (those are honest signals).
+    preserve it (those are honest signals).
     - Otherwise, if any finding is critical/high, the module is ``failed``.
     - Otherwise, mirror the runner's status.
     """
@@ -281,7 +281,7 @@ def build_finding_from_failed_test(
         # our product spec requires every medium+ finding to carry evidence. When
         # the runner couldn't capture a trace / screenshot (e.g. the test
         # fixture had none) we fall back to the per-module runner log,
-        # which Phase 08 always writes under ``logs/runner.<module>.log``.
+        # which always writes under ``logs/runner.<module>.log``.
         evidence_paths.append(f"logs/runner.{module_name}.log")
     evidence_records: tuple[Evidence, ...] = tuple(
         Evidence(

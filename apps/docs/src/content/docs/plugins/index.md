@@ -52,7 +52,7 @@ One JSON line in, one out. 60-second default timeout.
 ```bash
 uv run sentinel plugins list
 uv run sentinel plugins info my-scanner
-uv run sentinel plugins validate ./my-plugin/
+uv run sentinel plugins validate./my-plugin/
 ```
 
 ## Example plugins

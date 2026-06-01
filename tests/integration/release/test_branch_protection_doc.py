@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright (c) 2026 SentinelQA contributors.
-"""Branch-protection doc + verify script health (Phase 35.06).
+"""Branch-protection doc + verify script health.
 
 Asserts the documented branch-protection spec
 (`docs/dev/branch-protection.md`) and the in-repo verify script
@@ -43,7 +43,7 @@ def _required_checks_in_doc() -> set[str]:
 
 
 def _workflow_names() -> set[str]:
-    """Collect every job's `name:` value from .github/workflows/*.yml."""
+    """Collect every job's `name:` value from.github/workflows/*.yml."""
     names: set[str] = set()
     for path in WORKFLOWS_DIR.glob("*.yml"):
         data = yaml.safe_load(path.read_text(encoding="utf-8"))
@@ -96,7 +96,7 @@ def test_required_checks_match_actual_workflow_names() -> None:
         # Build patterns that account for the matrix templating —
         # escape the literal text first so parens/brackets aren't
         # interpreted as regex syntax, THEN replace the escaped
-        # ${{ ... }} markers with `.+`.
+        # ${{... }} markers with `.+`.
         token_re = re.compile(re.escape(r"${{") + r".+?" + re.escape(r"}}"))
         for name in names:
             escaped = re.escape(name)

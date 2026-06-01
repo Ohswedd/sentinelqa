@@ -1,4 +1,4 @@
-"""Integration tests for the hardcoded-credentials scanner (task 19.08).
+"""Integration tests for the hardcoded-credentials scanner.
 
 Per our engineering rules, the test asserts that the persisted snippet has the
 literal credential redacted before leaving the function.

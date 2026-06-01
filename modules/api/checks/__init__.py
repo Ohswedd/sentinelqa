@@ -1,4 +1,4 @@
-"""Per-check runners for the API module (Phase 22).
+"""Per-check runners for the API module.
 
 Each module in this package exposes ``run_<check>_check(...)`` returning
 :class:`modules.api.models.ApiCheckResult`. Checks are pure functions

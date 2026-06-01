@@ -1,6 +1,6 @@
-"""Safety guard for Phase 32 (ADR-0044): no offensive payloads or APIs.
+"""Safety guard for (ADR-0044): no offensive payloads or APIs.
 
-Every check shipped in Phase 32 must remain inside the our engineering rules
+Every check shipped in must remain inside the our engineering rules
 boundary — no exploit weaponisation, no WAF bypass, no aggressive
 fuzzing, no detection evasion. This test greps the Phase-32 check
 modules for forbidden tokens and asserts none appear.

@@ -25,41 +25,38 @@ UV ?= uv
         docs-check-fresh \
         changelog-draft audit-metadata audit-license-headers verify-branch-protection \
         build-all inspect-all \
-        bench dod \
         clean ci
 
 help:
 	@echo "SentinelQA — make targets"
-	@echo "  install       Install Python + TypeScript dev dependencies"
-	@echo "  lint          Lint Python and TypeScript"
-	@echo "  format        Format Python and TypeScript in place"
-	@echo "  format-check  Verify formatting without modifying files (CI mode)"
-	@echo "  typecheck     mypy + tsc --noEmit"
-	@echo "  test          Run default tests (slow/bench markers excluded)"
-	@echo "  test-fast     Alias for test"
-	@echo "  test-full     Include slow + bench tests (property + perf)"
-	@echo "  coverage      Run tests with coverage and enforce the floor"
-	@echo "  adr-check     Validate ADR template adherence"
-	@echo "  schemas       Emit JSON Schemas for every engine.domain model"
-	@echo "  update-goldens  Regenerate report goldens (Phase 03+); commit the diff"
-	@echo "  sdk-api-snapshot  Regenerate the SDK public-API snapshot (Phase 16)"
-	@echo "  ci            format-check + lint + typecheck + adr-check + test"
-	@echo "  demo          Bring up the end-to-end stack and run sentinel audit"
-	@echo "  demo-down     Tear the end-to-end stack down"
-	@echo "  demo-<name>   Boot one example: flask|fastapi|django|nextjs|react-vite|llm-broken"
-	@echo "  docs          Regenerate auto-generated pages, then build the Starlight site"
-	@echo "  docs-dev      Run the Starlight dev server (apps/docs/)"
-	@echo "  docs-gen-all  Run every docs generator (CLI / SDK / MCP / errors / ADR index)"
-	@echo "  docs-check-fresh  Fail if any generated docs page is stale"
-	@echo "  changelog-draft   Draft a Keep a Changelog section from Conventional Commits"
-	@echo "  audit-metadata    Verify every publishable manifest carries release-ready metadata"
-	@echo "  audit-license-headers  Verify SPDX headers + NOTICE completeness (Phase 35.03)"
-	@echo "  verify-branch-protection  Diff live main protection against docs/dev/branch-protection.md (Phase 35.06)"
-	@echo "  build-all     Build every Python sdist+wheel and the TS npm tarball into dist/"
-	@echo "  inspect-all   Inspect every artifact under dist/ for forbidden contents"
-	@echo "  bench         Phase 29 — measure import + CLI cold-start budgets"
-	@echo "  dod           Phase 29 — Definition-of-Done sweep (ci + git status)"
-	@echo "  clean         Remove caches and build artifacts"
+	@echo " install Install Python + TypeScript dev dependencies"
+	@echo " lint Lint Python and TypeScript"
+	@echo " format Format Python and TypeScript in place"
+	@echo " format-check Verify formatting without modifying files (CI mode)"
+	@echo " typecheck mypy + tsc --noEmit"
+	@echo " test Run default tests (slow markers excluded)"
+	@echo " test-fast Alias for test"
+	@echo " test-full Include slow tests (property + perf)"
+	@echo " coverage Run tests with coverage and enforce the floor"
+	@echo " adr-check Validate ADR template adherence"
+	@echo " schemas Emit JSON Schemas for every engine.domain model"
+	@echo " update-goldens Regenerate report goldens (+); commit the diff"
+	@echo " sdk-api-snapshot Regenerate the SDK public-API snapshot "
+	@echo " ci format-check + lint + typecheck + adr-check + test"
+	@echo " demo Bring up the end-to-end stack and run sentinel audit"
+	@echo " demo-down Tear the end-to-end stack down"
+	@echo " demo-<name> Boot one example: flask|fastapi|django|nextjs|react-vite|llm-broken"
+	@echo " docs Regenerate auto-generated pages, then build the Starlight site"
+	@echo " docs-dev Run the Starlight dev server (apps/docs/)"
+	@echo " docs-gen-all Run every docs generator (CLI / SDK / MCP / errors / ADR index)"
+	@echo " docs-check-fresh Fail if any generated docs page is stale"
+	@echo " changelog-draft Draft a Keep a Changelog section from Conventional Commits"
+	@echo " audit-metadata Verify every publishable manifest carries release-ready metadata"
+	@echo " audit-license-headers Verify SPDX headers + NOTICE completeness "
+	@echo " verify-branch-protection Diff live main protection against docs/dev/branch-protection.md "
+	@echo " build-all Build every Python sdist+wheel and the TS npm tarball into dist/"
+	@echo " inspect-all Inspect every artifact under dist/ for forbidden contents"
+	@echo " clean Remove caches and build artifacts"
 
 # --- install ---------------------------------------------------------------
 install: install-python install-ts install-hooks
@@ -78,7 +75,7 @@ install-ts:
 	@if [ -f package.json ]; then \
 		pnpm install --frozen-lockfile; \
 	else \
-		echo "skipping TS install (package.json lands in Phase 00.03)"; \
+		echo "skipping TS install (package.json not present)"; \
 	fi
 
 # --- lint ------------------------------------------------------------------
@@ -91,7 +88,7 @@ lint-ts:
 	@if [ -f package.json ]; then \
 		pnpm -r run lint; \
 	else \
-		echo "skipping TS lint (package.json lands in Phase 00.03)"; \
+		echo "skipping TS lint (package.json not present)"; \
 	fi
 
 # --- format ----------------------------------------------------------------
@@ -104,7 +101,7 @@ format-ts:
 	@if [ -f package.json ]; then \
 		pnpm -r run format; \
 	else \
-		echo "skipping TS format (package.json lands in Phase 00.03)"; \
+		echo "skipping TS format (package.json not present)"; \
 	fi
 
 format-check:
@@ -123,7 +120,7 @@ typecheck-ts:
 	@if [ -f package.json ]; then \
 		pnpm -r run typecheck; \
 	else \
-		echo "skipping TS typecheck (package.json lands in Phase 00.03)"; \
+		echo "skipping TS typecheck (package.json not present)"; \
 	fi
 
 # --- test ------------------------------------------------------------------
@@ -136,10 +133,10 @@ test-ts:
 	@if [ -f package.json ]; then \
 		pnpm -r run test; \
 	else \
-		echo "skipping TS test (package.json lands in Phase 00.03)"; \
+		echo "skipping TS test (package.json not present)"; \
 	fi
 
-# Phase 01: coverage floor is enforced; fail_under lives in pyproject.toml.
+#: coverage floor is enforced; fail_under lives in pyproject.toml.
 coverage:
 	$(UV) run pytest --cov --cov-report=term-missing
 
@@ -151,14 +148,14 @@ test-full:
 	$(UV) run pytest --override-ini="addopts=-ra --strict-config --strict-markers --import-mode=importlib"
 
 # Generate JSON Schemas for every domain model into packages/shared-schema/.
-# Also re-export the redaction ruleset the TS runtime mirrors (Phase 04).
+# Also re-export the redaction ruleset the TS runtime mirrors.
 schemas:
 	$(UV) run python -c "from pathlib import Path; from engine.domain.jsonschema import dump_schemas; written = dump_schemas(Path('packages/shared-schema/schemas')); [print(p) for p in written]"
 	$(UV) run python scripts/export-redaction-rules.py
 	$(UV) run python scripts/export-redaction-parity.py
 	$(UV) run python scripts/export-ts-events-parity.py
 
-# Phase 03: rewrite report goldens in place. Reviewer sees the diff in the
+#: rewrite report goldens in place. Reviewer sees the diff in the
 # follow-up commit — the only place schema drift may originate.
 # Prompts for confirmation; pass FORCE=1 to skip the prompt (CI use only).
 update-goldens:
@@ -172,7 +169,7 @@ update-goldens:
 	SENTINELQA_UPDATE_GOLDENS=1 $(UV) run pytest tests/golden -p no:cacheprovider
 
 # --- sdk-api-snapshot ------------------------------------------------------
-# Phase 16.06 — regenerate `packages/python-sdk/api-snapshot.json`. CI runs
+# regenerate `packages/python-sdk/api-snapshot.json`. CI runs
 # `tests/unit/sdk/test_api_snapshot.py` to diff this snapshot against the
 # live public surface; drift requires regenerating + an ADR per
 # `packages/python-sdk/__deprecation_policy.md`.
@@ -184,7 +181,7 @@ adr-check:
 	scripts/check-adrs.sh
 
 # --- runner image ----------------------------------------------------------
-# Phase 08.02 — pinned Playwright base for `sentinel test --docker`. The
+# pinned Playwright base for `sentinel test --docker`. The
 # Playwright tag must match the version `packages/ts-runtime` depends on
 # (`@playwright/test`). Override with `PLAYWRIGHT_TAG=v… make build-runner-image`.
 RUNNER_IMAGE ?= sentinelqa/runner:dev
@@ -201,7 +198,7 @@ build-runner-image:
 		.
 
 # --- examples / demos ------------------------------------------------------
-# Phase 26 — example apps. Each demo target builds a throw-away venv (Python
+# — example apps. Each demo target builds a throw-away venv (Python
 # examples) or runs `pnpm install` (TS examples) and boots the app on a
 # loopback port. Targets are intentionally synchronous so `Ctrl-C` cleans up.
 # Plan called these `make demo:<name>` — `:` is awkward in Make target names
@@ -209,29 +206,29 @@ build-runner-image:
 
 demo-flask:
 	@cd examples/flask && \
-	  if [ ! -d .venv-demo ]; then python3 -m venv .venv-demo; fi && \
+	  if [ ! -d.venv-demo ]; then python3 -m venv.venv-demo; fi && \
 	  .venv-demo/bin/pip install -q -r requirements.txt && \
 	  .venv-demo/bin/python app.py
 
 demo-fastapi:
 	@cd examples/fastapi && \
-	  if [ ! -d .venv-demo ]; then python3 -m venv .venv-demo; fi && \
+	  if [ ! -d.venv-demo ]; then python3 -m venv.venv-demo; fi && \
 	  .venv-demo/bin/pip install -q -r requirements.txt && \
 	  .venv-demo/bin/uvicorn app.main:app --host 127.0.0.1 --port 8000
 
 demo-fastapi-openapi:
 	@cd examples/fastapi && \
-	  if [ ! -d .venv-demo ]; then python3 -m venv .venv-demo; fi && \
+	  if [ ! -d.venv-demo ]; then python3 -m venv.venv-demo; fi && \
 	  .venv-demo/bin/pip install -q -r requirements.txt && \
-	  .venv-demo/bin/python -c "import json, sys; sys.path.insert(0, '.'); from app.main import app; json.dump(app.openapi(), open('openapi.json', 'w'), indent=2, sort_keys=True); print('wrote openapi.json')"
+	  .venv-demo/bin/python -c "import json, sys; sys.path.insert(0, '.'); from app.main import app; json.dump(app.openapi, open('openapi.json', 'w'), indent=2, sort_keys=True); print('wrote openapi.json')"
 
 demo-django:
 	@cd examples/django && \
-	  if [ ! -d .venv-demo ]; then python3 -m venv .venv-demo; fi && \
+	  if [ ! -d.venv-demo ]; then python3 -m venv.venv-demo; fi && \
 	  .venv-demo/bin/pip install -q -r requirements.txt && \
 	  .venv-demo/bin/python manage.py migrate --noinput && \
-	  .venv-demo/bin/python -c "from django.conf import settings; settings.configure() if not settings.configured else None" 2>/dev/null; \
-	  DJANGO_SETTINGS_MODULE=demo_site.settings .venv-demo/bin/python manage.py shell -c "from django.contrib.auth import get_user_model; U=get_user_model(); U.objects.filter(username='demo').exists() or U.objects.create_user('demo', password='demo'); U.objects.filter(username='admin').exists() or U.objects.create_superuser('admin', '', 'admin')" && \
+	  .venv-demo/bin/python -c "from django.conf import settings; settings.configure if not settings.configured else None" 2>/dev/null; \
+	  DJANGO_SETTINGS_MODULE=demo_site.settings.venv-demo/bin/python manage.py shell -c "from django.contrib.auth import get_user_model; U=get_user_model; U.objects.filter(username='demo').exists or U.objects.create_user('demo', password='demo'); U.objects.filter(username='admin').exists or U.objects.create_superuser('admin', '', 'admin')" && \
 	  .venv-demo/bin/python manage.py runserver 127.0.0.1:8001
 
 demo-nextjs:
@@ -264,7 +261,7 @@ demo-down:
 	fi
 
 # --- docs ------------------------------------------------------------------
-# Phase 27 — Astro Starlight site under apps/docs/ + auto-generated pages.
+# — Astro Starlight site under apps/docs/ + auto-generated pages.
 docs-gen-error-codes:
 	$(UV) run python -m scripts.docs.gen_error_codes
 
@@ -299,21 +296,21 @@ docs-dev: docs-gen-all
 docs: docs-build
 
 # --- release ---------------------------------------------------------------
-# Phase 28 — audit publishable manifests for release-ready metadata.
+# — audit publishable manifests for release-ready metadata.
 audit-metadata:
 	$(UV) run python -m scripts.release.audit_metadata
 
-# Phase 35 — audit source files for SPDX headers + NOTICE completeness.
+# — audit source files for SPDX headers + NOTICE completeness.
 audit-license-headers:
 	$(UV) run python -m scripts.release.audit_license_headers --check
 
-# Phase 35 — diff live GitHub branch protection on main against
+# — diff live GitHub branch protection on main against
 # docs/dev/branch-protection.md. Exits 0 when matching, 5 when gh is
 # missing/unauth'd, 6 on drift. Owner-runnable post-public flip.
 verify-branch-protection:
 	$(UV) run python -m scripts.release.verify_branch_protection
 
-# Phase 28 — build every Python sdist + wheel and the TS npm tarball.
+# — build every Python sdist + wheel and the TS npm tarball.
 # Pass DIST=<dir> to override the output directory (default: dist/).
 # Pass DOCKER=1 to also build the runner image.
 DIST ?= dist
@@ -323,7 +320,7 @@ build-all:
 		--out-dir $(DIST) \
 		$(if $(DOCKER),--docker)
 
-# Phase 28 — inspect every built artifact for forbidden contents (.git, .env,
+# — inspect every built artifact for forbidden contents (.git,.env,
 # private keys, cloud credentials, byte-compiled caches). Pass LIST=1 to also
 # print the full file inventory of each artifact.
 LIST ?=
@@ -332,7 +329,7 @@ inspect-all:
 		--dist-dir $(DIST) \
 		$(if $(LIST),--list)
 
-# Phase 28 — draft a Keep a Changelog section from Conventional Commits.
+# — draft a Keep a Changelog section from Conventional Commits.
 # Writes to CHANGELOG.draft.md for the human curator. Set FROM=<rev> to bound
 # the lower edge of the range (default: repo root). VERSION/DATE override the
 # header. INCLUDE_INTERNAL=1 surfaces chore/ci/docs/test/build/style commits.
@@ -351,35 +348,6 @@ changelog-draft:
 		$(if $(INCLUDE_INTERNAL),--include-internal) \
 		-o $(CHANGELOG_DRAFT)
 	@echo "wrote $(CHANGELOG_DRAFT) (curate by hand before pasting into CHANGELOG.md)"
-
-# Phase 29 — `make bench` measures the Phase 29.04 wall-clock targets and
-# writes a JSON report. Pass AUDIT_URL=<url> to additionally measure a live
-# `sentinel audit` run; otherwise the audit case is skipped (default).
-BENCH_REPEAT ?= 3
-BENCH_OUTPUT ?= docs/release/bench-results.json
-AUDIT_URL ?=
-bench:
-	$(UV) run python -m scripts.bench \
-		--repeat $(BENCH_REPEAT) \
-		--output $(BENCH_OUTPUT) \
-		$(if $(AUDIT_URL),--audit-url $(AUDIT_URL))
-
-# Phase 29 — `make dod` runs the local Definition-of-Done sweep (CLAUDE.md
-# §18). It is the local equivalent of the phase-gate review: format-check,
-# lint, typecheck, adr-check, test, plus the secret-leak audit, plus a
-# `git status` cleanliness check. CI itself is `make ci`; this target is
-# what a contributor runs before pushing.
-dod: ci
-	@echo "dod: running secret-leak audit on .sentinel/runs/ ..."
-	$(UV) run pytest tests/integration/release/test_secret_leak.py -q
-	@echo "dod: running determinism audit ..."
-	$(UV) run pytest tests/integration/release/test_determinism.py -q
-	@if [ -n "$$(git status --porcelain)" ]; then \
-		echo "dod: FAIL — git working tree not clean"; \
-		git status --porcelain; \
-		exit 1; \
-	fi
-	@echo "dod: PASS — Definition of Done locally satisfied"
 
 # --- ci --------------------------------------------------------------------
 ci: format-check lint typecheck adr-check test

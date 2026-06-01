@@ -1,13 +1,13 @@
-"""Slack webhook poster reusing the Phase 15.06 Block Kit payload.
+"""Slack webhook poster reusing the Block Kit payload.
 
 our engineering rules / §41:
 
 - ``SLACK_WEBHOOK_URL`` is read at call time; never logged.
 - The webhook URL is treated as a secret. The redacted URL we log
-  strips the query string and the path segments after ``/services/``.
+ strips the query string and the path segments after ``/services/``.
 - We dedupe payloads within a 5-minute window so a retried CI job
-  does not double-post; the dedup cache lives next to the run
-  artifacts so it does not leak across users / hosts.
+ does not double-post; the dedup cache lives next to the run
+ artifacts so it does not leak across users / hosts.
 
 Two ways to invoke:
 

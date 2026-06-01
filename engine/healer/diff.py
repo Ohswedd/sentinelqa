@@ -1,17 +1,17 @@
-"""Unified-diff + assertion-weakening guard (Phase 20, our engineering rules).
+"""Unified-diff + assertion-weakening guard (, our engineering rules).
 
 Two responsibilities:
 
 1. Produce stable unified-diff strings the CLI and HTML report can
-   display verbatim (callers don't depend on git or `difflib`'s
-   default output).
+ display verbatim (callers don't depend on git or `difflib`'s
+ default output).
 2. Refuse any diff that *weakens* a Playwright assertion. our engineering rules
-   §23 forbids the Healer from silently hiding app bugs as test
-   repairs — removing an ``expect(...).toBe(...)`` line, deleting an
-   entire assertion, switching ``toHaveText`` to ``toBeVisible``, or
-   commenting an assertion out are all rejected by
-   :func:`assert_no_assertion_weakening` unless the caller passed
-   ``allow_weaken=True``.
+ §23 forbids the Healer from silently hiding app bugs as test
+ repairs — removing an ``expect(...).toBe(...)`` line, deleting an
+ entire assertion, switching ``toHaveText`` to ``toBeVisible``, or
+ commenting an assertion out are all rejected by
+ :func:`assert_no_assertion_weakening` unless the caller passed
+ ``allow_weaken=True``.
 """
 
 from __future__ import annotations
@@ -46,7 +46,7 @@ def _count_assertions(source: str) -> int:
 
 
 def _strip_assertions_from_comments(source: str) -> str:
-    """Strip ``// ...`` and ``/* ... */`` comments before counting.
+    """Strip ``//...`` and ``/*... */`` comments before counting.
 
     Without this, ``// expect(foo).toBe(true)`` would be counted as a
     live assertion. We do a coarse pass — good enough for the
@@ -66,8 +66,8 @@ def assert_no_assertion_weakening(
     """Raise :class:`AssertionWeakeningError` if assertions disappeared.
 
     ``allow_weaken=True`` short-circuits the check — required when the
-    operator explicitly opts in via ``sentinel fix --allow-weaken``
-    (Phase 20.07 task). The CLI must also log the weaken in the
+    operator explicitly opts in via ``sentinel fix --allow-weaken``.
+    The CLI must also log the weaken in the
     audit log.
     """
 

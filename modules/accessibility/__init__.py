@@ -1,4 +1,4 @@
-"""Accessibility audit module (Phase 11, the documentation, our engineering rules, §28).
+"""Accessibility audit module (, the documentation, our engineering rules, §28).
 
 Importing this package wires :class:`AccessibilityModule` into the
 default orchestrator registry so ``sentinel a11y`` and ``sentinel audit``

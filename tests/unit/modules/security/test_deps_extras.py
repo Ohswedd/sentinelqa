@@ -1,4 +1,4 @@
-"""Coverage-fill tests for the dep-scan adapters (Phase 13.13)."""
+"""Coverage-fill tests for the dep-scan adapters."""
 
 from __future__ import annotations
 

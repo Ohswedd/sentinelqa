@@ -1,4 +1,4 @@
-"""LLM explainer Null adapter + parsing tests (task 09.05)."""
+"""LLM explainer Null adapter + parsing tests."""
 
 from __future__ import annotations
 

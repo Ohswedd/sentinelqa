@@ -4,12 +4,12 @@
 The fixture (``tests/golden/redaction/parity.json``) is a list of
 ``{ id, kind, input, expected }`` records. ``kind`` is one of:
 
-- ``string``  — feeds the input through :func:`redact_string` (the
-  value-level pipeline). Byte-parity is required.
-- ``value``   — feeds the input (already JSON) through :func:`redact`.
-  Byte-parity is required.
+- ``string`` — feeds the input through :func:`redact_string` (the
+ value-level pipeline). Byte-parity is required.
+- ``value`` — feeds the input (already JSON) through :func:`redact`.
+ Byte-parity is required.
 - ``headers`` — feeds the input dict through :func:`redact_headers`.
-  Byte-parity is required.
+ Byte-parity is required.
 
 URL redaction is intentionally excluded: Python ``urlparse`` preserves
 hostname case while JS ``URL`` normalises it, so byte-parity is
@@ -17,8 +17,8 @@ unreachable. The TS-side redactUrl tests are owned by the runtime.
 
 Run modes:
 
-  python scripts/export-redaction-parity.py            # write the fixture
-  python scripts/export-redaction-parity.py --check    # fail if stale
+ python scripts/export-redaction-parity.py # write the fixture
+ python scripts/export-redaction-parity.py --check # fail if stale
 """
 
 from __future__ import annotations

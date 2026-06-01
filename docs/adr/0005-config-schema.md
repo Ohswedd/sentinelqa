@@ -29,16 +29,16 @@ Specific decisions:
 - **Secret-name keys.** A small allow-list of secret-shaped keys (`password`, `secret`, `token`, `access_token`, `refresh_token`, `api_key`, `client_secret`, `private_key`) raises `ConfigSecretInlineError` (E-CFG-003) when a scalar value lands there. Authentication strategies must use the `*_env` sibling keys (`username_env`, `password_env`, `token_env`).
 - **Wildcards forbidden.** `target.allowed_hosts` rejects any host containing `*` or `?`. The safety boundary in our engineering rules-list being explicit; a wildcard would make the policy lie.
 - **Destructive mode requires proof.** A `RootConfig` model_validator refuses `security.mode == "authorized_destructive"` unless `target.proof_of_authorization` is set. The proof file itself is loaded and verified by `engine/policy/proof_of_authorization.py` at policy-enforcement time (ADR-0006).
-- **Schema version.** `RootConfig` carries `CONFIG_SCHEMA_VERSION = "1"`. Migrations live in `engine/config/migration.py` and are empty in Phase 01.
-- **Non-raising surface.** `engine/config/schema_check.py` exposes `validate_config_dict(dict) -> list[ConfigCheckError]` so `sentinel doctor` (Phase 02) can list every issue in one pass without raising.
+- **Schema version.** `RootConfig` carries `CONFIG_SCHEMA_VERSION = "1"`. Migrations live in `engine/config/migration.py` and are empty in.
+- **Non-raising surface.** `engine/config/schema_check.py` exposes `validate_config_dict(dict) -> list[ConfigCheckError]` so `sentinel doctor` can list every issue in one pass without raising.
 
-The Phase 01 task spec lists `engine/config/schema.py`, `loader.py`, `schema_check.py`, and `migration.py`; this ADR makes the contract that backs them durable.
+The task spec lists `engine/config/schema.py`, `loader.py`, `schema_check.py`, and `migration.py`; this ADR makes the contract that backs them durable.
 
 ## Consequences
 
 - **Positive.** One canonical schema. Tests, docs, and `sentinel doctor` all derive from the same Pydantic models — there is no second source of truth to drift. Unknown keys fail loudly; inline secrets fail loudly; wildcard allow-lists fail loudly.
 - **Positive.** Env interpolation supports `${VAR:-default}`, which is the minimum DX needed for the CI/local-dev split without inventing a shell-like syntax.
-- **Negative / trade-off.** `extra="forbid"` means each new module feature requires both a schema bump and a model field. That is the trade we want — features shouldn't sneak in via undocumented keys — but it does add friction for plugin authors. Phase 24 (plugin architecture) will introduce a typed extension mechanism so plugins don't fork the schema.
+- **Negative / trade-off.** `extra="forbid"` means each new module feature requires both a schema bump and a model field. That is the trade we want — features shouldn't sneak in via undocumented keys — but it does add friction for plugin authors. (plugin architecture) will introduce a typed extension mechanism so plugins don't fork the schema.
 - **Negative / trade-off.** Pydantic's strict type checks make tests verbose (str-vs-AnyUrl mismatches surface as ValidationError rather than auto-coercion). We accept this; for tests, a per-package mypy override softens `arg-type` only.
 - **Follow-up obligations.** When `CONFIG_SCHEMA_VERSION` ever bumps, the policy in `docs/dev/schema-versioning.md` must be followed and a migration must land in `engine/config/migration.py`.
 

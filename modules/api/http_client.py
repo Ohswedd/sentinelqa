@@ -1,4 +1,4 @@
-"""Shared HTTP client + body-size guard for the API module (Phase 22).
+"""Shared HTTP client + body-size guard for the API module.
 
 Same shape as :mod:`modules.security.http_client`. The module never
 ships an evasion path: User-Agent is fixed, no proxy rotation, no

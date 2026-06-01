@@ -1,4 +1,4 @@
-"""``findings`` v1 → v2 migration tests (Phase 32 / ADR-0044)."""
+"""``findings`` v1 → v2 migration tests ( / ADR-0044)."""
 
 from __future__ import annotations
 

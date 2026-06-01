@@ -1,4 +1,4 @@
-"""Backend parity test (task 17.07).
+"""Backend parity test.
 
 Drives the HTTP-first backend and the Playwright backend against the
 same SSR fixture and asserts the produced :class:`CrawlResult` shapes

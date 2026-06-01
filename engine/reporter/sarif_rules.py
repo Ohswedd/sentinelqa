@@ -1,4 +1,4 @@
-"""SARIF rule registry (task 03.05).
+"""SARIF rule registry.
 
 Module phases (13+) register their rules here. The SARIF writer asks the
 registry for the rule that matches a finding's category and falls back
@@ -19,7 +19,7 @@ class SarifRule:
     """One SARIF rule descriptor.
 
     Mirrors the SARIF 2.1.0 ``reportingDescriptor`` shape with only the
-    fields Phase 03 ships. Phase 24's plugin contract may add more.
+    fields ships. 's plugin contract may add more.
     """
 
     id: str
@@ -78,7 +78,7 @@ class SarifRuleRegistry:
         """Return a placeholder rule when ``category`` is not registered.
 
         The id is deterministic from the category so callers can still
-        cross-reference findings by ruleId. Module phases (Phase 13+) will
+        cross-reference findings by ruleId. Module phases (+) will
         register real rules and the synthesized fallback will become rare.
         """
 

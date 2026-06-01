@@ -1,11 +1,11 @@
-"""LLM-PLACEHOLDER-TEXT — "coming soon" placeholders in flows (task 19.12).
+"""LLM-PLACEHOLDER-TEXT — "coming soon" placeholders in flows.
 
 Pure function over :class:`RenderedTextSample` records. The severity
 matrix from the task file:
 
-* on a P0 flow              → high
-* on an authenticated flow  → medium
-* otherwise                 → low
+* on a P0 flow → high
+* on an authenticated flow → medium
+* otherwise → low
 
 We match a small set of high-precision placeholder strings so we
 don't catch unrelated marketing copy.

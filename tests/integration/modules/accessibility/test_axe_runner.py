@@ -1,4 +1,4 @@
-"""Integration test for the axe-core output translation (Phase 11.02).
+"""Integration test for the axe-core output translation.
 
 The TS subcommand (``sentinel-ts audit-a11y``) serialises axe-core's
 ``result.violations`` verbatim into the per-route JSON artifact. This
@@ -7,9 +7,9 @@ test verifies that the Python translation in
 correctly converts:
 
 - A compliant fixture (``tests/fixtures/a11y/compliant_axe_output.json``)
-  → zero typed violations + zero findings.
+ → zero typed violations + zero findings.
 - A non-compliant fixture (``tests/fixtures/a11y/broken_axe_output.json``)
-  → typed violations with the expected rule IDs + matching findings.
+ → typed violations with the expected rule IDs + matching findings.
 
 The expected rule IDs in the broken fixture mirror what axe-core 4.x
 reports against ``packages/ts-runtime/fixtures/a11y/broken.html``.

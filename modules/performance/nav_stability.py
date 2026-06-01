@@ -1,4 +1,4 @@
-"""Repeated-navigation stability heuristic (Phase 12.05, the documentation, CLAUDE §27).
+"""Repeated-navigation stability heuristic.
 
 The TS runtime visits each route N times (default 5) and samples the JS
 heap size + DOM-node count after each visit. This module computes the

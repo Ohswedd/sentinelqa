@@ -1,8 +1,8 @@
-"""OSV lookup integration tests against ``httpx.MockTransport`` (Phase 33.02).
+"""OSV lookup integration tests against ``httpx.MockTransport``.
 
 We never hit ``api.osv.dev`` in CI. The mock transport simulates
 happy / 429 / 500 / network-error paths so we can prove the offline
-degradation contract from the Phase 33 README.
+degradation contract from the README.
 """
 
 from __future__ import annotations

@@ -1,4 +1,4 @@
-"""Integration tests — dependency scan adapters (Phase 13.09)."""
+"""Integration tests — dependency scan adapters."""
 
 from __future__ import annotations
 

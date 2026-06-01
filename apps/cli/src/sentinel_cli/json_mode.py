@@ -1,4 +1,4 @@
-"""Strict JSON-mode helpers (task 02.06).
+"""Strict JSON-mode helpers.
 
 ``json_stdout()`` is the only sanctioned way to emit machine-readable
 output. While the context is active:
@@ -6,9 +6,9 @@ output. While the context is active:
 - stdout receives only the JSON objects passed to :func:`emit`.
 - ANSI escapes are suppressed.
 - A test-only env-var guard (``SENTINELQA_ASSERT_JSON_STDOUT=1``)
-  installs a write hook that fails the process if any non-JSON byte
-  reaches stdout — used in CLI tests to prove invariants without
-  cluttering production with assertions.
+ installs a write hook that fails the process if any non-JSON byte
+ reaches stdout — used in CLI tests to prove invariants without
+ cluttering production with assertions.
 
 Logging configuration (engine.log.configure_logging) is the gatekeeper
 for log streams; this module assumes the caller already chose ``json``

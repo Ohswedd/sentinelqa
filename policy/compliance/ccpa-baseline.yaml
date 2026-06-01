@@ -1,9 +1,9 @@
-# CCPA baseline (automated) — Phase 34.05 / ADR-0046.
+# CCPA baseline (automated) — ADR-0046.
 #
-# This pack runs the Phase 34 compliance module's two CCPA sub-checks:
+# This pack runs the compliance module's two CCPA sub-checks:
 #
-#   - do-not-sell-link-missing         (link presence)
-#   - do-not-sell-link-opt-out-missing (link target has a working form)
+# - do-not-sell-link-missing (link presence)
+# - do-not-sell-link-opt-out-missing (link target has a working form)
 #
 # WORDING NOTE (CLAUDE §28): the label says "(automated)" so the pack
 # never claims legal CCPA conformance.

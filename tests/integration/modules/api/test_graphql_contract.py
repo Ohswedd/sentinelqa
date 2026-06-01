@@ -1,4 +1,4 @@
-"""Phase 22.03 — GraphQL contract check integration tests."""
+"""GraphQL contract check integration tests."""
 
 from __future__ import annotations
 

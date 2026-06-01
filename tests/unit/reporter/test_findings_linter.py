@@ -1,4 +1,4 @@
-"""Unit tests for the vague-finding linter (task 03.02)."""
+"""Unit tests for the vague-finding linter."""
 
 from __future__ import annotations
 

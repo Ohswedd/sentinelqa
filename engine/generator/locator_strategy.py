@@ -1,4 +1,4 @@
-"""Locator brittleness audit (task 07.04).
+"""Locator brittleness audit.
 
 Python wrapper around ``sentinel-ts audit-locators``. The audit logic
 itself lives in TypeScript (``packages/ts-runtime/src/locators.ts``);

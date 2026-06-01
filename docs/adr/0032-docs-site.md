@@ -9,14 +9,14 @@ Accepted
 
 ## Context
 
-Phase 27 requires a documentation site at `apps/docs/` that builds in
+requires a documentation site at `apps/docs/` that builds in
 CI and renders user-facing guides, the CLI/SDK/MCP reference, an ADR
 index, and an auto-generated error-codes page. The phase task spec offers two choices —
 **Astro Starlight** or **MkDocs Material** — and asks for the choice
 to be recorded in an ADR.
 
 The pre-existing monorepo already runs a pnpm workspace, ships several
-TypeScript packages, and the phase 27 acceptance criterion is literally
+TypeScript packages, and the acceptance criterion is literally
 `pnpm --filter @sentinelqa/docs build` writing static HTML to
 `apps/docs/dist/`. The auto-generated content (CLI reference, SDK
 reference from `api-snapshot.json`, MCP tool list, error codes) is
@@ -48,7 +48,7 @@ page carries a status.
 - **Positive:** Markdown content is portable. Generators emit `.md` files that render in GitHub too, so the docs degrade gracefully if someone reads them outside the built site.
 - **Negative / trade-off:** Astro adds a non-trivial Node toolchain. Mitigated by pinning exact versions of `astro` and `@astrojs/starlight` and by relying on the existing pnpm cache in CI.
 - **Negative / trade-off:** SDK auto-gen has to be done with Python generators rather than `mkdocstrings`. Mitigated — we already lock the public surface in `packages/python-sdk/api-snapshot.json`, so the generator is a trivial JSON → Markdown render.
-- **Follow-up obligations:** add an `apps/docs build` step to `.github/workflows/ci.yml`; ensure the freshness gate is wired before Phase 29 final-hardening; add the docs URL to `README.md` once a public hosting target is chosen (out of scope for Phase 27).
+- **Follow-up obligations:** add an `apps/docs build` step to `.github/workflows/ci.yml`; ensure the freshness gate is wired before final-hardening; add the docs URL to `README.md` once a public hosting target is chosen (out of scope for).
 
 ## Alternatives considered
 

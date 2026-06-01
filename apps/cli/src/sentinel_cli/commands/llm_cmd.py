@@ -1,13 +1,13 @@
-"""``sentinel llm`` — Phase 30 / ADR-0042 multi-provider LLM CLI.
+"""``sentinel llm`` — / ADR-0042 multi-provider LLM CLI.
 
 Three subcommands:
 
-- ``sentinel llm list``   — prints registered providers + per-provider
-  default model + whether the credential env var is set. JSON mode.
+- ``sentinel llm list`` — prints registered providers + per-provider
+ default model + whether the credential env var is set. JSON mode.
 - ``sentinel llm doctor`` — runs each provider's ``doctor()`` probe and
-  reports reachability + latency. JSON mode.
-- ``sentinel llm price``  — prints the cost table for a given
-  ``provider/model`` pair. JSON mode.
+ reports reachability + latency. JSON mode.
+- ``sentinel llm price`` — prints the cost table for a given
+ ``provider/model`` pair. JSON mode.
 
 Exit codes (CLAUDE §13):
 

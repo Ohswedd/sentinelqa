@@ -1,7 +1,7 @@
-"""LLM-CLIENT-SECRET-STORAGE — secrets in browser storage (task 19.09).
+"""LLM-CLIENT-SECRET-STORAGE — secrets in browser storage.
 
 Pure function over :class:`BrowserStorageSample` records. Each entry's
-value is passed through the Phase 01 redactor; if the redactor would
+value is passed through the redactor; if the redactor would
 mask the value (it is a known secret category), or if the key name
 matches a common token / credential pattern, we flag it.
 """

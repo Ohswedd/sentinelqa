@@ -1,6 +1,6 @@
 name: Docs deploy
 
-# Phase 35.04 — Deploy the Astro Starlight docs site to Cloudflare
+# Deploy the Astro Starlight docs site to Cloudflare
 # Pages on every push to `main`, and preview-deploy every PR (except
 # from forks, which cannot read the deploy secrets — Cloudflare's
 # well-known limitation; documented in docs/dev/docs-deploy.md).

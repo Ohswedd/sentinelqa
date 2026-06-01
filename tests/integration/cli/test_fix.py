@@ -1,4 +1,4 @@
-"""Phase 20.07 — `sentinel fix` CLI integration tests."""
+"""`sentinel fix` CLI integration tests."""
 
 from __future__ import annotations
 

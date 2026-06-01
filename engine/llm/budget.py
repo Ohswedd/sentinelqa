@@ -1,4 +1,4 @@
-"""Shared per-run cost budget (Phase 30, ADR-0042).
+"""Shared per-run cost budget (, ADR-0042).
 
 Every provider that posts to a remote endpoint consults a single
 :class:`LlmBudget` instance attached to the run lifecycle. ``pre_check``

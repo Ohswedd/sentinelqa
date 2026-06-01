@@ -1,4 +1,4 @@
-"""Linear issue adapter (Phase 25, task 25.06).
+"""Linear issue adapter (, ).
 
 ``create_issue(finding) -> issue_url``. Off by default — the caller
 passes ``team_id``; without it the adapter raises. Linear uses

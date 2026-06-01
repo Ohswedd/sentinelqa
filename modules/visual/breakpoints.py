@@ -1,10 +1,10 @@
-"""Viewport (breakpoint) resolution (Phase 21.05).
+"""Viewport (breakpoint) resolution.
 
 The visual module captures one PNG per (route, viewport). Defaults
 match the the documentation reference:
 
-- mobile  — 375 x 812 (iPhone 13/14 portrait).
-- tablet  — 768 x 1024 (iPad portrait).
+- mobile — 375 x 812 (iPhone 13/14 portrait).
+- tablet — 768 x 1024 (iPad portrait).
 - desktop — 1280 x 800 (developer-laptop reference).
 
 The defaults live in :mod:`engine.config.schema` (the loader-side

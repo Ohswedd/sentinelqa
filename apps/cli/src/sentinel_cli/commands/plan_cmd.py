@@ -2,10 +2,10 @@
 
 Wires the run-lifecycle steps 1-9: load config → enforce safety → ID +
 artifact dir → discover (or re-read prior discovery) → plan → write
-``plan.json`` + ``plan.md``. The runner (Phase 08) is intentionally not
+``plan.json`` + ``plan.md``. The runner is intentionally not
 invoked; this command is the planner-only surface of the lifecycle.
 
-Replaces the Phase 02 stub.
+Replaces the stub.
 """
 
 from __future__ import annotations

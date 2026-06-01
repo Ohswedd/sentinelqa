@@ -1,4 +1,4 @@
-"""Phase 23 — chaos finding-translation unit tests."""
+"""chaos finding-translation unit tests."""
 
 from __future__ import annotations
 

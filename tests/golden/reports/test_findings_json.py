@@ -1,4 +1,4 @@
-"""Golden tests for ``findings.json`` (task 03.02)."""
+"""Golden tests for ``findings.json``."""
 
 from __future__ import annotations
 

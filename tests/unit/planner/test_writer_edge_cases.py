@@ -1,4 +1,4 @@
-"""Edge-case tests for plan_writer + LLM adapter helpers (task 06.06)."""
+"""Edge-case tests for plan_writer + LLM adapter helpers."""
 
 from __future__ import annotations
 

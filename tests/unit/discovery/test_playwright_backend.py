@@ -1,4 +1,4 @@
-"""Unit tests for engine.discovery.backends.playwright_backend (task 17.07)."""
+"""Unit tests for engine.discovery.backends.playwright_backend."""
 
 from __future__ import annotations
 

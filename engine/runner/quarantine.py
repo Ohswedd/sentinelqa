@@ -1,4 +1,4 @@
-"""Test quarantine list (Phase 08.04, our engineering rules).
+"""Test quarantine list.
 
 The quarantine list is a strict YAML file at
 ``tests/sentinel/.quarantine.yaml`` (configurable via
@@ -6,23 +6,21 @@ The quarantine list is a strict YAML file at
 whose result does NOT block the quality gate — instead, an ``info``
 finding is emitted.
 
-Schema (per entry):
+Schema (per entry):.. code-block:: yaml
 
-.. code-block:: yaml
-
-    - test_id: "auth/login.spec.ts > sign in with bad password"
-      reason: "Flaky on Safari while we land the polling fix"
-      expires_at: "2026-06-10"
-      issue_url: "https://github.com/Ohswedd/sentinelqa/issues/42"
+ - test_id: "auth/login.spec.ts > sign in with bad password"
+ reason: "Flaky on Safari while we land the polling fix"
+ expires_at: "2026-06-10"
+ issue_url: "https://github.com/Ohswedd/sentinelqa/issues/42"
 
 Rules:
 
 - Every field is required. Unknown fields are rejected.
 - ``expires_at`` MUST be ≤ today + ``max_age_days`` (default 14). The
-  loader refuses to load expired entries — this is intentional: a stale
-  quarantine is a hidden quality regression.
+ loader refuses to load expired entries — this is intentional: a stale
+ quarantine is a hidden quality regression.
 - ``issue_url`` MUST be ``http(s)://`` so the quarantine cannot become a
-  silent forever-skip.
+ silent forever-skip.
 """
 
 from __future__ import annotations
@@ -165,7 +163,7 @@ def quarantine_to_findings(
 ) -> tuple[dict[str, Any], ...]:
     """Translate quarantine entries into our product spec-compliant ``info`` findings.
 
-    Returned as plain dicts (NOT Finding instances) because the Phase 14
+    Returned as plain dicts (NOT Finding instances) because the
     score module will lift these into typed Findings once it owns the
     severity gates. For now they are stable evidence trails.
     """

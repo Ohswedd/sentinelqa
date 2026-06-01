@@ -1,4 +1,4 @@
-"""Null LLM adapter tests (task 06.04)."""
+"""Null LLM adapter tests."""
 
 from __future__ import annotations
 

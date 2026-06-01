@@ -1,4 +1,4 @@
-"""Locator repair (Phase 20.02).
+"""Locator repair.
 
 Given a failed locator + the descriptor captured when the spec was
 written, search the new DOM for the closest semantic match. The
@@ -141,7 +141,7 @@ def _name_arg_literal(name: str) -> str:
     """Render a string as a Playwright-compatible name regex literal.
 
     We always emit ``/.../i`` so casing flexibility is preserved, matching
-    Phase 04's generated specs.
+    's generated specs.
     """
 
     escaped = re.escape(name)
@@ -172,7 +172,7 @@ def propose_locator_repair(
     """Propose a single locator repair, or ``None`` when nothing fits.
 
     The function is pure: no I/O, no clocks. The caller persists the
-    proposal (Phase 20.05 writer).
+    proposal.
     """
 
     if not inputs.dom_candidates:

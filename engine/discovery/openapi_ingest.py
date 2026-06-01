@@ -1,4 +1,4 @@
-"""OpenAPI ingestion (task 05.06).
+"""OpenAPI ingestion.
 
 Reads an OpenAPI 3.0 / 3.1 document (file path or URL) and turns each
 operation into an :class:`ApiEndpoint` with ``source="openapi"``. Cross-

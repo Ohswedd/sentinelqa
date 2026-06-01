@@ -1,4 +1,4 @@
-"""Unit tests for :mod:`modules.functional.tags` (Phase 10.03)."""
+"""Unit tests for :mod:`modules.functional.tags`."""
 
 from __future__ import annotations
 

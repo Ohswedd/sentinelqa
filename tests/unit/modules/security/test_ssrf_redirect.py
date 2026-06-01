@@ -1,4 +1,4 @@
-"""Unit tests for :mod:`modules.security.checks.ssrf_redirect` (task 32.08)."""
+"""Unit tests for :mod:`modules.security.checks.ssrf_redirect`."""
 
 from __future__ import annotations
 

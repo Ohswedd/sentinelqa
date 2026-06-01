@@ -1,4 +1,4 @@
-"""Additional CLI integration tests for ``sentinel generate`` (task 07.06).
+"""Additional CLI integration tests for ``sentinel generate``.
 
 Cover the ``--from-plan`` / ``--from-discovery`` branches and the
 audit failure surface.

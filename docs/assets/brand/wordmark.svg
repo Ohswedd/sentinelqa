@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 180" role="img" aria-label="SentinelQA">
+  <title>SentinelQA</title>
+  <defs>
+    <linearGradient id="shield" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f766e"/>
+      <stop offset="100%" stop-color="#082f49"/>
+    </linearGradient>
+  </defs>
+  <g transform="translate(28,18)">
+    <path d="M72 8 L132 28 L132 78 C132 113 108 138 72 148 C36 138 12 113 12 78 L12 28 Z"
+          fill="url(#shield)" stroke="#0f766e" stroke-width="3"/>
+    <path d="M72 18 L122 36 L122 78 C122 108 102 128 72 136 C42 128 22 108 22 78 L22 36 Z"
+          fill="none" stroke="#22d3ee" stroke-width="1.5" opacity="0.7"/>
+    <text x="72" y="100" text-anchor="middle"
+          font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif"
+          font-weight="700" font-size="58" fill="#f0fdfa">SQ</text>
+  </g>
+  <text x="200" y="105"
+        font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif"
+        font-weight="700" font-size="62" fill="#0f172a">SentinelQA</text>
+  <text x="200" y="140"
+        font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif"
+        font-weight="500" font-size="18" fill="#64748b">Release-confidence engine for the web.</text>
+</svg>

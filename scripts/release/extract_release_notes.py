@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright (c) 2026 SentinelQA contributors.
-"""Extract a CHANGELOG.md section for a specific tag (Phase 36.05).
+"""Extract a CHANGELOG.md section for a specific tag.
 
 The GitHub Release workflow at ``.github/workflows/github-release.yml``
 feeds this script's stdout into ``softprops/action-gh-release``'s
@@ -9,9 +9,9 @@ the curated CHANGELOG.
 
 Usage::
 
-    python -m scripts.release.extract_release_notes v1.0.0 \
-        --changelog CHANGELOG.md \
-        -o /tmp/release-notes.md
+ python -m scripts.release.extract_release_notes v1.0.0 \
+ --changelog CHANGELOG.md \
+ -o /tmp/release-notes.md
 
 If the tag is not present in the changelog the script exits non-zero
 with a clear error message — that is a release-blocking incident, not
@@ -20,7 +20,7 @@ a recoverable state.
 The extractor also normalises Markdown for the GitHub Release page:
 
 * Relative repository links (`docs/...`) become absolute URLs against
-  the configured ``--repo-url``.
+ the configured ``--repo-url``.
 * The ``## [<tag>]`` heading is dropped (GitHub renders its own).
 * Trailing whitespace and blank-line clusters are collapsed.
 

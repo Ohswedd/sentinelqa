@@ -1,4 +1,4 @@
-"""Async/sync parity for the SDK (our product spec4, task 16.04)."""
+"""Async/sync parity for the SDK (our product spec4, )."""
 
 from __future__ import annotations
 

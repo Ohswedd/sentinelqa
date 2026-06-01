@@ -1,8 +1,8 @@
-"""``import sentinelqa`` must stay fast (our product spec4, task 16.02).
+"""``import sentinelqa`` must stay fast (our product spec4, ).
 
 Heavy modules (orchestrator, planner, discovery, generator, runner,
 reporter) MUST be lazy-loaded so agent-facing tooling cold-starts
-quickly. The budget per task 16.02 is 200 ms wall-clock on the dev
+quickly. The budget per is 200 ms wall-clock on the dev
 workstation. Anything over 600 ms in CI means a regression — heavy
 imports leaked into module top level.
 """

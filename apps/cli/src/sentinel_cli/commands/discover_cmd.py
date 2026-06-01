@@ -2,7 +2,7 @@
 
 Wires the run-lifecycle steps 1-8 (config -> safety -> run id -> artifact dir
 -> snapshot -> discovery), then writes the five JSON artifacts plus a
-Markdown summary into the run dir. Replaces the Phase 02 stub.
+Markdown summary into the run dir. Replaces the stub.
 """
 
 from __future__ import annotations
@@ -124,14 +124,14 @@ def run_discover(
 
     credentials = _resolve_credentials(config)
 
-    # Phase 31, ADR-0043. `auth.strategy: browser_session` injects
+    # , ADR-0043. `auth.strategy: browser_session` injects
     # cookies from the encrypted vault into the discovery crawler's
     # HTTP client. The decrypted payload stays in memory — we never
     # write the plaintext storage state to the run dir.
     extra_cookies = _resolve_vault_cookies(config, audit_log_path)
 
-    # Phase 17 task 07 — `discovery.engine` selects the crawl backend.
-    # HTTP is the Phase 05 default; `playwright` lights up Chromium-driven
+    # 07 — `discovery.engine` selects the crawl backend.
+    # HTTP is the default; `playwright` lights up Chromium-driven
     # SPA crawling (ADR-0010). Construction is intentionally lazy: the
     # Playwright backend only resolves `sentinel-ts` when `.crawl()` runs,
     # so HTTP runs never pay a startup cost.
@@ -224,7 +224,7 @@ def _build_crawl_policy(
 
 
 def _resolve_vault_cookies(config: RootConfig, audit_log_path: Path) -> dict[str, str] | None:
-    """Phase 31, ADR-0043. Pull cookies from the auth vault if configured.
+    """, ADR-0043. Pull cookies from the auth vault if configured.
 
     Returns ``None`` when the strategy is not ``browser_session``. Raises
     :class:`engine.errors.base.AuthError` when the vault entry is

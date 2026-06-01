@@ -1,4 +1,4 @@
-"""Phase 31 — plugins must declare ``auth.read:<host>`` to use the vault."""
+"""plugins must declare ``auth.read:<host>`` to use the vault."""
 
 from __future__ import annotations
 

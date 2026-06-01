@@ -7,7 +7,7 @@ under ADR-0025 and mirrored by
 A proposal is a strict superset of the Phase-01
 :class:`engine.domain.repair_suggestion.RepairSuggestion` envelope. We
 keep the domain model authoritative for the agent-message surface
-(Phase 16 SDK) and use :class:`RepairProposal` for persistence and
+( SDK) and use :class:`RepairProposal` for persistence and
 CLI tooling so the extra fields (``unified_diff``, ``kind``,
 ``target_test_line``, ``descriptor``) don't leak into Phase-01.
 """

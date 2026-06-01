@@ -1,7 +1,7 @@
 # Sauce Labs adapter
 
-Phase 25 / task 25.02 — adapter shaped like the SDK `RunnerPlugin`
-Protocol. Same posture as the BrowserStack adapter (Phase 25.01):
+/ — adapter shaped like the SDK `RunnerPlugin`
+Protocol. Same posture as the BrowserStack adapter :
 the engine never imports this directly; operators opt in.
 
 ## Configuration
@@ -22,6 +22,6 @@ the engine never imports this directly; operators opt in.
 
 ## Manual verification
 
-CI runs only mocked tests. End-to-end smoke must be done locally:: export SAUCE_USERNAME=... export SAUCE_ACCESS_KEY=... python - <<'PY' from integrations.saucelabs import SauceLabsRunner from integrations.saucelabs.runner import SauceLabsCredentials runner = SauceLabsRunner(credentials=SauceLabsCredentials.from_env()) outcome = runner.run({"browser": "chromium", "headless": True, "run_id": "demo"}, context=None) print(outcome) PY
+CI runs only mocked tests. End-to-end smoke must be done locally:: export SAUCE_USERNAME=... export SAUCE_ACCESS_KEY=... python - <<'PY' from integrations.saucelabs import SauceLabsRunner from integrations.saucelabs.runner import SauceLabsCredentials runner = SauceLabsRunner(credentials=SauceLabsCredentials.from_env) outcome = runner.run({"browser": "chromium", "headless": True, "run_id": "demo"}, context=None) print(outcome) PY
 
 CI must not receive real credentials (see the credential-leak guard).

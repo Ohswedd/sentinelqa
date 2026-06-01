@@ -1,4 +1,4 @@
-"""Phase 22.05 — auth-matrix check integration tests."""
+"""auth-matrix check integration tests."""
 
 from __future__ import annotations
 

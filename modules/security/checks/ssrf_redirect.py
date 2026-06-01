@@ -1,4 +1,4 @@
-"""SSRF / open-redirect surface mapper (Phase 32.08, ADR-0044).
+"""SSRF / open-redirect surface mapper.
 
 For each URL-shaped form field / query parameter the discovery module
 surfaces, send a small *fixed* list of canonical "internal target"

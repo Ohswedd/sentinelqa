@@ -1,4 +1,4 @@
-"""Phase 04.04 — Python half of the TS-events parity contract.
+"""Python half of the TS-events parity contract.
 
 The TS half lives in
 ``packages/ts-runtime/src/__tests__/protocol.parity.test.ts``. Both
@@ -10,7 +10,7 @@ Drift gates:
 
 1. ``--check`` mode of the export script (the fixture is current).
 2. Every event in the fixture is one of the 14 TsEvent kinds and
-   round-trips through :func:`parse_event` without raising.
+ round-trips through :func:`parse_event` without raising.
 3. The on-disk JSON Schema validates the rendered fixture.
 """
 

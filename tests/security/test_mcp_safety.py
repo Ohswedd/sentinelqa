@@ -56,7 +56,7 @@ def test_url_tool_calls_enforce_url(module: str) -> None:
 
 
 def test_safety_module_uses_safety_policy() -> None:
-    """The shared safety helper itself must call SafetyPolicy().enforce."""
+    """The shared safety helper itself must call SafetyPolicy.enforce."""
 
     path = TOOLS_DIR / "_safety.py"
     tree = ast.parse(path.read_text(encoding="utf-8"))

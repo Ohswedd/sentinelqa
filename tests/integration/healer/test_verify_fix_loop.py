@@ -1,4 +1,4 @@
-"""Phase 20.08 — End-to-end healer → suggest_fix → verify_fix loop.
+"""End-to-end healer → suggest_fix → verify_fix loop.
 
 This exercises the agent-observable contract documented in our product spec4
 and ADR-0025: the Healer publishes proposals, the agent (here: the

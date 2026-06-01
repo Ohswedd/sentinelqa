@@ -1,4 +1,4 @@
-"""Lockfile↔manifest drift tests (Phase 33.03)."""
+"""Lockfile↔manifest drift tests."""
 
 from __future__ import annotations
 

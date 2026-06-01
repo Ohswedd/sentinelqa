@@ -1,4 +1,4 @@
-"""Phase 23 — unit tests for chaos wire types."""
+"""unit tests for chaos wire types."""
 
 from __future__ import annotations
 

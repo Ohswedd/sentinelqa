@@ -1,24 +1,24 @@
-"""``VisualModule`` (Phase 21, the documentation, ADR-0026).
+"""``VisualModule`` (, the documentation, ADR-0026).
 
 Lifecycle (CLAUDE §9):
 
 - ``validate_prerequisites`` — no-op; missing capture inputs surface as
-  ``skipped`` (no PNG anywhere) or per-route ``missing_current``
-  findings (PNG present for some viewports, missing for others).
-- ``plan``                   — read :class:`VisualModuleOptions`, list
-  every ``(viewport, route_slug)`` pair present under either the
-  baselines tree or the current-capture tree.
-- ``execute``                — diff each pair, accumulate
-  :class:`DiffOutcome` records, persist
-  ``<run-dir>/visual/index.json``.
-- ``emit_findings``          — translate diff outcomes via
-  :mod:`modules.visual.findings`.
-- ``emit_metrics``           — per-status counts.
-- ``summarize``              — overlay findings on a synthesised
-  :class:`RunnerOutcome` (no Playwright tests).
+ ``skipped`` (no PNG anywhere) or per-route ``missing_current``
+ findings (PNG present for some viewports, missing for others).
+- ``plan`` — read :class:`VisualModuleOptions`, list
+ every ``(viewport, route_slug)`` pair present under either the
+ baselines tree or the current-capture tree.
+- ``execute`` — diff each pair, accumulate
+ :class:`DiffOutcome` records, persist
+ ``<run-dir>/visual/index.json``.
+- ``emit_findings`` — translate diff outcomes via
+ :mod:`modules.visual.findings`.
+- ``emit_metrics`` — per-status counts.
+- ``summarize`` — overlay findings on a synthesised
+ :class:`RunnerOutcome` (no Playwright tests).
 
 The module reads PNGs that already live on disk; it does NOT drive
-Playwright. The TS capture helper (Phase 21 + Phase 04 runtime) writes
+Playwright. The TS capture helper ( + runtime) writes
 PNGs into ``<run-dir>/visual/current/<viewport>/<route-slug>.png``,
 hiding any selector-mask elements before screenshot. The Python diff
 layer additionally paints any rect-masks before comparison so test
@@ -69,7 +69,7 @@ class _PairAddress:
 
 
 class VisualModule(SentinelModule):
-    """Visual-regression module — Phase 21 / the documentation."""
+    """Visual-regression module — / the documentation."""
 
     name: ClassVar[str] = "visual"
 
@@ -363,7 +363,7 @@ def _enumerate_pairs(
     - the viewport is configured (or in the explicit subset), AND
     - at least one side (baseline OR current) has a PNG for it, AND
     - either ``route_filter`` is empty OR the route slug matches an
-      entry.
+    entry.
     """
 
     allowed_viewports = {vp.name for vp in viewports}

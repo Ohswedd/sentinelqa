@@ -1,6 +1,6 @@
 # Sample app — SentinelQA TS runtime fixture
 
-A tiny static site used by the Phase 04.07 smoke test. Two pages:
+A tiny static site used by the smoke test. Two pages:
 
 - `index.html` — landing page with semantic anchors (heading, nav, labeled email input, button).
 - `success.html` — destination of the submit action.

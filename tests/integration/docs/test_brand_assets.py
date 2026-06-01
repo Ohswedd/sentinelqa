@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright (c) 2026 SentinelQA contributors.
-"""Brand-asset health (Phase 35.05).
+"""Brand-asset health.
 
 Asserts every brand asset listed in `docs/dev/brand.md` is present on
 disk, valid PNG/SVG, and wired into the docs site `<head>` where the
@@ -21,7 +21,7 @@ BRAND_DOC = REPO_ROOT / "docs" / "dev" / "brand.md"
 PNG_MAGIC = b"\x89PNG\r\n\x1a\n"
 
 
-# (filename, expected width, expected height)  — None means "skip
+# (filename, expected width, expected height) — None means "skip
 # dimension check" (only SVGs).
 ASSETS: tuple[tuple[str, int | None, int | None], ...] = (
     ("logo.svg", None, None),

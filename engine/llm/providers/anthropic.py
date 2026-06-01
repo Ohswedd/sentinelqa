@@ -1,4 +1,4 @@
-"""Canonical Anthropic Messages provider (Phase 30, ADR-0042).
+"""Canonical Anthropic Messages provider (, ADR-0042).
 
 Calls ``https://api.anthropic.com/v1/messages`` via ``httpx``. No
 ``anthropic`` SDK is imported.

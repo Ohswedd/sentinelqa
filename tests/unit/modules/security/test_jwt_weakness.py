@@ -1,4 +1,4 @@
-"""Unit tests for :mod:`modules.security.checks.jwt_weakness` (task 32.01)."""
+"""Unit tests for :mod:`modules.security.checks.jwt_weakness`."""
 
 from __future__ import annotations
 

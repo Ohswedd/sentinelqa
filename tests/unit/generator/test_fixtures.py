@@ -1,4 +1,4 @@
-"""Tests for the fixture generator (task 07.03)."""
+"""Tests for the fixture generator."""
 
 from __future__ import annotations
 

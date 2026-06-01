@@ -1,4 +1,4 @@
-"""`sentinel report --notify slack` integration (Phase 25.03)."""
+"""`sentinel report --notify slack` integration."""
 
 from __future__ import annotations
 

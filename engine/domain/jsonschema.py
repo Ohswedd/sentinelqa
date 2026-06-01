@@ -2,7 +2,7 @@
 
 Wired into the ``make schemas`` target. Each entity ships its schema as a
 separate `*.schema.json` under ``packages/shared-schema/``, so the
-TypeScript runtime (Phase 04) and external integrations can validate the
+TypeScript runtime and external integrations can validate the
 same payloads Python emits without re-implementing the model definitions.
 """
 

@@ -1,4 +1,4 @@
-"""Unit tests for the detection-mode secret patterns (Phase 13.08)."""
+"""Unit tests for the detection-mode secret patterns."""
 
 from __future__ import annotations
 

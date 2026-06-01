@@ -3,10 +3,10 @@
 Each entry binds:
 
 - A symbolic ``code`` (e.g. ``"E-CFG-001"``) used by `to_agent_message` and
-  the docs site (Phase 27).
+ the docs site.
 - A CLI ``exit_code`` int matching our published policy / our engineering guidelines.
 - A default ``message`` template and ``suggested_fix`` rendered when the
-  exception is raised without explicit arguments.
+ exception is raised without explicit arguments.
 
 The CLI exit-code constants are mirrored in :mod:`engine.policy.exit_codes`
 for consumers that only need the numbers (no error import needed).
@@ -160,7 +160,7 @@ ERROR_REGISTRY: Final[dict[str, ErrorCodeSpec]] = {
         ),
     ),
     # ------------------------------------------------------------------
-    # LLM adapter errors (Phase 30, ADR-0042). Most LLM failures are
+    # LLM adapter errors (, ADR-0042). Most LLM failures are
     # graceful — the caller falls back to the deterministic path. The
     # codes below surface when the user explicitly asked for an LLM
     # capability and the request cannot complete safely.
@@ -265,7 +265,7 @@ ERROR_REGISTRY: Final[dict[str, ErrorCodeSpec]] = {
         ),
     ),
     # ------------------------------------------------------------------
-    # Browser-authenticated audit / vault errors (Phase 31, ADR-0043).
+    # Browser-authenticated audit / vault errors (, ADR-0043).
     # All vault-host / cross-origin / expiry failures are safety-boundary
     # refusals (exit 4); not-found / tamper / CI rejection are config
     # errors (exit 2). The vault never recovers a corrupted entry — the

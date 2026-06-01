@@ -1,4 +1,4 @@
-"""Wait-condition repair (Phase 20.03).
+"""Wait-condition repair.
 
 Detects ``await page.waitForTimeout(<N>)`` calls (our engineering rules
 forbids arbitrary sleeps but legacy / hand-edited code may still have
@@ -9,12 +9,12 @@ spec untouched.
 Confidence tiers:
 
 - The very next assertion is ``await expect(<L>).toBeVisible()`` or
-  ``.toHaveText(...)`` — confidence ``0.9`` (auto-apply candidate).
+ ``.toHaveText(...)`` — confidence ``0.9`` (auto-apply candidate).
 - The next assertion targets a *different* locator — confidence
-  ``0.6`` (requires review; the timeout may have been protecting an
-  intentional gap).
+ ``0.6`` (requires review; the timeout may have been protecting an
+ intentional gap).
 - No assertion follows on the same scope — confidence ``0.3`` (we
-  emit a structured *removal* proposal but force review).
+ emit a structured *removal* proposal but force review).
 
 Auto-apply threshold defaults to ``0.9`` so only the high-confidence
 case applies without review.

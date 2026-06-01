@@ -1,10 +1,10 @@
-# GDPR baseline (automated) — Phase 34.05 / ADR-0046.
+# GDPR baseline (automated) — ADR-0046.
 #
-# This pack runs the Phase 34 compliance module's three GDPR sub-checks:
+# This pack runs the compliance module's three GDPR sub-checks:
 #
-#   - cookies-before-consent (Art. 6)
-#   - consent-banner-missing (Art. 6)
-#   - asymmetric-consent     (EDPB Guidelines 03/2022)
+# - cookies-before-consent (Art. 6)
+# - consent-banner-missing (Art. 6)
+# - asymmetric-consent (EDPB Guidelines 03/2022)
 #
 # WORDING NOTE (CLAUDE §28): the label says "(automated)" so the pack
 # never claims legal GDPR conformance.

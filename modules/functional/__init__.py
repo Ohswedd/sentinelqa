@@ -1,4 +1,4 @@
-"""Functional audit module (Phase 10, the documentation, our engineering rules).
+"""Functional audit module (, the documentation, our engineering rules).
 
 Importing this package wires :class:`FunctionalModule` into the default
 orchestrator registry (``engine.orchestrator.registry.default_registry``)
@@ -8,11 +8,11 @@ automatically.
 The functional module exercises the deterministic flows enumerated in
 the documentation — login, signup, logout, password reset, CRUD, search /
 filter / sort, role-based access, admin paths, file upload / download,
-notification callbacks, and payment sandbox — by invoking the Phase 08
-Playwright runner against the specs the Phase 07 generator produced.
+notification callbacks, and payment sandbox — by invoking the
+Playwright runner against the specs the generator produced.
 
 Failures translate into typed :class:`engine.domain.finding.Finding`
-records with our product spec evidence; quarantined tests (Phase 08.04) do not
+records with our product spec evidence; quarantined tests do not
 block the quality gate.
 """
 

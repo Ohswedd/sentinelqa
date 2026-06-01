@@ -1,4 +1,4 @@
-"""`sentinel init` scaffolding (task 02.02)."""
+"""`sentinel init` scaffolding."""
 
 from __future__ import annotations
 

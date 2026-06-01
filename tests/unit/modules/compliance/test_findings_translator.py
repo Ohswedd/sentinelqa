@@ -1,4 +1,4 @@
-"""Phase 34 — compliance check → Finding translation edge cases."""
+"""compliance check → Finding translation edge cases."""
 
 from __future__ import annotations
 

@@ -1,141 +1,126 @@
 <div align="center">
+  <img src="./docs/assets/brand/wordmark.svg" alt="SentinelQA" width="540">
 
-# SentinelQA
-
-**A Playwright-native release-confidence engine for LLM-built and human-built web apps.**
+**Release-confidence for web apps. One score, one decision, on every push.**
 
 [![CI](https://img.shields.io/github/actions/workflow/status/Ohswedd/sentinelqa/ci.yml?branch=main&label=ci)](https://github.com/Ohswedd/sentinelqa/actions/workflows/ci.yml)
+[![PyPI](https://img.shields.io/badge/pypi-sentinelqa--cli-3776ab.svg)](https://pypi.org/project/sentinelqa-cli/)
+[![npm](https://img.shields.io/badge/npm-%40sentinelqa%2Fts--runtime-cb3837.svg)](https://www.npmjs.com/package/@sentinelqa/ts-runtime)
+[![Docker](https://img.shields.io/badge/docker-sentinelqa%2Frunner-2496ed.svg)](https://hub.docker.com/r/sentinelqa/runner)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](./LICENSE)
-[![Python](https://img.shields.io/badge/python-3.11%20%7C%203.12-3776ab.svg)](./apps/cli/pyproject.toml)
-[![Node](https://img.shields.io/badge/node-%E2%89%A520-339933.svg)](./packages/ts-runtime/package.json)
-[![Version](https://img.shields.io/badge/version-1.0.0-brightgreen.svg)](./CHANGELOG.md)
 
 </div>
 
-SentinelQA crawls your app, generates Playwright tests, runs them locally or in
-Docker, categorizes failures with root-cause hypotheses, and turns the result
-into one reproducible quality score with an explainable release decision —
-backed by evidence on disk, not opinions.
-
+SentinelQA crawls your app, generates Playwright tests, runs them, and turns the
+result into one reproducible quality score with an explainable release decision.
 It is built for **CI gates you can defend** and **agent loops you can audit**.
 
-![SentinelQA terminal demo — sentinel audit](./docs/assets/demo-audit.svg)
+![sentinel audit terminal demo](./docs/assets/demo-audit.svg)
 
----
+## Why
 
-## Why SentinelQA
+| You want…                               | SentinelQA gives you…                                                                                |
+| --------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| A defensible CI gate                    | One score per run, deterministic exit codes, explainable policy.                                     |
+| Confidence in agent-generated code      | Dedicated checks for dead buttons, fake routes, mock data shipped, frontend-only auth.               |
+| Security without a separate scanner     | Headers, cookies, CORS, CSRF, safe XSS / IDOR probes, secret scan, SBOM, OSV — all SARIF-exportable. |
+| Accessibility you can prove             | axe-core (WCAG 2.2 A / AA) + keyboard / focus / landmark checks; reports name what's automated.      |
+| A safety boundary you don't have to add | Localhost-only by default. Public hosts blocked unless allowlisted. No stealth, no CAPTCHA bypass.   |
 
-- **Release confidence, not just tests.** One quality score per run, derived
-  from N modules and a transparent scoring policy, with deterministic exit
-  codes you can gate CI on.
-- **Built for AI-generated apps.** Dedicated checks for dead buttons, fake
-  routes, mock data shipped to production, missing CRUD edges, frontend-only
-  auth, and hardcoded credentials in bundles.
-- **Safety boundary, by design.** Authorized targets only. No stealth, no
-  CAPTCHA bypass, no fingerprint evasion. Public hosts are blocked unless
-  explicitly allowlisted.
-- **Python CLI + TypeScript runtime.** Python orchestrates and grades;
-  Playwright executes. Drive it from a shell, the Python SDK, or any
-  MCP-capable agent.
+## Install
 
----
-
-## Quick start
+Pick the surface that matches how you use it.
 
 ```bash
-uv pip install sentinelqa-cli
+# Python CLI + SDK + MCP server (the main install)
+uv pip install sentinelqa-cli                  # or: pip install sentinelqa-cli
+
+# TypeScript runtime (for projects that drive Playwright themselves)
+pnpm add -D @sentinelqa/ts-runtime              # or: npm i -D @sentinelqa/ts-runtime
+
+# Standalone Docker runner (CI without a Python install)
+docker pull sentinelqa/runner:latest
+```
+
+`sentinelqa-cli` brings `sentinelqa-engine`, `sentinelqa-modules`,
+`sentinelqa-integrations`, the Python SDK (`sentinelqa`), and the MCP server
+(`sentinelqa-mcp`) transitively. Each package is independently installable for
+embedded use.
+
+## Run your first audit
+
+```bash
 sentinel init
+sentinel doctor
 sentinel audit --url http://localhost:3000
 ```
 
 Open `.sentinel/runs/latest/report.html` for the rendered report, or
-`.sentinel/runs/latest/findings.json` if you want the machine-readable form.
-
-Exit codes are deterministic — `0` pass, `1` quality-gate fail, `2` config,
-`3` runtime, `4` unsafe target blocked, `5` missing dependency, `6` test
-execution, `7` internal. See [`docs/user/error-codes.md`](./docs/user/error-codes.md).
-
----
+`.sentinel/runs/latest/findings.json` for the machine-readable form. Exit codes
+are deterministic: `0` pass, `1` quality-gate fail, `2` config, `3` runtime,
+`4` unsafe target, `5` missing dependency, `6` test execution, `7` internal.
 
 ## What's in the box
 
-| Layer   | Module              | What it does                                                                                         |
-| ------- | ------------------- | ---------------------------------------------------------------------------------------------------- |
-| Engine  | **Discovery**       | HTTP + Playwright crawl: routes, forms, APIs, auth boundaries, OpenAPI/GraphQL ingest.               |
-| Engine  | **Planner**         | Deterministic-first test plan generator with optional LLM proposals (provider-agnostic, budgeted).   |
-| Engine  | **Generator**       | Playwright spec / page-object / fixture generator with semantic locators.                            |
-| Engine  | **Runner**          | Local and Docker Playwright runners, retry + quarantine, deterministic sharding.                     |
-| Engine  | **Analyzer**        | Failure categorization (app vs test vs env vs flake), root-cause hypothesis, repro spec.             |
-| Engine  | **Scoring**         | Reproducible quality score with severity penalties and policy gates.                                 |
-| Engine  | **Reporter**        | `run.json`, `findings.json`, `score.json`, JUnit XML, SARIF, HTML, Markdown — all schema-versioned.  |
-| Engine  | **Healer**          | Locator repair proposals with confidence tiers. Human review for risky changes.                      |
-| Module  | **Functional**      | Login / signup / CRUD / role / admin / file-upload / payment-sandbox coverage.                       |
-| Module  | **Accessibility**   | axe-core (WCAG 2.2 A / AA) + keyboard / focus / landmark / accessible-name checks.                   |
-| Module  | **Performance**     | Synthetic page / API / CPU / bundle / nav-stability budgets — labeled synthetic, not RUM.            |
-| Module  | **Security (safe)** | Headers, cookies, CORS, CSRF, safe XSS probe, IDOR smoke, secret scan, SARIF export.                 |
-| Module  | **API**             | OpenAPI / GraphQL contract validation, negative cases, auth, latency budgets.                        |
-| Module  | **Visual**          | Pixel + perceptual diff, dynamic-content masking. Baselines never auto-accepted in CI.               |
-| Module  | **Chaos**           | Slow network, offline, 500 / timeout mocking, session expiry, navigation edge cases.                 |
-| Module  | **LLM-code audit**  | Dead buttons, fake routes, mock data shipped, frontend-only auth, missing CRUD edges.                |
-| Module  | **Supply chain**    | CycloneDX SBOM, OSV vulnerability lookup, freshness, postinstall scan, license audit.                |
-| Module  | **Compliance**      | WCAG 2.2 / GDPR-baseline / CCPA-baseline / SOC 2 audit-trail packs. Automated checks only.           |
-| Surface | **Python SDK**      | `Sentinel`, `AuditResult`, `Finding`, `TestPlan`. Typed and snapshot-tested.                         |
-| Surface | **MCP server**      | Twelve `sentinel.*` tools for agent integration over JSON-RPC / NDJSON.                              |
-| Surface | **CI integration**  | GitHub Actions + GitLab CI templates; PR comment poster; fast / standard / full / nightly / release. |
+**Engine** — crawler · planner · generator · runner (local / Docker) · failure
+analyzer · scoring · reporter (HTML / JSON / SARIF / JUnit / Markdown) · healer
+(locator repair).
 
-Every finding carries reproducible evidence (artifact paths, redacted
-snippets, run IDs) and a safe-remediation note. The quality score is
-derivable from the persisted findings, module weights, and policy gates.
+**Modules** — functional · accessibility (WCAG 2.2) · performance (synthetic) ·
+security (safe) · API (OpenAPI + GraphQL) · visual (pixel + perceptual) ·
+chaos · LLM-code audit · supply-chain (SBOM, OSV, license, postinstall) ·
+compliance packs (WCAG 2.2, GDPR, CCPA, SOC 2 trail).
 
----
+**Surfaces** — CLI · Python SDK · MCP server (twelve `sentinel.*` tools) ·
+TypeScript runtime · GitHub Action + GitLab CI template · Slack / Jira /
+Linear / BrowserStack / Sauce Labs integrations.
+
+See the [module catalog](./apps/docs/src/content/docs/modules/index.md) for the
+full surface.
+
+## Use it from…
+
+- **CI** — drop in [`.github/workflows/sentinel.yml`](./integrations/github/action.yml)
+  (composite action) or use the [GitLab template](./integrations/gitlab/.gitlab-ci.sentinel.yml).
+- **Python** — `from sentinelqa import Sentinel`, then `Sentinel().audit(url)`.
+  See the [SDK reference](./packages/python-sdk/README.md).
+- **Agents** — point your MCP client at `sentinel mcp`. The server exposes
+  `sentinel.audit`, `sentinel.findings`, `sentinel.suggest_fix`, and nine more.
+  See the [MCP reference](./packages/mcp-server/README.md).
+- **Plugins** — implement `ScannerPlugin` / `RunnerPlugin` / `ReporterPlugin`,
+  register an entry point, declare capabilities. See
+  [`docs/dev/plugins.md`](./docs/dev/plugins.md).
 
 ## Documentation
 
-- **Docs site** — [docs.sentinelqa.dev](https://docs.sentinelqa.dev)
-- [Architecture overview](./docs/dev/local-setup.md)
-- [Module reference](./apps/docs/src/content/docs/modules/index.md)
-- [Python SDK](./packages/python-sdk/README.md)
-- [MCP server](./packages/mcp-server/README.md)
-- [CI integration](./integrations/github/README.md)
-- [Architecture Decision Records](./docs/adr/)
+- **Docs site** — <https://docs.sentinelqa.dev>
+- [Configuration reference](./apps/docs/src/content/docs/concepts/architecture.md)
+- [Module catalog](./apps/docs/src/content/docs/modules/index.md)
 - [Error codes](./docs/user/error-codes.md)
-
----
+- [Architecture Decision Records](./docs/adr/)
 
 ## Safety boundary
 
 SentinelQA is for **authorized testing only**. By default it refuses any
 target outside `localhost` / `127.0.0.1` / `::1`. Public hosts are blocked
-unless explicitly added to your `target_allowlist`, and security checks that
+unless explicitly added to your `target_allowlist`; security checks that
 issue write-shaped requests additionally require proof-of-authorization.
 
-We do not — and will not — ship:
-
-- Bot-detection or CAPTCHA bypass.
-- Stealth automation or fingerprint evasion.
-- Credential stuffing, spam automation, or platform manipulation.
-- Unauthorized vulnerability exploitation.
-
-Read [SECURITY.md](./SECURITY.md) before pointing SentinelQA at anything you
-do not own or are not explicitly authorized to test.
-
----
+We do not — and will not — ship: bot-detection / CAPTCHA bypass, stealth
+automation, fingerprint evasion, credential stuffing, or unauthorized
+exploitation. Read [SECURITY.md](./SECURITY.md) before pointing SentinelQA at
+anything you do not own or are not explicitly authorized to test.
 
 ## Contributing
 
 Pull requests welcome. See [CONTRIBUTING.md](./CONTRIBUTING.md) for the
-fork-and-PR flow, Conventional Commits, the Definition of Done, and how the
-test matrix is structured.
-
-For security issues, **do not open a public issue** — follow the disclosure
-path in [SECURITY.md](./SECURITY.md).
-
+fork-and-PR flow, Conventional Commits, and the Definition of Done.
 By participating you agree to the
 [Contributor Covenant Code of Conduct](./.github/CODE_OF_CONDUCT.md).
 
----
+For security issues, follow the disclosure path in [SECURITY.md](./SECURITY.md)
+— do not open a public issue.
 
 ## License
 
-Apache-2.0 — see [LICENSE](./LICENSE) and [NOTICE](./NOTICE) for third-party
-attributions.
+Apache-2.0 — see [LICENSE](./LICENSE) and [NOTICE](./NOTICE).

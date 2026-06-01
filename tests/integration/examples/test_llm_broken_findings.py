@@ -1,6 +1,6 @@
-"""Anti-pattern smoke for the LLM-broken example (Phase 26.06).
+"""Anti-pattern smoke for the LLM-broken example.
 
-our product spec9 lists thirteen LLM-audit signal categories; Phase 26.06's
+our product spec9 lists thirteen LLM-audit signal categories; 's
 acceptance is "≥ 8 distinct LLM-audit findings". The LLM-audit module
 itself is exercised end-to-end against the broken fixtures in
 `tests/integration/modules/llm_audit/`; here we assert that the demo
@@ -41,9 +41,9 @@ def test_llm_broken_config_does_not_gate_release() -> None:
 def test_llm_broken_exhibits_at_least_eight_antipatterns() -> None:
     """Match against the deliberate anti-patterns wired into the demo.
 
-    Each entry is (file, substring). We need >= 8 to match to satisfy
-    Phase 26.06's acceptance criterion.
-    """
+ Each entry is (file, substring). We need >= 8 to match to satisfy
+ 's acceptance criterion.
+ """
     antipatterns: list[tuple[str, str]] = [
         # LLM-MOCK-DATA-SHIPPED
         (read_text("llm-broken", "src", "app", "page.tsx"), "MOCK_ORDERS"),

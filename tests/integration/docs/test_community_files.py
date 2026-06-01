@@ -1,26 +1,25 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright (c) 2026 SentinelQA contributors.
-"""GitHub community-files health (Phase 35.02).
+"""GitHub community-files health.
 
 Asserts every file that GitHub's "Community Standards" checklist looks
 for is present and well-formed:
 
-  * `.github/ISSUE_TEMPLATE/bug_report.yml` (issue form, structured)
-  * `.github/ISSUE_TEMPLATE/feature_request.yml`
-  * `.github/ISSUE_TEMPLATE/security_disclosure.yml` (redirect to
-    SECURITY.md)
-  * `.github/ISSUE_TEMPLATE/config.yml` (blank issues off; contact
-    links)
-  * `.github/pull_request_template.md`
-  * `.github/CODE_OF_CONDUCT.md` (Contributor Covenant 2.1)
-  * `SECURITY.md`
-  * `CONTRIBUTING.md`
-  * `LICENSE`
-  * `.github/CODEOWNERS`
+ * `.github/ISSUE_TEMPLATE/bug_report.yml` (issue form, structured)
+ * `.github/ISSUE_TEMPLATE/feature_request.yml`
+ * `.github/ISSUE_TEMPLATE/security_disclosure.yml` (redirect to
+ SECURITY.md)
+ * `.github/ISSUE_TEMPLATE/config.yml` (blank issues off; contact
+ links)
+ * `.github/pull_request_template.md`
+ * `.github/CODE_OF_CONDUCT.md` (Contributor Covenant 2.1)
+ * `SECURITY.md`
+ * `CONTRIBUTING.md`
+ * `LICENSE`
+ * `.github/CODEOWNERS`
 
 The test does not depend on the repo being public — it validates the
-contents that GitHub will scan once the visibility flip happens
-(task 35.08).
+contents that GitHub will scan once the visibility flip happens.
 """
 
 from __future__ import annotations

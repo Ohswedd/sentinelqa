@@ -2,9 +2,9 @@
 
 Landmark roles SentinelQA checks for on every full page (the documentation):
 
-- ``main``   exactly one required.
+- ``main`` exactly one required.
 - ``header`` recommended.
-- ``nav``    recommended.
+- ``nav`` recommended.
 - ``footer`` recommended.
 
 Missing landmarks are reported as ``missing-landmark`` (severity

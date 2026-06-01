@@ -1,4 +1,4 @@
-"""Integration tests — SQLi refusal vs public targets (Phase 13.06)."""
+"""Integration tests — SQLi refusal vs public targets."""
 
 from __future__ import annotations
 

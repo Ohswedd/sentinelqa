@@ -1,4 +1,4 @@
-"""Phase 31 — ``auth.strategy: browser_session`` validation rules."""
+"""``auth.strategy: browser_session`` validation rules."""
 
 from __future__ import annotations
 

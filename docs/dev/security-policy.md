@@ -18,7 +18,7 @@ versions matrix.
 | `0.7.x`   | next minor ships (`0.8.0`) | Current pre-1.0 stream.                                                                    |
 | `< 0.7.0` | unsupported                | Pre-1.0 releases supersede each other; upgrade to the latest minor (`docs/dev/semver.md`). |
 
-Once `v1.0.0` ships (Phase 36), SentinelQA switches to **latest two
+Once `v1.0.0` ships, SentinelQA switches to **latest two
 minors only** — i.e. when `1.2.0` ships, `1.0.x` becomes unsupported
 and `1.1.x` continues to receive security patches until `1.3.0`.
 
@@ -51,12 +51,12 @@ extension in writing with the reporter.
 ## Embargo + advisory publication
 
 1. The fix lands on a private fork or in a draft GHSA — never on `main` before publication.
-2. A regression test that proves the fix lands in the same PR .
+2. A regression test that proves the fix lands in the same PR.
 3. When the embargo lifts, the GHSA is published, the patch release is tagged via the pre-tag review process, `CHANGELOG.md` gets a `### Security` section under that release, and the reporter is credited.
 
 ## Dependabot
 
-`.github/dependabot.yml` (Phase 35.07) covers four ecosystems on a
+`.github/dependabot.yml` covers four ecosystems on a
 weekly cadence:
 
 | Ecosystem          | Manifests watched                                                | Notes                                                                          |
@@ -72,7 +72,7 @@ owner reviews each one explicitly.
 
 ## Private vulnerability reporting
 
-After the public flip (task 35.08) the owner enables GitHub Private
+After the public flip the owner enables GitHub Private
 Vulnerability Reporting in
 `Settings → Code security and analysis → Private vulnerability reporting → Enable`.
 That setting cannot be configured on a private repo before the flip.

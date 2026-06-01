@@ -1,4 +1,4 @@
-"""Reflected-XSS safe probe (Phase 13.05).
+"""Reflected-XSS safe probe.
 
 The probe inserts a unique non-executable marker into each query
 parameter of the route URL and looks for the marker reflected
@@ -13,11 +13,11 @@ Safety contract (CLAUDE §6/§26):
 - Every probe is rate-limited by ``security.max_requests_per_second``.
 - ``SafetyPolicy.enforce`` is called once before the first probe.
 - One audit-log entry per probe is appended via
-  :func:`engine.policy.audit_log.write_audit_entry`.
+ :func:`engine.policy.audit_log.write_audit_entry`.
 - The probe never bypasses CAPTCHAs, evades WAFs, or changes the User-
-  Agent. It looks like SentinelQA on the wire.
+ Agent. It looks like SentinelQA on the wire.
 - We do NOT enumerate routes outside ``ctx.routes``; the caller is
-  responsible for keeping the route set scoped to authorized targets.
+ responsible for keeping the route set scoped to authorized targets.
 """
 
 from __future__ import annotations

@@ -1,4 +1,4 @@
-"""sentinel.generated.plan.md emitter (task 07.05).
+"""sentinel.generated.plan.md emitter.
 
 Produces a human-readable Markdown summary of the generation pass that
 reviewers can scan in PR diff comments. The file lands at
@@ -128,7 +128,7 @@ def read_prior_spec_paths(plan_md_path: Path) -> list[Path]:
     """Parse ``tests/sentinel/sentinel.generated.plan.md`` for the spec list.
 
     Best-effort: we look for the ``### Specs`` section and read until
-    the next heading. Lines that look like list items pointing at .ts
+    the next heading. Lines that look like list items pointing at.ts
     files become :class:`Path` entries. Returns an empty list if the
     file does not exist or the section is missing.
     """

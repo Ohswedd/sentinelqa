@@ -1,7 +1,7 @@
 """Forbidden capability registry (our engineering rules, the documentation).
 
 Any plugin/module that tries to register one of these capability strings at
-runtime is rejected immediately. The Phase 24 plugin loader will consult
+runtime is rejected immediately. The plugin loader will consult
 this set; until then, the constant is here so other code can refer to it
 and so the safety-boundary tests have a concrete surface to assert against.
 """

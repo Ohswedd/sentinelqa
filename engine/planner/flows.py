@@ -1,4 +1,4 @@
-"""Flow extractors (task 06.02, the documentation, §10.1).
+"""Flow extractors.
 
 Each extractor inspects a :class:`DiscoveryGraph` and returns zero or more
 named :class:`Flow` records (e.g., login, signup, CRUD, admin). Extractors
@@ -348,7 +348,7 @@ class CrudFlowExtractor:
     """Detect CRUD flows from REST route shapes.
 
     Heuristic: any route whose path contains a templated segment (``[id]``,
-    ``[uuid]``, ``[hex]`` from Phase 05's ApiDetector, OR ``:id``,
+    ``[uuid]``, ``[hex]`` from 's ApiDetector, OR ``:id``,
     ``{id}``) is treated as a detail/edit endpoint and the parent route is
     treated as the list endpoint. We emit one create + one read + one
     update + one delete flow per detected resource collection.

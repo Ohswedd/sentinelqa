@@ -1,4 +1,4 @@
-"""Diff-aware test selection (the documentation, §12.3, task 17.05).
+"""Diff-aware test selection (the documentation, §12.3, ).
 
 Translates a git diff range into a set of impacted routes, API
 endpoints, and test files. Falls back to full-mode selection when the
@@ -8,18 +8,18 @@ config, Dockerfile).
 The translation is deterministic and pure: :func:`select_from_files`
 takes the changed-file list and a small policy. :func:`select_from_git`
 is a thin wrapper around ``git diff --name-only`` for the CLI path.
-The Phase 17 ``sentinel ci --diff`` command merges the returned
+The ``sentinel ci --diff`` command merges the returned
 :class:`DiffSelection` into the lifecycle ``module_options`` channel.
 
 Implementation discipline:
 
 - Always include the smoke (`@p0`) tag set, regardless of what changed
-  (our engineering rules — smoke is the floor).
+ (our engineering rules — smoke is the floor).
 - Path heuristics are deliberately narrow and match the major React /
-  Next.js / Vite layouts; unknown projects fall back to full mode
-  rather than guessing.
+ Next.js / Vite layouts; unknown projects fall back to full mode
+ rather than guessing.
 - Subprocess invocation uses :mod:`subprocess` with ``shell=False`` and
-  argument vectors only (our engineering rules — no shell-string injection).
+ argument vectors only (our engineering rules — no shell-string injection).
 """
 
 from __future__ import annotations

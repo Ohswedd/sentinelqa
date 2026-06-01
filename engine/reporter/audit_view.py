@@ -1,4 +1,4 @@
-"""Audit log view for the HTML report (Phase 15, task 15.04).
+"""Audit log view for the HTML report (, ).
 
 The audit log is appended to as JSONL by every safety-relevant decision
 in the run lifecycle (our engineering rules, §11). For the HTML report we read

@@ -14,8 +14,8 @@ The thing is documented but not yet built. The doc exists so contributors can se
 
 **Examples:**
 
-- `packages/python-sdk/README.md` until Phase 16 — "Real surface lands in Phase 16."
-- `apps/cli/README.md` until Phase 02 — "Real Typer app lands in Phase 02."
+- `packages/python-sdk/README.md` until — "Real surface lands in."
+- `apps/cli/README.md` until — "Real Typer app lands in."
 - A new `docs/user/<feature>.md` written when the feature lands in `feature/...` but the code is not yet merged.
 
 A `Planned` doc must reference the phase or PR that will move it to `Experimental` or `Stable`.
@@ -26,8 +26,8 @@ The thing is built and works in nominal cases, but the contract is unstable. Exp
 
 **Examples:**
 
-- The first version of the visual-regression module (Phase 21) before tuning the diff threshold defaults.
-- A new agent-facing MCP tool before Phase 18's contract review.
+- The first version of the visual-regression module before tuning the diff threshold defaults.
+- A new agent-facing MCP tool before's contract review.
 
 An `Experimental` doc must name the conditions for promotion to `Stable` ("after 2 weeks of internal use without incident", "after the public review in PR #N").
 
@@ -38,7 +38,7 @@ The thing is built, contract is locked, breaking changes require a major version
 **Examples:**
 
 - `docs/dev/secret-hygiene.md`, `docs/dev/branching.md`, `docs/dev/commits.md`, `docs/dev/ownership.md` — `Stable` already because the rules they document are non-negotiable.
-- The CLI exit-code table from Phase 02 once the contract is locked.
+- The CLI exit-code table from once the contract is locked.
 
 A `Stable` doc has no required follow-up; it just gets maintained as the code evolves.
 
@@ -82,10 +82,10 @@ grep -Rln '^Status: `Stable`' docs apps packages engine modules
 grep -Rln '^Status: `Deprecated`' docs apps packages engine modules
 ```
 
-The Phase 29 final-hardening audit confirms every Markdown file under those roots carries one of the four labels.
+The final-hardening audit confirms every Markdown file under those roots carries one of the four labels.
 
 ## What the label is NOT
 
 - The label is not a CI gate today (it can become one if we add a markdown linter pass). It is a reader hint and a discipline.
-- The label is not a feature flag. Feature flags live in `sentinel.config.yaml` (Phase 01).
+- The label is not a feature flag. Feature flags live in `sentinel.config.yaml`.
 - The label is not a substitute for the PRD. Behavior changes still update our product spec.

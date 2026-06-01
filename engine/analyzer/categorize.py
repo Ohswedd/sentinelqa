@@ -1,4 +1,4 @@
-"""Failure categorization rules (the documentation, ADR-0014, task 09.01).
+"""Failure categorization rules (the documentation, ADR-0014, ).
 
 The classifier is a small, ordered, deterministic rule set. Each rule
 returns ``(category, confidence, rationale)`` if it matches, else
@@ -324,7 +324,7 @@ def categorize(signal: FailureSignal) -> FailureClassification:
 
 
 # ---------------------------------------------------------------------------
-# Module-error categorization (CLAUDE §10 catch-all rehome, task 09.01)
+# Module-error categorization (CLAUDE §10 catch-all rehome, )
 # ---------------------------------------------------------------------------
 
 
@@ -336,7 +336,7 @@ def categorize_module_error(
 ) -> FailureClassification:
     """Categorize a module-level exception caught by ``run_modules``.
 
-    Phase 02's lifecycle wraps every module call in a broad ``except
+    's lifecycle wraps every module call in a broad ``except
     Exception`` (CLAUDE §10) and stuffs the result into a string. Phase
     09 adds a typed classification so the reporter / SDK can show the
     user *why* a module fell over — not just "errored".
@@ -384,7 +384,7 @@ def categorize_module_error(
             confidence=0.9,
             rationale=f"Module '{module}' rejected the run config.",
         )
-    # Default: low-confidence environment — Phase 09 prefers to under-claim
+    # Default: low-confidence environment — prefers to under-claim
     # rather than mis-blame the app.
     return FailureClassification(
         category="environment_failure",

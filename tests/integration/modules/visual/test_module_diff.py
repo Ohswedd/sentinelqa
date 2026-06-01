@@ -1,4 +1,4 @@
-"""Integration: VisualModule diff pipeline (Phase 21.03, 21.04, 21.05)."""
+"""Integration: VisualModule diff pipeline."""
 
 from __future__ import annotations
 

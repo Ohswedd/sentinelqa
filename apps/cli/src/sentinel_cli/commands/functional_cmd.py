@@ -1,14 +1,14 @@
-"""``sentinel functional`` — exercise the documentation functional flows (task 10.04).
+"""``sentinel functional`` — exercise the documentation functional flows.
 
-Replaces the Phase 02 stub. The command drives the full :class:`RunLifecycle`
+Replaces the stub. The command drives the full :class:`RunLifecycle`
 restricted to the ``functional`` module so the same lifecycle steps
 (safety policy, artifact tree, reporter dispatch, exit-code mapping) run
 whether the user types ``sentinel audit`` or ``sentinel functional``.
 
-The command thinly wraps the FunctionalModule (Phase 10.01):
+The command thinly wraps the FunctionalModule :
 
 - Slice mode (`--mode smoke|standard|full`) and `--grep` are merged
-  into a single Playwright grep via :class:`modules.functional.tags.TagSelection`.
+ into a single Playwright grep via :class:`modules.functional.tags.TagSelection`.
 - `--workers`, `--shard`, `--retries` map directly onto the runner config.
 - `--url` overrides ``target.base_url`` for this invocation only.
 
@@ -43,7 +43,7 @@ from engine.policy.audit_log import write_audit_entry
 from engine.runner.sharding import ShardSpec
 
 # Ensure the functional module is registered with the process-wide registry.
-import modules.functional  # noqa: F401  (side-effect import for registration)
+import modules.functional  # noqa: F401 (side-effect import for registration)
 from modules.functional.tags import TagSelection, supported_modes
 from sentinel_cli.json_mode import json_stdout
 from sentinel_cli.state import GlobalState

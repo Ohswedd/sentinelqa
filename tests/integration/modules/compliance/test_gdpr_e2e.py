@@ -1,4 +1,4 @@
-"""Phase 34.02 — ComplianceModule end-to-end against synthetic GDPR signals.
+"""ComplianceModule end-to-end against synthetic GDPR signals.
 
 The phase README points at the Phase-26 Next.js example as a fixture
 that deliberately ships no banner, so the check should fire. We

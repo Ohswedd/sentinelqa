@@ -11,14 +11,14 @@ pip install sentinelqa-cli sentinelqa-mcp
 
 # 2. Add the snippet from `claude_desktop_config.json` in this directory
 # to your Claude Desktop config:
-#
+
 # macOS: ~/Library/Application Support/Claude/claude_desktop_config.json
 # Windows: %APPDATA%\Claude\claude_desktop_config.json
 # Linux: ~/.config/Claude/claude_desktop_config.json
-#
+
 # 3. Replace SENTINEL_CONFIG with the absolute path to your project's
 # sentinel.config.yaml.
-#
+
 # 4. Restart Claude Desktop. The twelve `sentinel.*` tools (plus
 # `sentinel.ping`) will appear in the tool picker.
 ```

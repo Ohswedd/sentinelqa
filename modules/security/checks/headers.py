@@ -1,4 +1,4 @@
-"""Security headers check (Phase 13.02, OWASP Secure Headers Project).
+"""Security headers check.
 
 For every route in ``ctx.routes`` we GET the URL once and inspect a
 curated set of response headers. Severity mapping follows the OWASP

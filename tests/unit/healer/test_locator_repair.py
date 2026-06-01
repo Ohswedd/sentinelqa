@@ -1,10 +1,10 @@
-"""Phase 20.02 — Locator repair tests.
+"""Locator repair tests.
 
 Covers the confidence tiers documented in the task spec:
 
 - Exact role + name + landmark → 0.95 (auto-apply candidate).
 - Fuzzy name match → 0.7..0.75 (review-required at the default
-  threshold of 0.9).
+ threshold of 0.9).
 - Role-only match → 0.5 (review-required).
 - No role match → no proposal.
 """

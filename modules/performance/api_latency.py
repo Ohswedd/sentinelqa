@@ -1,11 +1,11 @@
-"""API latency budgets (Phase 12.03, the documentation, CLAUDE §27).
+"""API latency budgets.
 
 The TS runtime observes every XHR/fetch response during the synthetic
 page loads and reports the raw samples + a per-endpoint summary. This
 module evaluates the templated endpoint's P95 against the configured
 budget and returns typed violations.
 
-Endpoint paths are templated identically to Phase 05's
+Endpoint paths are templated identically to 's
 :class:`engine.discovery.api_detector` (`/api/users/[id]`,
 `/api/users/[uuid]`, `/api/users/[hex]`) so that grouped samples don't
 fragment across each user's id.

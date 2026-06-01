@@ -1,4 +1,4 @@
-"""`sentinel doctor` (task 02.03)."""
+"""`sentinel doctor`."""
 
 from __future__ import annotations
 
@@ -74,7 +74,7 @@ def test_doctor_missing_config_is_warn_only(
         cli,
         ["--config", str(fresh_project / "sentinel.config.yaml"), "doctor"],
     )
-    # Missing config → warn (Phase 02 spec: only fail if config is malformed).
+    # Missing config → warn (spec: only fail if config is malformed).
     assert result.exit_code == EXIT_SUCCESS, result.stdout + result.stderr
     assert "config" in result.stdout
     assert "warn" in result.stdout or "WARN" in result.stdout or "[warn]" in result.stdout

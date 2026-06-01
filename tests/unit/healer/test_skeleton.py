@@ -1,4 +1,4 @@
-"""Phase 20.01 — Healer skeleton tests.
+"""Healer skeleton tests.
 
 Asserts the public surface is shaped the way the rest of the
 codebase consumes it (Analyzer pipeline, CLI, MCP). The Healer

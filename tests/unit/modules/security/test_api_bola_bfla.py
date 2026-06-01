@@ -1,4 +1,4 @@
-"""Unit tests for :mod:`modules.security.checks.api_bola_bfla` (task 32.05)."""
+"""Unit tests for :mod:`modules.security.checks.api_bola_bfla`."""
 
 from __future__ import annotations
 

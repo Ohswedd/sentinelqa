@@ -23,7 +23,7 @@ def make_entry_point() -> Callable[[str, str, Any], importlib_metadata.EntryPoin
 
     Usage::
 
-        ep = make_entry_point("tiny", "tests.fakes.tiny:TinyScanner", TinyScanner)
+    ep = make_entry_point("tiny", "tests.fakes.tiny:TinyScanner", TinyScanner)
     """
 
     created_modules: list[str] = []

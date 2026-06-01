@@ -1,4 +1,4 @@
-"""Structural smoke for the Flask example (Phase 26.04)."""
+"""Structural smoke for the Flask example."""
 
 from __future__ import annotations
 

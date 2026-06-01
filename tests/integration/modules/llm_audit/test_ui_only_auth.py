@@ -1,4 +1,4 @@
-"""Integration tests for the UI-only-auth check (task 19.07)."""
+"""Integration tests for the UI-only-auth check."""
 
 from __future__ import annotations
 

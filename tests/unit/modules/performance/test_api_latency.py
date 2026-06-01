@@ -1,4 +1,4 @@
-"""Unit tests for :mod:`modules.performance.api_latency` (Phase 12.03)."""
+"""Unit tests for :mod:`modules.performance.api_latency`."""
 
 from __future__ import annotations
 

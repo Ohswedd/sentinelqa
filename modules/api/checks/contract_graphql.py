@@ -1,4 +1,4 @@
-"""GraphQL contract check (Phase 22.03).
+"""GraphQL contract check.
 
 For each probeable operation in the supplied :class:`GraphqlSchema`,
 issue a single ``POST <graphql_endpoint>`` with ``{"query": "..."}``
@@ -42,7 +42,7 @@ def run_graphql_contract_check(
         scanned += 1
         if op.kind == "mutation":
             # Mutations write state. Skip probing them unless explicit
-            # auth/negative paths exercise them (Phase 22.04 / 22.05).
+            # auth/negative paths exercise them.
             continue
         query_text = f"{op.kind} {{ {op.field_name}{op.selection} }}"
         try:

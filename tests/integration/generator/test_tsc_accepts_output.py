@@ -1,4 +1,4 @@
-"""tsc --noEmit acceptance test for the golden templates (task 07.01).
+"""tsc --noEmit acceptance test for the golden templates.
 
 For each golden in ``tests/golden/generator/fixtures/``, copy it into a
 temporary project that imports ``@sentinelqa/ts-runtime/playwright``

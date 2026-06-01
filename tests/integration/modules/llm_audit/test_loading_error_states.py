@@ -1,4 +1,4 @@
-"""Integration tests for the loading / error-state check (task 19.10)."""
+"""Integration tests for the loading / error-state check."""
 
 from __future__ import annotations
 

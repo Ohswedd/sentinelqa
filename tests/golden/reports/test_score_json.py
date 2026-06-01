@@ -1,4 +1,4 @@
-"""Golden tests for ``score.json`` (task 03.03).
+"""Golden tests for ``score.json``.
 
 Covers the five canonical states from the task spec:
 

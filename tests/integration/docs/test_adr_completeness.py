@@ -51,7 +51,7 @@ def _accepted_adrs() -> set[str]:
         if not match:
             continue
         status_line = match.group(1).strip()
-        # The template uses `Proposed | Accepted | Superseded by ... | Deprecated`
+        # The template uses `Proposed | Accepted | Superseded by... | Deprecated`
         # as the literal selector — skip un-touched template files.
         if "|" in status_line:
             continue

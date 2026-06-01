@@ -1,4 +1,4 @@
-"""Deterministic shard splitting + per-shard result merge (Phase 08.03).
+"""Deterministic shard splitting + per-shard result merge.
 
 Sharding is by **test file** (Playwright's own shard semantics work the
 same way), keyed on a stable hash of the spec path. Two runs of

@@ -2,7 +2,7 @@
 
 Status: `Stable`
 
-Authority: ,
+Authority:,
 our engineering rules(Competitor awareness), `docs/dev/trademarks-and-naming.md`.
 
 This page documents how the SentinelQA name, mark, and assets may be
@@ -43,7 +43,7 @@ uv run python -m scripts.release.gen_brand_pngs
 
 - The product name is **SentinelQA** — one word, capitalised S and Q. Not "Sentinel QA", not "Sentinelqa", not "sentinel-qa".
 - The CLI executable is `sentinel` (lowercase).
-- Package names: `sentinelqa-cli` (PyPI, Phase 36), `sentinelqa` (PyPI SDK), `@sentinelqa/*` (npm scope), `sentinelqa/runner` (Docker Hub).
+- Package names: `sentinelqa-cli` (PyPI, ), `sentinelqa` (PyPI SDK), `@sentinelqa/*` (npm scope), `sentinelqa/runner` (Docker Hub).
 
 ## What you may do
 

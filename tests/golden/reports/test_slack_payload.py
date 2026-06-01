@@ -1,4 +1,4 @@
-"""Slack summary payload goldens (Phase 15.06)."""
+"""Slack summary payload goldens."""
 
 from __future__ import annotations
 

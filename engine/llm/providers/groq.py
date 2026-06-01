@@ -1,4 +1,4 @@
-"""Groq Cloud provider (Phase 30 task 30.07, ADR-0042).
+"""Groq Cloud provider (, ADR-0042).
 
 Calls Groq's OpenAI-compatible endpoint at
 ``https://api.groq.com/openai/v1/chat/completions`` via ``httpx``. No

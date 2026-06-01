@@ -1,4 +1,4 @@
-"""Task 14.06 — `sentinel report --explain-score` integration tests."""
+"""— `sentinel report --explain-score` integration tests."""
 
 from __future__ import annotations
 
@@ -141,7 +141,7 @@ def test_explain_score_without_flag_missing_run_is_config_error(tmp_path: Path) 
             str(tmp_path / ".sentinel" / "runs"),
         ],
     )
-    # Phase 15 added re-rendering; missing run-id is a config error
+    # added re-rendering; missing run-id is a config error
     # (exit 2) instead of the Phase-14 placeholder exit 7.
     assert result.exit_code == 2, result.output
     assert "run directory not found" in result.stderr

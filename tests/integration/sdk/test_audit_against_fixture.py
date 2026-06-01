@@ -40,7 +40,7 @@ def _write_minimal_config(root: Path, *, base_url: str = "http://localhost:3000"
 def patched_registry() -> Iterator[ModuleRegistry]:
     """Register a stub functional module on the process-wide default registry.
 
-    Phase 02 lifecycle uses the process registry by default; this fixture
+    lifecycle uses the process registry by default; this fixture
     plugs in a no-op factory so ``audit()`` finishes without trying to
     spawn Playwright.
     """

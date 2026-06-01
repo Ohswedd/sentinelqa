@@ -36,7 +36,7 @@ class LlmAuditRule:
 
 
 # ---------------------------------------------------------------------------
-# Catalogue (stable IDs — referenced by Phase 03 SARIF + Reporter)
+# Catalogue (stable IDs — referenced by SARIF + Reporter)
 # ---------------------------------------------------------------------------
 
 

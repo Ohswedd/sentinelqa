@@ -2,7 +2,7 @@
 # Copyright (c) 2026 SentinelQA contributors.
 """README link health.
 
-Asserts the public-facing `README.md` (Phase 35.01) keeps its claims
+Asserts the public-facing `README.md` keeps its claims
 testable: every relative link resolves on disk, every external URL is
 well-formed (no `http`-only links unless explicitly whitelisted), the
 file stays under the line cap, the safety boundary is preserved, and
@@ -36,10 +36,12 @@ ALLOWED_EXTERNAL_HOSTS = {
     "github.com",
     # Badge CDN — read-only, owner-agnostic.
     "img.shields.io",
-    # Docs site — DNS provisioned by owner in task 35.04; the link is
-    # ratified here even before the CNAME resolves so the README does
-    # not need a follow-up edit on the day the site flips.
+    # Docs site.
     "docs.sentinelqa.dev",
+    # Public registries the project publishes to.
+    "pypi.org",
+    "www.npmjs.com",
+    "hub.docker.com",
 }
 
 
@@ -101,7 +103,7 @@ def test_relative_links_resolve_on_disk() -> None:
             continue
         # Strip anchor + query; we only verify the path component.
         path_only = url.split("#", 1)[0].split("?", 1)[0]
-        # Leading ./ is fine; normalize.
+        # Leading./ is fine; normalize.
         rel = path_only[2:] if path_only.startswith("./") else path_only
         candidate = (REPO_ROOT / rel).resolve()
         if not candidate.exists():

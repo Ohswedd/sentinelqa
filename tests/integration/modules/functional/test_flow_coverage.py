@@ -1,4 +1,4 @@
-"""Flow-coverage integration test (Phase 10.02).
+"""Flow-coverage integration test.
 
 Builds a representative :class:`DiscoveryGraph` covering every our product spec1
 flow type, runs it through the deterministic planner + generator, and

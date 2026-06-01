@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright (c) 2026 SentinelQA contributors.
-"""License-header audit in CI mode (Phase 35.03).
+"""License-header audit in CI mode.
 
 Runs `scripts.release.audit_license_headers` against the repo and
 asserts the audit returns a clean report. Behaves the same way
@@ -39,7 +39,7 @@ def test_audit_detects_foreign_spdx(tmp_path: Path) -> None:
 
 
 def test_audit_detects_uncovered_orphan(tmp_path: Path) -> None:
-    """A .py file under a non-covered directory must require SPDX."""
+    """A.py file under a non-covered directory must require SPDX."""
     fake = tmp_path / "rogue" / "orphan.py"
     fake.parent.mkdir(parents=True)
     fake.write_text("# no header\n", encoding="utf-8")

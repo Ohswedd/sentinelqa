@@ -1,4 +1,4 @@
-"""Quality scoring (Phase 14, our product spec, our engineering rules).
+"""Quality scoring (, our product spec, our engineering rules).
 
 Reproducible release-confidence score derived from typed findings +
 module results + policy config. Every value the writer persists is a
@@ -8,14 +8,14 @@ the same inputs always yield byte-identical ``score.json``.
 Public surface:
 
 - :func:`compute_score` — turn findings + module results + policy into
-  :class:`engine.domain.quality_score.QualityScore`.
+ :class:`engine.domain.quality_score.QualityScore`.
 - :func:`compute_blockers` — apply blocker rules from our engineering rules.
 - :func:`decide` — translate score + blockers + run status into
-  :class:`engine.domain.policy_decision.PolicyDecision`.
+ :class:`engine.domain.policy_decision.PolicyDecision`.
 - :func:`apply_policy_gate` — orchestrator helper combining the above
-  and stamping ``ctx.quality_gate_passed`` for the exit-code mapping.
+ and stamping ``ctx.quality_gate_passed`` for the exit-code mapping.
 - :func:`register_scoring_hooks` — wire the lifecycle hooks for
-  ``CALCULATE_QUALITY_SCORE`` and ``APPLY_QUALITY_GATES``.
+ ``CALCULATE_QUALITY_SCORE`` and ``APPLY_QUALITY_GATES``.
 """
 
 from __future__ import annotations

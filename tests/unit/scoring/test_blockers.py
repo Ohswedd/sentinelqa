@@ -1,4 +1,4 @@
-"""Task 14.02 — blocker computation."""
+"""— blocker computation."""
 
 from __future__ import annotations
 

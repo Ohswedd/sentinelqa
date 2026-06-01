@@ -1,7 +1,7 @@
 # SentinelQA LLM-broken example — DO NOT DEPLOY
 
 A small Next.js 14 app that intentionally exhibits every the documentation
-failure mode. The LLM-audit module (Phase 19) finds these issues; this
+failure mode. The LLM-audit module finds these issues; this
 example exists so we can ship a one-command demo of that capability.
 
 > ⚠️ **This app is intentionally broken.** Hardcoded credentials, mock

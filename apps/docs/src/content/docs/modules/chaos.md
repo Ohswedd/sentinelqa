@@ -29,7 +29,7 @@ data empty_dataset · large_dataset · storage_corruption
 | `api_timeout_abort_ms` | 1 000..120 000 | No "hang forever" path             |
 | `large_dataset_items`  | 100..10 000    | Bounded memory footprint           |
 
-The module is `False` by default in `ModulesConfig`. The Phase 17
+The module is `False` by default in `ModulesConfig`. The
 `nightly` preset enables it.
 
 ## CLI

@@ -1,4 +1,4 @@
-"""Value objects for the auth vault (Phase 31, ADR-0043).
+"""Value objects for the auth vault (, ADR-0043).
 
 :class:`VaultEntry` holds the encrypted material — the storage state and
 the timing metadata. :class:`VaultMetadata` is the redacted view returned

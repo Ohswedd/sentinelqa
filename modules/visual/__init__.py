@@ -1,4 +1,4 @@
-"""Visual-regression audit module (Phase 21, the documentation, our engineering rules).
+"""Visual-regression audit module (, the documentation, our engineering rules).
 
 Importing this package wires :class:`VisualModule` into the default
 orchestrator registry so ``sentinel visual`` and ``sentinel audit``

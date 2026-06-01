@@ -1,4 +1,4 @@
-"""Integration test for repeated-navigation stability (Phase 12.05)."""
+"""Integration test for repeated-navigation stability."""
 
 from __future__ import annotations
 

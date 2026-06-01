@@ -1,4 +1,4 @@
-"""Integration tests — frontend secrets (Phase 13.08)."""
+"""Integration tests — frontend secrets."""
 
 from __future__ import annotations
 

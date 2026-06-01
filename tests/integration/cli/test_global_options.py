@@ -1,4 +1,4 @@
-"""Global option propagation (task 02.01 + 02.06 + 02.07)."""
+"""Global option propagation."""
 
 from __future__ import annotations
 

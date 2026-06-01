@@ -2,7 +2,7 @@
   "$defs": {
     "CoverageEstimate": {
       "additionalProperties": false,
-      "description": "Per-module estimate of how many planned test cases will execute.\n\nThe estimate is an *intent* statement (how many cases were planned), not\na guaranteed outcome. The runner / scoring modules (Phase 08 / 14) own\nthe actually-executed metric.",
+      "description": "Per-module estimate of how many planned test cases will execute.\n\nThe estimate is an *intent* statement (how many cases were planned), not\na guaranteed outcome. The runner / scoring modules ( / 14) own\nthe actually-executed metric.",
       "properties": {
         "by_module": {
           "additionalProperties": {

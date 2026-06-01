@@ -1,4 +1,4 @@
-"""`--json` mode emits ONLY JSON to stdout (task 02.06, CLAUDE §13)."""
+"""`--json` mode emits ONLY JSON to stdout."""
 
 from __future__ import annotations
 

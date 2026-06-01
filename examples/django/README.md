@@ -2,7 +2,7 @@
 
 A minimal Django 5 site with the built-in admin, a session-based login,
 and a `Project` CRUD owned by the authenticated user. SentinelQA
-Phase 26.03.
+
 
 ## Run
 
@@ -22,13 +22,13 @@ Or, manually:
 
 ```bash
 cd examples/django
-python -m venv .venv-demo
+python -m venv.venv-demo
 .venv-demo/bin/pip install -r requirements.txt
 .venv-demo/bin/python manage.py migrate
 .venv-demo/bin/python manage.py shell -c "
 from django.contrib.auth import get_user_model
-U = get_user_model()
-if not U.objects.filter(username='demo').exists(): U.objects.create_user('demo', password='demo') U.objects.create_superuser('admin', '', 'admin')
+U = get_user_model
+if not U.objects.filter(username='demo').exists: U.objects.create_user('demo', password='demo') U.objects.create_superuser('admin', '', 'admin')
 "
 .venv-demo/bin/python manage.py runserver 127.0.0.1:8001
 ```

@@ -1,4 +1,4 @@
-"""Phase 20.05 — Writer + index unit tests."""
+"""Writer + index unit tests."""
 
 from __future__ import annotations
 
@@ -179,7 +179,7 @@ def test_iter_proposals_skips_non_dict_documents(tmp_path: Path) -> None:
 def test_atomic_write_cleans_up_tmp_on_error(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """If `os.replace` fails, the .tmp sidecar must be removed."""
+    """If `os.replace` fails, the.tmp sidecar must be removed."""
 
     import os
 

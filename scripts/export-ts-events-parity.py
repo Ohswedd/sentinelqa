@@ -9,8 +9,8 @@ either side disagrees.
 
 Modes:
 
-  python scripts/export-ts-events-parity.py          # write the file
-  python scripts/export-ts-events-parity.py --check  # fail if stale
+ python scripts/export-ts-events-parity.py # write the file
+ python scripts/export-ts-events-parity.py --check # fail if stale
 
 Idempotent: re-running with no changes produces a byte-identical
 output.
@@ -194,7 +194,7 @@ SAMPLE_EVENTS: list[dict[str, Any]] = [
         "code": "PW_INTERNAL",
         "message": "context closed unexpectedly",
     },
-    # Phase 17 task 07 — Playwright discovery backend (ADR-0010 follow-up).
+    # 07 — Playwright discovery backend (ADR-0010 follow-up).
     # Discovery events fire BEFORE `run.end` so the existing
     # "first event is run.start / last event is run.end" parity
     # assertions still hold.

@@ -9,12 +9,12 @@ dict suitable for round-tripping to and from an LLM.
 This module is the **only** public surface for errors. The SDK root
 re-exports the most common ones for convenience::
 
-    from sentinelqa import SentinelError, ConfigError, UnsafeTargetError
+ from sentinelqa import SentinelError, ConfigError, UnsafeTargetError
 
 For reconstruction from an agent message::
 
-    from sentinelqa.errors import from_dict
-    err = from_dict(agent_message)  # -> SentinelError subclass
+ from sentinelqa.errors import from_dict
+ err = from_dict(agent_message) # -> SentinelError subclass
 
 The reconstructed instance carries the same ``code``, ``message``,
 ``suggested_fix``, ``exit_code``, and ``technical_context`` as the

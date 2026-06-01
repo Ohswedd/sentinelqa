@@ -1,4 +1,4 @@
-"""JWT-weakness scanner (Phase 32.01, ADR-0044).
+"""JWT-weakness scanner.
 
 Inspects every JWT-shaped string observed in ``Authorization`` headers
 and cookies during the audit run. Flags ``alg=none``, HS256 with a

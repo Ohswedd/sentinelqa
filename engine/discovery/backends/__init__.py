@@ -1,4 +1,4 @@
-"""Pluggable discovery backends (Phase 17 task 07, ADR-0010).
+"""Pluggable discovery backends ( 07, ADR-0010).
 
 Importing this module triggers no Chromium / Playwright side effects;
 adapters resolve lazily when constructed.

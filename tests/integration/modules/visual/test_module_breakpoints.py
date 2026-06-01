@@ -1,4 +1,4 @@
-"""Integration: per-viewport baseline + diff (Phase 21.05)."""
+"""Integration: per-viewport baseline + diff."""
 
 from __future__ import annotations
 

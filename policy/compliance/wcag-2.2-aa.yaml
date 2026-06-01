@@ -1,7 +1,7 @@
-# WCAG 2.2 AA (automated) — Phase 34.05 / ADR-0046.
+# WCAG 2.2 AA (automated) — ADR-0046.
 #
-# This pack composes the Phase 11 accessibility module (axe-core
-# WCAG 2.2 tags) with the Phase 34 compliance module's WCAG 2.2
+# This pack composes the accessibility module (axe-core
+# WCAG 2.2 tags) with the compliance module's WCAG 2.2
 # deterministic checks (focus-not-obscured, target-size-min,
 # dragging-movements, redundant-entry, accessible-authentication).
 #

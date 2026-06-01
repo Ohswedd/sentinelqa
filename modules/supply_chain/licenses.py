@@ -1,26 +1,26 @@
-"""SPDX license audit (Phase 33.06, ADR-0045).
+"""SPDX license audit.
 
 For every component in the SBOM, resolve the declared license (when
 present), match it against the configured allow / deny lists, and emit
 one :class:`LicenseEntry` per component. Components whose license is
 missing or unknown surface as ``verdict="unknown"`` with the configured
-severity (default ``low``), per the Phase 33 README.
+severity (default ``low``), per the README.
 
 Resolution policy:
 
 - npm components carry their license in ``packages/<path>/license``
-  inside ``package-lock.json``; we already keep that on the SBOM
-  component when present.
+ inside ``package-lock.json``; we already keep that on the SBOM
+ component when present.
 - PyPI components don't expose license info in the lockfile, so by
-  default they resolve to ``unknown`` unless the operator extends the
-  SBOM with explicit license data later. This is intentionally
-  conservative — the alternative (fetching PyPI metadata over the
-  network) would break the Phase 33 offline guarantee.
+ default they resolve to ``unknown`` unless the operator extends the
+ SBOM with explicit license data later. This is intentionally
+ conservative — the alternative (fetching PyPI metadata over the
+ network) would break the offline guarantee.
 
 Allowlist / denylist semantics:
 
 - An empty allowlist means "no SPDX whitelisting policy"; only the
-  denylist gates findings.
+ denylist gates findings.
 - A non-empty allowlist + non-empty denylist: deny wins on overlap.
 - Unknown ids default to the configured ``unknown_severity``.
 """

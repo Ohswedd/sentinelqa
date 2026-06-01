@@ -1,12 +1,12 @@
-"""End-to-end functional-module sweep (Phase 10.05).
+"""End-to-end functional-module sweep.
 
 Two scenarios:
 
-- ``sample-app``         → runner reports all green; module summarizes
-  ``passed``, emits zero findings of severity ≥ medium, exit 0.
-- ``sample-app-broken``  → runner reports a login + role-boundary
-  failure; module summarizes ``failed``, emits one high-severity
-  Finding per failure with our product spec evidence, exit 1.
+- ``sample-app`` → runner reports all green; module summarizes
+ ``passed``, emits zero findings of severity ≥ medium, exit 0.
+- ``sample-app-broken`` → runner reports a login + role-boundary
+ failure; module summarizes ``failed``, emits one high-severity
+ Finding per failure with our product spec evidence, exit 1.
 
 The Playwright executor itself stays out of CI: we wire a deterministic
 stub runner that mirrors what the real runner would emit when pointed at

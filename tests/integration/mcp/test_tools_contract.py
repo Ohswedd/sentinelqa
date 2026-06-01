@@ -1,4 +1,4 @@
-"""Task 18.02 — every our product spec tool round-trips through the dispatcher.
+"""— every our product spec tool round-trips through the dispatcher.
 
 Each tool's success path returns a valid envelope; URL-bearing tools
 enforce the safety policy before any SDK call (unsafe → envelope error

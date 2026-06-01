@@ -1,13 +1,13 @@
-"""LLM-DEAD-BTN — buttons with no observed handler (the documentation, task 19.02).
+"""LLM-DEAD-BTN — buttons with no observed handler (the documentation, ).
 
 Pure function over :class:`ButtonObservation` records. The check is
 intentionally conservative: it flags a button only when
 
 * it is not disabled,
 * it is not decorative / a disclosure widget (accordions, ``<details>``,
-  carousel indicators),
+ carousel indicators),
 * it has neither a static handler nor any runtime effect — no network
-  call within 2 s, no navigation, no DOM change, and no console error.
+ call within 2 s, no navigation, no DOM change, and no console error.
 
 When runtime signals are missing (the runner did not capture them),
 the check requires the static-handler heuristic on its own to fail;

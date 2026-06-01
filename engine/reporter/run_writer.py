@@ -1,4 +1,4 @@
-"""``run.json`` writer (task 03.01).
+"""``run.json`` writer.
 
 Serializes the per-run summary envelope. The schema lives at
 ``packages/shared-schema/run.schema.json`` (our engineering rules, §38).
@@ -44,7 +44,7 @@ class RunReport:
     """In-memory shape of `run.json` before serialization.
 
     Built by :func:`build_run_report` from the lifecycle inputs and dumped
-    by :func:`write_run`. Exposed for tests + the SDK (Phase 16).
+    by :func:`write_run`. Exposed for tests + the SDK.
     """
 
     SCHEMA_VERSION: ClassVar[str] = RUN_REPORT_SCHEMA_VERSION
@@ -101,7 +101,7 @@ def derive_release_decision(
 ) -> ReleaseDecision:
     """Return the release decision for a run, with PolicyDecision authoritative.
 
-    Phase 14 (quality scoring) populates :class:`PolicyDecision`. Until that
+    (quality scoring) populates :class:`PolicyDecision`. Until that
     lands, callers may pass ``policy=None`` and we derive a safe default
     from the run status (our engineering rules — no fake completion: an absent
     decision becomes ``"inconclusive"`` rather than a fake pass).
@@ -133,7 +133,7 @@ def summarize_modules_and_findings(
     - ``passed``: count of modules with ``status="passed"``.
     - ``failed``: count of modules with ``status="failed"``.
     - ``blocked``: count of modules that couldn't run cleanly —
-      ``status in {"errored", "skipped", "incomplete"}``.
+    ``status in {"errored", "skipped", "incomplete"}``.
     - ``info``: count of findings with ``severity="info"``.
     """
 

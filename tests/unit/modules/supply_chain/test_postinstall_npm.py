@@ -1,4 +1,4 @@
-"""Postinstall scanner — npm patterns (Phase 33.04)."""
+"""Postinstall scanner — npm patterns."""
 
 from __future__ import annotations
 

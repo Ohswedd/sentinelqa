@@ -1,4 +1,4 @@
-"""OpenAI planner adapter integration tests (task 06.04).
+"""OpenAI planner adapter integration tests.
 
 Uses a stub :class:`httpx.MockTransport` instead of any vendor SDK. The
 adapter never reaches the live API in CI; the only failure modes we

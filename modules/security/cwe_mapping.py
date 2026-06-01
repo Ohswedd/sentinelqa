@@ -1,6 +1,6 @@
 """Default CWE / ATT&CK / OWASP-API mapping for security findings.
 
-Phase 32 / ADR-0044. Every security finding category SHOULD carry a
+ / ADR-0044. Every security finding category SHOULD carry a
 ``cwe_id`` so downstream consumers (SARIF dashboards, the SentinelQA
 HTML report, security-team triage queues) can deep-link to canonical
 standards. Module-level checks may override per-finding by setting the
@@ -35,7 +35,7 @@ class TaxonomyIds:
 # ``tests/unit/security/test_cwe_mapping_covers_rules.py`` verifies that
 # every registered security ``rule_id`` has a mapping entry.
 _DEFAULTS: Final[dict[str, TaxonomyIds]] = {
-    # ---------------- Headers (Phase 13) ----------------
+    # ---------------- Headers ----------------
     "security/headers/sec-headers-hsts-missing": TaxonomyIds(cwe_id="CWE-319"),
     "security/headers/sec-headers-csp-missing": TaxonomyIds(cwe_id="CWE-693"),
     "security/headers/sec-headers-csp-unsafe-inline": TaxonomyIds(cwe_id="CWE-693"),
@@ -43,7 +43,7 @@ _DEFAULTS: Final[dict[str, TaxonomyIds]] = {
     "security/headers/sec-headers-xcontent-nosniff-missing": TaxonomyIds(cwe_id="CWE-693"),
     "security/headers/sec-headers-referrer-policy-missing": TaxonomyIds(cwe_id="CWE-200"),
     "security/headers/sec-headers-permissions-policy-missing": TaxonomyIds(cwe_id="CWE-693"),
-    # ---------------- Cookies (Phase 13 + Phase 32.02) ----------------
+    # ---------------- Cookies ( + ) ----------------
     "security/cookies/sec-cookie-missing-secure": TaxonomyIds(cwe_id="CWE-614"),
     "security/cookies/sec-cookie-missing-httponly": TaxonomyIds(cwe_id="CWE-1004"),
     "security/cookies/sec-cookie-missing-samesite": TaxonomyIds(cwe_id="CWE-1275"),
@@ -51,15 +51,15 @@ _DEFAULTS: Final[dict[str, TaxonomyIds]] = {
     "security/cookies/sec-cookie-missing-prefix": TaxonomyIds(cwe_id="CWE-1004"),
     "security/cookies/sec-cookie-overbroad-domain": TaxonomyIds(cwe_id="CWE-1275"),
     "security/cookies/sec-cookie-overbroad-path": TaxonomyIds(cwe_id="CWE-1275"),
-    # ---------------- CORS (Phase 13) ----------------
+    # ---------------- CORS ----------------
     "security/cors/sec-cors-wildcard-credentials": TaxonomyIds(cwe_id="CWE-942"),
     "security/cors/sec-cors-reflective-allow-origin": TaxonomyIds(cwe_id="CWE-942"),
-    # ---------------- CSRF (Phase 13) ----------------
+    # ---------------- CSRF ----------------
     "security/csrf/sec-csrf-missing-token": TaxonomyIds(cwe_id="CWE-352"),
-    # ---------------- XSS (Phase 13) ----------------
+    # ---------------- XSS ----------------
     "security/xss_reflected/sec-xss-reflected": TaxonomyIds(cwe_id="CWE-79"),
     "security/xss_stored/sec-xss-stored": TaxonomyIds(cwe_id="CWE-79"),
-    # ---------------- SQLi (Phase 13) ----------------
+    # ---------------- SQLi ----------------
     "security/sqli/sec-sqli-behavioral": TaxonomyIds(cwe_id="CWE-89"),
     # ---------------- IDOR / BOLA / BFLA ----------------
     "security/idor/sec-idor-cross-user-access": TaxonomyIds(
@@ -82,30 +82,30 @@ _DEFAULTS: Final[dict[str, TaxonomyIds]] = {
     "security/bundle_secrets/sec-bundle-secret-github": TaxonomyIds(cwe_id="CWE-540"),
     "security/bundle_secrets/sec-bundle-secret-slack": TaxonomyIds(cwe_id="CWE-540"),
     "security/bundle_secrets/sec-bundle-secret-private-key": TaxonomyIds(cwe_id="CWE-540"),
-    # ---------------- Dependencies / SAST (Phase 13) ----------------
+    # ---------------- Dependencies / SAST ----------------
     "security/deps/sec-deps-vulnerable": TaxonomyIds(cwe_id="CWE-1104"),
     "security/sast/sec-sast-finding": TaxonomyIds(cwe_id="CWE-693"),
-    # ---------------- JWT (Phase 32.01) ----------------
+    # ---------------- JWT ----------------
     "security/jwt_weakness/sec-jwt-alg-none": TaxonomyIds(cwe_id="CWE-347", attack_id="T1606.001"),
     "security/jwt_weakness/sec-jwt-weak-hs256-secret": TaxonomyIds(cwe_id="CWE-347"),
     "security/jwt_weakness/sec-jwt-missing-exp": TaxonomyIds(cwe_id="CWE-613"),
     "security/jwt_weakness/sec-jwt-expired": TaxonomyIds(cwe_id="CWE-613"),
     "security/jwt_weakness/sec-jwt-missing-iss-aud": TaxonomyIds(cwe_id="CWE-345"),
-    # ---------------- TLS (Phase 32.03) ----------------
+    # ---------------- TLS ----------------
     "security/tls_posture/sec-tls-version-legacy": TaxonomyIds(cwe_id="CWE-326", attack_id="T1573"),
     "security/tls_posture/sec-tls-weak-cipher": TaxonomyIds(cwe_id="CWE-326", attack_id="T1573"),
     "security/tls_posture/sec-tls-cert-expired": TaxonomyIds(cwe_id="CWE-295"),
     "security/tls_posture/sec-tls-cert-expiring-soon": TaxonomyIds(cwe_id="CWE-295"),
     "security/tls_posture/sec-tls-hsts-too-short": TaxonomyIds(cwe_id="CWE-319"),
     "security/tls_posture/sec-tls-hsts-missing": TaxonomyIds(cwe_id="CWE-319"),
-    # ---------------- GraphQL (Phase 32.04) ----------------
+    # ---------------- GraphQL ----------------
     "security/graphql_safety/sec-graphql-introspection-enabled": TaxonomyIds(cwe_id="CWE-200"),
     "security/graphql_safety/sec-graphql-no-depth-limit": TaxonomyIds(cwe_id="CWE-770"),
     "security/graphql_safety/sec-graphql-no-complexity-limit": TaxonomyIds(cwe_id="CWE-770"),
     "security/graphql_safety/sec-graphql-mutation-no-auth": TaxonomyIds(
         cwe_id="CWE-862", owasp_api_id="API-2023-05"
     ),
-    # ---------------- SSRF / open redirect (Phase 32.08) ----------------
+    # ---------------- SSRF / open redirect ----------------
     "security/ssrf_redirect/sec-ssrf-suspected": TaxonomyIds(
         cwe_id="CWE-918", owasp_api_id="API-2023-07"
     ),

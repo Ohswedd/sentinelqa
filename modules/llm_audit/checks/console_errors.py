@@ -1,4 +1,4 @@
-"""LLM-CONSOLE-ERROR-IGNORED + LLM-UNHANDLED-PROMISE (task 19.13).
+"""LLM-CONSOLE-ERROR-IGNORED + LLM-UNHANDLED-PROMISE.
 
 Pure function over :class:`ConsoleEntry` records. We aggregate per
 route. Third-party analytics / ads noise can be filtered via
@@ -8,9 +8,9 @@ list are dropped.
 Findings:
 
 * ``LLM-CONSOLE-ERROR-IGNORED`` — a ``level=='error'`` entry was
-  captured while the UI reported success on the same route.
+ captured while the UI reported success on the same route.
 * ``LLM-UNHANDLED-PROMISE`` — any entry flagged as
-  ``is_unhandled_rejection``.
+ ``is_unhandled_rejection``.
 """
 
 from __future__ import annotations

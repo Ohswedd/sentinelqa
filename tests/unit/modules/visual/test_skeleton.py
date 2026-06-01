@@ -1,4 +1,4 @@
-"""Unit tests for :mod:`modules.visual` skeleton (Phase 21.01)."""
+"""Unit tests for :mod:`modules.visual` skeleton."""
 
 from __future__ import annotations
 

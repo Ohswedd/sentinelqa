@@ -1,19 +1,19 @@
-"""API endpoint detection (task 05.03).
+"""API endpoint detection.
 
-The HTTP-first MVP can't observe live XHR/fetch traffic — that requires a
+The HTTP-first release can't observe live XHR/fetch traffic — that requires a
 browser. Instead the detector:
 
 1. Scans inline ``<script>`` bodies and fetched external JS bundles for
-   string literals that look like API paths.
+ string literals that look like API paths.
 2. Walks every crawled HTML page for ``<form action>`` URLs and treats them
-   as POST endpoints.
+ as POST endpoints.
 3. Walks every crawled URL: any path matching ``/api/`` or returning
-   ``application/json`` is treated as an observed endpoint.
+ ``application/json`` is treated as an observed endpoint.
 4. Templates parameterized paths (numeric IDs, UUIDs, slugs) into stable
-   identifiers like ``/api/users/[id]``.
+ identifiers like ``/api/users/[id]``.
 5. Cross-checks references-vs-observations to flag suspicious patterns:
-   referenced in JS but never called during crawling (likely missing /
-   broken handler — Phase 19 LLM-audit signal).
+ referenced in JS but never called during crawling (likely missing /
+ broken handler — LLM-audit signal).
 """
 
 from __future__ import annotations

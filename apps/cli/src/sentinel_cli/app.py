@@ -45,10 +45,10 @@ from sentinel_cli.commands import (
 )
 from sentinel_cli.state import GlobalState, detect_ci_default
 
-# Commands stubbed-out in Phase 02. Each entry binds (command_name,
+# Commands stubbed-out in. Each entry binds (command_name,
 # future_phase, one_line_help). Lifecycle commands that actually do
-# something in Phase 02 (`init`, `doctor`, `audit`) are NOT here. Phase 05
-# replaces the `discover` stub. Phase 23 replaces the `chaos` stub.
+# something in (`init`, `doctor`, `audit`) are NOT here.
+# replaces the `discover` stub. replaces the `chaos` stub.
 _STUB_COMMANDS: Final[tuple[tuple[str, str, str], ...]] = ()
 
 

@@ -287,7 +287,7 @@ class GeneratorPipeline:
         inputs: GenerationInputs,
     ) -> _RenderedSpec | None:
         # Form submissions also get a smoke-shaped spec; richer codegen
-        # for non-login forms lands when Phase 10 (Functional) extends
+        # for non-login forms lands when (Functional) extends
         # this pipeline.
         return self._render_smoke(flow, tags=tags, rel_path=rel_path, inputs=inputs)
 
@@ -466,7 +466,7 @@ class GeneratorPipeline:
         path = "/"
         title = flow.name
         # Flow name layout from the deterministic planner:
-        #   "api contract: <METHOD> <PATH>"
+        # "api contract: <METHOD> <PATH>"
         match = re.match(r"api contract:\s*(\S+)\s+(.+)", flow.name)
         if match is not None:
             method = match.group(1).upper()
@@ -538,7 +538,7 @@ _ID_TAG_RE = re.compile(r"^(form|endpoint|element|route|element-?id):")
 _FORM_ID_TAG_RE = re.compile(r"^form:(FRM-[A-Za-z0-9_-]+)$")
 _ENDPOINT_ID_TAG_RE = re.compile(r"^endpoint:(API-[A-Za-z0-9_-]+)$")
 
-# Extractor name → SentinelQA module (Phase 10.03). The mapping mirrors
+# Extractor name → SentinelQA module. The mapping mirrors
 # ``engine.planner.core._EXTRACTOR_TO_TEST_TYPE`` but for the canonical
 # `@module:<name>` tag that the runner / CI modes filter on.
 _EXTRACTOR_TO_MODULE: dict[str, str] = {
@@ -565,7 +565,7 @@ _EXTRACTOR_TO_MODULE: dict[str, str] = {
 
 
 def _canonical_tag_set(flow: Flow) -> list[str]:
-    """Return the canonical Playwright tag set for ``flow`` (Phase 10.03).
+    """Return the canonical Playwright tag set for ``flow``.
 
     The set always contains, in order:
 
@@ -574,8 +574,8 @@ def _canonical_tag_set(flow: Flow) -> list[str]:
     3. ``@flow:<extractor>`` — the planner extractor that produced the flow.
     4. ``@risk:<level>`` — the canonical risk bucket.
     5. Any planner-provided tags that survive :func:`_stable_tags` (these
-       are non-ID, content-stable annotations like ``auth_boundary`` or
-       ``llm_audit_candidate``).
+    are non-ID, content-stable annotations like ``auth_boundary`` or
+    ``llm_audit_candidate``).
     """
 
     extractor = flow.extractor or "unknown"

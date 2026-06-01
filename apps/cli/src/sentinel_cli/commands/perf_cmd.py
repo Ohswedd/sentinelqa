@@ -1,6 +1,6 @@
-"""``sentinel perf`` — run the performance module via the lifecycle (Phase 12).
+"""``sentinel perf`` — run the performance module via the lifecycle.
 
-Replaces the Phase 02 stub. The command drives the full
+Replaces the stub. The command drives the full
 :class:`RunLifecycle` restricted to the ``performance`` module so the
 same lifecycle steps (safety policy, artifact tree, reporter dispatch,
 exit-code mapping) run whether the user types ``sentinel audit`` or
@@ -15,7 +15,7 @@ Exit codes (CLAUDE §13):
 
 - ``0`` — module produced no high/critical findings.
 - ``1`` — quality gate failed (high/critical findings present, or the
-  module is ``incomplete``).
+ module is ``incomplete``).
 - ``2`` — invalid config or CLI usage.
 - ``4`` — safety policy blocked the target.
 - ``5`` — sentinel-ts binary missing.

@@ -1,19 +1,19 @@
-"""Release-decision logic (task 14.03, the documentation).
+"""Release-decision logic.
 
 Translates the numeric score + blockers + run status into a
 :class:`engine.domain.policy_decision.PolicyDecision`. Decision
 priority (top wins):
 
-1. ``run_status == "unsafe_blocked"``  → ``unsafe_target_rejected``.
-2. ``run_status == "incomplete"``     → ``inconclusive``.
-3. ``run_status == "dry_run"``        → ``inconclusive`` (no signal).
-4. Any blocker                        → ``blocked``.
-5. Score < policy.min_quality_score   → ``blocked``.
-6. Any medium severity finding        → ``pass_with_warnings``.
-7. Otherwise                          → ``pass``.
+1. ``run_status == "unsafe_blocked"`` → ``unsafe_target_rejected``.
+2. ``run_status == "incomplete"`` → ``inconclusive``.
+3. ``run_status == "dry_run"`` → ``inconclusive`` (no signal).
+4. Any blocker → ``blocked``.
+5. Score < policy.min_quality_score → ``blocked``.
+6. Any medium severity finding → ``pass_with_warnings``.
+7. Otherwise → ``pass``.
 
 The ``reasons`` tuple records each rule that fired so the explain
-report (task 14.06) can render an honest narrative.
+report can render an honest narrative.
 """
 
 from __future__ import annotations

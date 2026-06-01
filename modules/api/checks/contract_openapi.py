@@ -1,4 +1,4 @@
-"""OpenAPI contract check (Phase 22.02).
+"""OpenAPI contract check.
 
 For each operation in the supplied :class:`OpenApiDocument` send a
 sample request and validate the response status, content type, and
@@ -6,9 +6,9 @@ JSON body against the documented schema. Findings are emitted at:
 
 - ``critical`` when an undocumented 5xx is returned.
 - ``high`` for schema mismatch / wrong content-type / wrong status
-  code at the highest documented severity bucket (5xx > 4xx > 3xx).
+ code at the highest documented severity bucket (5xx > 4xx > 3xx).
 - ``medium`` for missing response fields the schema marked
-  ``required``.
+ ``required``.
 """
 
 from __future__ import annotations

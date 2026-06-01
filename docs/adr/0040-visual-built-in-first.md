@@ -12,7 +12,7 @@ Accepted
 our product spec Open Question #7 asked whether SentinelQA should provide its
 own visual-diff engine or integrate with existing providers. The
 recommended answer was "basic built-in visual diff first, integrations
-later." Phase 21 (ADR-0026) shipped a pure-Python visual module:
+later." (ADR-0026) shipped a pure-Python visual module:
 Pillow-driven pixel diff plus single-scale SSIM on the luminance
 channel, with a hard CI-acceptance guard.
 
@@ -20,10 +20,10 @@ This ADR is one of the eight Phase-27 open-question ADRs.
 
 ## Decision
 
-**SentinelQA owns the visual-diff engine in the MVP.** Hosted visual
+**SentinelQA owns the visual-diff engine in the release.** Hosted visual
 services (Percy, Chromatic, Applitools) are not integrated yet — they
 fall into the cloud-boundary deferral (ADR-0033) and can ship as
-out-of-tree `ScannerPlugin` integrations post-MVP.
+out-of-tree `ScannerPlugin` integrations post-release.
 
 The built-in engine:
 
@@ -44,8 +44,8 @@ The built-in engine:
 
 ## Alternatives considered
 
-- **Integrate with Percy / Chromatic / Applitools first.** Rejected — adds a hosted dependency to the MVP, conflicts with ADR-0033, and forces every user into someone else's pricing.
-- **No visual module in the MVP.** Rejected — visual regression is part of the documentation scope and a real differentiator for the release-confidence story.
+- **Integrate with Percy / Chromatic / Applitools first.** Rejected — adds a hosted dependency to the release, conflicts with ADR-0033, and forces every user into someone else's pricing.
+- **No visual module in the release.** Rejected — visual regression is part of the documentation scope and a real differentiator for the release-confidence story.
 
 ## References
 

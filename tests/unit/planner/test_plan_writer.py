@@ -1,4 +1,4 @@
-"""Plan writer unit tests (task 06.03)."""
+"""Plan writer unit tests."""
 
 from __future__ import annotations
 

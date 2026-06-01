@@ -1,4 +1,4 @@
-"""Structural smoke for the Next.js example (Phase 26.01)."""
+"""Structural smoke for the Next.js example."""
 
 from __future__ import annotations
 

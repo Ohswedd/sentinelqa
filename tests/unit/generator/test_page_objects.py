@@ -1,4 +1,4 @@
-"""Tests for the page-object generator (task 07.02)."""
+"""Tests for the page-object generator."""
 
 from __future__ import annotations
 

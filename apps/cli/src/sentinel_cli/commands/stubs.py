@@ -15,7 +15,7 @@ def register_stub(app: typer.Typer, *, name: str, phase: str, summary: str) -> N
     """Attach a stub command to ``app``.
 
     The stub raises :class:`InternalError` (exit code 7) when invoked.
-    This satisfies the spec in task 02.01: every the documentation command is
+    This satisfies the spec in : every the documentation command is
     registered, and the unimplemented ones surface a deterministic
     "not yet implemented" failure rather than silently doing nothing
     (CLAUDE §37: no fake completion).

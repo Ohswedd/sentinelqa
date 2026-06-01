@@ -1,6 +1,6 @@
-"""Planner LLM adapter (task 06.04, ADR-0011).
+"""Planner LLM adapter.
 
-The deterministic planner ships in Phase 06; this adapter lets an LLM
+The deterministic planner ships in ; this adapter lets an LLM
 *propose* additional flows behind a feature flag. Default is the
 :class:`NullLlmPlanner` — planning works without any API key, in CI, and
 in air-gapped environments.

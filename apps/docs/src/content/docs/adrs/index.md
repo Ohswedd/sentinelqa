@@ -22,7 +22,7 @@ ADR source files live under `docs/adr/` in the repository. See [`docs/adr/README
 | [0007](https://github.com/Ohswedd/sentinelqa/blob/main/docs/adr/0007-run-lifecycle.md) | Run lifecycle | `Accepted` |
 | [0008](https://github.com/Ohswedd/sentinelqa/blob/main/docs/adr/0008-report-schemas-and-reporter.md) | Report schemas and reporter pipeline | `Accepted` |
 | [0009](https://github.com/Ohswedd/sentinelqa/blob/main/docs/adr/0009-python-ts-protocol.md) | Python ↔ TypeScript JSONL protocol and TS runtime boundary | `Accepted` |
-| [0010](https://github.com/Ohswedd/sentinelqa/blob/main/docs/adr/0010-discovery-mvp-http-first.md) | Discovery MVP is HTTP-first; Playwright SPA crawl lands in Phase 17 | `Accepted` |
+| [0010](https://github.com/Ohswedd/sentinelqa/blob/main/docs/adr/0010-discovery-mvp-http-first.md) | Discovery release is HTTP-first; Playwright SPA crawl lands in | `Accepted` |
 | [0011](https://github.com/Ohswedd/sentinelqa/blob/main/docs/adr/0011-planner-deterministic-vs-llm.md) | Planner is deterministic-first; LLM adapter is opt-in behind a locked, versioned prompt | `Accepted` |
 | [0012](https://github.com/Ohswedd/sentinelqa/blob/main/docs/adr/0012-generated-test-conventions.md) | Generated test conventions | `Accepted` |
 | [0013](https://github.com/Ohswedd/sentinelqa/blob/main/docs/adr/0013-runner-architecture.md) | Runner architecture (local + Docker, retry, quarantine, sharding) | `Accepted` |
@@ -45,7 +45,7 @@ ADR source files live under `docs/adr/` in the repository. See [`docs/adr/README
 | [0030](https://github.com/Ohswedd/sentinelqa/blob/main/docs/adr/0030-integrations.md) | Integrations — stdlib HTTP adapters, off-by-default, redacted | `Accepted` |
 | [0031](https://github.com/Ohswedd/sentinelqa/blob/main/docs/adr/0031-example-apps.md) | Example apps — self-contained reference implementations | `Accepted` |
 | [0032](https://github.com/Ohswedd/sentinelqa/blob/main/docs/adr/0032-docs-site.md) | Docs site built with Astro Starlight | `Accepted` |
-| [0033](https://github.com/Ohswedd/sentinelqa/blob/main/docs/adr/0033-cloud-boundary.md) | Cloud boundary — no SentinelQA cloud in the MVP | `Accepted` |
+| [0033](https://github.com/Ohswedd/sentinelqa/blob/main/docs/adr/0033-cloud-boundary.md) | Cloud boundary — no SentinelQA cloud in the release | `Accepted` |
 | [0034](https://github.com/Ohswedd/sentinelqa/blob/main/docs/adr/0034-python-cli-typescript-runtime.md) | Python-first CLI with a TypeScript Playwright runtime | `Accepted` |
 | [0035](https://github.com/Ohswedd/sentinelqa/blob/main/docs/adr/0035-generated-tests-in-user-repo.md) | Generated tests live in the user's repo | `Accepted` |
 | [0036](https://github.com/Ohswedd/sentinelqa/blob/main/docs/adr/0036-cloud-delayed-until-cli-traction.md) | Cloud is delayed until the CLI earns adoption | `Accepted` |
@@ -56,8 +56,8 @@ ADR source files live under `docs/adr/` in the repository. See [`docs/adr/README
 | [0041](https://github.com/Ohswedd/sentinelqa/blob/main/docs/adr/0041-framework-agnostic-with-nextjs.md) | Framework-agnostic crawler with first-class Next.js support | `Accepted` |
 | [0042](https://github.com/Ohswedd/sentinelqa/blob/main/docs/adr/0042-multi-provider-llm-adapter.md) | Canonical multi-provider LLM adapter layer | `Accepted` |
 | [0043](https://github.com/Ohswedd/sentinelqa/blob/main/docs/adr/0043-browser-authenticated-audits.md) | Browser-authenticated audits via an encrypted Playwright `storage_state` vault | `Accepted` |
-| [0044](https://github.com/Ohswedd/sentinelqa/blob/main/docs/adr/0044-extended-security-skill-catalog.md) | Extended security skill catalog (Phase 32) | `Accepted` |
-| [0045](https://github.com/Ohswedd/sentinelqa/blob/main/docs/adr/0045-supply-chain-module.md) | Supply-Chain & Dependency Audit module (Phase 33) | `Accepted` |
-| [0046](https://github.com/Ohswedd/sentinelqa/blob/main/docs/adr/0046-compliance-packs.md) | Compliance Packs (Phase 34) | `Accepted` |
-| [0047](https://github.com/Ohswedd/sentinelqa/blob/main/docs/adr/0047-public-release-readiness.md) | Public release readiness (Phase 35) | `Accepted` |
-| [0048](https://github.com/Ohswedd/sentinelqa/blob/main/docs/adr/0048-publish-pipeline.md) | Publish pipeline (Phase 36) | `Accepted` |
+| [0044](https://github.com/Ohswedd/sentinelqa/blob/main/docs/adr/0044-extended-security-skill-catalog.md) | Extended security skill catalog | `Accepted` |
+| [0045](https://github.com/Ohswedd/sentinelqa/blob/main/docs/adr/0045-supply-chain-module.md) | Supply-Chain & Dependency Audit module | `Accepted` |
+| [0046](https://github.com/Ohswedd/sentinelqa/blob/main/docs/adr/0046-compliance-packs.md) | Compliance Packs | `Accepted` |
+| [0047](https://github.com/Ohswedd/sentinelqa/blob/main/docs/adr/0047-public-release-readiness.md) | Public release readiness | `Accepted` |
+| [0048](https://github.com/Ohswedd/sentinelqa/blob/main/docs/adr/0048-publish-pipeline.md) | Publish pipeline | `Accepted` |

@@ -1,4 +1,4 @@
-"""LLM-HARDCODED-CRED — hardcoded credentials in shipped source (task 19.08).
+"""LLM-HARDCODED-CRED — hardcoded credentials in shipped source.
 
 Pattern-matches a small set of high-precision hardcoded-credential
 shapes against :class:`SourceFile` bodies:
@@ -6,7 +6,7 @@ shapes against :class:`SourceFile` bodies:
 * obvious literal pairs (``username: 'admin'`` next to a password line),
 * JWT / bearer tokens embedded in JS strings,
 * connection strings (``postgres://`` / ``mysql://``) with embedded
-  credentials,
+ credentials,
 * env values masquerading as constants (``API_KEY = "sk-..."``).
 
 Per our engineering rules, every emitted finding routes its observed snippet
@@ -94,11 +94,11 @@ def check_hardcoded_credentials(
     The snippet is double-redacted before it leaves this function:
 
     1. The exact matched substring (the credential value) is replaced
-       with ``[REDACTED:hardcoded_credential]`` so the literal never
-       appears verbatim.
+    with ``[REDACTED:hardcoded_credential]`` so the literal never
+    appears verbatim.
     2. The resulting line passes through
-       :func:`engine.policy.redaction.redact` to catch any nearby
-       known-format token (JWT, AWS key, etc.) the first pass missed.
+    :func:`engine.policy.redaction.redact` to catch any nearby
+    known-format token (JWT, AWS key, etc.) the first pass missed.
     """
 
     findings: list[CheckFinding] = []

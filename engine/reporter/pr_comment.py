@@ -1,18 +1,18 @@
-"""GitHub PR comment generator (Phase 15, task 15.02).
+"""GitHub PR comment generator (, ).
 
 Produces a GitHub-flavored Markdown comment summarizing a run. The
 output is sized to fit GitHub's 65 535-character comment limit and
 includes an upsert anchor (``<!-- sentinelqa:pr-comment -->``) so the
-GitHub Action (Phase 17) can edit the same comment on subsequent runs
+GitHub Action can edit the same comment on subsequent runs
 rather than spawning new ones.
 
 Style discipline:
 
 - All user-controlled strings flow through
-  :func:`engine.reporter.markdown_writer.md_escape` so a malicious
-  finding title cannot inject Markdown or HTML.
+ :func:`engine.reporter.markdown_writer.md_escape` so a malicious
+ finding title cannot inject Markdown or HTML.
 - Output is deterministic: sort orders are fixed and the trailing
-  newline is normalized so byte-for-byte goldens hold.
+ newline is normalized so byte-for-byte goldens hold.
 """
 
 from __future__ import annotations

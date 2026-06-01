@@ -14,7 +14,7 @@ class LlmAuditModuleOptions:
     Each field is optional. ``checks`` lets callers run a subset
     (our engineering rules: ``--checks <subset>`` on the CLI); when empty, the
     module runs every registered check whose signals are available.
-    ``discovery_path`` lets callers replay a Phase 05 artifact instead
+    ``discovery_path`` lets callers replay a artifact instead
     of re-discovering. ``signals_root`` is the directory the module
     walks for optional runtime signals captured by earlier phases.
     """

@@ -2,11 +2,11 @@
 
 Uses ``pytest-httpserver`` to spin up a tiny local app that exposes:
 
-- ``/``         — landing page with an anchor to /dashboard and /login
+- ``/`` — landing page with an anchor to /dashboard and /login
 - ``/dashboard``— requires auth: returns 401 anonymously, 200 with cookie
-- ``/login``    — login form (POST /login → sets a cookie + redirects to /dashboard)
-- ``/admin``    — anonymously returns 200 (UI-only auth smell), 200 with cookie
-- ``/missing``  — returns 404
+- ``/login`` — login form (POST /login → sets a cookie + redirects to /dashboard)
+- ``/admin`` — anonymously returns 200 (UI-only auth smell), 200 with cookie
+- ``/missing`` — returns 404
 - ``/api/users``— returns 200 with a JSON list
 - ``/api/items/123`` — returns 200 (used for path templating tests)
 - ``/api/broken`` — returns 500 (5xx flag test)

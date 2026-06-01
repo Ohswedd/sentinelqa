@@ -1,4 +1,4 @@
-"""Slack payload validates against the vendored Block Kit schema (Phase 15.06)."""
+"""Slack payload validates against the vendored Block Kit schema."""
 
 from __future__ import annotations
 

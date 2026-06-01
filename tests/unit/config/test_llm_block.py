@@ -1,4 +1,4 @@
-"""Strict validation for the `llm:` config block (Phase 30, ADR-0042)."""
+"""Strict validation for the `llm:` config block (, ADR-0042)."""
 
 from __future__ import annotations
 

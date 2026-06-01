@@ -1,4 +1,4 @@
-"""Provider registry (Phase 30, ADR-0042).
+"""Provider registry (, ADR-0042).
 
 A tiny in-process registry mapping ``provider.name`` to a factory
 ``Callable[[], LlmProvider]``. The lazy-callable shape keeps every

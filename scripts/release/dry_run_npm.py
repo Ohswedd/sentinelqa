@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright (c) 2026 SentinelQA contributors.
-"""npm publish dry-run (Phase 36.03).
+"""npm publish dry-run.
 
 Runs ``pnpm --filter @sentinelqa/ts-runtime build`` to produce the
 compiled ``dist/`` tree, then exercises ``pnpm pack`` and
@@ -8,10 +8,10 @@ compiled ``dist/`` tree, then exercises ``pnpm pack`` and
 
 1. The tarball builds at all.
 2. The tarball does NOT contain any forbidden contents (``.git/``,
-   ``.env``, ``node_modules/``, source ``.test.ts``, ``.spec.ts``,
-   source maps that should be inlined, etc.).
+ ``.env``, ``node_modules/``, source ``.test.ts``, ``.spec.ts``,
+ source maps that should be inlined, etc.).
 3. ``npm publish --dry-run`` does not error out (registry-side
-   validation: name uniqueness scope, files: whitelist coherence).
+ validation: name uniqueness scope, files: whitelist coherence).
 
 This script never publishes — that is the owner-only step in
 ``docs/release/publish-runbook.md``.
@@ -21,7 +21,7 @@ Exit codes
 
 * ``0`` — build + pack + dry-run succeeded; tarball clean.
 * ``2`` — one of the above steps failed, OR the tarball contained a
-  forbidden file.
+ forbidden file.
 * ``5`` — ``pnpm`` or ``npm`` is not on PATH.
 """
 
@@ -116,7 +116,7 @@ def inspect_tarball(tarball: Path) -> list[tuple[str, str]]:
             for fragment, reason in FORBIDDEN_TARBALL_ENTRIES:
                 if fragment in name:
                     hits.append((name, reason))
-            # Source .ts files (other than .d.ts) — extra rule that does
+            # Source.ts files (other than.d.ts) — extra rule that does
             # not fit the simple "substring" pattern above.
             if name.endswith(".ts") and not name.endswith(".d.ts"):
                 hits.append((name, "raw .ts source leaked into npm tarball"))

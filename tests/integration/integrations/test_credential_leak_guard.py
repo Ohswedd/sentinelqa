@@ -1,6 +1,6 @@
-"""Credential-leak guard (Phase 25.07).
+"""Credential-leak guard.
 
-This test runs on every CI pass. It asserts that none of the Phase 25
+This test runs on every CI pass. It asserts that none of the
 integration credentials are present in the process environment. If any
 of them are, real credentials have leaked into the test environment —
 mocked tests would happily pass while exposing the secret to logs,
@@ -17,7 +17,7 @@ from typing import Final
 
 import pytest
 
-# Each entry is the env var name carrying a Phase 25 integration secret.
+# Each entry is the env var name carrying a integration secret.
 # Membership of an empty string is fine — only non-empty values are a leak.
 _FORBIDDEN_ENV_VARS: Final[frozenset[str]] = frozenset(
     {
@@ -29,7 +29,7 @@ _FORBIDDEN_ENV_VARS: Final[frozenset[str]] = frozenset(
         "SAUCE_ACCESS_KEY",
         # Slack
         "SLACK_WEBHOOK_URL",
-        # GitHub (the deeper integration shares GITHUB_TOKEN with Phase 17;
+        # GitHub (the deeper integration shares GITHUB_TOKEN with ;
         # we explicitly do NOT include it here because the CI run that posts
         # the PR comment uses GITHUB_TOKEN by design).
         # Jira
@@ -42,7 +42,7 @@ _FORBIDDEN_ENV_VARS: Final[frozenset[str]] = frozenset(
 
 
 def test_phase_25_credentials_not_present_in_environment() -> None:
-    """Fail loudly if a Phase 25 secret leaked into CI."""
+    """Fail loudly if a secret leaked into CI."""
 
     leaked: list[str] = []
     for name in sorted(_FORBIDDEN_ENV_VARS):

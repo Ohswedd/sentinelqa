@@ -2,7 +2,7 @@
 
 Destructive mode against any host requires a `proof_of_authorization` file
 that names the host, the authorized actor, the scope, and an expiry. The
-MVP accepts an unsigned YAML doc; a future ADR may extend the format to
+release accepts an unsigned YAML doc; a future ADR may extend the format to
 require a detached signature.
 
 Schema (YAML):
@@ -12,13 +12,13 @@ schema_version: "1"
 host: staging.example.com
 actor: alice@example.com
 scope:
-  - functional
-  - api
-  - security
+ - functional
+ - api
+ - security
 issued_at: 2026-05-27T00:00:00Z
 expires_at: 2026-08-27T00:00:00Z
 notes: |
-  Authorized by Acme Inc. infosec ticket SEC-1234.
+ Authorized by Acme Inc. infosec ticket SEC-1234.
 ```
 """
 

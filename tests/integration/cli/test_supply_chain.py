@@ -1,4 +1,4 @@
-"""CLI integration tests for ``sentinel supply-chain`` (Phase 33.07)."""
+"""CLI integration tests for ``sentinel supply-chain``."""
 
 from __future__ import annotations
 

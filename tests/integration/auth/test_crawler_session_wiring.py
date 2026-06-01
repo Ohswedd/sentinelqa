@@ -1,4 +1,4 @@
-"""Phase 31 — vault → crawler injects cookies into the discovery client."""
+"""vault → crawler injects cookies into the discovery client."""
 
 from __future__ import annotations
 

@@ -1,4 +1,4 @@
-"""FailureSignal builder tests (task 09.01)."""
+"""FailureSignal builder tests."""
 
 from __future__ import annotations
 

@@ -1,6 +1,6 @@
 # `sentinel mcp` — Model Context Protocol server
 
-Status: `Stable` (Phase 18, ADR-0023).
+Status: `Stable` (, ADR-0023).
 
 `sentinel mcp` starts the SentinelQA MCP server. The server speaks
 the [Model Context Protocol](https://spec.modelcontextprotocol.io/)

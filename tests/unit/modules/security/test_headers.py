@@ -1,4 +1,4 @@
-"""Unit tests for the security headers check (Phase 13.02)."""
+"""Unit tests for the security headers check."""
 
 from __future__ import annotations
 

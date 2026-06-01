@@ -1,4 +1,4 @@
-"""Wire-model tests (Phase 13)."""
+"""Wire-model tests."""
 
 from __future__ import annotations
 

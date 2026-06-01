@@ -1,4 +1,4 @@
-"""``sentinel.verify_fix`` — verify an agent-applied fix (task 18.04)."""
+"""``sentinel.verify_fix`` — verify an agent-applied fix."""
 
 from __future__ import annotations
 

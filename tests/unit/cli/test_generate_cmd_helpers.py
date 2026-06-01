@@ -1,4 +1,4 @@
-"""Unit tests for ``sentinel_cli.commands.generate_cmd`` helpers (task 07.06)."""
+"""Unit tests for ``sentinel_cli.commands.generate_cmd`` helpers."""
 
 from __future__ import annotations
 

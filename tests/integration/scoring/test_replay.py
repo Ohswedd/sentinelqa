@@ -1,4 +1,4 @@
-"""Task 14.05 — score-replay regression test.
+"""— score-replay regression test.
 
 Three canonical scenarios — a clean run, a run with mixed-severity
 findings, and a blocked-by-critical run — are computed end-to-end and

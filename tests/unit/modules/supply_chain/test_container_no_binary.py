@@ -1,4 +1,4 @@
-"""Container scanner — graceful skipped paths (Phase 33.05)."""
+"""Container scanner — graceful skipped paths."""
 
 from __future__ import annotations
 

@@ -1,4 +1,4 @@
-"""Phase 34.03 — CCPA Do Not Sell link detection + opt-out form check."""
+"""CCPA Do Not Sell link detection + opt-out form check."""
 
 from __future__ import annotations
 

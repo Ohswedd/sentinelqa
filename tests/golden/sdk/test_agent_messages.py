@@ -1,4 +1,4 @@
-"""Golden agent-message shapes (task 16.03 DoD).
+"""Golden agent-message shapes.
 
 Every public exception and every entity with ``to_agent_message()`` is
 pinned here so unintentional shape drift fails CI loud. Regenerate via

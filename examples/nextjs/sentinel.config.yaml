@@ -1,4 +1,4 @@
-# SentinelQA configuration for the Next.js demo (Phase 26.01).
+# SentinelQA configuration for the Next.js demo ().
 # The app binds to 127.0.0.1:3000 by default — see README.md.
 version: 1
 

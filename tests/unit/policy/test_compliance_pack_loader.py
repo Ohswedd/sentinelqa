@@ -1,4 +1,4 @@
-"""Phase 34.05 — compliance-pack DSL loader + validator."""
+"""compliance-pack DSL loader + validator."""
 
 from __future__ import annotations
 

@@ -1,4 +1,4 @@
-"""Interactive sign-in flow (Phase 31, Task 31.02).
+"""Interactive sign-in flow (, ).
 
 The CLI command ``sentinel auth login`` calls :func:`capture_session` to
 launch a headed Playwright browser, wait for the operator to sign in
@@ -11,8 +11,8 @@ our engineering rules hard rules enforced here:
 
 - The operator signs in. SentinelQA never reads credentials.
 - If the post-login URL host doesn't match the start URL host AND isn't
-  on the operator's allowlist, the flow refuses to capture (raises
-  :class:`engine.errors.base.LoginOriginChangedError`).
+ on the operator's allowlist, the flow refuses to capture (raises
+ :class:`engine.errors.base.LoginOriginChangedError`).
 - CI mode is forbidden — the flow needs a real human.
 """
 

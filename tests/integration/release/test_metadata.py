@@ -1,6 +1,6 @@
 """Regression tests for ``scripts/release/audit_metadata.py``.
 
-This is the Phase 28 task 28.03 acceptance gate: every publishable manifest
+This is the acceptance gate: every publishable manifest
 must carry release-ready metadata at every CI run, and every internal manifest
 must opt out of publishing.
 

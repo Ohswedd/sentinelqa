@@ -1,4 +1,4 @@
-"""Phase 20 — `healer:` config block tests."""
+"""`healer:` config block tests."""
 
 from __future__ import annotations
 

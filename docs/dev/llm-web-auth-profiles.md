@@ -1,6 +1,6 @@
 # LLM-web auth profiles
 
-> Status: **Stable** (Phase 31, ADR-0043).
+> Status: **Stable** (, ADR-0043).
 
 SentinelQA ships five **LLM-web auth profiles** so operators can
 audit logged-in workflows they built themselves on the consumer LLM

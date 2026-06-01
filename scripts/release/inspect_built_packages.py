@@ -10,7 +10,7 @@ that no Python wheel, sdist, or npm tarball ships:
 * compiled Python caches (``__pycache__/``, ``*.pyc``)
 
 Optionally also lists the resolved file inventory for each artifact for a human
-sanity review (the Phase 28 task spec phrases this as "inspect contents of
+sanity review (the spec phrases this as "inspect contents of
 every built artifact for a sanity review").
 
 Exit codes

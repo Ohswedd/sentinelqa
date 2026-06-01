@@ -1,4 +1,4 @@
-"""Master-key acquisition (Phase 31, ADR-0043).
+"""Master-key acquisition (, ADR-0043).
 
 The vault stores its AES-256-GCM master key in the operator's OS keyring
 (Login Keychain on macOS, Secret Service / kwallet on Linux, Credential
@@ -11,16 +11,16 @@ PBKDF2-SHA256 derivation of a passphrase the operator supplies via the
 Design points:
 
 - The Python ``keyring`` library is an optional import. The vault works
-  without it, but the only available code path then is the passphrase
-  fallback. We never silently switch to "no encryption."
+ without it, but the only available code path then is the passphrase
+ fallback. We never silently switch to "no encryption."
 - The PBKDF2 salt is stored in plaintext under
-  ``~/.sentinel/auth/.salt``. The salt itself is not a secret — knowing
-  it doesn't help an attacker without the passphrase — and persisting
-  it keeps subsequent runs reproducible.
+ ``~/.sentinel/auth/.salt``. The salt itself is not a secret — knowing
+ it doesn't help an attacker without the passphrase — and persisting
+ it keeps subsequent runs reproducible.
 - The iteration count is fixed at 600_000 (NIST SP 800-132 / OWASP 2026
-  guidance for SHA-256). Configurable upward via
-  ``SENTINEL_VAULT_PBKDF2_ITERATIONS`` for future hardening, but never
-  downward.
+ guidance for SHA-256). Configurable upward via
+ ``SENTINEL_VAULT_PBKDF2_ITERATIONS`` for future hardening, but never
+ downward.
 """
 
 from __future__ import annotations

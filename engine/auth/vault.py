@@ -1,24 +1,24 @@
 """On-disk encrypted vault for Playwright ``storage_state`` blobs.
 
-Phase 31 / ADR-0043. The vault lives at::
+ / ADR-0043. The vault lives at::
 
-    ~/.sentinel/auth/<host-slug>/<name>.json.enc
+ ~/.sentinel/auth/<host-slug>/<name>.json.enc
 
 Each ``.json.enc`` file is the AES-256-GCM ciphertext of a small JSON
 envelope::
 
-    {
-      "schema_version": "1.0.0",
-      "name": "<name>",
-      "host": "<host>",
-      "storage_state_json": "{...playwright storage_state...}",
-      "created_at": "...",
-      "expires_at": "...",
-      "last_used_at": null,
-      "cookies_count": 7,
-      "local_storage_keys": 2,
-      "captured_by": "cli"
-    }
+ {
+ "schema_version": "1.0.0",
+ "name": "<name>",
+ "host": "<host>",
+ "storage_state_json": "{...playwright storage_state...}",
+ "created_at": "...",
+ "expires_at": "...",
+ "last_used_at": null,
+ "cookies_count": 7,
+ "local_storage_keys": 2,
+ "captured_by": "cli"
+ }
 
 The associated-data field of the AEAD includes the schema version + the
 ``host:name`` pair, so swapping a ciphertext file from one entry to
@@ -27,12 +27,12 @@ another fails decryption.
 Vault operations refuse to do anything dangerous silently:
 
 - :meth:`get` requires an ``allowed_hosts`` set and raises
-  :class:`engine.errors.base.VaultHostMismatchError` when the stored host
-  is not in that set.
+ :class:`engine.errors.base.VaultHostMismatchError` when the stored host
+ is not in that set.
 - :meth:`get` raises :class:`engine.errors.base.VaultEntryExpiredError`
-  when the stored ``expires_at`` is in the past.
+ when the stored ``expires_at`` is in the past.
 - :meth:`list` returns redacted :class:`VaultMetadata` only — the
-  storage state is never even decrypted during a list.
+ storage state is never even decrypted during a list.
 
 The vault never logs storage_state values; the audit log carries counts
 only (cookies, local-storage keys).
@@ -356,7 +356,7 @@ class Vault:
 
         Bypasses the ``touch`` write so an export doesn't bump
         ``last_used_at``. Callers MUST surface the warning copy required
-        by task 31.03 before invoking this.
+        by before invoking this.
         """
 
         entry = self.get(host, name, allowed_hosts=allowed_hosts, now=now, touch=False)

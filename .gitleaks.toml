@@ -1,15 +1,15 @@
 # SentinelQA gitleaks configuration.
-#
+
 # Extends gitleaks' built-in rule set with an allowlist for *test fixtures*
 # only. Real secrets are forbidden anywhere in the tree; the rules below
 # name the exact fake-secret strings that ship inside redaction tests so
 # the scanner can see them and let them through.
-#
+
 # Adding a new test fixture? Either:
-#  - Use the existing fake values listed under `regexes` below, OR
-#  - Add the new fake string to `regexes` along with a comment that names
-#    the test that needs it.
-#
+# - Use the existing fake values listed under `regexes` below, OR
+# - Add the new fake string to `regexes` along with a comment that names
+# the test that needs it.
+
 # Do NOT widen the path allowlist beyond `tests/`, `scripts/` (test-fixture
 # generators only), and `packages/ts-runtime/src/__tests__/` — production
 # code is never allowed to carry secret-shaped strings.
@@ -27,7 +27,7 @@ paths = [
   '''^tests/unit/log/test_formatters\.py$''',
   '''^tests/unit/test_coverage_gaps\.py$''',
   '''^tests/property/test_redaction_property\.py$''',
-  # Phase 04 — Python ↔ TS redaction parity. The exporter script and
+  # Python ↔ TS redaction parity. The exporter script and
   # the generated fixture both contain literal example strings that
   # match the rule patterns; that is the point — they need to be
   # redacted by the implementations being tested. Same allowance for
@@ -38,7 +38,7 @@ paths = [
   '''^packages/ts-runtime/src/__tests__/redact\.test\.ts$''',
   '''^packages/ts-runtime/src/__tests__/redact\.parity\.test\.ts$''',
   '''^packages/ts-runtime/src/__tests__/helpers\.test\.ts$''',
-  # Phase 13 — security module secret-detector fixtures. The detector
+  # security module secret-detector fixtures. The detector
   # patterns are exercised against deliberately-shaped fake secrets in
   # these tests; they are not real credentials.
   '''^tests/unit/modules/security/test_secret_patterns\.py$''',
@@ -46,11 +46,11 @@ paths = [
   '''^tests/integration/modules/security/test_frontend_secrets_integration\.py$''',
   '''^tests/integration/modules/security/test_e2e\.py$''',
   '''^tests/integration/cli/test_security\.py$''',
-  # Phase 15 — audit-view test proves the redacter strips a fake
+  # audit-view test proves the redacter strips a fake
   # Stripe-style key + password from the persisted audit log. The
   # literal needs to exist in the test source to assert the negative.
   '''^tests/integration/reporter/test_audit_view\.py$''',
-  # Phase 19 — LLM-Code audit module tests assert the hardcoded-
+  # LLM-Code audit module tests assert the hardcoded-
   # credential scanner detects literal fake credentials. Tests then
   # assert the values never survive into persisted findings.
   '''^tests/unit/modules/test_llm_audit_helpers\.py$''',
@@ -59,18 +59,18 @@ paths = [
   '''^tests/integration/modules/llm_audit/test_broken_fixture_sweep\.py$''',
   '''^tests/fixtures/llm_audit_broken/source_files\.json$''',
   '''^tests/fixtures/llm_audit_broken/signals\.json$''',
-  # Phase 28 — release-package inspector test writes a synthetic .pem
+  # release-package inspector test writes a synthetic .pem
   # member into an in-memory tarball to prove the inspector flags it.
   # The body is a literal PEM-style header with no key bytes.
   '''^tests/integration/release/test_built_packages\.py$''',
-  # Phase 32 — Extended security catalog tests (ADR-0044) assert that
+  # Extended security catalog tests (ADR-0044) assert that
   # the new credential-shape detectors (JWT, Stripe live, GitHub PAT)
   # fire on literal canonical fixtures. Each test then asserts the
   # raw value never survives into the persisted finding.
   '''^tests/unit/modules/security/test_jwt_weakness\.py$''',
   '''^tests/unit/modules/security/test_bundle_secrets\.py$''',
   '''^tests/integration/modules/security/test_phase32_e2e\.py$''',
-  # Phase 34 — SOC 2 audit-trail tests (ADR-0046) assert the
+  # SOC 2 audit-trail tests (ADR-0046) assert the
   # secret-leak gate detects unredacted Bearer / JWT / AKIA / sk-
   # tokens inside synthetic audit.log entries.
   '''^tests/unit/modules/compliance/test_soc2_trail\.py$''',

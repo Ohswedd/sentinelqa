@@ -1,6 +1,6 @@
 """Default CWE / ATT&CK / OWASP-API mapping for API findings.
 
-Phase 32 / ADR-0044. The API module emits findings in categories of
+ / ADR-0044. The API module emits findings in categories of
 the form ``api/<check>/<rule_id_lower>``. This table maps those
 categories to canonical taxonomy ids so SARIF / dashboard consumers can
 deep-link.

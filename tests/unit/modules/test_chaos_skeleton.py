@@ -1,4 +1,4 @@
-"""Phase 23.01 skeleton tests for :class:`ChaosModule`."""
+"""skeleton tests for :class:`ChaosModule`."""
 
 from __future__ import annotations
 

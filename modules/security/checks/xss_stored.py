@@ -1,4 +1,4 @@
-"""Stored-XSS safe probe (Phase 13.05, gated).
+"""Stored-XSS safe probe.
 
 This check is **off by default** and ONLY runs when ALL of the following
 hold (CLAUDE §6, §26 + our product spec):

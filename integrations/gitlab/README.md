@@ -3,7 +3,7 @@
 GitLab-side adapter (the documentation, our engineering rules §39):
 
 - `.gitlab-ci.sentinel.yml` — drop-in include with a `.sentinelqa` job template; reusable via `extends:`.
-- `post_mr_note.py` — upsert merge-request note helper (Task 17.03).
+- `post_mr_note.py` — upsert merge-request note helper.
 
 The engine never imports this folder ; it's an adapter
 behind the existing CLI.
@@ -13,7 +13,7 @@ behind the existing CLI.
 ```yaml
 include: - project: 'sentinelqa/sentinelqa' file: '/integrations/gitlab/.gitlab-ci.sentinel.yml'
 
-sentinelqa: extends: .sentinelqa variables: SENTINELQA_URL: 'https://preview-${CI_COMMIT_SHORT_SHA}.example.com' SENTINELQA_MODE: 'standard' SENTINELQA_DIFF: 'origin/main...HEAD' SENTINELQA_VERSION: '0.1.0'
+sentinelqa: extends:.sentinelqa variables: SENTINELQA_URL: 'https://preview-${CI_COMMIT_SHORT_SHA}.example.com' SENTINELQA_MODE: 'standard' SENTINELQA_DIFF: 'origin/main...HEAD' SENTINELQA_VERSION: '0.1.0'
 ```
 
 ### Job variables

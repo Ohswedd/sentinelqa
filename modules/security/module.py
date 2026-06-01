@@ -1,25 +1,25 @@
-"""``SecurityModule`` (Phase 13, the documentation, ADR-0018).
+"""``SecurityModule`` (, the documentation, ADR-0018).
 
 Lifecycle (CLAUDE §9):
 
 - ``validate_prerequisites`` — no-op; missing optional binaries
-  (``pip-audit`` / ``semgrep``) are surfaced by ``sentinel doctor``,
-  not as a module error.
-- ``plan``                   — resolves the route list (CLI options
-  → discovery.json → config.security.routes → ``("/",)`` fallback
-  only when the CLI explicitly injects it).
-- ``execute``                — drives each enabled check through
-  :func:`SafetyPolicy.enforce` first; collects results into a
-  :class:`SecurityRunOutcome`.
-- ``collect_evidence``       — writes ``security/<check>.json`` and
-  ``security/index.json``.
-- ``emit_findings``          — translates each :class:`SecurityIssue`
-  via :func:`modules.security.findings.findings_from_checks`.
-- ``emit_metrics``           — counts issues per check, total
-  targets scanned, total duration.
-- ``summarize``              — overlays findings on a synthesized
-  :class:`ModuleResult` (no Playwright tests run; no
-  :class:`RunnerOutcome` exists).
+ (``pip-audit`` / ``semgrep``) are surfaced by ``sentinel doctor``,
+ not as a module error.
+- ``plan`` — resolves the route list (CLI options
+ → discovery.json → config.security.routes → ``("/",)`` fallback
+ only when the CLI explicitly injects it).
+- ``execute`` — drives each enabled check through
+ :func:`SafetyPolicy.enforce` first; collects results into a
+ :class:`SecurityRunOutcome`.
+- ``collect_evidence`` — writes ``security/<check>.json`` and
+ ``security/index.json``.
+- ``emit_findings`` — translates each :class:`SecurityIssue`
+ via :func:`modules.security.findings.findings_from_checks`.
+- ``emit_metrics`` — counts issues per check, total
+ targets scanned, total duration.
+- ``summarize`` — overlays findings on a synthesized
+ :class:`ModuleResult` (no Playwright tests run; no
+ :class:`RunnerOutcome` exists).
 
 Every public method begins with :func:`SafetyPolicy.enforce` (or
 delegates to a check that does); the AST guard in

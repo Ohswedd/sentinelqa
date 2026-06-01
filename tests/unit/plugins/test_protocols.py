@@ -1,8 +1,8 @@
-"""Phase 24 task 24.01 — plugin Protocol surface (our product spec2).
+"""— plugin Protocol surface (our product spec2).
 
 These tests pin the shape of :mod:`sentinelqa.plugins` so external
 plugin authors get a stable contract. Anything they re-export here is
-gated by ``sentinelqa.plugins.__all__`` and (per task 24.05) by
+gated by ``sentinelqa.plugins.__all__`` and (per ) by
 :data:`PROTOCOL_VERSION`.
 """
 
@@ -52,7 +52,7 @@ def test_protocol_version_is_semver() -> None:
 
 def test_entry_point_group_is_stable() -> None:
     # The group name is part of the plugin packaging contract — changing
-    # it would break every installed plugin. Task 24.05 ADR-protects it.
+    # it would break every installed plugin. ADR-protects it.
     assert ENTRY_POINT_GROUP == "sentinelqa.plugins"
 
 

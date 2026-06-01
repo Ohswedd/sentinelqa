@@ -16,7 +16,7 @@ Without a single canonical lifecycle, two failure modes become unavoidable:
 1. Safety enforcement can drift to "best effort" — a module that forgets to call the policy enforcer can quietly bypass the safety boundary.
 2. Reports diverge — a run that skipped a step but still wrote `run.json` looks identical to a complete run, which destroys the trust we are trying to build.
 
-Phase 02 ships the CLI and needs the lifecycle to exist before later module phases (05+) can plug in. Module phases must extend the lifecycle without modifying it.
+ships the CLI and needs the lifecycle to exist before later module phases (05+) can plug in. Module phases must extend the lifecycle without modifying it.
 
 ## Decision
 
@@ -36,10 +36,10 @@ The lifecycle never bypasses safety. Unsafe targets short-circuit at step 4 with
 ## Consequences
 
 - **Positive:** the lifecycle is auditable by reading one file. Adding a new step requires updating `LifecyclePhase` _and_ the class together, which is exactly the friction we want for a safety-critical sequence.
-- **Positive:** modules and per-phase hooks are loosely coupled to the lifecycle, so Phase 24 (Plugin Architecture) can replace the registry with an entry-point loader without changing the lifecycle itself.
+- **Positive:** modules and per-phase hooks are loosely coupled to the lifecycle, so (Plugin Architecture) can replace the registry with an entry-point loader without changing the lifecycle itself.
 - **Positive:** safety policy is enforced exactly once, in step 4, and an unsafe target produces a deterministic exit code (4) and a non-empty audit log.
 - **Negative / trade-off:** the class is moderately large (≈350 LOC). We accept that — splitting it across files would dilute the "one place" property the lifecycle relies on.
-- **Follow-up obligations:** - Phase 03 will fill in the `generate_reports` hook with real report writers. - Phase 14 will fill in `calculate_quality_score` and `apply_quality_gates`. - Phase 24 will replace `register_builtins`-style registration with entry-point discovery, preserving the public registry interface. - Phase 29 will re-audit the lifecycle for determinism (no hidden network calls, deterministic ordering) as part of final hardening.
+- **Follow-up obligations:** - will fill in the `generate_reports` hook with real report writers. - will fill in `calculate_quality_score` and `apply_quality_gates`. - will replace `register_builtins`-style registration with entry-point discovery, preserving the public registry interface. - will re-audit the lifecycle for determinism (no hidden network calls, deterministic ordering) as part of final hardening.
 
 ## Alternatives considered
 

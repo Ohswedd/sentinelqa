@@ -1,4 +1,4 @@
-"""Tests for the template renderer (task 07.01)."""
+"""Tests for the template renderer."""
 
 from __future__ import annotations
 

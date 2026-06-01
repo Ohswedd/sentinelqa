@@ -1,4 +1,4 @@
-"""Google Gemini provider (Phase 30 task 30.02, ADR-0042).
+"""Google Gemini provider (, ADR-0042).
 
 Calls Google AI Studio's REST endpoint:
 ``https://generativelanguage.googleapis.com/v1/models/<model>:generateContent``.

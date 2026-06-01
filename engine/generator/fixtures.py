@@ -1,26 +1,26 @@
-"""Fixture generator (task 07.03).
+"""Fixture generator.
 
 Emits four small TypeScript files that generated specs import:
 
 - ``tests/sentinel/fixtures/auth.ts`` — Playwright storageState
-  fixture that logs in once per worker. Credentials are read from
-  env-var names declared in the SentinelQA config; the generator never
-  hardcodes them and refuses to emit auth.ts if the config does not
-  name them.
+ fixture that logs in once per worker. Credentials are read from
+ env-var names declared in the SentinelQA config; the generator never
+ hardcodes them and refuses to emit auth.ts if the config does not
+ name them.
 - ``tests/sentinel/fixtures/data.ts`` — opt-in ``freshUser`` /
-  ``seededRecord`` fixtures that create data via the discovery-detected
-  API map and clean up after themselves.
+ ``seededRecord`` fixtures that create data via the discovery-detected
+ API map and clean up after themselves.
 - ``tests/sentinel/setup/global-setup.ts`` — runs auth-state generation
-  once at suite start.
+ once at suite start.
 - ``tests/sentinel/setup/global-teardown.ts`` — cleans up any data
-  fixtures created during the suite.
+ fixtures created during the suite.
 
 Safety boundary (CLAUDE §6 / our product spec):
 
 - No credentials in the generated source.
 - Data fixtures abort when the SentinelQA security mode is not one of
-  ``local`` or ``allowlisted``; an attempt to seed data against a
-  production target without explicit allowlisting fails fast.
+ ``local`` or ``allowlisted``; an attempt to seed data against a
+ production target without explicit allowlisting fails fast.
 """
 
 from __future__ import annotations

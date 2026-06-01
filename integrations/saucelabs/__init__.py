@@ -1,4 +1,4 @@
-"""Sauce Labs remote-browser execution adapter (Phase 25.02)."""
+"""Sauce Labs remote-browser execution adapter."""
 
 from __future__ import annotations
 

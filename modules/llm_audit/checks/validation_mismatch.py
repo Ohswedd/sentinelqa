@@ -1,16 +1,16 @@
-"""LLM-VALIDATION-MISMATCH-* — frontend/backend validation mismatch (task 19.11).
+"""LLM-VALIDATION-MISMATCH-* — frontend/backend validation mismatch.
 
 Pure function over :class:`ValidationProbe` records. Two finding
 types fire:
 
 * ``LLM-VALIDATION-MISMATCH-BACKEND-ACCEPTS`` (high) — the frontend
-  refused to submit a malformed payload, but the backend accepted it
-  (status 2xx) when the runner POSTed it directly. The backend is the
-  authoritative validator and is currently lax.
+ refused to submit a malformed payload, but the backend accepted it
+ (status 2xx) when the runner POSTed it directly. The backend is the
+ authoritative validator and is currently lax.
 * ``LLM-VALIDATION-MISMATCH-FRONTEND-MISSING`` (medium-high) — the
-  frontend would have submitted as-is, and the backend rejected it
-  with a 4xx. The user gets bad UX (no fast feedback) but the data
-  layer is at least safe.
+ frontend would have submitted as-is, and the backend rejected it
+ with a 4xx. The user gets bad UX (no fast feedback) but the data
+ layer is at least safe.
 """
 
 from __future__ import annotations

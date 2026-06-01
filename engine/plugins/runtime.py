@@ -1,4 +1,4 @@
-"""Runtime ``PluginContext`` (Phase 24 task 24.03).
+"""Runtime ``PluginContext``.
 
 The orchestrator instantiates :class:`PluginContextImpl` per-call and
 hands it to the loaded plugin. The context exposes only the APIs the
@@ -42,7 +42,7 @@ class PluginContextImpl:
         self.granted_permissions = granted_permissions
 
     # ----------------------------------------------------------------
-    # Permission helpers (task 24.03)
+    # Permission helpers
     # ----------------------------------------------------------------
     def has_permission(self, permission: str) -> bool:
         """Return True if the plugin declared ``permission``.
@@ -116,7 +116,7 @@ class PluginContextImpl:
     def auth_session(self, host: str, name: str) -> dict[str, Any]:
         """Decrypt and return a Playwright ``storage_state`` from the vault.
 
-        Phase 31 / ADR-0043. The plugin MUST declare
+        / ADR-0043. The plugin MUST declare
         ``auth.read:<host>`` in its manifest before it can read a vault
         entry for that host; cross-host reads are refused even if the
         plugin asks nicely. Re-uses :meth:`engine.auth.vault.Vault.get`

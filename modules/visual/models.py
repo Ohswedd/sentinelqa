@@ -12,7 +12,7 @@ from pathlib import Path
 
 @dataclass(frozen=True)
 class BaselineRecord:
-    """One row of ``baselines/index.json`` (Phase 21.02)."""
+    """One row of ``baselines/index.json``."""
 
     viewport: str
     route_slug: str
@@ -36,13 +36,13 @@ class DiffOutcome:
 
     ``status`` is one of:
 
-    - ``match``   — baseline exists; diff fraction below the threshold
-      (and SSIM above ``min_similarity`` when perceptual is enabled).
-    - ``differ``  — baseline exists; threshold exceeded.
+    - ``match`` — baseline exists; diff fraction below the threshold
+    (and SSIM above ``min_similarity`` when perceptual is enabled).
+    - ``differ`` — baseline exists; threshold exceeded.
     - ``missing_baseline`` — current captured but no baseline on disk.
-    - ``missing_current``  — baseline exists but no current capture.
-    - ``size_mismatch``    — images differ in size (treated as differ
-      with a dedicated category for the report).
+    - ``missing_current`` — baseline exists but no current capture.
+    - ``size_mismatch`` — images differ in size (treated as differ
+    with a dedicated category for the report).
     """
 
     route_slug: str

@@ -1,4 +1,4 @@
-"""Fixture refresh proposals (Phase 20.04, our engineering rules).
+"""Fixture refresh proposals.
 
 When a data fixture (``seededRecord``) fails because the seeded
 entity is missing or the API contract changed, the Healer never
@@ -8,19 +8,19 @@ auto-applies anything to the database. It emits a structured
 Two patterns:
 
 1. **Re-seed.** The fixture's last successful response named record
-   ``id=42`` but the current API returns ``404``. We propose:
-   "Re-run the project's seed command (default: ``pnpm seed``)".
+ ``id=42`` but the current API returns ``404``. We propose:
+ "Re-run the project's seed command (default: ``pnpm seed``)".
 
 2. **Regenerate from schema.** The fixture's expected shape diverges
-   from the current OpenAPI/GraphQL schema (extra or missing fields).
-   We propose: "Re-run ``sentinel generate --from-discovery`` to
-   refresh fixture data files".
+ from the current OpenAPI/GraphQL schema (extra or missing fields).
+ We propose: "Re-run ``sentinel generate --from-discovery`` to
+ refresh fixture data files".
 
 Confidence is fixed by the signal:
 
 - Missing entity (404 / empty body) → ``0.85`` (auto-apply candidate
-  under ``auto_apply_mode='aggressive'`` with operator approval; the
-  default threshold of ``0.9`` still forces review).
+ under ``auto_apply_mode='aggressive'`` with operator approval; the
+ default threshold of ``0.9`` still forces review).
 - Contract drift (schema mismatch) → ``0.7`` (always review).
 """
 

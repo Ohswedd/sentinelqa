@@ -1,4 +1,4 @@
-"""Phase 22.07 — pagination + error-shape integration tests."""
+"""pagination + error-shape integration tests."""
 
 from __future__ import annotations
 

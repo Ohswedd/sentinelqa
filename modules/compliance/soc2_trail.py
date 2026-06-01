@@ -1,4 +1,4 @@
-"""SOC 2 audit-trail completeness gate (Phase 34.04, ADR-0046).
+"""SOC 2 audit-trail completeness gate.
 
 Audits the run's own ``audit.log`` against seven gates so a SOC 2
 auditor can point at the SentinelQA run artefact as evidence. The
@@ -10,23 +10,22 @@ The seven gates:
 1. **Trail exists** — the run wrote at least one ``audit.log`` line.
 2. **Trail is JSONL** — every non-empty line parses as a JSON object.
 3. **Timestamps monotonic** — entries are append-only (no edits to
-   prior lines / no out-of-order timestamps).
+ prior lines / no out-of-order timestamps).
 4. **Safety decisions recorded** — at least one ``policy_decision`` /
-   ``safety`` entry per run (CLAUDE §6, §10).
+ ``safety`` entry per run (CLAUDE §6, §10).
 5. **Module events recorded** — at least one ``module_start`` *and*
-   one ``module_end`` entry per module that ran.
+ one ``module_end`` entry per module that ran.
 6. **Artifact events recorded** — at least one ``artifact_written``
-   entry.
+ entry.
 7. **No secret leakage** — no cookie / Authorization / Set-Cookie
-   *value* present unredacted. Re-uses the Phase 29.02 secret-leak
-   rules — see :data:`SECRET_LEAK_TOKENS`.
+ *value* present unredacted. Re-uses the secret-leak
+ rules — see :data:`SECRET_LEAK_TOKENS`.
 
 Optional gates (only enforced when the pack opts in):
 
 - **LLM events recorded** — at least one ``llm_call`` entry, with
-  ``provider`` + ``cost_usd`` fields (Phase 30.09 work).
-- **Vault events recorded** — at least one ``vault_access`` entry
-  (Phase 31.07 work).
+ ``provider`` + ``cost_usd`` fields.
+- **Vault events recorded** — at least one ``vault_access`` entry.
 
 If any gate fails, the module emits a single typed finding per gate.
 """
@@ -202,7 +201,7 @@ def _gate_safety_decisions(parse: _TrailParse) -> Soc2GateResult:
         kind = _entry_kind(entry).lower()
         if "safety" in kind or "policy_decision" in kind or "decision" in kind:
             return Soc2GateResult(gate="trail-safety-decisions", passed=True)
-        # Decisions older than Phase 02 use the verb directly.
+        # Decisions older than use the verb directly.
         if entry.get("decision") in {"allow", "block"}:
             return Soc2GateResult(gate="trail-safety-decisions", passed=True)
     return Soc2GateResult(

@@ -2,7 +2,7 @@
 
 Ties the `examples/nextjs/` frontend and the `examples/fastapi/`
 backend together with `docker compose`, then runs a full
-`sentinel audit` against the stack. SentinelQA Phase 26.07.
+`sentinel audit` against the stack. SentinelQA
 
 ## Run
 

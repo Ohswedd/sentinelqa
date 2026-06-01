@@ -1,4 +1,4 @@
-"""Unit tests for :mod:`modules.security.checks.tls_posture` (task 32.03)."""
+"""Unit tests for :mod:`modules.security.checks.tls_posture`."""
 
 from __future__ import annotations
 

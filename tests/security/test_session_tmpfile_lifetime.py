@@ -1,4 +1,4 @@
-"""Phase 31 — the materialized storage_state file MUST NOT outlive the run."""
+"""the materialized storage_state file MUST NOT outlive the run."""
 
 from __future__ import annotations
 

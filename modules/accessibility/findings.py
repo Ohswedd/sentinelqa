@@ -7,12 +7,12 @@ check found: <detail>". The forbidden-phrase guard in
 
 The axe-impact → severity mapping follows the task file (11.05):
 
-    critical → high     serious → high     moderate → medium     minor → low
+ critical → high serious → high moderate → medium minor → low
 
 Confidence reflects how sound the underlying check is:
 
 - axe rules tagged ``experimental`` → 0.6
-- axe rules otherwise               → 0.95
+- axe rules otherwise → 0.95
 - keyboard / landmark / sr-name checks → 0.9
 
 Curated remediations live in ``_AXE_REMEDIATIONS``; rules not in the

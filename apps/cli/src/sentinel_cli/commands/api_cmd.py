@@ -1,6 +1,6 @@
-"""``sentinel api`` — run the ApiModule via the lifecycle (Phase 22).
+"""``sentinel api`` — run the ApiModule via the lifecycle.
 
-Replaces the Phase 02 stub. The command drives the full
+Replaces the stub. The command drives the full
 :class:`RunLifecycle` restricted to the ``api`` module so the
 same lifecycle steps (safety policy, artifact tree, reporter dispatch,
 exit-code mapping) run whether the user types ``sentinel audit`` or
@@ -15,10 +15,10 @@ Exit codes:
 
 - ``0`` — module produced no high/critical findings.
 - ``1`` — quality gate failed (high/critical findings present, or the
-  module is ``incomplete``).
+ module is ``incomplete``).
 - ``2`` — invalid config or CLI usage.
 - ``4`` — safety policy blocked the target.
-- ``5`` — required dependency missing (none for Phase 22).
+- ``5`` — required dependency missing (none for ).
 - ``6`` — runner failed to execute.
 """
 

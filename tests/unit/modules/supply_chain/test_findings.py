@@ -1,4 +1,4 @@
-"""Findings translator tests (Phase 33 — all six checks)."""
+"""Findings translator tests (all six checks)."""
 
 from __future__ import annotations
 

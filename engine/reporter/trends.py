@@ -1,4 +1,4 @@
-"""Trend rendering across local run history (Phase 15, task 15.03).
+"""Trend rendering across local run history (, ).
 
 Reads recent runs from ``.sentinel/runs/<id>/`` (the canonical artifact
 tree, our engineering rules) and derives a small set of headline series:
@@ -7,7 +7,7 @@ tree, our engineering rules) and derives a small set of headline series:
 - Per-module pass rate over time.
 - Top recurring finding IDs.
 
-We deliberately stay local: no external storage, no telemetry. Phase 4
+We deliberately stay local: no external storage, no telemetry.
 cloud comes later (our product spec — no telemetry by default). The renderer
 emits a small inline SVG sparkline per series so the HTML report stays
 JavaScript-free for charting.
@@ -185,7 +185,7 @@ def _load_snapshot(run_dir: Path) -> _RunSnapshot | None:
 
     module_results: list[Mapping[str, Any]] = []
     # `run.json` doesn't currently embed module results, so we read
-    # them from the per-module folder if available. Phase 08 writes
+    # them from the per-module folder if available. writes
     # `module-results/<module>.json`; we tolerate the directory being
     # missing for older runs.
     module_dir = run_dir / "module-results"

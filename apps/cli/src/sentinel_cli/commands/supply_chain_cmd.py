@@ -1,6 +1,6 @@
-"""``sentinel supply-chain`` — run the SupplyChainModule (Phase 33).
+"""``sentinel supply-chain`` — run the SupplyChainModule.
 
-Replaces the Phase 02 stub. The top-level command drives the full
+Replaces the stub. The top-level command drives the full
 :class:`RunLifecycle` restricted to the ``supply_chain`` module so the
 canonical lifecycle steps (safety policy, artifact tree, reporter
 dispatch, exit-code mapping) run whether the user types
@@ -10,9 +10,9 @@ Two sub-surfaces are exposed for callers that want to drive individual
 stages without the full module:
 
 - ``sentinel supply-chain sbom --out <dir>`` — emit a CycloneDX SBOM
-  to ``<dir>`` without running OSV / freshness / etc.
+ to ``<dir>`` without running OSV / freshness / etc.
 - ``sentinel supply-chain osv --sbom <path>`` — run an OSV lookup
-  against an existing ``sbom/index.json``.
+ against an existing ``sbom/index.json``.
 
 Exit codes (CLAUDE §13):
 
@@ -21,7 +21,7 @@ Exit codes (CLAUDE §13):
 - ``2`` — invalid config or CLI usage.
 - ``4`` — safety policy blocked the target.
 - ``5`` — required tool missing (none for the top-level command;
-  the container check downgrades to ``skipped`` instead).
+ the container check downgrades to ``skipped`` instead).
 - ``6`` — runner failed to execute.
 """
 

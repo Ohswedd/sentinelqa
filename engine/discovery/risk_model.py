@@ -1,4 +1,4 @@
-"""Deterministic risk rules (task 05.07).
+"""Deterministic risk rules.
 
 A small, audited set of explainable rules. Each rule is a pure function
 ``(RuleContext) -> RuleVerdict | None`` so the unit tests can pin every
@@ -8,10 +8,10 @@ Adding a rule requires:
 
 1. A new entry in :data:`RISK_RULES` (kept sorted by rule name).
 2. A docstring naming the rule slug — the rule name is exactly what
-   appears in ``RouteRisk.justifications``, so users and ADRs reference
-   the same string.
+ appears in ``RouteRisk.justifications``, so users and ADRs reference
+ the same string.
 3. A test in ``tests/unit/discovery/test_risk_model.py`` for both the
-   positive and negative case.
+ positive and negative case.
 """
 
 from __future__ import annotations

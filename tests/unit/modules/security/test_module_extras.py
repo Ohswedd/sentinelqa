@@ -1,4 +1,4 @@
-"""Extra coverage tests for :class:`SecurityModule` (Phase 13.13)."""
+"""Extra coverage tests for :class:`SecurityModule`."""
 
 from __future__ import annotations
 

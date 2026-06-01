@@ -1,4 +1,4 @@
-"""`--ci` mode behavior (task 02.07, CLAUDE §39)."""
+"""`--ci` mode behavior."""
 
 from __future__ import annotations
 

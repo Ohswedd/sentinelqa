@@ -1,14 +1,14 @@
-"""Hypothesis property tests for the Phase 03 reporter (task 03.08).
+"""Hypothesis property tests for the reporter.
 
 These tests generate randomized :class:`Finding` collections and assert
 that every writer:
 
 - produces JSON / XML / SARIF that validates against its committed
-  schema, and
+ schema, and
 - handles empty / single / many-finding cases without crashing.
 
 Markers: ``slow`` so they're excluded from `make test` by default and
-re-included under `make test-full` (matching the Phase 01 hypothesis
+re-included under `make test-full` (matching the hypothesis
 suite layout).
 """
 

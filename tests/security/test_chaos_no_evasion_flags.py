@@ -1,4 +1,4 @@
-"""Phase 23 — the chaos module must not ship stealth / evasion knobs.
+"""the chaos module must not ship stealth / evasion knobs.
 
 our engineering rules forbids stealth automation, bot-detection bypass,
 fingerprint evasion, proxy rotation for evasion, rate-limit bypass,
@@ -6,15 +6,15 @@ etc. This guard pairs two complementary checks (same shape as
 :mod:`tests.security.test_api_no_aggressive_flags`):
 
 1. Every ``.py`` file under :mod:`modules.chaos` and the
-   ``sentinel chaos`` CLI is grepped for compound forbidden literals
-   (``stealth_mode``, ``bot_detection_bypass``, ``proxy_rotation``,
-   etc.). Compound forms keep us from poisoning docstrings that
-   explain *why* a knob is forbidden.
+ ``sentinel chaos`` CLI is grepped for compound forbidden literals
+ (``stealth_mode``, ``bot_detection_bypass``, ``proxy_rotation``,
+ etc.). Compound forms keep us from poisoning docstrings that
+ explain *why* a knob is forbidden.
 
 2. The Typer parameters of :func:`sentinel_cli.commands.chaos_cmd.run_chaos`
-   are introspected to assert no CLI option name matches a forbidden
-   flag pattern (``--stealth``, ``--bypass``, ``--undetectable``,
-   ``--aggressive``, ``--ignore-robots``).
+ are introspected to assert no CLI option name matches a forbidden
+ flag pattern (``--stealth``, ``--bypass``, ``--undetectable``,
+ ``--aggressive``, ``--ignore-robots``).
 """
 
 from __future__ import annotations

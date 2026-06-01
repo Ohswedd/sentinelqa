@@ -1,13 +1,13 @@
-"""LLM-NO-LOADING-STATE + LLM-NO-ERROR-STATE (task 19.10).
+"""LLM-NO-LOADING-STATE + LLM-NO-ERROR-STATE.
 
 Pure function over :class:`LoadingErrorObservation` records. Each
 observation describes a scripted probe that either delayed or failed a
 target API call and reports what the UI did. Two finding types fire:
 
 * ``LLM-NO-LOADING-STATE`` — the probe delayed the request and the UI
-  showed no loading indicator within the observation window.
+ showed no loading indicator within the observation window.
 * ``LLM-NO-ERROR-STATE`` — the probe forced a 5xx and the UI either
-  showed no error state, or worse, reported success.
+ showed no error state, or worse, reported success.
 """
 
 from __future__ import annotations

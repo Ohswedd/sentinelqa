@@ -1,4 +1,4 @@
-"""Mocked Slack poster tests (Phase 25.03)."""
+"""Mocked Slack poster tests."""
 
 from __future__ import annotations
 

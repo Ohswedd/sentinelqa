@@ -1,9 +1,9 @@
-"""Structural checks for the Phase 27 docs site (apps/docs/).
+"""Structural checks for the docs site (apps/docs/).
 
 Asserts the scaffold's invariants without running Astro:
-  * the package is registered as `@sentinelqa/docs`
-  * sidebar entries in `astro.config.mjs` correspond to files on disk
-  * the docs site lives in the pnpm workspace
+ * the package is registered as `@sentinelqa/docs`
+ * sidebar entries in `astro.config.mjs` correspond to files on disk
+ * the docs site lives in the pnpm workspace
 """
 
 from __future__ import annotations

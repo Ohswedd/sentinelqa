@@ -6,7 +6,6 @@ name: Publish (Docker Hub)
 # `:sha-<short>`, and pushes to Docker Hub. The image pre-installs
 # sentinelqa-cli from PyPI so `docker run --rm sentinelqa/runner:<tag>
 # sentinel --version` works standalone.
-#
 # Publish is gated on the `docker-release` GitHub Environment so the
 # human owner manually approves before any push.
 

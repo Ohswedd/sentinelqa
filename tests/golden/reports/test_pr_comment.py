@@ -1,4 +1,4 @@
-"""PR comment generator goldens (Phase 15.02)."""
+"""PR comment generator goldens."""
 
 from __future__ import annotations
 

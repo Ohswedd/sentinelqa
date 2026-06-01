@@ -35,21 +35,21 @@ def finding_to_agent_message(finding: Finding) -> dict[str, Any]:
 
     Shape::
 
-        {
-          "type": "finding",
-          "schema_version": FINDINGS_SCHEMA_VERSION,
-          "agent_message_schema_version": AGENT_MESSAGE_SCHEMA_VERSION,
-          "id": "FND-...",
-          "module": "functional",
-          "category": "...",
-          "severity": "high",
-          "confidence": 0.95,
-          "title": "...",
-          "description": "...",
-          "recommendation": "...",
-          "evidence_paths": ["traces/...", "screenshots/..."],
-          "location": {"route": "/login", "selector": null, "file": null, "line": null},
-        }
+    {
+    "type": "finding",
+    "schema_version": FINDINGS_SCHEMA_VERSION,
+    "agent_message_schema_version": AGENT_MESSAGE_SCHEMA_VERSION,
+    "id": "FND-...",
+    "module": "functional",
+    "category": "...",
+    "severity": "high",
+    "confidence": 0.95,
+    "title": "...",
+    "description": "...",
+    "recommendation": "...",
+    "evidence_paths": ["traces/...", "screenshots/..."],
+    "location": {"route": "/login", "selector": null, "file": null, "line": null},
+    }
 
     Secrets are redacted via :func:`engine.policy.redaction.redact` before
     return so the dict is safe to ship straight to an LLM.

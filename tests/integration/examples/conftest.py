@@ -1,9 +1,9 @@
-"""Shared helpers for Phase 26 example-app integration tests.
+"""Shared helpers for example-app integration tests.
 
 These tests are structural — they assert the example apps exist, ship
 their `sentinel.config.yaml`, expose the routes their READMEs claim,
 and (where applicable) demonstrate the LLM-audit anti-patterns the
-Phase 19 demo depends on. They do NOT boot Node.js / Docker; running
+demo depends on. They do NOT boot Node.js / Docker; running
 the demos themselves is documented in each example's README and the
 top-level `make demo-*` targets.
 """

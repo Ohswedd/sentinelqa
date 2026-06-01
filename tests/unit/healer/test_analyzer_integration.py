@@ -1,4 +1,4 @@
-"""Phase 20.01 — Analyzer ↔ Healer routing tests."""
+"""Analyzer ↔ Healer routing tests."""
 
 from __future__ import annotations
 

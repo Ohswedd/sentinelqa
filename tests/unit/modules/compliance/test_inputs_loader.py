@@ -1,4 +1,4 @@
-"""Phase 34 — compliance signals JSON loader edge cases."""
+"""compliance signals JSON loader edge cases."""
 
 from __future__ import annotations
 

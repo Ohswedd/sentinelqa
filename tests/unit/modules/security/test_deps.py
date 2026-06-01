@@ -1,4 +1,4 @@
-"""Unit tests for the dependency-scanner adapters (Phase 13.09)."""
+"""Unit tests for the dependency-scanner adapters."""
 
 from __future__ import annotations
 

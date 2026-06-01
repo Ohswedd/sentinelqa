@@ -1,4 +1,4 @@
-"""Tests for the SecurityModule skeleton (Phase 13.01)."""
+"""Tests for the SecurityModule skeleton."""
 
 from __future__ import annotations
 

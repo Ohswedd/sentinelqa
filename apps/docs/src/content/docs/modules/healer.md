@@ -23,7 +23,7 @@ Authority: the documentation, ADR-0025, our engineering rules §23.
 ## Auto-apply gating
 
 Three modes: `off | safe | aggressive`. The
-`decide_auto_apply()` matrix considers:
+`decide_auto_apply` matrix considers:
 
 - banner status (present + fresh)
 - `requires_human_review` flag on the proposal

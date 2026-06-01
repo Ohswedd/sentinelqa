@@ -1,17 +1,17 @@
-"""Generated-banner / hand-edit detection (Phase 20.06, our engineering rules).
+"""Generated-banner / hand-edit detection.
 
 The Healer must NEVER apply a repair to a hand-owned spec. We detect
 hand ownership via two complementary signals:
 
-1. **Banner absence.** Phase 07 generated specs start with the
-   ``// SENTINELQA AUTO-GENERATED ...`` banner (see Phase 07 task
-   07.03). A spec without the banner is unmanaged and the Healer must
-   refuse to modify it.
+1. **Banner absence.** generated specs start with the
+ ``// SENTINELQA AUTO-GENERATED...`` banner. A spec without the banner
+ is unmanaged and the Healer must
+ refuse to modify it.
 
 2. **Banner present but modified.** Even a generated spec may have been
-   touched after generation. We compare a recorded ``generated_at``
-   ISO-8601 timestamp inside the banner with the file's mtime. If the
-   file was modified after ``generated_at`` we treat it as hand-edited.
+ touched after generation. We compare a recorded ``generated_at``
+ ISO-8601 timestamp inside the banner with the file's mtime. If the
+ file was modified after ``generated_at`` we treat it as hand-edited.
 
 Both checks are pure-file inspections — no git calls. Callers that
 want git-aware detection can layer that on top by passing in their

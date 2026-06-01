@@ -1,4 +1,4 @@
-"""Ollama (local) provider (Phase 30 task 30.03, ADR-0042).
+"""Ollama (local) provider (, ADR-0042).
 
 Talks to a local Ollama server (default ``http://localhost:11434``) via
 ``httpx``. No API key — the adapter is the canonical "offline default".

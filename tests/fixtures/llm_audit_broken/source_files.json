@@ -2,7 +2,7 @@
   "source_files": [
     {
       "path": "src/seed.js",
-      "body": "const admin = {\n  email: 'admin@example.com',\n  password: 'SuperSecret42'\n};\n"
+      "body": "const admin = {\n email: 'admin@example.com',\n password: 'SuperSecret42'\n};\n"
     }
   ]
 }

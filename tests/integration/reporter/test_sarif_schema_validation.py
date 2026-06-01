@@ -1,4 +1,4 @@
-"""SARIF goldens validate against the vendored official schema (task 03.05)."""
+"""SARIF goldens validate against the vendored official schema."""
 
 from __future__ import annotations
 

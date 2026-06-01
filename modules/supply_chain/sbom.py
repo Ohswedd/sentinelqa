@@ -1,4 +1,4 @@
-"""CycloneDX 1.5 SBOM generator (Phase 33.01, ADR-0045).
+"""CycloneDX 1.5 SBOM generator.
 
 Generates a CycloneDX 1.5 JSON document per detected lockfile plus an
 aggregate index. The output is validated against the vendored CycloneDX
@@ -10,7 +10,7 @@ The writer intentionally emits a minimal but conformant subset of
 CycloneDX (``bomFormat`` / ``specVersion`` / ``serialNumber`` / ``version``
 / ``metadata.timestamp`` / ``metadata.component`` / ``components``).
 Optional CycloneDX fields (vulnerabilities, services, compositions,
-external references, hashes) are out of scope for Phase 33 — adding
+external references, hashes) are out of scope for adding
 them would require either fetching package metadata over the network
 or trusting the lockfile's hash field, which we don't.
 """

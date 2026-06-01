@@ -1,4 +1,4 @@
-"""Phase 29.03 — determinism audit over the reporter pipeline.
+"""determinism audit over the reporter pipeline.
 
 our engineering rules.8 / §19 require that the score and findings outputs be
 reproducible. The expensive PRD test would be ``sentinel audit`` against the
@@ -8,7 +8,7 @@ the reporter writers — those are the layer that converts in-memory domain
 objects into the on-disk artifacts we ship.
 
 This test exercises the **same writers the lifecycle uses** N times with the
-same deterministic fixture and asserts byte-equal output.  The diff helper
+same deterministic fixture and asserts byte-equal output. The diff helper
 ``scripts/diff_runs.py`` is used as a second gate: it normalizes the volatile
 fields and confirms the diff after normalization is empty even when the
 inputs *are* allowed to vary (e.g. different ``RUN-*`` IDs).

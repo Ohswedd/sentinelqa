@@ -1,7 +1,7 @@
-"""GitLab commit-status setter (Phase 25, task 25.05).
+"""GitLab commit-status setter (, ).
 
 Posts a single commit status for a pipeline run. The MR note poster
-(Phase 17.03) already handles inline summaries; this module sets the
+ already handles inline summaries; this module sets the
 external/pipeline status that GitLab branch protection / merge
 checks watch.
 

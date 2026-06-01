@@ -1,4 +1,4 @@
-"""Phase 20.06 — Human-review gating tests."""
+"""Human-review gating tests."""
 
 from __future__ import annotations
 

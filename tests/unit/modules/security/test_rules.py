@@ -1,4 +1,4 @@
-"""Tests for the security rule catalog (Phase 13.10)."""
+"""Tests for the security rule catalog."""
 
 from __future__ import annotations
 

@@ -12,13 +12,13 @@ class VisualModuleOptions:
     """Inputs the CLI / orchestrator hands to the visual module.
 
     - ``current_root``: directory tree of captured PNGs
-      (``<viewport>/<route-slug>.png``). Defaults to
-      ``<run-dir>/visual/current``.
+    (``<viewport>/<route-slug>.png``). Defaults to
+    ``<run-dir>/visual/current``.
     - ``baselines_dir``: override the configured baselines directory.
     - ``viewports``: optional subset of configured viewports to run.
-      Empty tuple → every configured viewport.
+    Empty tuple → every configured viewport.
     - ``routes``: optional subset of route slugs (every PNG in
-      ``current_root/<viewport>/`` is otherwise considered).
+    ``current_root/<viewport>/`` is otherwise considered).
     - ``threshold``: override the configured pixel-diff threshold.
     """
 

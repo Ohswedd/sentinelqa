@@ -33,7 +33,7 @@ uv run sentinel report --latest --notify slack
 The poster:
 
 - Reads the webhook from env (never config).
-- Posts the [Phase 15.06 Block Kit payload](/cli/#sentinel-report).
+- Posts the [ Block Kit payload](/cli/#sentinel-report).
 - Deduplicates by `sha256(webhook URL + payload)` over a 5-minute window — re-running `sentinel report` won't spam the channel.
 - Never breaks JSON-mode stdout.
 
@@ -46,5 +46,5 @@ most one SentinelQA comment that is overwritten in place.
 ## Credential safety
 
 `tests/integration/integrations/test_credential_leak_guard.py` fails
-on every CI pass if any Phase 25 secret env var is non-empty during
+on every CI pass if any secret env var is non-empty during
 the test run. Tokens never appear in test fixtures or commits.

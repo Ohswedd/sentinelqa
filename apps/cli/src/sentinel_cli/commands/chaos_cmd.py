@@ -1,6 +1,6 @@
-"""``sentinel chaos`` — run the ChaosModule via the lifecycle (Phase 23).
+"""``sentinel chaos`` — run the ChaosModule via the lifecycle.
 
-Replaces the Phase 02 stub. The command drives the full
+Replaces the stub. The command drives the full
 :class:`RunLifecycle` restricted to the ``chaos`` module so the same
 lifecycle steps (safety policy, artifact tree, reporter dispatch,
 exit-code mapping) run whether the user types ``sentinel audit`` or
@@ -9,18 +9,18 @@ exit-code mapping) run whether the user types ``sentinel audit`` or
 Safety boundary (our engineering rules, §39):
 
 - No CLI flag in the aggressive / evasion / detection-bypass family
-  exists. ``tests/security/test_chaos_no_evasion_flags.py`` greps
-  the package + the CLI source for compound forbidden literals and
-  introspects the Typer parameters.
+ exists. ``tests/security/test_chaos_no_evasion_flags.py`` greps
+ the package + the CLI source for compound forbidden literals and
+ introspects the Typer parameters.
 - The module is OFF by default in ``modules.chaos``; the CLI runs it
-  regardless because the operator explicitly invoked it — but every
-  scenario still flows through :class:`SafetyPolicy.enforce`.
+ regardless because the operator explicitly invoked it — but every
+ scenario still flows through :class:`SafetyPolicy.enforce`.
 
 Exit codes:
 
 - ``0`` — module produced no high/critical findings.
 - ``1`` — quality gate failed (high/critical findings present, or the
-  module is ``incomplete``).
+ module is ``incomplete``).
 - ``2`` — invalid config or CLI usage.
 - ``4`` — safety policy blocked the target.
 - ``6`` — runner failed to execute.

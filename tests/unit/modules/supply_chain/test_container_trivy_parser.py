@@ -1,4 +1,4 @@
-"""Container scanner — Trivy JSON parser (Phase 33.05)."""
+"""Container scanner — Trivy JSON parser."""
 
 from __future__ import annotations
 

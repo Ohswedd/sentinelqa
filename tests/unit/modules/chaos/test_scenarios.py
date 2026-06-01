@@ -1,4 +1,4 @@
-"""Phase 23 — chaos scenario catalog unit tests."""
+"""chaos scenario catalog unit tests."""
 
 from __future__ import annotations
 

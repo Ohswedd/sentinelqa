@@ -1,4 +1,4 @@
-"""Phase 20.09 — Assertion-weakening guard tests."""
+"""Assertion-weakening guard tests."""
 
 from __future__ import annotations
 

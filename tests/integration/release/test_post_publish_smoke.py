@@ -1,19 +1,19 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright (c) 2026 SentinelQA contributors.
-"""Post-publish smoke (Phase 36.06).
+"""Post-publish smoke.
 
 The owner runs these four assertions **after** a real publish
 (``v*`` tag pushed; PyPI / npm / Docker Hub / GitHub Release
 workflows green) to verify the public artifacts actually work:
 
 1. ``uv pip install sentinelqa-cli==<tag>`` from PyPI into a
-   fresh venv; ``sentinel --version`` reports ``<tag>``.
+ fresh venv; ``sentinel --version`` reports ``<tag>``.
 2. ``pnpm install @sentinelqa/ts-runtime@<tag>`` into a fresh
-   project; ``require('@sentinelqa/ts-runtime')`` succeeds.
+ project; ``require('@sentinelqa/ts-runtime')`` succeeds.
 3. ``docker pull sentinelqa/runner:<tag>`` + ``docker run --rm
-   sentinelqa/runner:<tag> sentinel --version`` reports ``<tag>``.
+ sentinelqa/runner:<tag> sentinel --version`` reports ``<tag>``.
 4. ``docker manifest inspect sentinelqa/runner:<tag>`` shows
-   both ``linux/amd64`` and ``linux/arm64``.
+ both ``linux/amd64`` and ``linux/arm64``.
 
 The whole file is gated by ``SENTINELQA_TEST_POST_PUBLISH=1``
 because every test reaches a public registry and the v0.x line
@@ -23,8 +23,8 @@ test as the "verify" step.
 The tag is read from ``apps/cli/pyproject.toml`` so a future bump
 does not need to touch this file. Run as::
 
-    SENTINELQA_TEST_POST_PUBLISH=1 uv run pytest \\
-        tests/integration/release/test_post_publish_smoke.py -v
+ SENTINELQA_TEST_POST_PUBLISH=1 uv run pytest \\
+ tests/integration/release/test_post_publish_smoke.py -v
 
 The tests are also runnable against the local ``dist/`` directory
 (by the publish workflows' "build" job) — when invoked with

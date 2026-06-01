@@ -5,27 +5,25 @@ also the canonical drafter exercised by
 ``tests/integration/release/test_changelog_drafting.py``.
 
 Usage
------
+-----.. code-block:: bash
 
-.. code-block:: bash
+ # Default: HEAD back to the last tag (or repo root if no tag), Unreleased section.
+ python -m scripts.release.draft_changelog -o CHANGELOG.draft.md
 
-    # Default: HEAD back to the last tag (or repo root if no tag), Unreleased section.
-    python -m scripts.release.draft_changelog -o CHANGELOG.draft.md
+ # Pin a specific range and version header.
+ python -m scripts.release.draft_changelog \
+ --from v0.6.0 --to HEAD --version 0.7.0 --date 2026-06-01 \
+ -o CHANGELOG.draft.md
 
-    # Pin a specific range and version header.
-    python -m scripts.release.draft_changelog \
-        --from v0.6.0 --to HEAD --version 0.7.0 --date 2026-06-01 \
-        -o CHANGELOG.draft.md
-
-    # Include the "Internal" bucket (chore/ci/docs/test/build/style).
-    python -m scripts.release.draft_changelog --include-internal -o CHANGELOG.draft.md
+ # Include the "Internal" bucket (chore/ci/docs/test/build/style).
+ python -m scripts.release.draft_changelog --include-internal -o CHANGELOG.draft.md
 
 The drafter is intentionally conservative:
 
 * Strict Conventional Commits (``type(scope)?: summary`` or ``type!: summary``)
-  are recognised.
-* ``Phase NN: …`` and ``phase NN: …`` (legacy phase-merge titles used pre-Phase 04)
-  are recognised and classified as ``feat`` with scope ``phase-NN``.
+ are recognised.
+* ``Phase NN: …`` and ``phase NN: …`` (legacy phase-merge titles used pre-)
+ are recognised and classified as ``feat`` with scope ``phase-NN``.
 * Everything else is dropped silently — drafts never invent entries.
 
 It is NOT the canonical CHANGELOG; ``CHANGELOG.md`` is hand-curated from these

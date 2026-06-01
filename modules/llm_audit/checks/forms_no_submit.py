@@ -1,11 +1,11 @@
-"""LLM-FORM-NO-SUBMIT — forms whose submit path does not function (task 19.05).
+"""LLM-FORM-NO-SUBMIT — forms whose submit path does not function.
 
 Pure function over :class:`FormSignal` records. We flag a form when:
 
-* it has no submit handler (Phase 05 sets ``submit_handler_present=False``
-  when neither ``action`` nor ``onsubmit`` is present), OR
+* it has no submit handler (sets ``submit_handler_present=False``
+ when neither ``action`` nor ``onsubmit`` is present), OR
 * the planner actually exercised the form and we observed no network
-  request when it submitted.
+ request when it submitted.
 
 We only emit a finding for forms the planner *attempted*; un-exercised
 forms get no finding so we don't punish forms the run never reached.

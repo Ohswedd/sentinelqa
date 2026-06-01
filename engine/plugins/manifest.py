@@ -1,4 +1,4 @@
-"""Plugin manifest model (Phase 24 tasks 24.02 + 24.03).
+"""Plugin manifest model (tasks 24.02 + 24.03).
 
 A manifest is the wire format every plugin ships. For in-Python
 plugins, the loader synthesises a manifest from class-level attributes
@@ -69,7 +69,7 @@ ALLOWED_PERMISSIONS: Final[frozenset[str]] = frozenset(
 #: Permissions matching this prefix are also accepted ('fs.read:<path>'
 #: limits a read scope; 'env.read:<NAME>' opens a specific env var;
 #: 'auth.read:<host>' grants read access to the auth vault for a single
-#: host — Phase 31 / ADR-0043. Plugins MUST declare the host they want
+#: host — / ADR-0043. Plugins MUST declare the host they want
 #: to consume sessions for; cross-host vault reads are refused at load
 #: time.
 ALLOWED_PERMISSION_PREFIXES: Final[tuple[str, ...]] = (

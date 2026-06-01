@@ -1,4 +1,4 @@
-"""Mocked-LLM end-to-end test (task 09.05)."""
+"""Mocked-LLM end-to-end test."""
 
 from __future__ import annotations
 

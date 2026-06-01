@@ -1,4 +1,4 @@
-"""Finding ``compliance_id`` field — additive v2 extension (Phase 34)."""
+"""Finding ``compliance_id`` field — additive v2 extension."""
 
 from __future__ import annotations
 

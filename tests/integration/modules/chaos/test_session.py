@@ -1,8 +1,8 @@
-"""Phase 23.03 — session chaos integration tests.
+"""session chaos integration tests.
 
 Acceptance criterion (the build plan):
 
-    Fixture with bad UX on expired session triggers finding.
+ Fixture with bad UX on expired session triggers finding.
 """
 
 from __future__ import annotations

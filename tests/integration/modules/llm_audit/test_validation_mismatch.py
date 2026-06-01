@@ -1,4 +1,4 @@
-"""Integration tests for the validation-mismatch check (task 19.11)."""
+"""Integration tests for the validation-mismatch check."""
 
 from __future__ import annotations
 

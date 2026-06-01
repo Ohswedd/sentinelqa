@@ -1,4 +1,4 @@
-"""SupplyChainModule lifecycle integration (Phase 33)."""
+"""SupplyChainModule lifecycle integration."""
 
 from __future__ import annotations
 

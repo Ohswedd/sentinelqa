@@ -1,4 +1,4 @@
-"""Task 14.04 — policy gate acceptance cases."""
+"""— policy gate acceptance cases."""
 
 from __future__ import annotations
 
@@ -28,7 +28,7 @@ def test_score_86_no_blockers_min_85_passes() -> None:
 
 def test_score_below_threshold_blocks_with_no_findings_findings_added() -> None:
     # 6 high findings in security → security = 100 - 6*17.5 = -5 → floor 0
-    # weighted: 0 * .20 + 100 * .80 = 80 → below 85 → blocked.
+    # weighted: 0 *.20 + 100 *.80 = 80 → below 85 → blocked.
     policy = PolicyConfig(
         min_quality_score=85,
         block_on_critical=False,

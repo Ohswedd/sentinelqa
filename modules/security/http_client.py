@@ -1,6 +1,6 @@
 """Shared rate-limited HTTP client used by every security check.
 
-Same building blocks as Phase 05 discovery: a token-bucket limiter,
+Same building blocks as discovery: a token-bucket limiter,
 transparent ``SentinelQA/<version>`` User-Agent, and the
 ``X-SentinelQA-Test-Run`` header so the operator of the target can
 correlate hits in their access logs.
