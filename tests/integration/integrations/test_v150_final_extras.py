@@ -297,15 +297,15 @@ def test_enable_tracing_otlp_exporter_missing(monkeypatch: pytest.MonkeyPatch) -
 
     fake_trace = types.ModuleType("opentelemetry.trace")
     fake_sdk_resources = types.ModuleType("opentelemetry.sdk.resources")
-    fake_sdk_resources.Resource = type(
+    fake_sdk_resources.Resource = type(  # type: ignore[attr-defined]
         "Resource",
         (),
         {"create": staticmethod(lambda _attrs: None)},
     )
     fake_sdk_trace = types.ModuleType("opentelemetry.sdk.trace")
-    fake_sdk_trace.TracerProvider = lambda **_kw: None  # type: ignore[assignment]
+    fake_sdk_trace.TracerProvider = lambda **_kw: None  # type: ignore[attr-defined]
     fake_sdk_trace_export = types.ModuleType("opentelemetry.sdk.trace.export")
-    fake_sdk_trace_export.BatchSpanProcessor = lambda _e: None  # type: ignore[assignment]
+    fake_sdk_trace_export.BatchSpanProcessor = lambda _e: None  # type: ignore[attr-defined]
     fake_pkg = types.ModuleType("opentelemetry")
     fake_pkg.trace = fake_trace  # type: ignore[attr-defined]
     fake_sdk_pkg = types.ModuleType("opentelemetry.sdk")
