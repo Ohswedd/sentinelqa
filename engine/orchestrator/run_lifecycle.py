@@ -184,6 +184,7 @@ class RunLifecycle:
         dry_run: bool = False,
         ci: bool = False,
         module_options: Mapping[str, Mapping[str, Any]] | None = None,
+        module_concurrency: int = 1,
     ) -> TestRun:
         """Run the lifecycle and return the finalized :class:`TestRun`.
 
@@ -200,6 +201,7 @@ class RunLifecycle:
             dry_run=dry_run,
             ci=ci,
             module_options=dict(module_options or {}),
+            module_concurrency=max(1, int(module_concurrency)),
         )
         # Expose the in-flight context to callers (the CLI reads typed
         # results immediately after ``execute`` returns). Cleared at top of
@@ -403,116 +405,135 @@ class RunLifecycle:
             hook(ctx)
 
     def run_modules(self, ctx: LifecycleContext) -> None:
-        # Local import: the analyzer depends on engine.orchestrator.ts_bridge,
-        # which is already loaded above. Importing here keeps the run-modules
-        # path importable in test setups that monkey-patch the analyzer.
+        """Execute every requested module — sequentially or on a thread pool.
+
+        v1.2.0: when ``ctx.module_concurrency > 1`` modules run on a
+        bounded :class:`concurrent.futures.ThreadPoolExecutor`. Safety
+        enforcement has already happened (step 6, before discovery), so
+        no module reaches the network ahead of the policy. Outcomes are
+        merged back into the context in the *input* order — deterministic
+        output regardless of which thread finishes first.
+        """
+
+        names = list(self._modules_to_run(ctx))
+        if not names:
+            return
+
+        concurrency = max(1, min(ctx.module_concurrency, len(names)))
+        if concurrency == 1:
+            for name in names:
+                outcome, typed = self._execute_one_module(ctx, name)
+                self._merge_module_result(ctx, outcome, typed)
+            return
+
+        # Parallel path. We snapshot the futures keyed by index so the
+        # input order survives whatever order they complete in.
+        from concurrent.futures import ThreadPoolExecutor
+
+        with ThreadPoolExecutor(
+            max_workers=concurrency, thread_name_prefix="sentinel-module"
+        ) as pool:
+            futures = [pool.submit(self._execute_one_module, ctx, name) for name in names]
+            for future in futures:
+                outcome, typed = future.result()
+                self._merge_module_result(ctx, outcome, typed)
+
+    def _execute_one_module(
+        self,
+        ctx: LifecycleContext,
+        name: str,
+    ) -> tuple[ModuleOutcome, ModuleResult | None]:
+        """Run a single module and return its (outcome, optional ModuleResult).
+
+        Pure for parallel-safety — no writes to ``ctx`` happen here.
+        The parent thread merges results in input order via
+        :meth:`_merge_module_result`.
+        """
+
         from engine.analyzer.categorize import categorize_module_error
         from engine.modules.base import ModulePrerequisiteError, SentinelModule
 
-        for name in self._modules_to_run(ctx):
-            factory = ctx.registry.modules.get(name)
-            if factory is None:
-                ctx.module_outcomes.append(
-                    ModuleOutcome(name=name, status="skipped", metadata={"reason": "no_factory"})
-                )
-                continue
-            try:
-                # Modules receive the config + safety decision; their
-                # real interface lands in. For we
-                # invoke and tolerate any callable. wraps the
-                # SentinelModule lifecycle: if the factory returns a
-                # SentinelModule instance we drive the seven the engineering guidelines
-                # steps and merge findings/metrics into the context.
-                result = factory(ctx.config, ctx.safety_decision)
-                if isinstance(result, SentinelModule):
-                    module_result = self._invoke_sentinel_module(ctx, name, result)
-                    ctx.typed_module_results = (*ctx.typed_module_results, module_result)
-                    ctx.typed_findings = (*ctx.typed_findings, *module_result.findings)
-                    ctx.module_outcomes.append(
-                        ModuleOutcome(
-                            name=name,
-                            status="succeeded",
-                            metadata={
-                                "module_result_id": module_result.id,
-                                "module_status": module_result.status,
-                                "findings": len(module_result.findings),
-                            },
-                        )
-                    )
-                else:
-                    ctx.module_outcomes.append(
-                        ModuleOutcome(
-                            name=name, status="succeeded", metadata={"result": str(result)}
-                        )
-                    )
-            except ModulePrerequisiteError as exc:
-                classification = categorize_module_error(
-                    module=name,
-                    exc_type=type(exc).__name__,
-                    exc_message=str(exc),
-                )
-                ctx.module_outcomes.append(
+        factory = ctx.registry.modules.get(name)
+        if factory is None:
+            return (
+                ModuleOutcome(name=name, status="skipped", metadata={"reason": "no_factory"}),
+                None,
+            )
+
+        try:
+            result = factory(ctx.config, ctx.safety_decision)
+            if isinstance(result, SentinelModule):
+                module_result = self._invoke_sentinel_module(ctx, name, result)
+                return (
                     ModuleOutcome(
                         name=name,
-                        status="errored",
-                        error_message=str(exc),
-                        error_type=type(exc).__name__,
-                        error_category=classification.category,
-                        error_confidence=classification.confidence,
-                        error_rationale=classification.rationale,
-                    )
+                        status="succeeded",
+                        metadata={
+                            "module_result_id": module_result.id,
+                            "module_status": module_result.status,
+                            "findings": len(module_result.findings),
+                        },
+                    ),
+                    module_result,
                 )
-            except TestExecutionError as exc:
-                classification = categorize_module_error(
-                    module=name,
-                    exc_type=type(exc).__name__,
-                    exc_message=exc.message,
-                )
-                ctx.module_outcomes.append(
-                    ModuleOutcome(
-                        name=name,
-                        status="errored",
-                        error_message=exc.message,
-                        error_type=type(exc).__name__,
-                        error_category=classification.category,
-                        error_confidence=classification.confidence,
-                        error_rationale=classification.rationale,
-                    )
-                )
-            except SentinelError as exc:
-                classification = categorize_module_error(
-                    module=name,
-                    exc_type=type(exc).__name__,
-                    exc_message=exc.message,
-                )
-                ctx.module_outcomes.append(
-                    ModuleOutcome(
-                        name=name,
-                        status="errored",
-                        error_message=exc.message,
-                        error_type=type(exc).__name__,
-                        error_category=classification.category,
-                        error_confidence=classification.confidence,
-                        error_rationale=classification.rationale,
-                    )
-                )
-            except Exception as exc:
-                classification = categorize_module_error(
-                    module=name,
-                    exc_type=type(exc).__name__,
-                    exc_message=str(exc),
-                )
-                ctx.module_outcomes.append(
-                    ModuleOutcome(
-                        name=name,
-                        status="errored",
-                        error_message=f"{type(exc).__name__}: {exc}",
-                        error_type=type(exc).__name__,
-                        error_category=classification.category,
-                        error_confidence=classification.confidence,
-                        error_rationale=classification.rationale,
-                    )
-                )
+            return (
+                ModuleOutcome(name=name, status="succeeded", metadata={"result": str(result)}),
+                None,
+            )
+        except (ModulePrerequisiteError, TestExecutionError, SentinelError) as exc:
+            message = (
+                exc.message if isinstance(exc, TestExecutionError | SentinelError) else str(exc)
+            )
+            classification = categorize_module_error(
+                module=name, exc_type=type(exc).__name__, exc_message=message
+            )
+            return (
+                ModuleOutcome(
+                    name=name,
+                    status="errored",
+                    error_message=message,
+                    error_type=type(exc).__name__,
+                    error_category=classification.category,
+                    error_confidence=classification.confidence,
+                    error_rationale=classification.rationale,
+                ),
+                None,
+            )
+        except Exception as exc:
+            classification = categorize_module_error(
+                module=name, exc_type=type(exc).__name__, exc_message=str(exc)
+            )
+            return (
+                ModuleOutcome(
+                    name=name,
+                    status="errored",
+                    error_message=f"{type(exc).__name__}: {exc}",
+                    error_type=type(exc).__name__,
+                    error_category=classification.category,
+                    error_confidence=classification.confidence,
+                    error_rationale=classification.rationale,
+                ),
+                None,
+            )
+
+    def _merge_module_result(
+        self,
+        ctx: LifecycleContext,
+        outcome: ModuleOutcome,
+        typed: ModuleResult | None,
+    ) -> None:
+        """Append a worker's (outcome, typed?) tuple back into the context.
+
+        Always called on the main thread, in the same input order the
+        modules were submitted in, so the resulting ``module_outcomes`` /
+        ``typed_module_results`` tuples are byte-identical to the
+        sequential path.
+        """
+
+        ctx.module_outcomes.append(outcome)
+        if typed is not None:
+            ctx.typed_module_results = (*ctx.typed_module_results, typed)
+            ctx.typed_findings = (*ctx.typed_findings, *typed.findings)
 
     def collect_evidence(self, ctx: LifecycleContext) -> None:
         # Stub: when modules emit evidence (+), aggregate it here.
