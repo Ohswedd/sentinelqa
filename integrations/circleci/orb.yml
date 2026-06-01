@@ -1,0 +1,139 @@
+# SentinelQA — CircleCI orb (v1.5.0).
+#
+# Usage (in `.circleci/config.yml`):
+#
+#   version: 2.1
+#   orbs:
+#     sentinelqa: sentinelqa/sentinelqa@1.0.0
+#   workflows:
+#     audit:
+#       jobs:
+#         - sentinelqa/audit:
+#             url: 'https://preview-${CIRCLE_SHA1}.example.com'
+#             mode: 'standard'
+#             fail_under: '80'
+#
+# Secrets (Project Settings → Environment variables):
+#   - SENTINELQA_VERSION     (optional pin)
+#   - SENTINELQA_URL         (mandatory; overrides the `url` parameter)
+#   - SENTINELQA_GITHUB_TOKEN (optional; for the GitHub PR-comment poster)
+#
+# The orb is published from this file via `circleci orb publish`. Until
+# the orb is published, callers can `include:` the file directly using a
+# CircleCI orb dynamic config.
+version: 2.1
+
+description: |
+  Run the SentinelQA audit against a deployed preview environment and
+  publish the run artifacts. Mirrors the GitHub Actions composite
+  action and the GitLab template that ship in
+  ``integrations/github`` and ``integrations/gitlab``.
+
+display:
+  source_url: https://github.com/Ohswedd/sentinelqa
+
+commands:
+  install_sentinelqa:
+    description: 'Install the SentinelQA CLI + Playwright deps.'
+    parameters:
+      python_version:
+        type: string
+        default: '3.12'
+      node_version:
+        type: string
+        default: '20'
+      version:
+        type: string
+        default: ''
+    steps:
+      - run:
+          name: 'Install Python + Node toolchain'
+          command: |
+            set -euo pipefail
+            python --version || pyenv install --skip-existing << parameters.python_version >>
+            node --version || (curl -fsSL https://deb.nodesource.com/setup_<< parameters.node_version >>.x | sudo bash - && sudo apt-get install -y nodejs)
+      - run:
+          name: 'Install SentinelQA'
+          command: |
+            set -euo pipefail
+            if [ -n "<< parameters.version >>" ]; then
+              python -m pip install --upgrade pip
+              python -m pip install "sentinelqa==<< parameters.version >>"
+            fi
+            npx --yes playwright install --with-deps chromium
+
+  run_audit:
+    description: 'Invoke `sentinel ci` against the configured URL.'
+    parameters:
+      url:
+        type: string
+      mode:
+        type: string
+        default: 'standard'
+      diff:
+        type: string
+        default: ''
+      fail_under:
+        type: string
+        default: ''
+    steps:
+      - run:
+          name: 'sentinel ci'
+          environment:
+            SENTINELQA_CI: '1'
+          command: |
+            set -euo pipefail
+            URL="<< parameters.url >>"
+            if [ -z "${URL}" ]; then URL="${SENTINELQA_URL:-}"; fi
+            if [ -z "${URL}" ]; then
+              echo "sentinelqa: 'url' parameter (or SENTINELQA_URL env) is required."
+              exit 4
+            fi
+            args="--config sentinel.config.yaml --ci --mode << parameters.mode >> --url ${URL}"
+            if [ -n "<< parameters.diff >>" ]; then
+              args="${args} --diff << parameters.diff >>"
+            fi
+            if [ -n "<< parameters.fail_under >>" ]; then
+              args="${args} --fail-under << parameters.fail_under >>"
+            fi
+            sentinel ci ${args}
+
+  publish_artifacts:
+    description: 'Persist the SentinelQA run directory as CircleCI artifacts.'
+    steps:
+      - store_artifacts:
+          path: '.sentinel/runs'
+          destination: 'sentinelqa-runs'
+      - store_test_results:
+          path: '.sentinel/runs'
+
+jobs:
+  audit:
+    description: 'Composite audit job — install + run + publish.'
+    docker:
+      - image: cimg/python:3.12-node
+    parameters:
+      url:
+        type: string
+      mode:
+        type: string
+        default: 'standard'
+      diff:
+        type: string
+        default: ''
+      fail_under:
+        type: string
+        default: ''
+      version:
+        type: string
+        default: ''
+    steps:
+      - checkout
+      - install_sentinelqa:
+          version: << parameters.version >>
+      - run_audit:
+          url: << parameters.url >>
+          mode: << parameters.mode >>
+          diff: << parameters.diff >>
+          fail_under: << parameters.fail_under >>
+      - publish_artifacts

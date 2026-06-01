@@ -10,6 +10,70 @@ and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html). See
 
 _No unreleased changes._
 
+## [1.5.0] - 2026-06-01
+
+Integration-breadth release. Nine additions covering the CI surfaces,
+notifier endpoints, metrics sinks, observability stack, and the
+GitHub issue lifecycle teams have asked for since `1.0.0`.
+
+### Added
+
+CI templates (`integrations/`):
+
+- **Bitbucket Pipelines** template (`bitbucket/bitbucket-pipelines.sentinel.yml`).
+- **Azure DevOps Pipelines** template
+  (`azure_devops/azure-pipelines.sentinel.yml`) with parameters
+  for `url`, `mode`, `fail_under`, `version`, `python_version`,
+  `node_version`.
+- **CircleCI orb** (`circleci/orb.yml`) — `commands.install_sentinelqa`,
+  `commands.run_audit`, `commands.publish_artifacts`, `jobs.audit`.
+- **Jenkins shared library** (`jenkins/vars/sentinelAudit.groovy` +
+  `jenkins/README.md`).
+
+Notifiers (`integrations/`):
+
+- **Microsoft Teams** notifier (`teams/`). Posts an Adaptive Card to
+  an Incoming Webhook URL; dedup cache + secret redaction modelled
+  on the Slack notifier.
+- **Discord** notifier (`discord/`). Posts a coloured embed card with
+  the score, status, and per-severity ladder.
+- **PagerDuty** Events API V2 trigger (`pagerduty/`). Triggers an
+  incident when `quality_score < threshold`; auto-resolves on the
+  next-passing run via a stable per-host `dedup_key`. Severity
+  ladders by gap (>30 → critical, >15 → error, >5 → warning).
+
+Metrics sinks (`integrations/metrics/`):
+
+- **Datadog** Metrics V2 push (`metrics/datadog.py`). Emits
+  `sentinelqa.quality_score`, `sentinelqa.duration_ms`,
+  `sentinelqa.findings.count` (per severity), and
+  `sentinelqa.module.duration_ms`.
+- **New Relic** Metric API push (`metrics/newrelic.py`).
+- **Honeycomb** Events push (`metrics/honeycomb.py`). Flat-key
+  events with `sentinelqa.*` namespace.
+
+Observability:
+
+- **OpenTelemetry** tracer wrapper (`integrations/otel/`). Opt-in
+  via `SENTINELQA_OTEL_ENABLED=1`; OTLP/HTTP exporter is lazy-
+  loaded so the dependency stays optional. Degrades cleanly to a
+  no-op when the SDK is missing.
+
+GitHub:
+
+- **GitHub auto-issue lifecycle** (`integrations/github/issue_lifecycle.py`).
+  Fingerprint-based dedup (sha256 over `module|category|code|title`);
+  per-category issue templates (network-5xx, page-error, headers)
+  with extra labels; `close_resolved_issues` walks current findings
+  vs open issues and closes those whose fingerprint is no longer
+  present, posting a resolution comment naming the closing run.
+
+### Status
+
+No wire schema change. The Python SDK API snapshot is unchanged.
+The MCP wire protocol is unchanged. The OpenTelemetry SDK is an
+optional dependency; activation is opt-in.
+
 ## [1.4.0] - 2026-06-01
 
 LLM / Agent release. Eight additions that make the agent loop sharper
