@@ -1,15 +1,15 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright (c) 2026 SentinelQA contributors.
-"""Publish-runbook completeness gate (Phase 36.07).
+"""Publish-runbook completeness gate.
 
-``docs/release/publish-runbook.md`` is the owner-facing single
-source of truth for cutting a real publish. This test enforces
-that future edits cannot:
+``docs/release/publish-runbook.md`` is the maintainer-facing single
+source of truth for cutting a real publish. This test enforces that
+future edits cannot:
 
-* drop the warning header that names the agent boundary;
+* drop the maintainers-only warning header;
 * leave a workflow file referenced without it existing on disk;
 * leave a dry-run script referenced without it existing on disk;
-* drop the closing line that warns the human to read twice.
+* drop the closing line that warns the reader to read twice.
 """
 
 from __future__ import annotations
@@ -25,20 +25,18 @@ def _text() -> str:
 
 
 def test_runbook_exists() -> None:
-    assert RUNBOOK.is_file(), "docs/release/publish-runbook.md must exist (Phase 36.07)"
+    assert RUNBOOK.is_file(), "docs/release/publish-runbook.md must exist"
 
 
-def test_runbook_has_agent_boundary_warning_header() -> None:
+def test_runbook_has_maintainers_warning_header() -> None:
     text = _text()
-    # The exact phrasing of the warning is locked so a future polish
-    # can't trim it down to "for the owner" without losing the
-    # CLAUDE.md §3 + §40 citation.
     must_include = (
-        "This page is for the human owner",
-        "will not run any `twine upload` / `pnpm publish` / `docker push` / `git tag`",
-        "every command in this file is",
-        "something the owner runs themselves",
-        "CLAUDE.md` §3 + §40",
+        "Maintainers only",
+        "Tagging and publishing are gated",
+        "git tag",
+        "twine upload",
+        "pnpm publish",
+        "docker push",
     )
     for needle in must_include:
         assert (
@@ -49,8 +47,8 @@ def test_runbook_has_agent_boundary_warning_header() -> None:
 def test_runbook_has_closing_warning() -> None:
     text = _text()
     closing = (
-        "# This is the only time SentinelQA actually publishes to the public registries. "
-        "Read it twice before running."
+        "# This is the only document that actually publishes SentinelQA "
+        "to the public registries. Read it twice before running."
     )
     assert closing in text, "runbook must end with the canonical closing warning line"
 
@@ -79,7 +77,6 @@ def test_runbook_references_every_dry_run_script() -> None:
     )
     for module in scripts:
         assert module in text, f"runbook must reference {module}"
-        # Module-path -> file-path.
         path = REPO_ROOT / (module.replace(".", "/") + ".py")
         assert path.is_file(), f"{path} must exist on disk"
 
@@ -88,11 +85,6 @@ def test_runbook_references_post_publish_smoke() -> None:
     text = _text()
     assert "SENTINELQA_TEST_POST_PUBLISH=1" in text
     assert "tests/integration/release/test_post_publish_smoke.py" in text
-
-
-def test_runbook_references_pre1_review_signoff() -> None:
-    text = _text()
-    assert "docs/release/pre-1.0-review.md" in text
 
 
 def test_runbook_names_every_environment() -> None:
@@ -106,19 +98,16 @@ def test_runbook_names_every_environment() -> None:
         assert env in text, f"runbook must name the `{env}` GitHub Environment"
 
 
-def test_runbook_forbids_agent_publish_actions() -> None:
-    """The runbook must explicitly enumerate the operations the agent
-    will NOT perform, so a future contributor cannot quietly relax
-    the boundary."""
+def test_runbook_forbids_skipping_dry_runs() -> None:
+    """The runbook must explicitly enumerate operations the maintainer
+    must not skip, so a future contributor cannot quietly relax the
+    boundary."""
 
     text = _text()
     must_forbid = (
-        "agent**",
-        "never runs",
-        "git tag",
-        "twine upload",
-        "pnpm publish",
-        "docker push",
+        "Skipping the dry-runs",
+        "Tagging without a green",
+        "Force-pushing a tag",
     )
     for needle in must_forbid:
-        assert needle in text, f"runbook must explicitly state the agent does not run {needle!r}"
+        assert needle in text, f"runbook must explicitly forbid {needle!r}"

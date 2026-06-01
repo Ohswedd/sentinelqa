@@ -1,11 +1,11 @@
-"""Unified-diff + assertion-weakening guard (Phase 20, CLAUDE.md §23).
+"""Unified-diff + assertion-weakening guard (Phase 20, our engineering rules).
 
 Two responsibilities:
 
 1. Produce stable unified-diff strings the CLI and HTML report can
    display verbatim (callers don't depend on git or `difflib`'s
    default output).
-2. Refuse any diff that *weakens* a Playwright assertion. CLAUDE.md
+2. Refuse any diff that *weakens* a Playwright assertion. our engineering rules
    §23 forbids the Healer from silently hiding app bugs as test
    repairs — removing an ``expect(...).toBe(...)`` line, deleting an
    entire assertion, switching ``toHaveText`` to ``toBeVisible``, or
@@ -37,7 +37,7 @@ class AssertionWeakeningError(RuntimeError):
 
     The Healer pipeline catches this and downgrades the proposal to
     ``requires_human_review=True`` rather than silently dropping the
-    assertion (CLAUDE.md §23).
+    assertion.
     """
 
 
@@ -68,7 +68,7 @@ def assert_no_assertion_weakening(
     ``allow_weaken=True`` short-circuits the check — required when the
     operator explicitly opts in via ``sentinel fix --allow-weaken``
     (Phase 20.07 task). The CLI must also log the weaken in the
-    audit log (CLAUDE.md §11).
+    audit log.
     """
 
     if allow_weaken:
@@ -80,7 +80,7 @@ def assert_no_assertion_weakening(
     if after < before:
         raise AssertionWeakeningError(
             f"Proposed change reduces assertion count from {before} to {after}. "
-            "Forbidden by CLAUDE.md §23 unless --allow-weaken is set."
+            "Forbidden by our engineering rules unless --allow-weaken is set."
         )
 
 

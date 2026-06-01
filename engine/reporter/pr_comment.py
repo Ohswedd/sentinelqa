@@ -203,7 +203,7 @@ def _render_llm_audit_section(findings: Sequence[Finding]) -> list[str]:
     for f in llm_findings:
         by_category.setdefault(f.category, []).append(f)
     out = ["### LLM-Code Audit", ""]
-    out.append("Detected defects characteristic of LLM-generated code (PRD §10.9).")
+    out.append("Detected defects characteristic of LLM-generated code (the documentation).")
     out.append("")
     out.append("| Category | Findings | Highest severity |")
     out.append("|---|---|---|")
@@ -238,7 +238,7 @@ def _render_next_steps(
     elif release_decision == "pass_with_warnings":
         out.append("- Triage medium / low findings; merge if accepted.")
     elif release_decision == "unsafe_target_rejected":
-        out.append("- Confirm the target is authorized and within the safety policy (PRD §2).")
+        out.append("- Confirm the target is authorized and within the safety policy.")
     elif release_decision == "inconclusive":
         out.append("- Re-run with the full module set to obtain a decision.")
     else:

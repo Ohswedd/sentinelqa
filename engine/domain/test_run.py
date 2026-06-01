@@ -1,4 +1,4 @@
-"""TestRun entity (PRD §18.1).
+"""TestRun entity (the documentation).
 
 The top-level container for one audit invocation. References every module
 result, holds the snapshotted config, and decides whether the run is

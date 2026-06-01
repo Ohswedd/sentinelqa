@@ -14,8 +14,7 @@ make demo
 
 The `demo` Make target:
 
-1. Boots `docker-compose.yml` from `examples/end-to-end-demo/` (FastAPI
-   on `127.0.0.1:8000`, Next.js on `127.0.0.1:3000`).
+1. Boots `docker-compose.yml` from `examples/end-to-end-demo/` (FastAPI on `127.0.0.1:8000`, Next.js on `127.0.0.1:3000`).
 2. Waits for the Next.js dev server to start serving HTTP.
 3. Runs `sentinel audit --url http://127.0.0.1:3000 --config examples/nextjs/sentinel.config.yaml`.
 4. Opens the generated HTML report in your default browser.
@@ -36,8 +35,8 @@ score is reproducible from the persisted `findings.json` + `score.json`.
 
 ```
 examples/end-to-end-demo/
-├── docker-compose.yml   # FastAPI + Next.js services on the loopback interface
-└── README.md            # this file
+├── docker-compose.yml # FastAPI + Next.js services on the loopback interface
+└── README.md # this file
 ```
 
 The compose file mounts the existing example directories read-only / RW
@@ -48,8 +47,5 @@ Next.js dev server.
 ## Safety
 
 - Both services bind to `127.0.0.1` only — never to a public interface.
-- The FastAPI bearer token (`demo-token`) is the public demo value
-  documented in `examples/fastapi/README.md`.
-- `make demo` refuses to run `sentinel audit` against any host other
-  than the local examples (the example `sentinel.config.yaml` only
-  allows `127.0.0.1` / `localhost`).
+- The FastAPI bearer token (`demo-token`) is the public demo value documented in `examples/fastapi/README.md`.
+- `make demo` refuses to run `sentinel audit` against any host other than the local examples (the example `sentinel.config.yaml` only allows `127.0.0.1` / `localhost`).

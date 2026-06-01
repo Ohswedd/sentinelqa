@@ -1,4 +1,4 @@
-"""Dynamic-content masking (Phase 21.04, PRD §10.6, CLAUDE §29).
+"""Dynamic-content masking (Phase 21.04, the documentation, CLAUDE §29).
 
 The Python diff layer paints user-specified rectangles to a neutral
 fill colour on BOTH baseline and current before pixel comparison.

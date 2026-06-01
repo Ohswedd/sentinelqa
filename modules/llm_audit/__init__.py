@@ -1,4 +1,4 @@
-"""LLM-Code audit module (Phase 19, PRD §10.9, CLAUDE.md §9, §31).
+"""LLM-Code audit module (Phase 19, the documentation, our engineering rules, §31).
 
 Importing this package wires :class:`LlmAuditModule` into the default
 orchestrator registry so ``sentinel llm-audit`` and ``sentinel audit``
@@ -12,7 +12,7 @@ loading / error states, frontend / backend validation mismatch,
 "coming soon" placeholders, and console errors the UI silently
 ignores. Each check has a stable ``LLM-*`` rule ID owned by
 ``modules.llm_audit.rules`` and produces typed :class:`Finding`
-records with PRD §20 evidence.
+records with our product spec evidence.
 
 ADR-0024 documents the rule catalogue, severity policy, and the
 deliberate decision to consume already-captured signals (discovery

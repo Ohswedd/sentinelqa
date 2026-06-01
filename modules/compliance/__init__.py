@@ -13,7 +13,7 @@ existing modules. The four sub-packs that land in Phase 34 are:
 - ``soc2-trail`` — :mod:`modules.compliance.soc2_trail` (7-gate audit
   on SentinelQA's own ``audit.log``).
 
-CLAUDE.md §28 wording rule is load-bearing: every finding says
+our engineering rules wording rule is load-bearing: every finding says
 "Automated <regime> check found …" rather than claiming the target
 is *compliant*. The forbidden-phrase guard in
 ``tests/security/test_no_compliance_claims.py`` enforces this for the

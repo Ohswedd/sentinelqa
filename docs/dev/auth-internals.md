@@ -12,14 +12,14 @@ backing `auth.strategy: browser_session`. The user-facing tour lives at
 
 ```
 ~/.sentinel/auth/
-├── .salt                                  # 16-byte PBKDF2 salt (passphrase fallback only)
+├── .salt # 16-byte PBKDF2 salt (passphrase fallback only)
 ├── github.com/
-│   ├── myorg.json.enc                     # AES-256-GCM ciphertext (0600)
-│   └── myorg.json.meta                    # Redacted metadata sidecar (0600)
+│ ├── myorg.json.enc # AES-256-GCM ciphertext (0600)
+│ └── myorg.json.meta # Redacted metadata sidecar (0600)
 ├── staging.example.com/
-│   ├── ci.json.enc
-│   └── ci.json.meta
-└── audit.log                              # Append-only JSONL of vault operations
+│ ├── ci.json.enc
+│ └── ci.json.meta
+└── audit.log # Append-only JSONL of vault operations
 ```
 
 The per-host directories are `0700`. Override the root with
@@ -33,17 +33,7 @@ ciphertext and tag are produced by `AESGCM.encrypt`. The plaintext
 envelope is:
 
 ```json
-{
-  "schema_version": "1.0.0",
-  "name": "<entry-name>",
-  "host": "<recorded-host>",
-  "storage_state_json": "<Playwright storage_state as a JSON string>",
-  "created_at": "<ISO 8601 UTC>",
-  "expires_at": "<ISO 8601 UTC>",
-  "last_used_at": "<ISO 8601 UTC | null>",
-  "cookies_count": <int>,
-  "local_storage_keys": <int>,
-  "captured_by": "cli"
+{ "schema_version": "1.0.0", "name": "<entry-name>", "host": "<recorded-host>", "storage_state_json": "<Playwright storage_state as a JSON string>", "created_at": "<ISO 8601 UTC>", "expires_at": "<ISO 8601 UTC>", "last_used_at": "<ISO 8601 UTC | null>", "cookies_count": <int>, "local_storage_keys": <int>, "captured_by": "cli"
 }
 ```
 
@@ -65,22 +55,9 @@ anything. The vault never trusts the sidecar — every other API
 
 The 32-byte AES-256-GCM master key has two acquisition paths:
 
-1. **OS keyring** (preferred). Stored under service
-   `sentinelqa-vault`, account `default`. The `keyring` library
-   (Apache 2.0) is an optional import; we never silently degrade.
-   Backends:
+1. **OS keyring** (preferred). Stored under service `sentinelqa-vault`, account `default`. The `keyring` library (Apache 2.0) is an optional import; we never silently degrade. Backends: - macOS: login Keychain - Linux: Secret Service (gnome-keyring / kwallet) - Windows: Credential Manager
 
-   - macOS: login Keychain
-   - Linux: Secret Service (gnome-keyring / kwallet)
-   - Windows: Credential Manager
-
-2. **PBKDF2 passphrase fallback.** When the keyring is unreachable
-   (headless Linux without dbus, locked-down CI), we derive the key
-   from a passphrase via PBKDF2-SHA256:
-   - Salt: 16 random bytes, stored at `~/.sentinel/auth/.salt`.
-   - Iterations: 600 000 (NIST SP 800-132 / OWASP 2026).
-     `SENTINEL_VAULT_PBKDF2_ITERATIONS` can raise this, never lower.
-   - Passphrase: read from `SENTINEL_VAULT_PASSPHRASE`.
+2. **PBKDF2 passphrase fallback.** When the keyring is unreachable (headless Linux without dbus, locked-down CI), we derive the key from a passphrase via PBKDF2-SHA256: - Salt: 16 random bytes, stored at `~/.sentinel/auth/.salt`. - Iterations: 600 000 (NIST SP 800-132 / OWASP 2026). `SENTINEL_VAULT_PBKDF2_ITERATIONS` can raise this, never lower. - Passphrase: read from `SENTINEL_VAULT_PASSPHRASE`.
 
 `MasterKey` zeros its internal bytearray on `close()` using a
 `ctypes.memset` (best-effort; Python's GC may have copied the bytes,
@@ -138,12 +115,7 @@ state never hits disk during discovery.
 Both code paths emit one audit-log entry per use:
 
 ```json
-{
-  "event": "auth.session_used",
-  "host": "<host>",
-  "name": "<name>",
-  "cookies_count": <int>,
-  "age_seconds": <float>
+{ "event": "auth.session_used", "host": "<host>", "name": "<name>", "cookies_count": <int>, "age_seconds": <float>
 }
 ```
 
@@ -171,14 +143,8 @@ cross-host reads are refused at the runtime boundary.
 ## Testing
 
 - Unit: `tests/unit/auth/`
-- Integration: `tests/integration/auth/`,
-  `tests/integration/cli/test_auth_command.py`,
-  `tests/integration/plugins/test_auth_permission_required.py`
-- Security: `tests/security/test_no_credentials_in_profiles.py`,
-  `tests/security/test_audit_log_never_carries_cookies.py`,
-  `tests/security/test_vault_host_match.py`,
-  `tests/security/test_login_origin_change.py`,
-  `tests/security/test_session_tmpfile_lifetime.py`
+- Integration: `tests/integration/auth/`, `tests/integration/cli/test_auth_command.py`, `tests/integration/plugins/test_auth_permission_required.py`
+- Security: `tests/security/test_no_credentials_in_profiles.py`, `tests/security/test_audit_log_never_carries_cookies.py`, `tests/security/test_vault_host_match.py`, `tests/security/test_login_origin_change.py`, `tests/security/test_session_tmpfile_lifetime.py`
 - Config schema: `tests/unit/config/test_auth_browser_session.py`
 
 The Chromium-driven end-to-end gate is held by the broader

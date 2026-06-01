@@ -4,9 +4,9 @@ Phase 03 introduces deterministic :class:`TestRun` / :class:`Finding` /
 :class:`QualityScore` / :class:`PolicyDecision` / :class:`ModuleResult`
 fixtures so every writer + golden test starts from the same canonical
 inputs. Promoting them to the root ``tests/conftest.py`` keeps unit,
-integration, and golden tests on a single set of fixtures (CLAUDE.md §16).
+integration, and golden tests on a single set of fixtures.
 
-Golden semantics (CLAUDE.md §17): a writer test compares the actual bytes
+Golden semantics: a writer test compares the actual bytes
 against a committed golden file. Setting ``SENTINELQA_UPDATE_GOLDENS=1``
 (or ``make update-goldens``) rewrites the golden in place so the diff
 shows up in review.

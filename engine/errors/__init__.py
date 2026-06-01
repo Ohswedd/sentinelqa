@@ -1,4 +1,4 @@
-"""SentinelQA typed exception hierarchy (CLAUDE.md §32, PRD §13.2).
+"""SentinelQA typed exception hierarchy (our engineering guidelines, the documentation).
 
 Every exception that crosses a CLI/SDK boundary is a subclass of
 :class:`SentinelError`. Each subclass maps to exactly one CLI exit code via
@@ -7,8 +7,8 @@ the registry in :mod:`engine.errors.codes`, so the CLI never needs to guess.
 Wire format for SDK/MCP consumers: ``error.to_agent_message()`` returns a
 dict suitable for serialization (redaction applied), keyed by:
 
-- ``type``  — always ``"error"``
-- ``code``  — short stable identifier (e.g. ``"E-CFG-001"``)
+- ``type`` — always ``"error"``
+- ``code`` — short stable identifier (e.g. ``"E-CFG-001"``)
 - ``message`` — human-readable summary, secrets redacted
 - ``suggested_fix`` — actionable hint, also redacted
 - ``context`` — structured technical metadata, redacted recursively

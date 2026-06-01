@@ -8,7 +8,7 @@ status: Stable
 navigation-stability metrics against budgets. Results are **synthetic**
 — measured in a controlled Chromium, not real users.
 
-Authority: PRD §10.5, ADR-0017, CLAUDE.md §27.
+Authority: the documentation, ADR-0017, our engineering rules §27.
 
 ## Wording contract
 

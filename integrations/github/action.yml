@@ -1,7 +1,7 @@
 name: SentinelQA
 description: |
   Run SentinelQA against a preview deployment, upload artifacts, and publish
-  SARIF to GitHub code scanning. Wraps `sentinel ci` (PRD §21).
+  SARIF to GitHub code scanning. Wraps `sentinel ci` (product spec).
 author: SentinelQA
 branding:
   icon: shield
@@ -11,21 +11,21 @@ inputs:
   url:
     description: |
       Target preview URL the audit runs against. Must be local, staging, or
-      explicitly allowlisted in `sentinel.config.yaml` (CLAUDE.md §6, PRD §2).
+      explicitly allowlisted in `sentinel.config.yaml` (engineering rules, product spec).
     required: true
   config:
-    description: Path to `sentinel.config.yaml` (PRD §17).
+    description: Path to `sentinel.config.yaml` (product spec).
     required: false
     default: sentinel.config.yaml
   mode:
     description: |
-      CI mode preset (PRD §21.3): `fast` | `standard` | `full` | `nightly` |
+      CI mode preset (product spec3): `fast` | `standard` | `full` | `nightly` |
       `release`. Selects modules, tag filters, and policy overrides.
     required: false
     default: standard
   fail-under:
     description: |
-      Override `policy.min_quality_score` for the run (CLAUDE.md §17).
+      Override `policy.min_quality_score` for the run (engineering rules).
       Empty string means inherit from config.
     required: false
     default: ''

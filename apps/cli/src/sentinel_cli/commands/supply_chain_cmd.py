@@ -67,7 +67,7 @@ KNOWN_CHECKS = (
 supply_chain_app = typer.Typer(
     name="supply-chain",
     help=(
-        "Supply-Chain & Dependency Audit (Phase 33, PRD §10.7.3, ADR-0045). "
+        "Supply-Chain & Dependency Audit (Phase 33, the documentation.3, ADR-0045). "
         "Generates a CycloneDX 1.5 SBOM, queries OSV for known CVEs, "
         "checks lockfile freshness + manifest drift, scans postinstall "
         "hooks, optionally scans a configured container image, and "

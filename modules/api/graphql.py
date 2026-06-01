@@ -12,7 +12,7 @@ response shape:
 
 Subscriptions are intentionally NOT probed — the MVP skips them with
 an info-level note rather than holding open a websocket against an
-unknown server (PRD §10.3 lists subscriptions as planned; full
+unknown server (the documentation lists subscriptions as planned; full
 support arrives with the chaos module's session work).
 """
 

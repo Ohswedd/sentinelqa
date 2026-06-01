@@ -62,7 +62,7 @@ def run_error_shape_check(
                     "Different error categories were observed on the same "
                     "endpoint within a single run: "
                     f"{sorted(envelopes)!r}. Surfacing a uniform error envelope "
-                    "lets callers handle failures generically (CLAUDE.md §30)."
+                    "lets callers handle failures generically."
                 ),
                 method=method,
                 route=route,

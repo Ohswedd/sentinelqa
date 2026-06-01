@@ -1,8 +1,8 @@
 """SentinelQA configuration layer.
 
-Loads, validates, and renders ``sentinel.config.yaml`` (PRD §17). All
+Loads, validates, and renders ``sentinel.config.yaml``. All
 configuration goes through this package; ad-hoc YAML reads in other
-modules are forbidden (CLAUDE.md §12).
+modules are forbidden.
 """
 
 from __future__ import annotations

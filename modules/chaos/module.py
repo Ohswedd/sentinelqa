@@ -1,10 +1,10 @@
-"""``ChaosModule`` (Phase 23, PRD §10.8, CLAUDE.md §9, §6).
+"""``ChaosModule`` (Phase 23, the documentation, our engineering rules, §6).
 
-Lifecycle (CLAUDE.md §9):
+Lifecycle:
 
 - ``validate_prerequisites`` — re-enforces :class:`SafetyPolicy` so the
   module fails closed if the orchestrator wasn't called through the
-  CLI / SDK happy path (CLAUDE.md §6: chaos scenarios stay scoped to
+  CLI / SDK happy path (our engineering rules: chaos scenarios stay scoped to
   authorized targets).
 - ``plan``                   — no Playwright specs to enumerate
   (events flow in via JSONL).
@@ -23,7 +23,7 @@ Lifecycle (CLAUDE.md §9):
   :class:`RunnerOutcome`; status is ``skipped`` if every requested
   category reported zero events.
 
-Safety boundary (CLAUDE.md §6, §39):
+Safety boundary (our engineering rules, §39):
 
 - Defaults off in ``modules.chaos``. The CI ``nightly`` mode flips it
   on explicitly; ``fast`` / ``standard`` do not.
@@ -161,7 +161,7 @@ def _category_skip_report(category: ChaosCategory, reason: str) -> ChaosCategory
 
 
 class ChaosModule(SentinelModule):
-    """PRD §10.8 chaos / adversarial testing wired into the lifecycle."""
+    """the documentation chaos / adversarial testing wired into the lifecycle."""
 
     name: ClassVar[str] = "chaos"
 

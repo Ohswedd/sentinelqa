@@ -64,7 +64,7 @@ def run_mcp(
     state: GlobalState = ctx.obj
 
     # Logs go to stderr only — stdout is reserved for MCP wire bytes
-    # (CLAUDE.md §13). Reconfigure the root logger to point at stderr
+    # . Reconfigure the root logger to point at stderr
     # so any third-party module that imports logging.getLogger sees
     # the right destination.
     _configure_stderr_logger(log_level)

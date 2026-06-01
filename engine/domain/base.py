@@ -1,4 +1,4 @@
-"""Common Pydantic base for every domain model (CLAUDE.md §19, §20)."""
+"""Common Pydantic base for every domain model (our engineering rules, §20)."""
 
 from __future__ import annotations
 
@@ -15,7 +15,7 @@ class SentinelModel(BaseModel):
     - ``frozen=True`` — instances are hashable and immutable. Mutations
       flow through ``model_copy(update=...)``, which keeps audit trails clean.
     - ``extra="forbid"`` — unknown fields raise a ``ValidationError``. This
-      protects schema stability (CLAUDE.md §11, §38) and stops silent drift.
+      protects schema stability (our engineering rules, §38) and stops silent drift.
     - ``str_strip_whitespace=True`` and ``str_min_length=0`` keep textual
       fields predictable when they ride through YAML/JSON.
     - ``populate_by_name=True`` allows alias-driven I/O while still keeping

@@ -1,4 +1,4 @@
-"""Context-variable backed log enrichment (CLAUDE.md §13)."""
+"""Context-variable backed log enrichment."""
 
 from __future__ import annotations
 

@@ -1,4 +1,4 @@
-"""``SupplyChainModule`` (Phase 33, PRD §10.7.3, ADR-0045).
+"""``SupplyChainModule`` (Phase 33, the documentation.3, ADR-0045).
 
 Lifecycle (CLAUDE §9):
 
@@ -75,7 +75,7 @@ _ALL_CHECKS: tuple[str, ...] = (
 
 
 class SupplyChainModule(SentinelModule):
-    """PRD §10.7.3 supply-chain audit wired into the SentinelQA lifecycle."""
+    """the documentation.3 supply-chain audit wired into the SentinelQA lifecycle."""
 
     name: ClassVar[str] = "supply_chain"
 

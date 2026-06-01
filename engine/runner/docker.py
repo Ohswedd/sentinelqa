@@ -7,7 +7,7 @@ running ``sentinel-ts`` on the host. The image is built from
 user's registry); ``make build-runner-image`` is the canonical local
 build.
 
-Safety boundary (CLAUDE.md §6, §10):
+Safety boundary (our engineering rules, §10):
 
 - Container launch is preceded by an explicit safety-policy check
   inside the runner. Even though the lifecycle already enforced it,

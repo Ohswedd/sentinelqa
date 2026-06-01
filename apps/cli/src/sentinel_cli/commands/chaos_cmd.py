@@ -6,7 +6,7 @@ lifecycle steps (safety policy, artifact tree, reporter dispatch,
 exit-code mapping) run whether the user types ``sentinel audit`` or
 ``sentinel chaos``.
 
-Safety boundary (CLAUDE.md §6, §39):
+Safety boundary (our engineering rules, §39):
 
 - No CLI flag in the aggressive / evasion / detection-bypass family
   exists. ``tests/security/test_chaos_no_evasion_flags.py`` greps
@@ -16,7 +16,7 @@ Safety boundary (CLAUDE.md §6, §39):
   regardless because the operator explicitly invoked it — but every
   scenario still flows through :class:`SafetyPolicy.enforce`.
 
-Exit codes (CLAUDE.md §13):
+Exit codes:
 
 - ``0`` — module produced no high/critical findings.
 - ``1`` — quality gate failed (high/critical findings present, or the

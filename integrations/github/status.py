@@ -5,7 +5,7 @@ release decision. Designed to be called from CI (branch protection
 can require the ``sentinelqa/quality-gate`` context) but is testable
 purely via mocked HTTP.
 
-CLAUDE.md §33: ``GITHUB_TOKEN`` is read from the environment only —
+our engineering rules: ``GITHUB_TOKEN`` is read from the environment only —
 never logged, never echoed in error messages.
 """
 

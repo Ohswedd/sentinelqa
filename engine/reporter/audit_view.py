@@ -1,7 +1,7 @@
 """Audit log view for the HTML report (Phase 15, task 15.04).
 
 The audit log is appended to as JSONL by every safety-relevant decision
-in the run lifecycle (CLAUDE.md §6, §11). For the HTML report we read
+in the run lifecycle (our engineering rules, §11). For the HTML report we read
 back the redacted entries, normalize them into a typed shape, and
 expose them to the Jinja2 template.
 

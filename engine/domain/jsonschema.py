@@ -35,7 +35,7 @@ if TYPE_CHECKING:
     from engine.domain.base import SentinelModel
 
 # Every artifact that gets a generated schema file. Ordered so the dump on
-# disk is stable across runs (deterministic builds — CLAUDE.md §19).
+# disk is stable across runs (deterministic builds).
 _MODELS: tuple[type[Any], ...] = (
     Project,
     Target,

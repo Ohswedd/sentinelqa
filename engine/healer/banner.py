@@ -1,4 +1,4 @@
-"""Generated-banner / hand-edit detection (Phase 20.06, CLAUDE.md §23).
+"""Generated-banner / hand-edit detection (Phase 20.06, our engineering rules).
 
 The Healer must NEVER apply a repair to a hand-owned spec. We detect
 hand ownership via two complementary signals:

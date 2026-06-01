@@ -211,7 +211,7 @@ def forms_without_api_calls(
     """Return forms whose ``action_url`` does not resolve to any discovered endpoint.
 
     Used by the risk model: a form that submits but never appears to talk to
-    the backend is exactly the "fake completeness" smell PRD §10.9 calls out.
+    the backend is exactly the "fake completeness" smell the documentation calls out.
     """
 
     misfires: list[Form] = []

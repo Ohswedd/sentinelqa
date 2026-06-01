@@ -6,9 +6,9 @@ status: Stable
 
 `sentinel functional` walks `tests/sentinel/` for `*.spec.ts`, drives
 them through the [Runner](/modules/runner/), and translates failed
-executions into typed findings with PRD §20 evidence.
+executions into typed findings with our product spec evidence.
 
-Authority: PRD §10.1, ADR-0015.
+Authority: the documentation, ADR-0015.
 
 ## Modes
 
@@ -27,7 +27,7 @@ uv run sentinel functional --mode smoke --grep '@p0.*login'
 The generator emits a canonical tag set on every spec, in order:
 
 ```
-@p0..p3   @module:<name>   @flow:<extractor>   @risk:<level>
+@p0..p3 @module:<name> @flow:<extractor> @risk:<level>
 ```
 
 Plus any planner-attached tags (alphabetized, IDs stripped).

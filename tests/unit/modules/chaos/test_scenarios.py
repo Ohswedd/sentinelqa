@@ -36,7 +36,7 @@ def test_is_known_scenario_handles_unknowns() -> None:
 
 
 def test_catalog_has_all_prd_chaos_scenarios() -> None:
-    # PRD §10.8 lists the 13 scenarios; verify the canonical IDs exist.
+    # our product spec8 lists the 13 scenarios; verify the canonical IDs exist.
     expected = {
         "network.slow_3g",
         "network.offline",

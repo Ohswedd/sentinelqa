@@ -2,7 +2,7 @@
 
 Status: `Stable`
 
-Authority: `CLAUDE.md` §42 (Competitor awareness), `CLAUDE.md` §40 (Versioning & release rules — package contents inspected pre-release), `plans/phase-28-versioning-release/05-trademark-check.md`.
+Authority: project engineering rules.md` §40 (Versioning & release rules — package contents inspected pre-release), .
 
 This is the Phase 28 trademark verdict for the product name **"SentinelQA"**. Until either verdict here changes, the name is cleared for **internal** use (the private monorepo, internal documentation, working-group conversation, this CI). Public publication (PyPI / npm / Docker Hub / dedicated domain / marketing) requires the human owner to complete the registered-marks search rows below before tagging the first release per `docs/dev/semver.md`.
 
@@ -19,7 +19,7 @@ This is the Phase 28 trademark verdict for the product name **"SentinelQA"**. Un
 | EUIPO TMview search (EU)                             | **AWAITING owner action** | _pending_  | Human owner only        | Run the search at <https://www.tmview.tmdn.org/>. Same blocker as USPTO.                                                                                                                                                                                                                                                     |
 | UKIPO mark search (UK)                               | **AWAITING owner action** | _pending_  | Human owner only        | Run the search at <https://www.gov.uk/search-for-trademark>. Same blocker.                                                                                                                                                                                                                                                   |
 
-The three registered-marks lanes are not deferred scope — they are **owner-only** actions that must clear before the first public release, and they are captured as explicit pre-tag blockers in `docs/release/pre-1.0-review.md` (Phase 28 task 28.06).
+The three registered-marks lanes are not deferred scope — they are **owner-only** actions that must clear before the first public release, and they are captured as explicit pre-tag blockers in the pre-tag review process (Phase 28 task 28.06).
 
 ## Adjacent-name landscape (informational)
 
@@ -73,4 +73,4 @@ This verdict explicitly says: continued use of "SentinelQA" inside this private 
 - Filing for a trademark.
 - Issuing public marketing under the SentinelQA name.
 
-Those steps unlock once the registered-marks rows above are signed off by the human owner in this file _and_ in `docs/release/pre-1.0-review.md`.
+Those steps unlock once the registered-marks rows above are signed off by the human owner in this file _and_ in the pre-tag review process.

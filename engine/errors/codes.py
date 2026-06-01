@@ -4,7 +4,7 @@ Each entry binds:
 
 - A symbolic ``code`` (e.g. ``"E-CFG-001"``) used by `to_agent_message` and
   the docs site (Phase 27).
-- A CLI ``exit_code`` int matching PRD §13.2 / CLAUDE.md §13.
+- A CLI ``exit_code`` int matching our published policy / our engineering guidelines.
 - A default ``message`` template and ``suggested_fix`` rendered when the
   exception is raised without explicit arguments.
 
@@ -17,7 +17,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Final
 
-# Exit-code constants. Match PRD §13.2 (updated in Phase 01) and CLAUDE.md §13.
+# Exit-code constants. Stable contract — bumps are breaking changes.
 EXIT_SUCCESS: Final[int] = 0
 EXIT_QUALITY_GATE_FAILED: Final[int] = 1
 EXIT_CONFIG_ERROR: Final[int] = 2
@@ -55,7 +55,8 @@ ERROR_REGISTRY: Final[dict[str, ErrorCodeSpec]] = {
         exit_code=EXIT_CONFIG_ERROR,
         message_template="Configuration failed schema validation: {detail}",
         suggested_fix=(
-            "Run `sentinel doctor` for a precise diff against the expected " "schema (PRD §17.1)."
+            "Run `sentinel doctor` for a precise diff against the expected "
+            "schema (our published policy)."
         ),
     ),
     "E-CFG-003": ErrorCodeSpec(
@@ -77,7 +78,7 @@ ERROR_REGISTRY: Final[dict[str, ErrorCodeSpec]] = {
         suggested_fix=(
             "Add the host to `target.allowed_hosts` only if you own or are "
             "authorized to test it. SentinelQA never permits unauthorized "
-            "scans (PRD §2, CLAUDE.md §6)."
+            "scans (our published policy)."
         ),
     ),
     "E-SAFE-002": ErrorCodeSpec(
@@ -100,7 +101,7 @@ ERROR_REGISTRY: Final[dict[str, ErrorCodeSpec]] = {
             "stealth/evasion/bypass features are not part of SentinelQA."
         ),
         suggested_fix=(
-            "Remove the flag. See PRD §2.1 and CLAUDE.md §6 for the full "
+            "Remove the flag. See our published policy and our engineering guidelines for the full "
             "list of forbidden capabilities."
         ),
     ),
@@ -296,7 +297,7 @@ ERROR_REGISTRY: Final[dict[str, ErrorCodeSpec]] = {
             "the active target host is {target_host!r}."
         ),
         suggested_fix=(
-            "SentinelQA refuses to replay sessions across hosts (CLAUDE.md "
+            "SentinelQA refuses to replay sessions across hosts (our engineering guidelines "
             "§6). Capture a separate entry for each target."
         ),
     ),

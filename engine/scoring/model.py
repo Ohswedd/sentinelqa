@@ -4,12 +4,12 @@ Builds :class:`engine.domain.quality_score.QualityScore` from typed
 findings + module results + the configured policy. The function is
 deterministic by construction: no time, no randomness, no I/O.
 Floats are rounded half-to-even (Python's :func:`round`) so JSON
-serialization is byte-stable across runs (CLAUDE.md §25).
+serialization is byte-stable across runs.
 
 Component scoring
 -----------------
 
-Each PRD §19.1 component (functional, security, performance,
+Each the documentation component (functional, security, performance,
 accessibility, api, visual, llm_audit) gets a per-module sub-score
 in [0, 100]:
 
@@ -22,14 +22,14 @@ The eighth axis is `flake_risk`, computed from the runner-reported
     flake_score   = 100 * (1 - min(1, rate / policy.max_flake_rate))
 
 The aggregate `total` is the weighted average of the eight axis scores
-clamped to [0, 100]. Default weights match PRD §19.1.
+clamped to [0, 100]. Default weights match the documentation.
 
 Severity penalties
 ------------------
 
 The penalty per finding comes from :func:`derive_penalty_table` which
 reads the PolicyConfig severity-penalty fields (defaulting to the
-midpoint of the PRD §19.2 ranges). Critical findings carry a fixed
+midpoint of the the documentation ranges). Critical findings carry a fixed
 penalty of :data:`CRITICAL_PENALTY` so the numeric score still
 reflects severity even when `policy.block_on_critical` would otherwise
 blocked release.
@@ -64,7 +64,7 @@ COMPONENT_AXES: Final[tuple[str, ...]] = (
     "flake_risk",
 )
 
-# Default weights from PRD §19.1. Sum to 1.0.
+# Default weights from the documentation. Sum to 1.0.
 DEFAULT_WEIGHTS: Final[Mapping[str, float]] = {
     "functional": 0.30,
     "security": 0.20,
@@ -76,7 +76,7 @@ DEFAULT_WEIGHTS: Final[Mapping[str, float]] = {
     "flake_risk": 0.05,
 }
 
-# Critical penalty is fixed (PRD §19.2 says "Blocks release"; the
+# Critical penalty is fixed (the documentation says "Blocks release"; the
 # numeric value here only affects the score for callers that disable
 # `block_on_critical`).
 CRITICAL_PENALTY: Final[float] = 30.0

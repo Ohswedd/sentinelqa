@@ -2,13 +2,13 @@
 
 Status: `Stable`
 
-Authority: `plans/phase-35-public-release/05-brand-assets.md`,
-`CLAUDE.md` §42 (Competitor awareness), `docs/dev/trademarks-and-naming.md`.
+Authority: ,
+our engineering rules(Competitor awareness), `docs/dev/trademarks-and-naming.md`.
 
 This page documents how the SentinelQA name, mark, and assets may be
 used. The current mark is a **placeholder** by design — the human owner
 replaces it with the registered mark before the `v1.0.0` publish
-(`docs/release/pre-1.0-review.md`).
+(the pre-tag review process).
 
 ## Assets
 
@@ -41,36 +41,27 @@ uv run python -m scripts.release.gen_brand_pngs
 
 ## Naming
 
-- The product name is **SentinelQA** — one word, capitalised S and Q.
-  Not "Sentinel QA", not "Sentinelqa", not "sentinel-qa".
+- The product name is **SentinelQA** — one word, capitalised S and Q. Not "Sentinel QA", not "Sentinelqa", not "sentinel-qa".
 - The CLI executable is `sentinel` (lowercase).
-- Package names: `sentinelqa-cli` (PyPI, Phase 36), `sentinelqa` (PyPI
-  SDK), `@sentinelqa/*` (npm scope), `sentinelqa/runner` (Docker Hub).
+- Package names: `sentinelqa-cli` (PyPI, Phase 36), `sentinelqa` (PyPI SDK), `@sentinelqa/*` (npm scope), `sentinelqa/runner` (Docker Hub).
 
 ## What you may do
 
 You **may**, without asking:
 
 - Link to SentinelQA, the docs site, and the GitHub repo.
-- Use the logo and the name in articles, blog posts, talks, and
-  comparison tables — including critical coverage — as long as the
-  use does not imply endorsement.
-- Include the logo in screenshots that show SentinelQA actually
-  running.
-- Use the social-preview card on social media when sharing
-  SentinelQA news.
+- Use the logo and the name in articles, blog posts, talks, and comparison tables — including critical coverage — as long as the use does not imply endorsement.
+- Include the logo in screenshots that show SentinelQA actually running.
+- Use the social-preview card on social media when sharing SentinelQA news.
 
 ## What requires permission
 
 You **may not**, without written permission from the owner:
 
 - Use the SentinelQA name or logo on a competing product.
-- Use the name or logo in a way that suggests endorsement, sponsorship,
-  or an official partnership when none exists.
-- Modify the mark (recolor, distort, animate, combine with other
-  marks) beyond proportional scaling.
-- Register the SentinelQA name, logo, or anything confusingly similar
-  as your own trademark in any jurisdiction.
+- Use the name or logo in a way that suggests endorsement, sponsorship, or an official partnership when none exists.
+- Modify the mark (recolor, distort, animate, combine with other marks) beyond proportional scaling.
+- Register the SentinelQA name, logo, or anything confusingly similar as your own trademark in any jurisdiction.
 - Use the mark on merchandise (apparel, stickers, etc.) you sell.
 
 Contact: `brand@sentinelqa.dev` (owner-provisioned inbox; placeholder
@@ -81,12 +72,8 @@ until the public flip).
 Until `v1.0.0`, the mark and the trademark posture are both
 **provisional**:
 
-- The mark is a placeholder design (a generic shield + monogram).
-  The owner replaces it with the registered mark per
-  `docs/release/pre-1.0-review.md` ("Trademarks" section).
-- The trademark search lanes (USPTO / EUIPO / UKIPO) are documented
-  in [`docs/dev/trademarks-and-naming.md`](./trademarks-and-naming.md);
-  the registered-marks lanes remain open until owner sign-off.
+- The mark is a placeholder design (a generic shield + monogram). The owner replaces it with the registered mark per the pre-tag review process ("Trademarks" section).
+- The trademark search lanes (USPTO / EUIPO / UKIPO) are documented in [`docs/dev/trademarks-and-naming.md`](./trademarks-and-naming.md); the registered-marks lanes remain open until owner sign-off.
 
 If you spot a conflict — another product, package, or domain using
 "SentinelQA" or a confusingly similar name — open a private issue via
@@ -102,7 +89,5 @@ Missing or corrupt assets fail CI.
 ## Related
 
 - `docs/dev/trademarks-and-naming.md` — trademark posture + search lanes.
-- `docs/release/pre-1.0-review.md` — pre-1.0 sign-off checklist
-  (includes "trademarks" rows the owner signs before any publish).
-- `apps/docs/astro.config.mjs` — `head` section wires the favicons +
-  Open Graph + Twitter Card images.
+- the pre-tag review process — pre-1.0 sign-off checklist (includes "trademarks" rows the owner signs before any publish).
+- `apps/docs/astro.config.mjs` — `head` section wires the favicons + Open Graph + Twitter Card images.

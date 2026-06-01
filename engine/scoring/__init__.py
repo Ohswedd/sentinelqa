@@ -1,4 +1,4 @@
-"""Quality scoring (Phase 14, PRD §19, CLAUDE.md §25).
+"""Quality scoring (Phase 14, our product spec, our engineering rules).
 
 Reproducible release-confidence score derived from typed findings +
 module results + policy config. Every value the writer persists is a
@@ -9,7 +9,7 @@ Public surface:
 
 - :func:`compute_score` — turn findings + module results + policy into
   :class:`engine.domain.quality_score.QualityScore`.
-- :func:`compute_blockers` — apply blocker rules from CLAUDE.md §25.
+- :func:`compute_blockers` — apply blocker rules from our engineering rules.
 - :func:`decide` — translate score + blockers + run status into
   :class:`engine.domain.policy_decision.PolicyDecision`.
 - :func:`apply_policy_gate` — orchestrator helper combining the above

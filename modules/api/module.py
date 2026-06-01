@@ -1,6 +1,6 @@
-"""``ApiModule`` (Phase 22, PRD §10.3, CLAUDE.md §30, ADR-0020).
+"""``ApiModule`` (Phase 22, the documentation, our engineering rules, ADR-0020).
 
-Lifecycle (CLAUDE.md §9):
+Lifecycle:
 
 - ``validate_prerequisites`` — re-enforces :class:`SafetyPolicy` so the
   module fails closed if the orchestrator wasn't called through the
@@ -22,7 +22,7 @@ Lifecycle (CLAUDE.md §9):
 - ``summarize``              — overlays findings on a synthesized
   :class:`RunnerOutcome` (no Playwright tests run).
 
-Safety boundary (CLAUDE.md §30): aggressive fuzzing is forbidden. No
+Safety boundary: aggressive fuzzing is forbidden. No
 field, option, env var, or CLI flag named ``aggressive`` / ``fuzz`` /
 ``brute`` / ``stress`` exists in this module. The body-size cap in
 :func:`modules.api.http_client.safe_request` is the I/O-layer
@@ -94,7 +94,7 @@ _RUN_ORDER: tuple[ApiCheckName, ...] = (
 
 
 class ApiModule(SentinelModule):
-    """PRD §10.3 API testing wired into the SentinelQA lifecycle."""
+    """the documentation API testing wired into the SentinelQA lifecycle."""
 
     name: ClassVar[str] = "api"
 

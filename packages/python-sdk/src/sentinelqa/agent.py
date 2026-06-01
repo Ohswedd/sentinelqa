@@ -1,4 +1,4 @@
-"""Agent-message helpers (PRD §14.2, CLAUDE.md §15).
+"""Agent-message helpers (the documentation, our engineering rules).
 
 A thin formatting layer over the dicts produced by
 :meth:`AuditResult.to_agent_messages`,

@@ -3,7 +3,7 @@
 Every Phase-30 adapter speaks HTTP+JSON via ``httpx``. The shared base
 encapsulates:
 
-- API-key lookup from an env var (never inlined; CLAUDE.md §33).
+- API-key lookup from an env var (never inlined; our engineering rules).
 - Structured-output enforcement (server-side hint + client-side
   re-validation against the request's ``response_schema``).
 - Latency timing.

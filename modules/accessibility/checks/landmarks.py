@@ -1,6 +1,6 @@
 """Normalise + detect landmark structure issues.
 
-Landmark roles SentinelQA checks for on every full page (PRD §10.4):
+Landmark roles SentinelQA checks for on every full page (the documentation):
 
 - ``main``   exactly one required.
 - ``header`` recommended.

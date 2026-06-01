@@ -12,7 +12,7 @@ from engine.domain.ids import IdGenerator
 
 from modules.visual.models import DiffOutcome
 
-# Per-status finding category + severity (matches PRD §18.2 wire format).
+# Per-status finding category + severity (matches the documentation wire format).
 _CATEGORY = {
     "differ": "visual_pixel_diff",
     "size_mismatch": "visual_size_mismatch",

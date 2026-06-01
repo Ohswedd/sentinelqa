@@ -2,20 +2,20 @@
 
 Status: `Stable`
 
-Authority: `CLAUDE.md` §34 (Documentation rules). PRD §32 (Recommended Build Order — ADR triggers are implicit in the phase order).
+Authority: project engineering rules. our product spec (Recommended Build Order — ADR triggers are implicit in the phase order).
 
 An **ADR** records _why_ a non-obvious architectural choice was made, so the next contributor (human or agent) can extend, supersede, or revisit it with context instead of re-deriving the trade-off from first principles.
 
 ## When to write an ADR
 
-`CLAUDE.md` §34 mandates an ADR for any of these triggers:
+our engineering rules:
 
 - **Runtime architecture** — choice or change of an executor, scheduler, queue, or runtime topology.
 - **Plugin system** — module/plugin interface contract.
 - **Config schema** — top-level shape of `sentinel.config.yaml` and validation rules.
 - **Scoring algorithm** — change to how `score.json` is derived from findings.
 - **Report schema** — change to any persisted output (`run.json`, `findings.json`, `score.json`, JUnit, SARIF, HTML).
-- **Security policy** — change to the safety boundary (`CLAUDE.md` §6 / PRD §2) or to the target allowlist semantics.
+- **Security policy** — change to the safety boundary (our engineering rules/ our product spec) or to the target allowlist semantics.
 - **Agent / MCP design** — change to the `sentinel.*` MCP tool contract or to the agent message protocol.
 - **Cloud boundary** — anything that crosses from local to remote execution (BrowserStack, Sauce Labs, cloud orchestrator, etc.).
 
@@ -77,14 +77,14 @@ Use [`_template.md`](./_template.md). The required headings are validated by `sc
 | [0031](./0031-example-apps.md)                            | Example apps — self-contained reference implementations + structural CI tests                                                                                  | `Accepted` | 26    |
 | [0032](./0032-docs-site.md)                               | Docs site built with Astro Starlight                                                                                                                           | `Accepted` | 27    |
 | [0033](./0033-cloud-boundary.md)                          | Cloud boundary — no SentinelQA cloud in the MVP                                                                                                                | `Accepted` | 27    |
-| [0034](./0034-python-cli-typescript-runtime.md)           | Python-first CLI with a TypeScript Playwright runtime (PRD §31 Q1)                                                                                             | `Accepted` | 27    |
-| [0035](./0035-generated-tests-in-user-repo.md)            | Generated tests live in the user's repo (PRD §31 Q2)                                                                                                           | `Accepted` | 27    |
-| [0036](./0036-cloud-delayed-until-cli-traction.md)        | Cloud is delayed until the CLI earns adoption (PRD §31 Q3)                                                                                                     | `Accepted` | 27    |
-| [0037](./0037-llm-provider-agnostic.md)                   | Provider-agnostic LLM access through adapters (PRD §31 Q4)                                                                                                     | `Accepted` | 27    |
-| [0038](./0038-mcp-day-one.md)                             | Ship an MCP server on day one (PRD §31 Q5)                                                                                                                     | `Accepted` | 27    |
-| [0039](./0039-planner-deterministic-llm-split.md)         | Discovery + execution deterministic, planning LLM-augmented (PRD §31 Q6)                                                                                       | `Accepted` | 27    |
-| [0040](./0040-visual-built-in-first.md)                   | Built-in visual diff engine first, integrations later (PRD §31 Q7)                                                                                             | `Accepted` | 27    |
-| [0041](./0041-framework-agnostic-with-nextjs.md)          | Framework-agnostic crawler with first-class Next.js support (PRD §31 Q8)                                                                                       | `Accepted` | 27    |
+| [0034](./0034-python-cli-typescript-runtime.md)           | Python-first CLI with a TypeScript Playwright runtime (our product spec Q1)                                                                                    | `Accepted` | 27    |
+| [0035](./0035-generated-tests-in-user-repo.md)            | Generated tests live in the user's repo (our product spec Q2)                                                                                                  | `Accepted` | 27    |
+| [0036](./0036-cloud-delayed-until-cli-traction.md)        | Cloud is delayed until the CLI earns adoption (our product spec Q3)                                                                                            | `Accepted` | 27    |
+| [0037](./0037-llm-provider-agnostic.md)                   | Provider-agnostic LLM access through adapters (our product spec Q4)                                                                                            | `Accepted` | 27    |
+| [0038](./0038-mcp-day-one.md)                             | Ship an MCP server on day one (our product spec Q5)                                                                                                            | `Accepted` | 27    |
+| [0039](./0039-planner-deterministic-llm-split.md)         | Discovery + execution deterministic, planning LLM-augmented (our product spec Q6)                                                                              | `Accepted` | 27    |
+| [0040](./0040-visual-built-in-first.md)                   | Built-in visual diff engine first, integrations later (our product spec Q7)                                                                                    | `Accepted` | 27    |
+| [0041](./0041-framework-agnostic-with-nextjs.md)          | Framework-agnostic crawler with first-class Next.js support (our product spec Q8)                                                                              | `Accepted` | 27    |
 | [0042](./0042-multi-provider-llm-adapter.md)              | Multi-provider LLM adapter layer (Anthropic, OpenAI, Gemini, Ollama, Azure, Vertex, Mistral, Groq, OpenRouter)                                                 | `Accepted` | 30    |
 | [0043](./0043-browser-authenticated-audits.md)            | Browser-authenticated audits via an encrypted Playwright `storage_state` vault                                                                                 | `Accepted` | 31    |
 | [0044](./0044-extended-security-skill-catalog.md)         | Extended security skill catalog (JWT, TLS, GraphQL, BOLA/BFLA, SSRF, bundle secrets, CWE/ATT&CK mapping)                                                       | `Accepted` | 32    |

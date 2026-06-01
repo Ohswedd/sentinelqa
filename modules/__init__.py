@@ -1,4 +1,4 @@
-"""SentinelQA audit modules (PRD §9, §10, CLAUDE.md §9).
+"""SentinelQA audit modules (our product spec, §10, our engineering rules).
 
 Each subpackage implements one capability module (Phase 10 onward).
 Importing this package exposes the modules namespace so the orchestrator

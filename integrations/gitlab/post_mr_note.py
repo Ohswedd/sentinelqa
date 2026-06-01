@@ -14,7 +14,7 @@ poster uses; the engine reporter emits it from
 :mod:`engine.reporter.pr_comment`). If found, the note is edited in
 place; otherwise a new note is created.
 
-CLAUDE.md §33: the project access token is read from the environment
+our engineering rules: the project access token is read from the environment
 only — never logged, never echoed, never persisted.
 """
 

@@ -1,9 +1,9 @@
-"""SentinelQA core domain models (PRD §18, CLAUDE.md §7).
+"""SentinelQA core domain models (our product spec, our engineering rules).
 
 Every later engine sub-package imports its entities from here. Models are
 frozen Pydantic v2 models that forbid unknown fields, so they can safely be
 shared across module/process boundaries and serialized into the run
-artifact tree (PRD §11.3) without losing typing.
+artifact tree (the documentation) without losing typing.
 
 The public surface is what `from engine.domain import X` exposes via
 ``__all__``. Internal helpers (``SentinelModel`` base, ID generator,

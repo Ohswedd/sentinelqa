@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  SentinelQA primary mark (placeholder design, Phase 35.05).
+  SentinelQA primary mark (placeholder design).
 
   A shield silhouette with the monogram "SQ" inside, sized for a
   1:1 viewBox so it crops cleanly to favicon / app-icon / social-
-  preview sizes. The owner replaces this with the trademarked
-  registered mark before v1.0.0 publish (see plans/phase-35-
-  public-release/05-brand-assets.md).
+  preview sizes.
 -->
 <svg xmlns="http://www.w3.org/2000/svg"
      viewBox="0 0 256 256"

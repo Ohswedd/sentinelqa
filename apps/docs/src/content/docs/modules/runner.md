@@ -8,7 +8,7 @@ The runner executes generated specs against the target and turns the
 result into a typed `RunnerOutcome` with per-test executions, P50/P95
 metrics, and a per-module status.
 
-Authority: PRD §9.4, ADR-0013.
+Authority: the documentation, ADR-0013.
 
 ## Two runners, one contract
 
@@ -29,9 +29,7 @@ picks the worst per-test status.
 ## Retry + quarantine
 
 - `runner.retries.max` — up to 2 (CLAUDE §23: hard cap).
-- `runner.quarantine.path` — YAML list with `test_id`, `reason`,
-  `expires_at` (≤ today + 14 days), `issue_url` (https only).
-  Expired entries fail the load.
+- `runner.quarantine.path` — YAML list with `test_id`, `reason`, `expires_at` (≤ today + 14 days), `issue_url` (https only). Expired entries fail the load.
 
 Quarantine is a humane mute, not silent muting: every quarantined
 test is logged and counted; the cap prevents drift.

@@ -1,6 +1,6 @@
 """Integration tests for the hardcoded-credentials scanner (task 19.08).
 
-Per CLAUDE.md §33, the test asserts that the persisted snippet has the
+Per our engineering rules, the test asserts that the persisted snippet has the
 literal credential redacted before leaving the function.
 """
 

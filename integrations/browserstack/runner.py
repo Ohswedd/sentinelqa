@@ -4,10 +4,9 @@ The adapter implements the SDK ``RunnerPlugin`` Protocol
 (:mod:`sentinelqa.plugins`). The shape lets a third-party config opt
 into BrowserStack via the Phase 24 plugin loader OR call the adapter
 directly from a custom runner. SentinelQA does NOT auto-route audit
-runs through BrowserStack; the engine remains location-agnostic
-(CLAUDE.md §7).
+runs through BrowserStack; the engine remains location-agnostic.
 
-CLAUDE.md §33: ``BROWSERSTACK_USERNAME`` and ``BROWSERSTACK_ACCESS_KEY``
+our engineering rules: ``BROWSERSTACK_USERNAME`` and ``BROWSERSTACK_ACCESS_KEY``
 are read from the environment at construction. They are never logged,
 never written to disk, and never echoed in error messages. Quota
 exhaustion surfaces as :class:`BrowserStackQuotaExceeded` rather than
@@ -48,7 +47,7 @@ class BrowserStackQuotaExceededError(RuntimeError):
 
 # Backwards-friendly alias kept so existing call-sites can still
 # `except BrowserStackQuotaExceeded:`. The canonical class name is the
-# ``Error`` suffix (CLAUDE.md §32 / ruff N818).
+# ``Error`` suffix (our engineering rules / ruff N818).
 BrowserStackQuotaExceeded = BrowserStackQuotaExceededError
 
 

@@ -1,4 +1,4 @@
-"""Python ↔ TypeScript JSONL parser (CLAUDE.md §8, ADR-0009).
+"""Python ↔ TypeScript JSONL parser (our engineering rules, ADR-0009).
 
 The TS runtime (`@sentinelqa/ts-runtime`) emits one JSON event per
 stdout line. This module:
@@ -213,7 +213,7 @@ class ErrorEvent(_EventBase):
 
 
 # ---------------------------------------------------------------------------
-# Phase-17 discovery events (PRD §9.1, task 17.07 + ADR-0010 follow-up)
+# Phase-17 discovery events (the documentation, task 17.07 + ADR-0010 follow-up)
 # ---------------------------------------------------------------------------
 
 
@@ -222,7 +222,7 @@ class DiscoveryPageEvent(_EventBase):
 
     The fields mirror :class:`engine.discovery.crawler.CrawlPage` so the
     Python adapter can translate one event into one ``CrawlPage`` with
-    no domain-shape drift (CLAUDE.md §8).
+    no domain-shape drift.
     """
 
     type: Literal["discovery.page"]

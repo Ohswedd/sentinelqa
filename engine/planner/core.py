@@ -1,4 +1,4 @@
-"""Deterministic planner core (task 06.01, PRD §9.2).
+"""Deterministic planner core (task 06.01, the documentation).
 
 Given a :class:`DiscoveryGraph` and a :class:`RiskMap`, the planner emits a
 :class:`TestPlan` enumerating every flow and the test types it requires.
@@ -43,7 +43,7 @@ from engine.domain.test_plan import CoverageEstimate, TestPlan
 from engine.planner.flows import FlowExtractor, builtin_extractors, run_extractors
 
 DETERMINISTIC_CONFIDENCE: float = 0.95
-"""Confidence stamp every deterministic flow carries (PRD §9.2)."""
+"""Confidence stamp every deterministic flow carries (the documentation)."""
 
 _PRIORITY_BY_RISK: Mapping[Risk, Priority] = {
     "critical": "P0",

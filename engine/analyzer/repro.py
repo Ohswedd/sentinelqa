@@ -1,4 +1,4 @@
-"""Reproduction step generation (PRD §9.5, task 09.03).
+"""Reproduction step generation (the documentation, task 09.03).
 
 Two outputs:
 

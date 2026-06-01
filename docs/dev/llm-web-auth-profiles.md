@@ -25,32 +25,18 @@ metadata.
 
 ## Authorized use cases
 
-- **Audit your own ChatGPT plugin / custom GPT.** Does it leak PII?
-  Does it refuse the things you instructed it to refuse? Does the
-  loading state appear when it should?
-- **Audit your own Claude Project workflow.** Internal Claude
-  Projects sometimes touch internal data; SentinelQA can replay your
-  authenticated session against the Project's URL and watch for
-  finding-worthy behaviour.
-- **Audit a Gemini extension you built.** Extensions run with your
-  Workspace permissions; an audit against your own session catches
-  bugs before your colleagues hit them.
+- **Audit your own ChatGPT plugin / custom GPT.** Does it leak PII? Does it refuse the things you instructed it to refuse? Does the loading state appear when it should?
+- **Audit your own Claude Project workflow.** Internal Claude Projects sometimes touch internal data; SentinelQA can replay your authenticated session against the Project's URL and watch for finding-worthy behaviour.
+- **Audit a Gemini extension you built.** Extensions run with your Workspace permissions; an audit against your own session catches bugs before your colleagues hit them.
 
 ---
 
 ## What this is NOT
 
-- **Not a scraper.** SentinelQA does not pull conversations, prompts,
-  responses, or generated content out of the LLM web UI.
-- **Not a content generator.** SentinelQA does not send prompts to
-  Claude / ChatGPT / Gemini / Le Chat to produce content.
-- **Not an account-impersonation tool.** Auditing accounts other than
-  your own — even with a teammate's explicit permission — is outside
-  the use case these profiles document. Get an organization-scoped
-  test account from your admin.
-- **Not a bypass.** The captured session is the same session your
-  browser holds. SentinelQA does not bypass MFA, does not touch
-  CAPTCHA, does not evade rate limits, and does not hide its identity.
+- **Not a scraper.** SentinelQA does not pull conversations, prompts, responses, or generated content out of the LLM web UI.
+- **Not a content generator.** SentinelQA does not send prompts to Claude / ChatGPT / Gemini / Le Chat to produce content.
+- **Not an account-impersonation tool.** Auditing accounts other than your own — even with a teammate's explicit permission — is outside the use case these profiles document. Get an organization-scoped test account from your admin.
+- **Not a bypass.** The captured session is the same session your browser holds. SentinelQA does not bypass MFA, does not touch CAPTCHA, does not evade rate limits, and does not hide its identity.
 
 ---
 
@@ -76,22 +62,14 @@ The capture flow is identical to the OAuth profiles documented in
 [`docs/user/auth-flows.md`](../user/auth-flows.md):
 
 ```bash
-sentinel auth login claude-projects \
-  --url https://claude.ai/login \
-  --profile claude-ai \
-  --ttl 12
+sentinel auth login claude-projects \ --url https://claude.ai/login \ --profile claude-ai \ --ttl 12
 ```
 
 After capture, point your audit config at the session:
 
 ```yaml
-target:
-  base_url: https://claude.ai/projects/<your-project-id>
-  allowed_hosts:
-    - claude.ai
-auth:
-  strategy: browser_session
-  session_name: claude-projects
+target: base_url: https://claude.ai/projects/<your-project-id> allowed_hosts: - claude.ai
+auth: strategy: browser_session session_name: claude-projects
 ```
 
 The materialized storage state is deleted on run teardown — including

@@ -19,7 +19,7 @@ Aggregator behavior:
   when possible; absolute paths are preserved otherwise.
 - The module-results artifact is written through
   :class:`engine.orchestrator.artifacts.ArtifactDirectory` so writes are
-  atomic and redacted (CLAUDE.md §33).
+  atomic and redacted.
 """
 
 from __future__ import annotations

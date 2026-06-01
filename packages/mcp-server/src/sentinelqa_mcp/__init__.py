@@ -1,4 +1,4 @@
-"""sentinelqa-mcp — the SentinelQA MCP server (PRD §16, ADR-0023).
+"""sentinelqa-mcp — the SentinelQA MCP server (our product spec, ADR-0023).
 
 Public surface:
 

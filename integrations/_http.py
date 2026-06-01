@@ -1,12 +1,12 @@
 """Shared stdlib HTTP client for the Phase 25 integrations.
 
-CLAUDE.md §35 forbids pulling in ``requests`` just to call a REST API;
+our engineering rules forbids pulling in ``requests`` just to call a REST API;
 the Phase 17 PR / MR posters proved the pattern works. Every Phase 25
 adapter reuses this client so retry, redaction, and timeout semantics
 are identical across BrowserStack, Sauce Labs, Slack, GitHub, GitLab,
 Jira, and Linear.
 
-CLAUDE.md §33: ``Authorization`` headers, webhook URLs, and tokens are
+our engineering rules: ``Authorization`` headers, webhook URLs, and tokens are
 never logged. URLs go through :func:`redact_url` (query strings are
 stripped) and error bodies are clipped to 200 chars before they reach
 exceptions or log records.

@@ -1,4 +1,4 @@
-"""Proof-of-authorization document schema + verifier (CLAUDE.md §6, §26).
+"""Proof-of-authorization document schema + verifier (our engineering rules, §26).
 
 Destructive mode against any host requires a `proof_of_authorization` file
 that names the host, the authorized actor, the scope, and an expiry. The

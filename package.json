@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "description": "SentinelQA monorepo root — TypeScript workspaces. See PRD.md §11.2 and CLAUDE.md §21.",
+  "description": "SentinelQA monorepo root — TypeScript workspaces for the Playwright runtime and docs site.",
   "engines": {
     "node": ">=20",
     "pnpm": ">=9"

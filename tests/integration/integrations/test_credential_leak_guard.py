@@ -58,7 +58,7 @@ def test_phase_25_credentials_not_present_in_environment() -> None:
             "Phase 25 credential leak detected. The following env vars "
             "are non-empty in the test process: "
             f"{', '.join(leaked)}. "
-            "CI MUST run with these unset (CLAUDE.md §33 / Phase 25 task 25.07)."
+            "CI MUST run with these unset (our engineering rules / Phase 25 task 25.07)."
         )
 
 

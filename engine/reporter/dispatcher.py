@@ -6,7 +6,7 @@ Formats are selected from ``config.report.formats``; absent formats are
 skipped silently so the lifecycle can opt out without ceremony.
 
 Each successful emit produces one ``artifact_emitted`` line in the
-run's audit log (CLAUDE.md §11), so downstream reviewers always know
+run's audit log, so downstream reviewers always know
 which formats were generated.
 
 Phase 24 will replace the ad-hoc dispatch with a plugin entry-point
@@ -65,7 +65,7 @@ SUPPORTED_FORMATS: Final[tuple[str, ...]] = (
     "html",
 )
 
-# Config-level aliases (PRD §17.1 `report.formats`).
+# Config-level aliases (the documentation `report.formats`).
 _FORMAT_ALIASES: Final[dict[str, tuple[str, ...]]] = {
     "json": ("run", "findings", "score"),
 }
@@ -136,7 +136,7 @@ class Reporter:
         """Emit every requested format. Returns ``{format_name: Path}``."""
 
         expanded = self._expand_formats(formats)
-        # run.json is the canonical lifecycle artifact (CLAUDE.md §11);
+        # run.json is the canonical lifecycle artifact;
         # it is ALWAYS written regardless of `formats` so the run record
         # is never silently dropped.
         expanded.add("run")

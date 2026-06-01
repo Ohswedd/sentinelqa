@@ -8,7 +8,7 @@ must explicitly invoke this module.
 Each finding tracked here uses a stable anchor in the issue title so
 re-invocations upsert rather than spam the repo: ``[sentinelqa:FND-…]``.
 
-CLAUDE.md §33 / §41: token + finding evidence are redacted before
+our engineering rules / §41: token + finding evidence are redacted before
 issue bodies hit the API. Real customer data, secrets, and full
 stack traces never appear in issue bodies — the body shows the
 recommendation + the redacted-evidence path summary only.
@@ -122,7 +122,7 @@ def create_issue_for_finding(
 
     ``auto_create`` MUST be True for any write to happen. The default
     is False so a misconfigured CI does not silently start opening
-    issues against a target repo (CLAUDE.md §41).
+    issues against a target repo.
     """
 
     if not auto_create:

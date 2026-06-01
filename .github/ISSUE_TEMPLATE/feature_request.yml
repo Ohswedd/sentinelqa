@@ -6,10 +6,11 @@ body:
   - type: markdown
     attributes:
       value: |
-        Before filing: read [`PRD.md`](https://github.com/Ohswedd/sentinelqa/blob/main/PRD.md)
-        and check whether the capability already lives in a later phase
-        (`plans/`). New capabilities require a PRD update and may need an
-        ADR (`CLAUDE.md` §34).
+        Before filing: skim the docs site and the module catalog to see whether
+        the capability is already covered. New capabilities that change a
+        documented contract (CLI, SDK, MCP, config, scoring, reports) usually
+        need an Architecture Decision Record — see
+        [`docs/adr/`](https://github.com/Ohswedd/sentinelqa/tree/main/docs/adr).
   - type: textarea
     id: problem
     attributes:
@@ -25,19 +26,18 @@ body:
     validations:
       required: true
   - type: input
-    id: prd-section
+    id: area
     attributes:
-      label: PRD section(s) this maps to
+      label: Area affected
       description: |
-        If it doesn't map to an existing section, explain why the PRD should
-        be extended (`CLAUDE.md` §5).
+        e.g. `engine.runner`, `modules.security`, `apps/cli`, `packages/python-sdk`.
     validations:
       required: true
   - type: input
     id: differentiation
     attributes:
       label: Differentiation
-      description: How does this strengthen the PRD §28 differentiation story?
+      description: How does this strengthen SentinelQA's release-confidence story?
   - type: textarea
     id: acceptance
     attributes:
@@ -48,7 +48,7 @@ body:
   - type: textarea
     id: safety
     attributes:
-      label: Safety boundary impact (CLAUDE.md §6 / PRD §2)
+      label: Safety boundary impact
       description: |
         Does this involve scanning, browser automation against third parties,
         credential handling, or anything else that could touch the safety
@@ -60,4 +60,6 @@ body:
     id: alternatives
     attributes:
       label: Alternatives considered
-      description: What else did you consider, and why is this proposal better?
+      description: |
+        Briefly: what other approaches did you weigh, and why is this one
+        better?

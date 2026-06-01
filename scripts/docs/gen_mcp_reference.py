@@ -1,6 +1,6 @@
 """Generate the MCP reference landing page from the live tool registry.
 
-The MCP server (Phase 18, ADR-0023) registers twelve PRD §16.1 tools
+The MCP server (Phase 18, ADR-0023) registers twelve the documentation tools
 plus a `sentinel.ping` health check. This generator imports the server
 module's registry helper and renders a Starlight page so the docs site
 reflects the tool surface without a separate hand-edit step.
@@ -92,7 +92,7 @@ def render() -> str:
         "",
         "The SentinelQA MCP server speaks JSON-RPC 2.0 over NDJSON-framed "
         "stdio at protocol `2024-11-05`. Every tool surfaces SentinelQA's "
-        "agent-facing operations (PRD §16.1) plus a health check. The wire "
+        "agent-facing operations (the documentation) plus a health check. The wire "
         "envelope (`schema_version`, `tool`, `result`, `errors`, "
         "`evidence_refs`) is locked at "
         "[`packages/shared-schema/agent-envelope.schema.json`](https://github.com/Ohswedd/sentinelqa/blob/main/packages/shared-schema/agent-envelope.schema.json).",
@@ -105,7 +105,7 @@ def render() -> str:
         "```",
         "",
         "Logs go to stderr. Stdout is reserved for MCP wire bytes "
-        "(CLAUDE.md §13). The HTTP transport never binds to a non-loopback "
+        ". The HTTP transport never binds to a non-loopback "
         "address and exits 4 if asked to.",
         "",
         "## Tools",
@@ -118,7 +118,7 @@ def render() -> str:
         "call. Unsafe targets surface as envelope errors with "
         "`code=UNSAFE_TARGET` and `exit_code=4`. Destructive checks "
         "require the loaded config to opt in **and** to supply a valid "
-        "`target.proof_of_authorization` (CLAUDE.md §6, ADR-0023).",
+        "`target.proof_of_authorization` (our engineering rules, ADR-0023).",
         "",
         "See `tests/security/test_mcp_safety.py` for the AST guard that "
         "enforces this on every CI pass.",

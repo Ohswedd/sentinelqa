@@ -1,4 +1,4 @@
-"""Exception hierarchy ⟷ exit-code map tests (PRD §13.2, CLAUDE.md §13)."""
+"""Exception hierarchy ⟷ exit-code map tests (our product spec2, our engineering rules)."""
 
 from __future__ import annotations
 

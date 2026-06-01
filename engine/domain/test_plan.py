@@ -1,4 +1,4 @@
-"""TestPlan entity (PRD §9.2, §18.1).
+"""TestPlan entity (the documentation, §18.1).
 
 A test plan packages every :class:`Flow` and :class:`TestCase` derived from
 a :class:`DiscoveryGraph` for a single run. It is the wire format the

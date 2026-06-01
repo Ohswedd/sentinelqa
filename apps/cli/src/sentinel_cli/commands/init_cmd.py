@@ -19,7 +19,7 @@ from sentinel_cli import init_detect
 from sentinel_cli.json_mode import json_stdout
 from sentinel_cli.state import GlobalState
 
-# The GitHub Action template lives in PRD §21.1. Whenever the PRD copy
+# The GitHub Action template lives in the documentation. Whenever the PRD copy
 # changes, this constant MUST be updated in the same commit (CLAUDE §5).
 # Tests assert byte-for-byte equality between this constant and the PRD
 # block.

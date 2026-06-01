@@ -3,7 +3,7 @@
 """Brand PNG generator (Phase 35.05).
 
 Renders the SentinelQA primary mark and favicons to PNG at the
-sizes documented in `plans/phase-35-public-release/05-brand-assets.md`
+sizes documented in the build plan
 using Pillow (no system SVG renderer required). The design here is a
 faithful translation of `docs/assets/brand/logo.svg` — the shield
 silhouette, gradient, bevel, and monogram. Pillow does not render SVG

@@ -1,4 +1,4 @@
-"""SentinelQA test runner (PRD §9.4, CLAUDE.md §8, §9).
+"""SentinelQA test runner (the documentation, our engineering rules, §9).
 
 The runner is responsible for executing generated Playwright tests
 (either locally or in a deterministic Docker container), aggregating

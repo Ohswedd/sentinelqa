@@ -2,7 +2,7 @@
 
 Status: `Stable`
 
-Authority: `CLAUDE.md` §14 (SDK rules), §40 (Versioning and release rules), PRD §14, ADR-0021.
+Authority: our engineering rules (SDK rules), §40 (Versioning and release rules), our product spec, ADR-0021.
 
 The SDK's **public surface** is everything you can import via:
 
@@ -21,12 +21,9 @@ surface to update its code. Examples:
 
 - Removing a name from `__all__`.
 - Removing or renaming a public class, function, method, or attribute.
-- Changing a method's required signature (removing a positional arg,
-  renaming a keyword-only arg).
-- Tightening a return type (e.g. removing a previously-allowed
-  `Optional` wrapping).
-- Bumping the major number of any persisted schema (`run.schema.json`,
-  `findings.schema.json`, `score.schema.json`, agent-message envelope).
+- Changing a method's required signature (removing a positional arg, renaming a keyword-only arg).
+- Tightening a return type (e.g. removing a previously-allowed `Optional` wrapping).
+- Bumping the major number of any persisted schema (`run.schema.json`, `findings.schema.json`, `score.schema.json`, agent-message envelope).
 
 Adding a new name, adding a keyword-only argument with a safe default,
 adding an `async_*` mirror, or returning a subclass of the previously
@@ -37,18 +34,9 @@ minor releases.
 
 A breaking change requires all three steps below, in this order:
 
-1. **ADR.** Write a new ADR (or amend an existing one) under `docs/adr/`
-   that documents the new contract, what it replaces, and why the
-   non-breaking path was rejected. Status must be `Accepted` before the
-   change merges.
-2. **Deprecation window.** Ship at least one minor release that:
-   - Still exposes the old name.
-   - Emits a `DeprecationWarning` with the new name and a target removal
-     version (e.g. `"X will be removed in 0.4.0; use Y"`).
-   - Updates the public docs.
-3. **Removal.** In a later minor (when the SDK is pre-1.0) or major
-   (post-1.0) release, remove the old name. Bump the version
-   accordingly.
+1. **ADR.** Write a new ADR (or amend an existing one) under `docs/adr/` that documents the new contract, what it replaces, and why the non-breaking path was rejected. Status must be `Accepted` before the change merges.
+2. **Deprecation window.** Ship at least one minor release that: - Still exposes the old name. - Emits a `DeprecationWarning` with the new name and a target removal version (e.g. `"X will be removed in 0.4.0; use Y"`). - Updates the public docs.
+3. **Removal.** In a later minor (when the SDK is pre-1.0) or major (post-1.0) release, remove the old name. Bump the version accordingly.
 
 During the deprecation window, the API snapshot
 (`packages/python-sdk/api-snapshot.json`) must continue to list the
@@ -78,8 +66,8 @@ require a major bump (`1.0 -> 2.0`).
 
 ## References
 
-- `CLAUDE.md` §14 — SDK Rules.
-- `CLAUDE.md` §40 — Versioning and Release Rules.
-- PRD §14.4 — SDK requirements: "Stable schema versions."
-- PRD §40 — Versioning.
+- our engineering rules — SDK Rules.
+- our engineering rules — Versioning and Release Rules.
+- the documentation — SDK requirements: "Stable schema versions."
+- our product spec — Versioning.
 - ADR-0021 — Public SDK surface.

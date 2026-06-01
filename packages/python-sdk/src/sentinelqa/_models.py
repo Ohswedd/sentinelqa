@@ -1,6 +1,6 @@
 """SDK-level result models.
 
-These models are the SDK's public output shapes (PRD §14.3). They wrap
+These models are the SDK's public output shapes (the documentation). They wrap
 the engine's typed domain entities but only expose what callers should
 rely on. Pydantic v2 with ``model_config = ConfigDict(frozen=True)`` so
 results are immutable and safe to share across threads / async tasks.
@@ -28,13 +28,13 @@ from engine.domain.test_run import RunStatus
 from pydantic import BaseModel, ConfigDict, Field
 
 # Severities considered "failures" for the SDK's ``failures`` view. The set
-# matches PRD §14.2 — agents typically care about the severities that can
+# matches the documentation — agents typically care about the severities that can
 # block a release, plus high (which usually blocks under default policy).
 _FAILURE_SEVERITIES: frozenset[str] = frozenset({"critical", "high"})
 
 
 class QualityGate(BaseModel):
-    """Release gate thresholds (PRD §17.1 ``policy:`` block).
+    """Release gate thresholds (the documentation ``policy:`` block).
 
     Mirrors :class:`engine.config.schema.PolicyConfig` but is the
     SDK-facing read-only view. Construct via :meth:`from_config` rather
@@ -73,7 +73,7 @@ class QualityGate(BaseModel):
 class Policy(BaseModel):
     """The safety + quality posture for a SentinelQA run.
 
-    Combines the target allowlist + mode (PRD §17.1 ``target:`` /
+    Combines the target allowlist + mode (the documentation ``target:`` /
     ``security:``) with the :class:`QualityGate`. Read-only.
     """
 
@@ -103,7 +103,7 @@ class AuditResult(BaseModel):
 
     Wire format is **stable** under ``schema_version`` — additive changes
     bump the minor; breaking shape changes bump the major and ship an
-    ADR (CLAUDE.md §34, §40).
+    ADR (our engineering rules, §40).
     """
 
     SCHEMA_VERSION: ClassVar[str] = RUN_SCHEMA_VERSION
@@ -132,7 +132,7 @@ class AuditResult(BaseModel):
     def passed(self) -> bool:
         """``True`` iff the run finished cleanly and the gate did not block.
 
-        ``incomplete`` and ``unsafe_blocked`` are NOT passes — PRD §6.1
+        ``incomplete`` and ``unsafe_blocked`` are NOT passes — the documentation
         (evidence over magic): a partial run cannot claim success.
         """
 
@@ -143,7 +143,7 @@ class AuditResult(BaseModel):
 
     @property
     def failures(self) -> tuple[Finding, ...]:
-        """Findings at critical/high severity (PRD §14.2).
+        """Findings at critical/high severity (the documentation).
 
         Order matches :attr:`findings` (already sorted by writer).
         """
@@ -152,7 +152,7 @@ class AuditResult(BaseModel):
 
     @property
     def blockers(self) -> tuple[Finding, ...]:
-        """Findings at critical severity only (CLAUDE.md §25)."""
+        """Findings at critical severity only."""
 
         return tuple(f for f in self.findings if f.severity == "critical")
 
@@ -167,14 +167,14 @@ class AuditResult(BaseModel):
         return tuple(f for f in self.findings if f.module == module)
 
     # ------------------------------------------------------------------
-    # Agent messages (PRD §14.2, CLAUDE.md §15)
+    # Agent messages (the documentation, our engineering rules)
     # ------------------------------------------------------------------
 
     def to_agent_messages(self) -> tuple[dict[str, Any], ...]:
         """Return the agent-message stream for this run.
 
         Order is fixed so the same :class:`AuditResult` always serializes
-        the same way (CLAUDE.md §32 — reproducibility):
+        the same way (our engineering rules — reproducibility):
 
         1. ``run_summary`` — top-level run + decision + score.
         2. One ``finding`` message per finding, in writer order.

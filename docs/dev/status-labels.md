@@ -2,7 +2,7 @@
 
 Status: `Stable`
 
-Authority: `CLAUDE.md` §34 (Documentation rules).
+Authority: project engineering rules.
 
 Every SentinelQA doc carries one of four status labels at the top so a reader can tell, at a glance, whether the doc describes something that exists, something in flight, something locked in, or something on its way out.
 
@@ -33,7 +33,7 @@ An `Experimental` doc must name the conditions for promotion to `Stable` ("after
 
 ### `Stable`
 
-The thing is built, contract is locked, breaking changes require a major version bump (`CLAUDE.md` §40). This is the default for production-quality features.
+The thing is built, contract is locked, breaking changes require a major version bump. This is the default for production-quality features.
 
 **Examples:**
 
@@ -88,4 +88,4 @@ The Phase 29 final-hardening audit confirms every Markdown file under those root
 
 - The label is not a CI gate today (it can become one if we add a markdown linter pass). It is a reader hint and a discipline.
 - The label is not a feature flag. Feature flags live in `sentinel.config.yaml` (Phase 01).
-- The label is not a substitute for the PRD. Behavior changes still update `PRD.md` (`CLAUDE.md` §5).
+- The label is not a substitute for the PRD. Behavior changes still update our product spec.

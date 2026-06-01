@@ -1,7 +1,7 @@
 """Viewport (breakpoint) resolution (Phase 21.05).
 
 The visual module captures one PNG per (route, viewport). Defaults
-match the PRD §10.6 reference:
+match the the documentation reference:
 
 - mobile  — 375 x 812 (iPhone 13/14 portrait).
 - tablet  — 768 x 1024 (iPad portrait).

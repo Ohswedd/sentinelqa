@@ -16,23 +16,20 @@ uv pip install sentinelqa
 The SDK ships under the workspace and is installed automatically when
 you run `make install` at the repo root.
 
-## Basic usage (PRD §14.1)
+## Basic usage
 
 ```python
 from sentinelqa import Sentinel
 
 qa = Sentinel(project_path=".")
-result = qa.audit(
-    url="http://localhost:3000",
-    modules=["functional", "accessibility", "performance", "security"],
-    safe_mode=True,
+result = qa.audit( url="http://localhost:3000", modules=["functional", "accessibility", "performance", "security"], safe_mode=True,
 )
 
 print(result.quality_score)
 print(result.release_decision)
 ```
 
-## Agent-friendly usage (PRD §14.2)
+## Agent-friendly usage
 
 ```python
 from sentinelqa import Sentinel
@@ -42,9 +39,7 @@ qa = Sentinel(project_path=".", machine_readable=True)
 plan = qa.plan(url="http://localhost:3000")
 result = qa.run_plan(plan)
 
-if not result.passed:
-    for failure in result.failures:
-        print(failure.to_agent_message())
+if not result.passed: for failure in result.failures: print(failure.to_agent_message())
 ```
 
 ## Async API
@@ -57,15 +52,12 @@ one implementation per method:
 import asyncio
 from sentinelqa import Sentinel
 
-async def main() -> None:
-    qa = Sentinel(project_path=".")
-    result = await qa.async_audit(url="http://localhost:3000")
-    print(result.quality_score)
+async def main() -> None: qa = Sentinel(project_path=".") result = await qa.async_audit(url="http://localhost:3000") print(result.quality_score)
 
 asyncio.run(main())
 ```
 
-## Error handling (PRD §14.4)
+## Error handling
 
 Every public exception is a subclass of `SentinelError`, carries a
 stable `code` (`E-CFG-001`, `E-SAFE-001`, …) and an `exit_code`
@@ -76,12 +68,8 @@ from sentinelqa import Sentinel, UnsafeTargetError
 from sentinelqa.errors import from_dict
 
 qa = Sentinel(project_path=".")
-try:
-    qa.audit(url="http://example.com")
-except UnsafeTargetError as err:
-    msg = err.to_agent_message()  # safe to ship to an LLM
-    rebuilt = from_dict(msg)      # round-trip back to a typed exception
-    assert rebuilt.code == err.code
+try: qa.audit(url="http://example.com")
+except UnsafeTargetError as err: msg = err.to_agent_message() # safe to ship to an LLM rebuilt = from_dict(msg) # round-trip back to a typed exception assert rebuilt.code == err.code
 ```
 
 ## Agent messages
@@ -113,7 +101,7 @@ public and may change without notice between minor versions.
 
 ## References
 
-- PRD §14 — Python SDK Specification.
-- CLAUDE.md §14 — SDK Rules.
+- our product spec — Python SDK Specification.
+- our engineering rules §14 — SDK Rules.
 - ADR-0021 — Public SDK surface.
 - `docs/user/error-codes.md` — Stable error code reference.

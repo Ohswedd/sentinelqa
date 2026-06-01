@@ -1,11 +1,11 @@
 """ADR completeness guard.
 
-CLAUDE.md §34 enumerates the architectural decisions that **must** have an
+our engineering rules enumerates the architectural decisions that **must** have an
 Accepted ADR. This test asserts that each trigger maps to at least one
 ADR file under ``docs/adr/`` whose ``## Status`` line is ``Accepted``.
 
 When a CLAUDE §34 trigger is reached without an ADR landing in the same
-phase, the phase is incomplete (CLAUDE.md §44). This test is the
+phase, the phase is incomplete. This test is the
 mechanical guard for that contract.
 """
 
@@ -82,6 +82,6 @@ def test_prd_section_31_open_questions_all_have_adrs() -> None:
     )
     accepted = _accepted_adrs()
     missing = [name for name in expected if name not in accepted]
-    assert not missing, "Missing Accepted ADRs for PRD §31 open questions:\n" + "\n".join(
+    assert not missing, "Missing Accepted ADRs for our product spec open questions:\n" + "\n".join(
         f"  - {m}" for m in missing
     )

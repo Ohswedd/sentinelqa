@@ -1,4 +1,4 @@
-"""Forbidden capability registry (CLAUDE.md §6, PRD §2.1).
+"""Forbidden capability registry (our engineering rules, the documentation).
 
 Any plugin/module that tries to register one of these capability strings at
 runtime is rejected immediately. The Phase 24 plugin loader will consult

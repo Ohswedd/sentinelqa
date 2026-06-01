@@ -9,7 +9,7 @@ SentinelQA discovers plugins via Python entry points
 (name, version, kind, capabilities, permissions) and implements one
 of the eight public Protocols.
 
-Authority: PRD §22, ADR-0029, CLAUDE.md §6 (permission deny-list).
+Authority: our product spec, ADR-0029, our engineering rules §6 (permission deny-list).
 
 ## Eight protocols
 
@@ -32,13 +32,13 @@ via `isinstance(obj, PLUGIN_PROTOCOLS[kind])`.
 `<group>.<verb>[:<scope>]`. The allow-list is:
 
 ```
-fs.read                                      fs.read:<path>
-fs.write:.sentinel/runs                      env.read:<NAME>
-network.outbound                             subprocess.spawn
+fs.read fs.read:<path>
+fs.write:.sentinel/runs env.read:<NAME>
+network.outbound subprocess.spawn
 ```
 
 Unscoped `fs.write` is **rejected**. Plugins requesting forbidden
-capabilities (see CLAUDE.md §6) fail discovery.
+capabilities (see our engineering rules §6) fail discovery.
 
 ## Subprocess sandbox
 

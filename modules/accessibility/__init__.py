@@ -1,10 +1,10 @@
-"""Accessibility audit module (Phase 11, PRD §10.4, CLAUDE.md §9, §28).
+"""Accessibility audit module (Phase 11, the documentation, our engineering rules, §28).
 
 Importing this package wires :class:`AccessibilityModule` into the
 default orchestrator registry so ``sentinel a11y`` and ``sentinel audit``
 both pick it up automatically.
 
-The module exercises PRD §10.4 capabilities — axe-core integration,
+The module exercises the documentation capabilities — axe-core integration,
 keyboard navigation, focus order, missing labels, ARIA misuse, contrast
 checks, modal traps, form errors, landmark structure, and screen-reader
 name detection — by invoking ``sentinel-ts audit-a11y`` against each

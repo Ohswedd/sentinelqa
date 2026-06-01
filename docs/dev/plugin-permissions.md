@@ -2,7 +2,7 @@
 
 Status: `Stable`
 
-Authority: PRD §22.3, CLAUDE.md §22, ADR-0029. Wire format pinned by
+Authority: the documentation, our engineering rules-0029. Wire format pinned by
 `packages/shared-schema/plugin-manifest.schema.json`.
 
 A plugin's manifest declares the runtime permissions it intends to
@@ -12,8 +12,8 @@ an undeclared permission raises `PluginPermissionError` (exit code 7).
 ## Permission grammar
 
 ```text
-<group>.<verb>            # e.g. "fs.read", "network.outbound"
-<group>.<verb>:<scope>    # e.g. "fs.read:/srv", "env.read:DATABASE_URL"
+<group>.<verb> # e.g. "fs.read", "network.outbound"
+<group>.<verb>:<scope> # e.g. "fs.read:/srv", "env.read:DATABASE_URL"
 ```
 
 Anything that does NOT match this pattern fails manifest validation.
@@ -34,7 +34,7 @@ an unknown permission is a load-time failure.
 Permissions NOT on this list are rejected at manifest validation.
 Notably, **unscoped `fs.write` is forbidden** — plugins cannot write
 anywhere except their own per-run subdir, which keeps audits from
-leaking artifacts into a project's source tree (CLAUDE.md §11, §22).
+leaking artifacts into a project's source tree (our engineering rules§22).
 
 ## How enforcement works
 
@@ -43,16 +43,10 @@ method on the context begins with
 `self.require("<permission>")`; missing permissions raise:
 
 ```python
-ctx = build_plugin_context(
-    plugin_name="my-scanner",
-    run_id="RUN-...",
-    target_url="http://localhost",
-    run_dir=Path("/tmp/run"),
-    config_snapshot={},
-    granted_permissions=frozenset({"fs.read"}),
+ctx = build_plugin_context( plugin_name="my-scanner", run_id="RUN-...", target_url="http://localhost", run_dir=Path("/tmp/run"), config_snapshot={}, granted_permissions=frozenset({"fs.read"}),
 )
 
-ctx.artifact_path("out.json")  # raises PluginPermissionError
+ctx.artifact_path("out.json") # raises PluginPermissionError
 ```
 
 The same pattern holds inside the subprocess sandbox: the worker
@@ -74,8 +68,7 @@ permitted and created on demand.
 
 The sandbox strips the child's environment to:
 
-- A fixed set (`PATH`, `HOME`, `TMPDIR`, `LANG`, `PYTHONPATH`,
-  `VIRTUAL_ENV`, plus a few locale/Python flags).
+- A fixed set (`PATH`, `HOME`, `TMPDIR`, `LANG`, `PYTHONPATH`, `VIRTUAL_ENV`, plus a few locale/Python flags).
 - Anything matching `SENTINEL_` / `SENTINELQA_` prefixes.
 - Every `env.read:<NAME>` value the manifest declared.
 
@@ -87,16 +80,16 @@ unless its manifest specifically asks for them by name.
 
 Capabilities are validated against
 `engine.policy.forbidden_features.FORBIDDEN_CAPABILITIES`. Any
-plugin declaring one of these is rejected at load (CLAUDE.md §6):
+plugin declaring one of these is rejected at load:
 
 ```text
-bot_detection_bypass     captcha_bypass         captcha_solving
-stealth_automation       fingerprint_evasion    fingerprint_spoofing
-credential_stuffing      session_theft          cookie_theft
-data_exfiltration        spam_automation        platform_manipulation
-phishing                 proxy_rotation_for_evasion
-rate_limit_bypass        unauthorized_exploit
-destructive_against_public                       undetectable_mode
+bot_detection_bypass captcha_bypass captcha_solving
+stealth_automation fingerprint_evasion fingerprint_spoofing
+credential_stuffing session_theft cookie_theft
+data_exfiltration spam_automation platform_manipulation
+phishing proxy_rotation_for_evasion
+rate_limit_bypass unauthorized_exploit
+destructive_against_public undetectable_mode
 ```
 
 This list grows over time; plugins should NEVER include a capability
@@ -116,10 +109,7 @@ pass to ensure:
 
 If you add a new permission token, you must:
 
-1. Add it to `ALLOWED_PERMISSIONS` (or `ALLOWED_PERMISSION_PREFIXES`)
-   in `engine/plugins/manifest.py`.
-2. Update the wire schema at
-   `packages/shared-schema/plugin-manifest.schema.json`.
+1. Add it to `ALLOWED_PERMISSIONS` (or `ALLOWED_PERMISSION_PREFIXES`) in `engine/plugins/manifest.py`.
+2. Update the wire schema at `packages/shared-schema/plugin-manifest.schema.json`.
 3. Update this document.
-4. Open an ADR if the new permission grants access to anything
-   sensitive (CLAUDE.md §34).
+4. Open an ADR if the new permission grants access to anything sensitive.

@@ -1,4 +1,4 @@
-"""RepairSuggestion entity (CLAUDE.md §23, PRD §9.6)."""
+"""RepairSuggestion entity (our engineering rules, the documentation)."""
 
 from __future__ import annotations
 
@@ -13,11 +13,11 @@ from engine.domain.schema import REPAIR_SUGGESTION_SCHEMA_VERSION
 
 
 class RepairSuggestion(SentinelModel):
-    """A healer-proposed locator or test repair (CLAUDE.md §23).
+    """A healer-proposed locator or test repair.
 
     Every field carries first-class evidence so reviewers can judge the
     proposal without re-running the failing test. Assertion-weakening or
-    intent-changing repairs are forbidden by CLAUDE.md §23 and must be
+    intent-changing repairs are forbidden by our engineering rules and must be
     surfaced as ``requires_human_review=True``.
     """
 
@@ -41,7 +41,7 @@ class RepairSuggestion(SentinelModel):
     def to_agent_message(self) -> dict[str, Any]:
         """Return the canonical agent-message dict for this suggestion.
 
-        Shape matches the CLAUDE.md §23 healer-proposal contract.
+        Shape matches the our engineering rules healer-proposal contract.
         Delegates to the SDK builder so the domain entity and
         :class:`sentinelqa.Sentinel` consumers stay in lock-step.
         """

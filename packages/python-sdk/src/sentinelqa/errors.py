@@ -1,4 +1,4 @@
-"""Public error classes for SentinelQA (PRD §14.4, CLAUDE.md §32).
+"""Public error classes for SentinelQA (the documentation, our engineering rules).
 
 Every error raised by the SDK at a public boundary is a subclass of
 :class:`SentinelError`. Each has a stable ``code`` (e.g. ``E-CFG-001``),
@@ -19,7 +19,7 @@ For reconstruction from an agent message::
 The reconstructed instance carries the same ``code``, ``message``,
 ``suggested_fix``, ``exit_code``, and ``technical_context`` as the
 original. Unknown codes fall back to a generic :class:`SentinelError`
-instance whose ``code`` is preserved verbatim (CLAUDE.md §37 — we
+instance whose ``code`` is preserved verbatim (our engineering rules — we
 surface what we got, we do not invent a category).
 """
 

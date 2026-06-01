@@ -440,7 +440,7 @@ class RunLifecycle:
         # Phase 03 moved run.json / findings.json / score.json into the
         # Reporter (called from `generate_reports`). This step now only
         # finalizes the artifact directory (latest pointer) so the
-        # canonical write path is single-source-of-truth (CLAUDE.md §11).
+        # canonical write path is single-source-of-truth.
         assert ctx.artifacts is not None
         if ctx.finished_at is None:
             ctx.finished_at = datetime.now(UTC)
@@ -566,7 +566,7 @@ class RunLifecycle:
         so every successful and short-circuit run shares one schema. The
         full Reporter dispatcher is intentionally NOT invoked here — these
         exits have no findings/score/policy and no module ran, so only
-        `run.json` + `audit.log` are produced (CLAUDE.md §10, §11).
+        `run.json` + `audit.log` are produced (our engineering rules, §11).
         """
 
         from engine.reporter.run_writer import write_run

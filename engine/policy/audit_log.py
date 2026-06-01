@@ -1,4 +1,4 @@
-"""Append-only audit log of safety decisions (CLAUDE.md §6, §26).
+"""Append-only audit log of safety decisions (our engineering rules, §26).
 
 Each :class:`SafetyDecision` is serialized to one JSON line and appended to
 the run's ``.sentinel/runs/<run-id>/audit.log`` file. The Phase 02 run

@@ -2,8 +2,8 @@
 
 Same shape as the BrowserStack adapter (Phase 25.01): the class is
 ``RunnerPlugin``-shaped (:mod:`sentinelqa.plugins`); it is NOT
-auto-wired into ``sentinel audit`` (CLAUDE.md §7); credentials read
-from the environment, never logged (CLAUDE.md §33).
+auto-wired into ``sentinel audit``; credentials read
+from the environment, never logged.
 
 The Sauce Labs Playwright endpoint sits under
 ``us-west-1.saucelabs.com``; the adapter exposes the region as a
@@ -46,7 +46,7 @@ class SauceLabsQuotaExceededError(RuntimeError):
 
 
 # Friendly alias kept for call-site ergonomics; canonical class name
-# carries the ``Error`` suffix per CLAUDE.md §32 / ruff N818.
+# carries the ``Error`` suffix per our engineering rules / ruff N818.
 SauceLabsQuotaExceeded = SauceLabsQuotaExceededError
 
 

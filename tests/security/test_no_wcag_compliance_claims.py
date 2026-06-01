@@ -2,7 +2,7 @@
 compliant" / "WCAG compliant" in its outputs.
 
 The guard greps every file under ``modules/accessibility/`` and
-``packages/ts-runtime/src/a11y/``. The PRD §10.4 section is allowed to
+``packages/ts-runtime/src/a11y/``. The our product spec4 section is allowed to
 **discuss** the forbidden phrasing for documentation purposes; this
 guard targets product output only.
 """

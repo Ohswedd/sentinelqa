@@ -6,7 +6,7 @@ visible content → ``title`` → placeholder). When every fallback is
 empty the element has no accessible name and screen readers cannot
 announce it.
 
-PRD §10.4 calls this out explicitly; the curated handful of rules
+the documentation calls this out explicitly; the curated handful of rules
 below is the deterministic Python mirror of the TS helper.
 """
 
@@ -73,7 +73,7 @@ def has_accessible_name(element: ElementSnapshot) -> bool:
         if value and value.strip():
             return True
     # `placeholder` is intentionally not a sufficient fallback —
-    # CLAUDE §28 / PRD §10.4: placeholders disappear on input, so
+    # CLAUDE §28 / the documentation: placeholders disappear on input, so
     # they fail accessible-name requirements.
     return False
 

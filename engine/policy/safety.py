@@ -1,4 +1,4 @@
-"""Safety policy enforcement (PRD §2, §23; CLAUDE.md §6, §26).
+"""Safety policy enforcement (our product spec, §23; our engineering rules, §26).
 
 Every module that talks to a target MUST call :func:`SafetyPolicy.enforce`
 before issuing any I/O. The policy resolves the host from

@@ -3,7 +3,7 @@
 Module phases (13+) register their rules here. The SARIF writer asks the
 registry for the rule that matches a finding's category and falls back
 to a synthesized rule when none is registered, so output is always
-schema-valid (CLAUDE.md §37 — no fake completion: a missing rule is
+schema-valid (our engineering rules — no fake completion: a missing rule is
 visible in the output as an explicit synthesized entry).
 """
 

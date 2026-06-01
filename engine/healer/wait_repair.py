@@ -1,6 +1,6 @@
 """Wait-condition repair (Phase 20.03).
 
-Detects ``await page.waitForTimeout(<N>)`` calls (CLAUDE.md §21
+Detects ``await page.waitForTimeout(<N>)`` calls (our engineering rules
 forbids arbitrary sleeps but legacy / hand-edited code may still have
 them) and proposes a replacement with the explicit Playwright wait
 that matches the next assertion. The repair leaves the rest of the
@@ -111,7 +111,7 @@ def propose_wait_repair(
             proposed_change=f"{indent}// (line removed)",
             confidence=confidence,
             reason=(
-                f"`await page.waitForTimeout({ms})` is forbidden by CLAUDE.md §21 "
+                f"`await page.waitForTimeout({ms})` is forbidden by our engineering rules "
                 "and no following assertion was found to anchor an explicit wait."
             ),
             evidence=(
@@ -161,7 +161,7 @@ def propose_wait_repair(
         proposed_change=proposed_change_text,
         confidence=confidence,
         reason=(
-            f"`await page.waitForTimeout({ms})` is forbidden by CLAUDE.md §21. "
+            f"`await page.waitForTimeout({ms})` is forbidden by our engineering rules. "
             f"Playwright auto-waiting on `await expect({target_expr}).{matcher}(...)` "
             "below already provides the synchronization."
         ),

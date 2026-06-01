@@ -54,8 +54,7 @@ The audit pipeline reads it from `sentinel.config.yaml` (`api.openapi_path`).
 With the app running:
 
 ```bash
-sentinel api --url http://127.0.0.1:8000 --openapi examples/fastapi/openapi.json \
-    --config examples/fastapi/sentinel.config.yaml
+sentinel api --url http://127.0.0.1:8000 --openapi examples/fastapi/openapi.json \ --config examples/fastapi/sentinel.config.yaml
 ```
 
 The provided config sets `policy.min_quality_score: 85` and enables the

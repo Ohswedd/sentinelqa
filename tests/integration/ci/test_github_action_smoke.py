@@ -4,7 +4,7 @@ The Action lives at ``integrations/github/action.yml`` and is invoked by
 the reusable workflow under ``integrations/github/workflows/``. The
 smoke target on the example Next.js app lands in Phase 26 (CLAUDE §16);
 this test enforces the structural contract here so the YAML can never
-drift away from PRD §21.1.
+drift away from our product spec1.
 """
 
 from __future__ import annotations

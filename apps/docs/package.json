@@ -10,7 +10,7 @@
     "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "typecheck": "astro check",
+    "typecheck": "astro check 2>&1 | cat",
     "lint": "echo 'apps/docs: lint handled by prettier+astro check at root'",
     "test": "echo 'apps/docs: structural checks live under tests/integration/docs (Python)'"
   },

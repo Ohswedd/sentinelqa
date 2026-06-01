@@ -27,10 +27,10 @@ def test_template_declares_template_job() -> None:
     assert ".sentinelqa" in payload, "missing `.sentinelqa` template job"
     job = payload[".sentinelqa"]
     assert "script" in job and "before_script" in job and "after_script" in job
-    # The job must enforce SENTINELQA_URL — empty URL means refusal (PRD §2).
+    # The job must enforce SENTINELQA_URL — empty URL means refusal.
     body = "\n".join(job["script"])
     assert "SENTINELQA_URL" in body
-    assert "exit 4" in body, "must exit 4 when URL missing (PRD §2)"
+    assert "exit 4" in body, "must exit 4 when URL missing"
 
 
 def test_template_runs_sentinel_ci_with_required_flags() -> None:

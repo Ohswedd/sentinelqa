@@ -6,7 +6,7 @@ for notifications). Transports (stdio, loopback HTTP) drive
 :meth:`MCPServer.serve` and translate to/from wire bytes.
 
 The dispatcher implements just enough of the MCP `2024-11-05` spec to
-support the PRD §16 tool surface:
+support the our product spec tool surface:
 
 - ``initialize`` — handshake, capability negotiation.
 - ``notifications/initialized`` — client says it's ready (we observe).
@@ -199,7 +199,7 @@ class MCPServer:
             },
             "instructions": (
                 "SentinelQA MCP server. Twelve sentinel.* tools — see "
-                "PRD §16. Every URL tool enforces SafetyPolicy; unsafe "
+                "our product spec Every URL tool enforces SafetyPolicy; unsafe "
                 "targets surface as agent-envelope errors with "
                 "code=UNSAFE_TARGET. Read-only tools advertise "
                 "_meta.read_only=true in tools/list."

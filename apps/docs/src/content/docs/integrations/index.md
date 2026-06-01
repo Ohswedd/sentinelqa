@@ -9,7 +9,7 @@ behind a shared stdlib HTTP helper (`integrations/_http.py`). No
 third-party HTTP client. No vendor SDK. Off by default; secrets are
 read from env vars only and redacted in every log line.
 
-Authority: PRD §21.5, ADR-0030.
+Authority: the documentation, ADR-0030.
 
 ## Adapters
 
@@ -34,8 +34,7 @@ The poster:
 
 - Reads the webhook from env (never config).
 - Posts the [Phase 15.06 Block Kit payload](/cli/#sentinel-report).
-- Deduplicates by `sha256(webhook URL + payload)` over a 5-minute
-  window — re-running `sentinel report` won't spam the channel.
+- Deduplicates by `sha256(webhook URL + payload)` over a 5-minute window — re-running `sentinel report` won't spam the channel.
 - Never breaks JSON-mode stdout.
 
 ## GitHub PR comments

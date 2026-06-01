@@ -4,7 +4,7 @@ description: Targeted walkthrough that takes a fresh user from clone to a green 
 status: Stable
 ---
 
-PRD §30.1 tracks this metric: a new user must be able to install
+the documentation tracks this metric: a new user must be able to install
 SentinelQA and produce a passing audit against the Next.js example in
 under five minutes. This page is the script.
 
@@ -29,7 +29,7 @@ cd sentinelqa
 make install
 
 # 2. Boot the Next.js example
-make demo-nextjs       # serves at http://127.0.0.1:3000
+make demo-nextjs # serves at http://127.0.0.1:3000
 
 # 3. Audit it
 cd examples/nextjs
@@ -52,14 +52,12 @@ You should see:
 
 If the audit comes back `blocked`:
 
-- Open the HTML report — the **Critical blockers** card is pinned at
-  the top.
+- Open the HTML report — the **Critical blockers** card is pinned at the top.
 - Each finding has a `Recommendation` and an `Evidence` link.
 - See [Error codes](/errors/) if the CLI exited non-zero.
 
 ## What to try next
 
-- [LLM-broken demo](/modules/llm-audit/) — the intentionally broken
-  app that exercises ≥ 8 PRD §10.9 anti-patterns.
+- [LLM-broken demo](/modules/llm-audit/) — the intentionally broken app that exercises ≥ 8 the documentation anti-patterns.
 - [CI/CD setup](/cicd/) — wire SentinelQA into pull requests.
 - [Python SDK](/sdk/) — call the engine programmatically.

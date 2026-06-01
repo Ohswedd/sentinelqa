@@ -1,4 +1,4 @@
-"""Translate chaos scenario results into PRD §18.2 :class:`Finding`s."""
+"""Translate chaos scenario results into the documentation :class:`Finding`s."""
 
 from __future__ import annotations
 

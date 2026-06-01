@@ -1,11 +1,11 @@
 """JUnit XML emitter (task 03.04).
 
 Emits a JUnit/Surefire-compatible XML report so any CI provider can
-ingest SentinelQA results out of the box (PRD §21). The XSD lives at
+ingest SentinelQA results out of the box. The XSD lives at
 ``packages/shared-schema/external/junit.xsd``; the writer is validated
 against that XSD in :mod:`tests.golden.reports.test_junit_xml`.
 
-Mapping (CLAUDE.md §38 — every report must answer "what / where / how
+Mapping (our engineering rules — every report must answer "what / where / how
 severe / why / how to fix"):
 
 - One ``<testsuite>`` per module.
@@ -17,7 +17,7 @@ severe / why / how to fix"):
 - A module with ``status="errored"`` emits an ``<error>`` testcase
   carrying the captured error messages.
 - A module with ``status="skipped"`` emits a ``<skipped>`` testcase.
-- Redacted log excerpts ride along in ``<system-out>`` per CLAUDE.md
+- Redacted log excerpts ride along in ``<system-out>`` per our engineering rules
   §33 — every payload still passes through the existing redaction
   layer because :meth:`ArtifactDirectory.write_text` is the only sink.
 """

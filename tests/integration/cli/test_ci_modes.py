@@ -189,7 +189,7 @@ def test_ci_diff_is_persisted_in_metadata(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     """--diff is persisted into ci.json. Git is mocked so the test stays
-    hermetic and survives shallow CI clones (CLAUDE.md §39)."""
+    hermetic and survives shallow CI clones."""
 
     from engine.ci.diff_aware import select_from_files as _pure
 

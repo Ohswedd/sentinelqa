@@ -1,7 +1,7 @@
 """Markdown report (`report.md`, task 03.06).
 
 A concise Markdown summary optimized for PR comments and quick scans
-(PRD §21.2). The full HTML report lands in Phase 15. Style rules:
+(the documentation). The full HTML report lands in Phase 15. Style rules:
 
 - Deterministic ordering: findings sorted by severity (critical → info)
   then by id; modules sorted alphabetically.
@@ -249,7 +249,7 @@ def md_escape(value: str) -> str:
     """Backslash-escape Markdown control characters in ``value``.
 
     Defends against injection via finding titles / descriptions / module
-    names (CLAUDE.md §32). Pipe (`|`) is included so table cells stay
+    names. Pipe (`|`) is included so table cells stay
     well-formed even with arbitrary user input.
     """
 

@@ -78,7 +78,7 @@ class ToolSpec(BaseModel):
     The ``inputSchema`` is a JSON Schema (Draft 2020-12) for the
     arguments map. ``_meta.read_only`` is a SentinelQA extension hinting
     that a tool does not mutate the working tree, audit log, or
-    `.sentinel/runs/`. Clients that honor read-only hints (PRD §16
+    `.sentinel/runs/`. Clients that honor read-only hints (our product spec
     aligns with the Anthropic MCP spec extension) can refuse to
     sandbox-disable on these calls.
     """

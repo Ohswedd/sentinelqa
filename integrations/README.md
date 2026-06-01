@@ -1,6 +1,6 @@
 # integrations/
 
-Adapters for external systems. PRD §11.2, §21, §25.
+Adapters for external systems. the documentation, §21, §25.
 
 - `github/` — GitHub Action, PR comment poster, status checks (Phase 17, §21.1).
 - `gitlab/` — GitLab CI integration (Phase 17, §21.1).
@@ -10,4 +10,4 @@ Adapters for external systems. PRD §11.2, §21, §25.
 - `jira/` — issue creation from findings (post-MVP).
 - `linear/` — issue creation from findings (post-MVP).
 
-Each integration is an adapter behind a port (`CLAUDE.md` §7, §35). The engine MUST NOT import these directly — it depends only on the ports.
+Each integration is an adapter behind a port (our engineering rules, §35). The engine MUST NOT import these directly — it depends only on the ports.

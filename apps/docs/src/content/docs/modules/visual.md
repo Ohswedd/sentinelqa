@@ -9,7 +9,7 @@ baselines under `.sentinel/baselines/`. The diff math is pure-Python
 Pillow: per-channel difference collapsed to a binary mask, plus
 single-scale SSIM on the luminance channel.
 
-Authority: PRD §10.6, ADR-0026, CLAUDE.md §29.
+Authority: the documentation, ADR-0026, our engineering rules §29.
 
 ## Three findings
 
@@ -24,9 +24,9 @@ Authority: PRD §10.6, ADR-0026, CLAUDE.md §29.
 ## Three default viewports
 
 ```
-mobile   375 × 812
-tablet   768 × 1024
-desktop  1280 × 800
+mobile 375 × 812
+tablet 768 × 1024
+desktop 1280 × 800
 ```
 
 Add more via `visual.viewports`. Name pattern `^[a-z0-9_-]+$`.
@@ -38,7 +38,7 @@ Add more via `visual.viewports`. Name pattern `^[a-z0-9_-]+$`.
 - `state.ci` is true
 - `CI` or `SENTINEL_CI` is truthy in the env
 
-This is non-negotiable (CLAUDE.md §29, §39). The refusal writes a
+This is non-negotiable (our engineering rules §29, §39). The refusal writes a
 `visual.accept.refused_ci` audit-log entry so operators have a paper
 trail.
 

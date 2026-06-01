@@ -1,4 +1,4 @@
-"""Visual-regression audit module (Phase 21, PRD §10.6, CLAUDE.md §29).
+"""Visual-regression audit module (Phase 21, the documentation, our engineering rules).
 
 Importing this package wires :class:`VisualModule` into the default
 orchestrator registry so ``sentinel visual`` and ``sentinel audit``
@@ -14,7 +14,7 @@ falls below ``visual.perceptual.min_similarity``).
 Baselines never auto-accept in CI: the :func:`apps/cli sentinel visual`
 ``accept`` subcommand refuses to promote ``current`` PNGs when the
 ``--ci`` flag is set or ``CI`` / ``SENTINEL_CI`` is truthy in the
-environment (PRD §10.6, CLAUDE §29, §39).
+environment (the documentation, CLAUDE §29, §39).
 
 ADR-0026 documents the storage layout, the diff algorithm, the masking
 contract, and the CI-acceptance guard.

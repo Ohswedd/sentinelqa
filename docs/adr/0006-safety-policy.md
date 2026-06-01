@@ -9,7 +9,7 @@ Accepted
 
 ## Context
 
-SentinelQA's reputation rides on a single property: it cannot be turned into an attack tool. PRD §2 forbids stealth, evasion, bot-detection bypass, CAPTCHA bypass, fingerprint spoofing, proxy rotation for evasion, rate-limit bypass, unauthorized vulnerability exploitation, credential stuffing, and "undetectable" framing. CLAUDE.md §6 reiterates the forbidden list and adds: no destructive defaults, no public-target scans without explicit allow-listing, audit logs for every safety decision.
+SentinelQA's reputation rides on a single property: it cannot be turned into an attack tool. our product spec forbids stealth, evasion, bot-detection bypass, CAPTCHA bypass, fingerprint spoofing, proxy rotation for evasion, rate-limit bypass, unauthorized vulnerability exploitation, credential stuffing, and "undetectable" framing. our engineering rules: no destructive defaults, no public-target scans without explicit allow-listing, audit logs for every safety decision.
 
 Every later module — discovery, security, performance, chaos, LLM-audit — must call into the same enforcement choke point, or the boundary will erode case by case. We also need a credible audit trail so a reviewer (legal, infosec, the user themselves) can reconstruct exactly what SentinelQA refused to do.
 
@@ -45,7 +45,7 @@ Forbidden by construction (NOT just by convention):
 - **Positive.** The audit log is the receipts the legal/infosec reviewer needs. JSONL means it's grep-able and diff-able.
 - **Positive.** The deny-list lives next to the test that scans the tree for it. Re-introducing a stealth flag in a future PR fails CI immediately.
 - **Negative / trade-off.** Proof-of-authorization is unsigned in MVP. That's lighter than ideal — a malicious actor with write access to the repo could fabricate one. We accept this trade-off because (a) the alternative is asymmetric signing that we're not ready to wire in Phase 01, and (b) the proof file's value is the audit trail it leaves, not unforgeable consent.
-- **Negative / trade-off.** Refusing local destructive without a proof is stricter than CLAUDE.md §6 strictly requires. We choose to be stricter than the spec rather than looser; if it turns out to be too tight for a real dev workflow, a future ADR can scope it down.
+- **Negative / trade-off.** Refusing local destructive without a proof is stricter than our engineering rules; if it turns out to be too tight for a real dev workflow, a future ADR can scope it down.
 - **Follow-up obligations.** Phase 13 (Security module) must enforce per-payload-level gates on top of `SafetyPolicy.enforce`. Phase 24 (Plugin architecture) must wire `assert_capability_allowed` into the plugin loader.
 
 ## Alternatives considered
@@ -57,7 +57,7 @@ Forbidden by construction (NOT just by convention):
 
 ## References
 
-- PRD section(s): PRD §2 (Safety & Legal Boundary), PRD §23 (Threat Model), PRD §26 (Security Module rules), PRD §18 (Data Model — Target).
-- CLAUDE.md rule(s): CLAUDE.md §6 (Safety boundary), CLAUDE.md §26 (Security module rules), CLAUDE.md §32 (Error handling — typed errors with codes), CLAUDE.md §34 (Required ADR triggers — "Security policy").
+- PRD section(s): our product spec (Safety & Legal Boundary), our product spec (Threat Model), our product spec (Security Module rules), our product spec (Data Model — Target).
+- our engineering rules rule(s): our engineering rules(Safety boundary), our engineering rules(Security module rules), our engineering rules(Error handling — typed errors with codes), our engineering rules(Required ADR triggers — "Security policy").
 - External: OWASP Web Security Testing Guide (authorization-scoped DAST principles).
 - Related ADRs: ADR-0005 (Config schema — owns `target.proof_of_authorization` field), ADR-0001 (Repository structure — `engine/policy/` location).

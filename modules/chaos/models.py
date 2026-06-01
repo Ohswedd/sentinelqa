@@ -1,16 +1,15 @@
-"""Wire types for :class:`ChaosModule` (Phase 23, PRD §10.8).
+"""Wire types for :class:`ChaosModule` (Phase 23, the documentation).
 
 The chaos module is Playwright-driven: TS chaos helpers inject network
 slowdowns, expired sessions, duplicate-submit races, etc., into a
 target flow and emit per-observation :class:`ChaosEvent` records via
 the standard JSONL bridge (Phase 04). The Python side ingests those
 events, persists ``chaos/<category>.json`` per scenario category, and
-translates "bad" observations into PRD §18.2 :class:`Finding`s.
+translates "bad" observations into the documentation :class:`Finding`s.
 
 No event shape carries an exploit payload or evasion knob — the module
 records *what the UI did under the chaos scenario* (e.g. "no error
-state shown"), never *how to bypass the scenario's safety mitigations*
-(CLAUDE.md §6).
+state shown"), never *how to bypass the scenario's safety mitigations*.
 """
 
 from __future__ import annotations
@@ -23,7 +22,7 @@ CHAOS_RESULT_SCHEMA_VERSION = "1"
 """Stable wire version of ``chaos/<category>.json`` artifacts."""
 
 ChaosCategory = Literal["network", "session", "ux", "data"]
-"""Top-level chaos scenario category (PRD §10.8 grouping)."""
+"""Top-level chaos scenario category (the documentation grouping)."""
 
 ChaosObservation = Literal[
     # Network / data: app raised JS error or surfaced no error state.

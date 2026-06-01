@@ -1,6 +1,6 @@
 """Anti-pattern smoke for the LLM-broken example (Phase 26.06).
 
-PRD §10.9 lists thirteen LLM-audit signal categories; Phase 26.06's
+our product spec9 lists thirteen LLM-audit signal categories; Phase 26.06's
 acceptance is "≥ 8 distinct LLM-audit findings". The LLM-audit module
 itself is exercised end-to-end against the broken fixtures in
 `tests/integration/modules/llm_audit/`; here we assert that the demo

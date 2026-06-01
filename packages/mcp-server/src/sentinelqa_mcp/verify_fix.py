@@ -135,7 +135,7 @@ async def run_verify_fix(
     ``url`` defaults to the prior run's ``target.base_url`` — the audit
     re-runs against the same target. ``modules`` defaults to whichever
     modules ran in the prior audit so we never broaden the scope
-    silently (CLAUDE.md §10).
+    silently.
     """
 
     prior_run_dir = await sentinel.async_report(run_id=run_id, latest=False)

@@ -5,7 +5,7 @@ Every check operates on already-captured signals (Phase 05 discovery
 output, optional runner-collected runtime evidence, optional source
 root scan). Tests construct these models directly; production wiring
 reads what is available from the run directory and skips checks whose
-signals are missing (CLAUDE.md §37: no fake completion).
+signals are missing (our engineering rules: no fake completion).
 """
 
 from __future__ import annotations

@@ -1,7 +1,7 @@
 """VertexAiProvider — JWT signing + OAuth2 exchange + caching.
 
 We generate a fresh RSA private key in-memory per test so the fixture
-contains zero secret material (CLAUDE.md §33). The OAuth endpoint is
+contains zero secret material. The OAuth endpoint is
 mocked via ``httpx.MockTransport``.
 """
 

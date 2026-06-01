@@ -1,4 +1,4 @@
-"""Retry / quarantine decision (PRD §9.5, task 09.04).
+"""Retry / quarantine decision (the documentation, task 09.04).
 
 The runner (Phase 08) already retries up to ``runner.retries.max`` times
 per the configured policy. The analyzer's job is to advise:

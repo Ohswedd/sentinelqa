@@ -1,8 +1,8 @@
-"""Target entity (PRD §17.1 / §18.1).
+"""Target entity (the documentation / §18.1).
 
 Carries the safety-relevant fields that the policy layer consumes:
 ``base_url``, ``allowed_hosts``, ``mode``, and an optional pointer to a
-proof-of-authorization document (CLAUDE.md §6).
+proof-of-authorization document.
 """
 
 from __future__ import annotations
@@ -47,13 +47,13 @@ class Target(SentinelModel):
     @field_validator("allowed_hosts")
     @classmethod
     def _reject_wildcards(cls, value: frozenset[str]) -> frozenset[str]:
-        """CLAUDE.md §6: wildcard allowlists invite unsafe scans."""
+        """our engineering rules: wildcard allowlists invite unsafe scans."""
 
         for host in value:
             if "*" in host or "?" in host:
                 raise ValueError(
                     f"Wildcard host {host!r} is not allowed; "
-                    f"list each authorized host explicitly (CLAUDE.md §6)."
+                    f"list each authorized host explicitly."
                 )
         return value
 

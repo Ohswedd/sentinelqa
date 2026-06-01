@@ -9,7 +9,7 @@ Safety / robustness:
 
 - Every line is parsed through Pydantic so a malformed event raises
   :class:`ChaosIngestError` rather than silently corrupting the run
-  (CLAUDE.md §32: typed errors).
+  (our engineering rules: typed errors).
 - The reader caps the file size at 8 MiB to keep a runaway TS helper
   from filling memory; over-cap reads raise :class:`ChaosIngestError`.
 - Unknown ``scenario_id`` values are tolerated only for known

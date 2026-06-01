@@ -95,7 +95,7 @@ def test_dry_run_script_is_importable_and_typed() -> None:
 
 
 def test_dry_run_script_never_pushes() -> None:
-    """CLAUDE.md §3 + §40: the agent never pushes; the dry-run never pushes."""
+    """our engineering rules + §40: the agent never pushes; the dry-run never pushes."""
 
     source = (REPO_ROOT / "scripts/release/dry_run_docker.py").read_text(encoding="utf-8")
     # Hard-ban every push form. The script may reference "--no-push" — that

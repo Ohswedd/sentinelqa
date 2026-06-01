@@ -1,4 +1,4 @@
-"""Supply-Chain & Dependency Audit module (Phase 33, PRD §10.7.3, ADR-0045).
+"""Supply-Chain & Dependency Audit module (Phase 33, the documentation.3, ADR-0045).
 
 Importing this package wires :class:`SupplyChainModule` into the default
 orchestrator registry so ``sentinel supply-chain`` and ``sentinel audit``
@@ -13,7 +13,7 @@ Capabilities (Phase 33 README):
 - Container image scanner adapter (Trivy / Grype) — optional.
 - SPDX license audit with allow / deny / unknown policy.
 
-All checks are defensive / read-only (CLAUDE.md §6 + §26). The OSV
+All checks are defensive / read-only (our engineering rules + §26). The OSV
 adapter respects ``policy.supply_chain.osv.rate_limit_rps`` and degrades
 to ``skipped`` (not ``passed``) when the API is unreachable. The
 container scanner only ever runs against ``policy.supply_chain.container.image``;

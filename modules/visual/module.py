@@ -1,4 +1,4 @@
-"""``VisualModule`` (Phase 21, PRD §10.6, ADR-0026).
+"""``VisualModule`` (Phase 21, the documentation, ADR-0026).
 
 Lifecycle (CLAUDE §9):
 
@@ -22,7 +22,7 @@ Playwright. The TS capture helper (Phase 21 + Phase 04 runtime) writes
 PNGs into ``<run-dir>/visual/current/<viewport>/<route-slug>.png``,
 hiding any selector-mask elements before screenshot. The Python diff
 layer additionally paints any rect-masks before comparison so test
-fixtures can verify masking without driving a browser (PRD §10.6 +
+fixtures can verify masking without driving a browser (the documentation +
 CLAUDE §29).
 
 Baselines never auto-accept in CI. The CLI flag ``--accept`` refuses
@@ -69,7 +69,7 @@ class _PairAddress:
 
 
 class VisualModule(SentinelModule):
-    """Visual-regression module — Phase 21 / PRD §10.6."""
+    """Visual-regression module — Phase 21 / the documentation."""
 
     name: ClassVar[str] = "visual"
 

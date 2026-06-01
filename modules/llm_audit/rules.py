@@ -3,11 +3,11 @@
 Each rule pins a deterministic ID, a default severity, a default
 confidence, and a curated remediation. Rules are referenced by the
 per-check modules under :mod:`modules.llm_audit.checks` and surfaced
-in PRD §20 evidence so downstream consumers (Reporter, SDK) render the
+in our product spec evidence so downstream consumers (Reporter, SDK) render the
 same wording.
 
 Bumps to a rule's wording or default severity require an ADR-0024
-amendment per CLAUDE.md §34.
+amendment per our engineering rules.
 """
 
 from __future__ import annotations

@@ -107,7 +107,7 @@ def sort_results(results: Sequence[AnalyzerResult]) -> tuple[AnalyzerResult, ...
 
 
 def is_healer_candidate(result: AnalyzerResult) -> bool:
-    """Return ``True`` if Phase 20 Healer should attempt a repair (PRD §9.6).
+    """Return ``True`` if Phase 20 Healer should attempt a repair (the documentation).
 
     The Healer is intentionally narrow: it operates only on
     ``test_bug``-categorized failures. App bugs, environment failures,

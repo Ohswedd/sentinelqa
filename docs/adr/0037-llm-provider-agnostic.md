@@ -9,7 +9,7 @@ Accepted
 
 ## Context
 
-PRD §31 Open Question #4 asked which LLM providers should be supported
+our product spec Open Question #4 asked which LLM providers should be supported
 first. The recommended answer was "provider-agnostic through an
 adapter interface." The Phase 06 planner (ADR-0011) and Phase 09
 analyzer explainer (ADR-0014) both shipped that way: a Protocol
@@ -36,38 +36,22 @@ plugins; the Protocol contract is stable.
 
 ## Consequences
 
-- **Positive:** users pick their provider. Air-gapped users pick the
-  `Null<X>` default and get fully deterministic output. Switching
-  providers is a config change.
-- **Positive:** the dependency closure stays small — `httpx` is the
-  only LLM-related runtime dep.
-- **Positive:** prompt versioning makes provider behavior changes
-  reproducible and auditable.
-- **Negative / trade-off:** new vendor-specific features (e.g.
-  Anthropic's tool use, OpenAI's structured-output mode) require
-  per-adapter work. Acceptable — we keep the cross-cutting Protocol
-  thin and only graduate features that survive review against both.
-- **Negative / trade-off:** a generic adapter cannot use the best
-  per-provider primitive when the providers diverge. Accepted — the
-  cost of a "best-of-both" abstraction layer would erase the
-  simplicity win.
-- **Follow-up obligations:** every new LLM-using module follows the
-  same Protocol + adapter pattern; default is `Null`; spend is
-  bounded; prompts are versioned.
+- **Positive:** users pick their provider. Air-gapped users pick the `Null<X>` default and get fully deterministic output. Switching providers is a config change.
+- **Positive:** the dependency closure stays small — `httpx` is the only LLM-related runtime dep.
+- **Positive:** prompt versioning makes provider behavior changes reproducible and auditable.
+- **Negative / trade-off:** new vendor-specific features (e.g. Anthropic's tool use, OpenAI's structured-output mode) require per-adapter work. Acceptable — we keep the cross-cutting Protocol thin and only graduate features that survive review against both.
+- **Negative / trade-off:** a generic adapter cannot use the best per-provider primitive when the providers diverge. Accepted — the cost of a "best-of-both" abstraction layer would erase the simplicity win.
+- **Follow-up obligations:** every new LLM-using module follows the same Protocol + adapter pattern; default is `Null`; spend is bounded; prompts are versioned.
 
 ## Alternatives considered
 
-- **OpenAI-only.** Faster to ship, but locks users into one vendor
-  and makes air-gapped deployment painful.
-- **Vendor SDKs.** Adds large transitive dependency trees, slower
-  startup, harder reproducibility. Rejected — the HTTP surface is
-  small enough that the adapters fit in a single Python module each.
-- **A central proxy SaaS.** Forces every customer to send target
-  traffic through us. Rejected per ADR-0033.
+- **OpenAI-only.** Faster to ship, but locks users into one vendor and makes air-gapped deployment painful.
+- **Vendor SDKs.** Adds large transitive dependency trees, slower startup, harder reproducibility. Rejected — the HTTP surface is small enough that the adapters fit in a single Python module each.
+- **A central proxy SaaS.** Forces every customer to send target traffic through us. Rejected per ADR-0033.
 
 ## References
 
-- PRD §31 Open Question #4 + recommended answer
-- PRD §9.2 Planner, §9.5 Analyzer
-- CLAUDE.md §35 Dependency rules
+- our product spec Open Question #4 + recommended answer
+- the documentation Planner, §9.5 Analyzer
+- our engineering rules
 - Related ADRs: ADR-0011 (Planner deterministic vs LLM), ADR-0014 (Analyzer)

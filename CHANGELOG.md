@@ -102,7 +102,7 @@ publish-pypi.yml` (Trusted-Publisher OIDC, no long-lived API token,
 - **`docs/dev/semver.md`** — `v1.0.0` tag-plan row updated to reflect
   what shipped between `v0.7.0` and `v1.0.0` (Phases 30 – 35
   end-to-end, plus the Phase 36 release-engineering surface itself).
-- **`docs/release/pre-1.0-review.md`** — fresh `v1.0.0` draft sign-off
+- **the pre-tag review process** — fresh `v1.0.0` draft sign-off
   block with every numeric gate pre-filled (`make ci`, `make
 coverage`, `make test-full`, `make audit-metadata`,
   `make build-all`, `make inspect-all`). Owner-only trademark rows
@@ -123,7 +123,7 @@ those are owner commands (CLAUDE.md §3 + §40).
 
 Captures Phases 28 and 29. **First publication-eligible tag** — owner approval
 required per `CLAUDE.md` §40 and the trademark rows in
-`docs/release/pre-1.0-review.md`.
+the pre-tag review process.
 
 ### Added
 
@@ -142,7 +142,7 @@ required per `CLAUDE.md` §40 and the trademark rows in
   Inspection gate `scripts/release/inspect_built_packages.py`
   (`make inspect-all`) rejects `.git/`, `.env`, PEM/SSH keys, cloud
   credentials, `__pycache__/`, `*.pyc`. `docs/dev/trademarks-and-naming.md`
-  (Stable verdict; common-law lanes cleared). `docs/release/pre-1.0-review.md`
+  (Stable verdict; common-law lanes cleared). the pre-tag review process
   (the human-owner sign-off gate covering every CLAUDE.md §40 bullet).
   `modules/` and `integrations/` are now their own workspace members
   (`sentinelqa-modules`, `sentinelqa-integrations`).

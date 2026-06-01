@@ -15,20 +15,13 @@ pip install -e examples/plugins/sentinelqa-reporter-example
 
 ```text
 $ sentinel plugins list
-csv-reporter  0.1.0  reporter  (csv)
+csv-reporter 0.1.0 reporter (csv)
 ```
 
 ## Manifest
 
 ```python
-class CsvReporter:
-    kind = "reporter"
-    name = "csv-reporter"
-    version = "0.1.0"
-    capabilities = frozenset({"report"})
-    permissions = frozenset({"fs.write:.sentinel/runs"})
-    requires_protocol = ">=1.0,<2.0"
-    formats = ("csv",)
+class CsvReporter: kind = "reporter" name = "csv-reporter" version = "0.1.0" capabilities = frozenset({"report"}) permissions = frozenset({"fs.write:.sentinel/runs"}) requires_protocol = ">=1.0,<2.0" formats = ("csv",)
 ```
 
 The single declared permission is `fs.write:.sentinel/runs`; the

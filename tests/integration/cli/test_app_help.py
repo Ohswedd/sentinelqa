@@ -1,4 +1,4 @@
-"""`sentinel --help` registers every PRD §13.1 command (task 02.01)."""
+"""`sentinel --help` registers every our product spec1 command (task 02.01)."""
 
 from __future__ import annotations
 
@@ -6,7 +6,7 @@ import re
 
 from typer.testing import CliRunner
 
-# PRD §13.1 — every command name must appear in --help output.
+# our product spec1 — every command name must appear in --help output.
 PRD_COMMANDS = (
     "init",
     "doctor",

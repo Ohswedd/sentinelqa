@@ -1,4 +1,4 @@
-"""Functional audit module (Phase 10, PRD §10.1, CLAUDE.md §9).
+"""Functional audit module (Phase 10, the documentation, our engineering rules).
 
 Importing this package wires :class:`FunctionalModule` into the default
 orchestrator registry (``engine.orchestrator.registry.default_registry``)
@@ -6,13 +6,13 @@ so ``sentinel functional`` and ``sentinel audit`` both pick it up
 automatically.
 
 The functional module exercises the deterministic flows enumerated in
-PRD §10.1 — login, signup, logout, password reset, CRUD, search /
+the documentation — login, signup, logout, password reset, CRUD, search /
 filter / sort, role-based access, admin paths, file upload / download,
 notification callbacks, and payment sandbox — by invoking the Phase 08
 Playwright runner against the specs the Phase 07 generator produced.
 
 Failures translate into typed :class:`engine.domain.finding.Finding`
-records with PRD §20 evidence; quarantined tests (Phase 08.04) do not
+records with our product spec evidence; quarantined tests (Phase 08.04) do not
 block the quality gate.
 """
 

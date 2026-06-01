@@ -1,6 +1,6 @@
 """Phase 23.05 — data chaos integration tests.
 
-Acceptance criterion (`plans/phase-23-chaos-module/05-data-scenarios.md`):
+Acceptance criterion (the build plan):
 
     Fixture without empty state → finding.
 """

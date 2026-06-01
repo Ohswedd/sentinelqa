@@ -1,7 +1,7 @@
 """Phase 29.04 — `make bench` driver.
 
 Measures the four wall-clock targets in
-``plans/phase-29-final-hardening/04-performance-audit.md``:
+`the build plan`:
 
 1. ``python -c "import sentinel_cli"`` (cold import, target < 200 ms).
 2. ``sentinel --version`` (cold start, target < 300 ms).

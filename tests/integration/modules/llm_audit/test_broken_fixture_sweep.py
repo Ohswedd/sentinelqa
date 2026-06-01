@@ -1,7 +1,7 @@
 """End-to-end sweep against the broken fixture (task 19.15).
 
 Drives :class:`LlmAuditModule` against ``tests/fixtures/llm_audit_broken/``
-and asserts that at least 11 of the 13 PRD §10.9 checks fire — i.e.
+and asserts that at least 11 of the 13 our product spec9 checks fire — i.e.
 ≥ 80% of the catalogue is exercised by the canonical defect catalogue.
 
 The fixture mirrors the HTML examples under
@@ -102,7 +102,7 @@ def test_broken_fixture_triggers_at_least_eighty_percent_of_checks(
         "llm_audit_console_error",
     }
     matched = expected & categories
-    # 13 PRD §10.9 checks → require ≥ 11 (≥ 80 %). We actually expect 14
+    # 13 our product spec9 checks → require ≥ 11 (≥ 80 %). We actually expect 14
     # distinct rule categories because mock_data + placeholder_text + no
     # _loading/no_error each can produce different categories.
     assert len(matched) >= 11, (
@@ -120,7 +120,7 @@ def test_broken_fixture_persists_index_with_all_checks_enabled(
     index_path = ctx.run_dir / "llm_audit" / "index.json"
     payload = json.loads(index_path.read_text(encoding="utf-8"))
     enabled = {entry["name"] for entry in payload["checks"]}
-    # Every PRD §10.9 check should be enabled when the CLI is not given
+    # Every our product spec9 check should be enabled when the CLI is not given
     # an explicit --checks subset.
     from modules.llm_audit.module import ALL_CHECKS
 
@@ -134,7 +134,7 @@ def test_broken_fixture_findings_all_have_evidence(tmp_path: Path) -> None:
     findings = module.emit_findings(ctx, outcome)
     assert findings
     for f in findings:
-        # PRD §20: every finding must carry evidence (at minimum the
+        # our product spec: every finding must carry evidence (at minimum the
         # llm_audit/index.json fallback).
         assert f.evidence, f"finding {f.id} has no evidence"
 

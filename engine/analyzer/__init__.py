@@ -1,4 +1,4 @@
-"""Analyzer module (PRD §9.5).
+"""Analyzer module (the documentation).
 
 Interprets failed-test signals from the Runner (Phase 08) and the
 lifecycle's module-error path (CLAUDE §10) and emits, per failure:

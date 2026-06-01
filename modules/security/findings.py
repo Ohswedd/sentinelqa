@@ -1,4 +1,4 @@
-"""Translate :class:`SecurityIssue` records to PRD §18.2 :class:`Finding`s.
+"""Translate :class:`SecurityIssue` records to the documentation :class:`Finding`s.
 
 The module orchestrator emits one :class:`Finding` per issue. Evidence
 on the finding points at the per-run artifact file

@@ -1,7 +1,7 @@
 [project]
 name = "sentinelqa-monorepo"
 version = "0.0.0"
-description = "SentinelQA monorepo root — Playwright-native release-confidence engine. See PRD.md and CLAUDE.md."
+description = "SentinelQA monorepo root — Playwright-native release-confidence engine for LLM-built and human-built web apps."
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "Apache-2.0" }
@@ -220,16 +220,14 @@ markers = [
     "slow: property-based or otherwise slow test (excluded from `make test`).",
     "bench: micro-benchmark; excluded from default test runs.",
 ]
-# Domain entities are named `TestRun`, `TestCase`, and `TestExecutionError`
-# (PRD §18). Pytest's default `python_classes = ["Test*"]` would otherwise
-# try to collect them. We use only test *functions*, never test classes,
-# so disable class collection entirely.
+# Domain entities are named `TestRun`, `TestCase`, and `TestExecutionError`.
+# Pytest's default `python_classes = ["Test*"]` would otherwise try to
+# collect them. We use only test *functions*, never test classes, so disable
+# class collection entirely.
 python_classes = ["_NoClassCollection_"]
 
 # ---------------------------------------------------------------------------
-# Coverage floor (per CLAUDE.md §17 and PRD §6.5). Phase 00 ships no production
-# code, so coverage measurement is opt-in via `make coverage`. Phase 01 wires
-# this floor into `make ci`. See docs/adr/0003-package-managers.md.
+# Coverage floor. Enforced by `make coverage` and wired into `make ci`.
 # ---------------------------------------------------------------------------
 [tool.coverage.run]
 branch = true

@@ -2,11 +2,11 @@
 
 Status: `Stable`
 
-Authority: `CLAUDE.md` §3 (Privacy & ownership), §4 (Git workflow), `LICENSE` (Apache-2.0), `NOTICE`.
+Authority: project engineering rules.0), `NOTICE`.
 
 This document is the authoritative ownership policy for the SentinelQA repository. Every contributor — human or LLM agent — must comply.
 
-## The rules (quoted from CLAUDE.md §3)
+## The rules (quoted from our engineering rules)
 
 > The repository must stay private until the owner explicitly decides otherwise.
 >
@@ -25,7 +25,7 @@ These rules are absolute. They are not subject to "but the agent did the work" r
 
 ## Why
 
-SentinelQA's product premise is **trust through evidence** (`CLAUDE.md` §45). A product whose own provenance is unclear cannot credibly answer "can this software be trusted enough to ship?" for anything else. Ownership lock is part of the answer.
+SentinelQA's product premise is **trust through evidence**. A product whose own provenance is unclear cannot credibly answer "can this software be trusted enough to ship?" for anything else. Ownership lock is part of the answer.
 
 ## What this means in practice
 
@@ -69,7 +69,7 @@ SentinelQA's product premise is **trust through evidence** (`CLAUDE.md` §45). A
 If a commit accidentally lands with an AI co-author trailer:
 
 1. Use `git rebase -i <commit>~1` and `reword` (or `git commit --amend` if it's the tip) to remove the trailer.
-2. Force-push the _feature_ branch (force-pushing to `main` is forbidden — see `CLAUDE.md` §4 and branch protection).
+2. Force-push the _feature_ branch (force-pushing to `main` is forbidden — see our engineering rules).
 3. The no-AI-coauthor workflow will go green on the next CI run.
 
 ## Trademark

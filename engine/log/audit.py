@@ -1,4 +1,4 @@
-"""Audit log facade (CLAUDE.md §6, §26).
+"""Audit log facade (our engineering rules, §26).
 
 Operational logs (info/warn/error) and audit logs (safety decisions, policy
 gate outcomes) are kept on distinct streams. Audit entries always land at

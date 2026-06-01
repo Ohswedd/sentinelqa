@@ -3,8 +3,8 @@
 Generates randomized Finding / ModuleResult / PolicyConfig combos and
 asserts that two consecutive calls to ``apply_policy_gate`` followed by
 ``write_score`` produce byte-identical ``score.json`` files. The score
-is the most reproducibility-sensitive artifact SentinelQA emits
-(CLAUDE.md §25), so this is the canonical drift guard.
+is the most reproducibility-sensitive artifact SentinelQA emits, so this
+is the canonical drift guard.
 
 Marker: ``slow`` so the test runs under ``make test-full`` (matches the
 Phase-03 hypothesis suite layout).

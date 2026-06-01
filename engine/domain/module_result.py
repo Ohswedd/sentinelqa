@@ -1,4 +1,4 @@
-"""ModuleResult entity (PRD §18.1)."""
+"""ModuleResult entity (the documentation)."""
 
 from __future__ import annotations
 

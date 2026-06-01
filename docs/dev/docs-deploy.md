@@ -2,7 +2,7 @@
 
 Status: `Stable`
 
-Authority: `CLAUDE.md` §34 (Documentation rules), `docs/adr/0032-docs-site.md` (Astro Starlight choice), `plans/phase-35-public-release/04-docs-site-deploy.md`.
+Authority: project engineering rules.md` (Astro Starlight choice), .
 
 The SentinelQA docs site (`apps/docs/`, Astro Starlight) deploys to **Cloudflare Pages** on every push to `main`, with **preview deploys** on every PR. This file is the operator runbook.
 
@@ -50,7 +50,7 @@ In the Cloudflare dashboard, add the custom domain `docs.sentinelqa.dev` to the 
 If the apex domain lives elsewhere, add a `CNAME` record:
 
 ```
-docs    CNAME    sentinelqa-docs.pages.dev.    (TTL auto)
+docs CNAME sentinelqa-docs.pages.dev. (TTL auto)
 ```
 
 ### 5. Verify
@@ -104,4 +104,4 @@ There is no destructive operation here — the previous deploy is still online; 
 
 - [`docs/adr/0032-docs-site.md`](../adr/0032-docs-site.md) — why Astro Starlight.
 - [`docs/dev/ci-and-branch-protection.md`](./ci-and-branch-protection.md) — the broader CI surface.
-- [`plans/phase-35-public-release/04-docs-site-deploy.md`](../../plans/phase-35-public-release/04-docs-site-deploy.md) — the task spec.
+- [](../../) — the task spec.

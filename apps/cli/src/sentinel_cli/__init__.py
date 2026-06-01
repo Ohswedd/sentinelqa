@@ -1,4 +1,4 @@
-"""SentinelQA CLI (PRD §13, CLAUDE.md §13).
+"""SentinelQA CLI (our product spec, our engineering rules).
 
 The Typer app is constructed in :mod:`sentinel_cli.app`. The package
 entry point lives in :mod:`sentinel_cli.main`. Tests reach into the

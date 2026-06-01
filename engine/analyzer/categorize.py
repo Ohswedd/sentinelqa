@@ -1,4 +1,4 @@
-"""Failure categorization rules (PRD §9.5, ADR-0014, task 09.01).
+"""Failure categorization rules (the documentation, ADR-0014, task 09.01).
 
 The classifier is a small, ordered, deterministic rule set. Each rule
 returns ``(category, confidence, rationale)`` if it matches, else

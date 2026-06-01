@@ -1,4 +1,4 @@
-"""Translate :class:`ApiIssue` records into PRD §18.2 :class:`Finding`s."""
+"""Translate :class:`ApiIssue` records into the documentation :class:`Finding`s."""
 
 from __future__ import annotations
 

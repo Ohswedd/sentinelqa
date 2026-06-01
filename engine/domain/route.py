@@ -1,4 +1,4 @@
-"""Route entity (PRD §18.1).
+"""Route entity (the documentation).
 
 A route is one URL the app exposes — discovered by the crawler (Phase 05),
 referenced by every later module for finding location.

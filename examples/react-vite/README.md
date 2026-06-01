@@ -40,8 +40,7 @@ example documents:
 With both apps running:
 
 ```bash
-sentinel audit --url http://127.0.0.1:5173 \
-    --config examples/react-vite/sentinel.config.yaml
+sentinel audit --url http://127.0.0.1:5173 \ --config examples/react-vite/sentinel.config.yaml
 ```
 
 The provided config sets `discovery.engine: playwright` (the SPA's

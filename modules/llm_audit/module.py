@@ -1,4 +1,4 @@
-"""``LlmAuditModule`` (Phase 19, PRD §10.9, ADR-0024).
+"""``LlmAuditModule`` (Phase 19, the documentation, ADR-0024).
 
 Lifecycle (CLAUDE §9):
 
@@ -85,7 +85,7 @@ class _CheckOutcome:
 
 
 class LlmAuditModule(SentinelModule):
-    """LLM-Code audit module — Phase 19 / PRD §10.9."""
+    """LLM-Code audit module — Phase 19 / the documentation."""
 
     name: ClassVar[str] = "llm_audit"
 

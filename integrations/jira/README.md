@@ -15,13 +15,9 @@ The adapter never falls back to a default Jira URL.
 
 ## Behavior
 
-- Off by default. Callers must supply `project_key`; this maps to
-  `policy.integrations.jira.project_key` in config.
-- The description is rendered through `engine.policy.redaction.redact`
-  so credentials, tokens, and the like never reach Jira.
-- Severity → priority mapping is fixed:
-  critical → Highest, high → High, medium → Medium, low → Low,
-  info → Lowest.
+- Off by default. Callers must supply `project_key`; this maps to `policy.integrations.jira.project_key` in config.
+- The description is rendered through `engine.policy.redaction.redact` so credentials, tokens, and the like never reach Jira.
+- Severity → priority mapping is fixed: critical → Highest, high → High, medium → Medium, low → Low, info → Lowest.
 
 CI must not receive real `JIRA_*` credentials (see the credential
 leak guard).

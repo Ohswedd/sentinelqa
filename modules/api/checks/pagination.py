@@ -79,7 +79,7 @@ def _walk_pages(
         except (httpx.HTTPError, OSError):
             return
         # A 4xx on a paginated walk past page 1 is the empty-page-error
-        # case (PRD §10.3: empty pages should return 200 with empty
+        # case (the documentation: empty pages should return 200 with empty
         # array, not 4xx). We allow page 1 to return 4xx without
         # flagging because the endpoint may simply require auth or
         # other parameters the contract check covers.
@@ -93,7 +93,7 @@ def _walk_pages(
                     description=(
                         f"Requesting page={page} returned HTTP "
                         f"{response.status_code}. Empty pages should return "
-                        "200 with an empty array (PRD §10.3)."
+                        "200 with an empty array (the documentation)."
                     ),
                     method="GET",
                     route=op.path,

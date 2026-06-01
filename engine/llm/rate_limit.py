@@ -3,7 +3,7 @@
 A simple monotonic-clock token bucket. Each registered provider gets its
 own bucket so a Gemini outage doesn't starve a separate Ollama call. The
 bucket is in-memory only — there is no cross-process coordination, which
-is intentional: SentinelQA runs are single-process by design (CLAUDE.md
+is intentional: SentinelQA runs are single-process by design (our engineering rules
 §10), so a shared file-based bucket would only add fragility.
 """
 

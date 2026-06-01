@@ -1,6 +1,6 @@
 # SentinelQA LLM-broken example — DO NOT DEPLOY
 
-A small Next.js 14 app that intentionally exhibits every PRD §10.9
+A small Next.js 14 app that intentionally exhibits every the documentation
 failure mode. The LLM-audit module (Phase 19) finds these issues; this
 example exists so we can ship a one-command demo of that capability.
 
@@ -25,8 +25,7 @@ starts the Next.js dev server on `http://127.0.0.1:3030`.
 With the app running:
 
 ```bash
-sentinel audit --url http://127.0.0.1:3030 \
-    --config examples/llm-broken/sentinel.config.yaml
+sentinel audit --url http://127.0.0.1:3030 \ --config examples/llm-broken/sentinel.config.yaml
 ```
 
 A successful run produces ≥ 8 distinct LLM-audit findings:

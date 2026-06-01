@@ -1,4 +1,4 @@
-"""Flow entity (PRD §18.1).
+"""Flow entity (the documentation).
 
 A flow is an end-to-end user journey assembled from routes and elements.
 The planner (Phase 06) produces flows; the generator (Phase 07) turns each

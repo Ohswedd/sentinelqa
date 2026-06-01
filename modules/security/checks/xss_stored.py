@@ -1,7 +1,7 @@
 """Stored-XSS safe probe (Phase 13.05, gated).
 
 This check is **off by default** and ONLY runs when ALL of the following
-hold (CLAUDE §6, §26 + PRD §2):
+hold (CLAUDE §6, §26 + our product spec):
 
 - ``config.security.mode == "authorized_destructive"``.
 - ``config.security.checks.xss_stored`` is true.

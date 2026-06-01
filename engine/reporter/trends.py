@@ -1,14 +1,14 @@
 """Trend rendering across local run history (Phase 15, task 15.03).
 
 Reads recent runs from ``.sentinel/runs/<id>/`` (the canonical artifact
-tree, CLAUDE.md §11) and derives a small set of headline series:
+tree, our engineering rules) and derives a small set of headline series:
 
 - Total quality score over time.
 - Per-module pass rate over time.
 - Top recurring finding IDs.
 
 We deliberately stay local: no external storage, no telemetry. Phase 4
-cloud comes later (PRD §41 — no telemetry by default). The renderer
+cloud comes later (our product spec — no telemetry by default). The renderer
 emits a small inline SVG sparkline per series so the HTML report stays
 JavaScript-free for charting.
 """
@@ -80,7 +80,7 @@ class TrendData:
 
     def is_visible(self) -> bool:
         # Render only when we have at least one prior run to compare
-        # against (PRD §38 — trends only when history exists).
+        # against (our product spec — trends only when history exists).
         return len(self.score_series) >= 2
 
     def to_template_context(self) -> Mapping[str, Any]:
@@ -118,7 +118,7 @@ def compute_trends(
 
     ``current_run_id`` is included in the series if present on disk.
     Missing or malformed JSON files are skipped silently — trends are
-    best-effort, not a gate (PRD §38).
+    best-effort, not a gate.
     """
 
     if not runs_root.exists():

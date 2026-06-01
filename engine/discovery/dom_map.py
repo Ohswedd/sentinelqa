@@ -1,4 +1,4 @@
-"""DOM map builder (PRD §9.1, task 05.02).
+"""DOM map builder (the documentation, task 05.02).
 
 For each crawled HTML page, extract a structured list of interactive elements
 plus auxiliary observations the Planner cares about:

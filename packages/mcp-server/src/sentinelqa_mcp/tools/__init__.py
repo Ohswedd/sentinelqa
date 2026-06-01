@@ -3,7 +3,7 @@
 Each tool ships in its own module and registers itself by name with a
 :class:`SentinelToolset`. The base :class:`Tool` Protocol enforces:
 
-- A name matching ``sentinel.<lower_snake>`` (PRD §16.1).
+- A name matching ``sentinel.<lower_snake>`` (the documentation).
 - A JSON Schema describing the arguments.
 - An ``invoke`` coroutine that returns an :class:`AgentEnvelope`.
 
@@ -55,7 +55,7 @@ class SentinelToolset:
     """Registry of MCP tools — the source-of-truth list returned by ``tools/list``.
 
     ``with_defaults`` builds the production registry containing the
-    twelve PRD §16 tools plus ``sentinel.ping``. Tests can construct
+    twelve our product spec tools plus ``sentinel.ping``. Tests can construct
     empty registries and selectively register stubs.
     """
 
@@ -88,7 +88,7 @@ class SentinelToolset:
 
     @classmethod
     def with_defaults(cls) -> SentinelToolset:
-        """Construct the canonical PRD §16 registry (plus ``sentinel.ping``)."""
+        """Construct the canonical our product spec registry (plus ``sentinel.ping``)."""
 
         from sentinelqa_mcp.tools.accessibility_audit import AccessibilityAuditTool
         from sentinelqa_mcp.tools.audit import AuditTool

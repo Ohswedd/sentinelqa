@@ -4,7 +4,7 @@ Every per-check module returns a tuple of :class:`CheckFinding`
 records — small intermediate structs that carry the rule ID, the
 specific evidence, and any per-finding severity / confidence
 overrides. ``findings_from_check_findings`` consolidates them into
-PRD §18.2 / §20-compliant :class:`engine.domain.finding.Finding`
+the documentation / §20-compliant :class:`engine.domain.finding.Finding`
 records ready for the lifecycle to persist.
 """
 
@@ -60,7 +60,7 @@ def findings_from_check_findings(
     ``artifact_root`` is the run directory; the helper records the
     module's per-run artifact (``llm_audit/index.json``) as a fallback
     evidence reference when a check supplies none. The fallback
-    satisfies PRD §20's medium-or-above evidence requirement without
+    satisfies our product spec's medium-or-above evidence requirement without
     pretending we captured a screenshot we don't have.
     """
 

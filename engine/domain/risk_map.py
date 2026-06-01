@@ -1,4 +1,4 @@
-"""RiskMap entity (PRD §18.1 — derived from DiscoveryGraph)."""
+"""RiskMap entity (the documentation — derived from DiscoveryGraph)."""
 
 from __future__ import annotations
 
