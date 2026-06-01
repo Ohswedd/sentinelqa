@@ -15,11 +15,11 @@
     "test": "echo 'apps/docs: structural checks live under tests/integration/docs (Python)'"
   },
   "dependencies": {
-    "@astrojs/starlight": "0.28.6",
+    "@astrojs/starlight": "0.39.2",
     "astro": "4.16.18"
   },
   "devDependencies": {
-    "@astrojs/check": "0.9.4",
+    "@astrojs/check": "0.9.9",
     "typescript": "5.7.2"
   }
 }
