@@ -41,7 +41,7 @@ dev = [
     "pillow==11.0.0",
     # Phase 30: RS256 JWT signing for the Vertex AI provider. See
     # engine/pyproject.toml for the dependency rationale.
-    "cryptography==45.0.1",
+    "cryptography==46.0.7",
 ]
 
 [tool.uv]
