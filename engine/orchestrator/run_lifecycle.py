@@ -26,7 +26,6 @@ from engine.cache.run_info import (
     FingerprintInfo,
     write_cache_report,
 )
-from engine.cache.store import default_cache_root
 from engine.config.schema import RootConfig
 from engine.domain.finding import Finding
 from engine.domain.ids import IdGenerator
@@ -142,10 +141,14 @@ class RunLifecycle:
         self._safety = safety_policy or SafetyPolicy()
         # v1.2.0: ``project_root`` is the directory whose source we hash
         # for the cache + ``--since`` features. Defaults to CWD so existing
-        # callers do not need to pass it. ``cache_store`` defaults to the
-        # conventional ``.sentinel/cache/`` under the project root.
+        # callers do not need to pass it. ``cache_store`` defaults to a
+        # sibling ``cache/`` next to the artifact root so a custom
+        # ``artifacts_root`` (e.g. tests using ``tmp_path``) gets an
+        # isolated cache, never polluting the workspace's ``.sentinel/cache``.
         self._project_root = (project_root or Path.cwd()).resolve()
-        self._cache_store = cache_store or CacheStore(default_cache_root(self._project_root))
+        self._cache_store = cache_store or CacheStore(
+            self._artifacts_root.resolve().parent / "cache"
+        )
         self._ensure_default_hooks()
         # The last :class:`LifecycleContext` populated by ``execute``. The
         # CLI / SDK reads this immediately after a synchronous call to
@@ -364,7 +367,10 @@ class RunLifecycle:
         # already restricted to module-name chars + the separator.
         modules_sig_safe = modules_sig.replace(",", "-")
 
-        if ctx.source_fingerprint is not None:
+        # Dry-run plans are cheap to recompute and their content
+        # (``dry_run: true``) must not contaminate the real-run cache.
+        # Skip both lookup and store when we're in dry-run mode.
+        if ctx.source_fingerprint is not None and not ctx.dry_run:
             ctx.plan_cache_key = f"v1.{ctx.source_fingerprint.hash}.{modules_sig_safe}"
             cached = self._cache_store.get("plan", ctx.plan_cache_key)
             if cached is not None:
@@ -386,11 +392,13 @@ class RunLifecycle:
         ctx.plan["ci"] = ctx.ci
         ctx.artifacts.write_json("plan.json", ctx.plan)
 
-        # Persist to plan cache after writing the artifact.
+        # Persist to plan cache after writing the artifact. Dry-run
+        # plans are deliberately not cached.
         if (
             ctx.source_fingerprint is not None
             and ctx.plan_cache_hit is False
             and ctx.plan_cache_key is not None
+            and not ctx.dry_run
         ):
             import contextlib
 
@@ -573,7 +581,76 @@ class RunLifecycle:
             ctx.finished_at = datetime.now(UTC)
             self._finalize_status(ctx)
         self._write_cache_report(ctx)
+        self._record_to_flake_db(ctx)
         update_latest_pointer(self._artifacts_root, ctx.artifacts.root)
+
+    def _record_to_flake_db(self, ctx: LifecycleContext) -> None:
+        """Append this run + its module/test outcomes to the flake DB.
+
+        Best-effort: any sqlite error is logged and swallowed — the
+        audit never fails because the bookkeeping failed.
+        """
+
+        if ctx.run_id is None:
+            return
+        try:
+            from engine.persistence.flake_db import FlakeDb, Outcome
+        except Exception:
+            return
+
+        db_path = self._project_root / ".sentinel" / "flake.db"
+        try:
+            with FlakeDb.open(db_path) as db:
+                db.record_run(
+                    ctx.run_id,
+                    started_at=ctx.started_at.isoformat(),
+                    status=ctx.status,
+                )
+                # Typed module results carry one duration + status per
+                # module; the unit of flake tracking is the module name
+                # (per-test granularity arrives once modules emit it).
+                outcomes: list[Outcome] = []
+                seen: set[tuple[str, str]] = set()
+                for typed in ctx.typed_module_results:
+                    key = (typed.name, "__module__")
+                    if key in seen:
+                        continue
+                    seen.add(key)
+                    outcome_status: str = "passed"
+                    if typed.status in {"failed", "errored", "incomplete"}:
+                        outcome_status = "failed"
+                    elif typed.status == "skipped":
+                        outcome_status = "skipped"
+                    outcomes.append(
+                        Outcome(
+                            run_id=ctx.run_id,
+                            module=typed.name,
+                            test_id="__module__",
+                            outcome=outcome_status,  # type: ignore[arg-type]
+                            duration_ms=int(typed.duration_ms or 0),
+                        )
+                    )
+                # Fallback for non-typed factories: derive from
+                # module_outcomes so the DB still has a row per module.
+                for outcome in ctx.module_outcomes:
+                    key = (outcome.name, "__module__")
+                    if key in seen:
+                        continue
+                    seen.add(key)
+                    outcomes.append(
+                        Outcome(
+                            run_id=ctx.run_id,
+                            module=outcome.name,
+                            test_id="__module__",
+                            outcome=("passed" if outcome.status == "succeeded" else "failed"),
+                        )
+                    )
+                db.record_outcomes(outcomes)
+        except Exception:
+            _LOGGER.warning(
+                "flake DB write failed; skipping",
+                extra={"run_id": ctx.run_id},
+            )
 
     def _write_cache_report(self, ctx: LifecycleContext) -> None:
         """Write ``cache.json`` so the next run's ``--since`` can read it."""
