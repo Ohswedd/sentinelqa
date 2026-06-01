@@ -10,6 +10,72 @@ and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html). See
 
 _No unreleased changes._
 
+## [1.2.0] - 2026-06-01
+
+Test-economics release. Six additions that make audits cheap to run
+often: a content-addressed cache for discovery + plan, diff-aware
+test selection, fingerprint-based `--since` short-circuiting,
+bounded parallel module execution, and a cross-run flake database.
+
+### Added
+
+- **Source fingerprint + cache store.** New
+  `engine.cache` package: `SourceFingerprint` (deterministic sha256
+  over the source surface, ignoring node_modules / .venv / build
+  trees) and `CacheStore` (atomic, namespaced, disk-backed byte
+  store under `.sentinel/cache/`). Foundation for the rest of this
+  release.
+- **Discovery cache.** `sentinel audit` now consults
+  `cache.discovery` keyed on the source fingerprint at the start
+  of `discover_app`. If a prior run produced `discovery.json`
+  with the same fingerprint, the bytes are restored before any
+  discovery hook runs.
+- **Plan cache.** `plan.json` is keyed on
+  `(fingerprint, requested_modules)` so the planner skips
+  recomputation when nothing source-relevant changed. Dry-run plans
+  are intentionally not cached.
+- **`sentinel audit --changed-only` (smart test selection).**
+  Reads `git diff <base>...HEAD` plus unstaged + untracked file
+  lists, maps each path to the audit modules it impacts, and
+  restricts the run to that subset. `--diff-base` defaults to
+  `origin/main`. No-op exit when only docs / unrelated files
+  changed. Lockfiles / Dockerfiles / framework configs invalidate
+  every module.
+- **`sentinel audit --since <run-id|latest>`.** Short-circuits the
+  entire audit when the current source fingerprint matches the prior
+  run's. Exits 0 with status `unchanged` — no run created, no
+  cache.json overwritten. Useful in CI as a poor-man's "is anything
+  in scope?" gate.
+- **`sentinel audit --parallel-modules N`** (1..16). Bounded
+  `ThreadPoolExecutor`-based module execution. Safety policy still
+  enforces before discovery, so no module touches the network ahead
+  of the policy. Worker results are merged back in canonical input
+  order — the artifact tree is byte-identical to the sequential path.
+- **Cross-run flake DB + `sentinel flake` CLI.** New sqlite-backed
+  database at `.sentinel/flake.db` (runs table + outcomes table)
+  populated automatically by the lifecycle at the end of every
+  audit. `sentinel flake list` prints the top-N flakiest
+  `(module, test_id)` pairs honouring a min-runs floor;
+  `sentinel flake stats` prints totals. Writes are best-effort —
+  a DB failure never breaks the run.
+
+### Changed
+
+- New additive artifact `cache.json` under each run directory
+  recording the source fingerprint, discovery cache hit/miss, and
+  plan cache hit/miss. The wire schema of `run.json` is unchanged.
+- The lifecycle's cache root now defaults to a sibling of the
+  artifacts root (`<runs>/../cache`) rather than CWD, so tests
+  using a tmp_path artifacts root get an isolated cache automatically.
+
+### Status
+
+The `run.json` / `findings.json` / `score.json` / JUnit / SARIF
+wire schemas are unchanged from `1.0.0`. The Python SDK public
+surface, the MCP wire protocol, and the exit-code table are
+unchanged. Existing callers see no behavioural change unless they opt
+into one of the new flags or read the new `cache.json` artifact.
+
 ## [1.1.0] - 2026-06-02
 
 Developer-experience release. Seven additions that close the gap between

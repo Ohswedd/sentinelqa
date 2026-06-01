@@ -67,6 +67,8 @@ traces/
 .sentinel/baselines/
 .sentinel/reports/
 .sentinel/cache/
+.sentinel/flake.db
+.sentinel/flake.db-*
 
 # --- Editors / OS noise --------------------------------------------------
 .DS_Store

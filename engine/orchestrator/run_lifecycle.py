@@ -19,6 +19,13 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import urlparse
 
+from engine.cache import CacheStore, SourceFingerprint, compute_fingerprint
+from engine.cache.run_info import (
+    CachePhaseInfo,
+    CacheReport,
+    FingerprintInfo,
+    write_cache_report,
+)
 from engine.config.schema import RootConfig
 from engine.domain.finding import Finding
 from engine.domain.ids import IdGenerator
@@ -103,6 +110,18 @@ class LifecycleContext:
     typed_policy: PolicyDecision | None = None
     # +: per-module options threaded from the CLI / SDK.
     module_options: dict[str, Mapping[str, Any]] = field(default_factory=dict)
+    # v1.2.0: test-economics cache plumbing. ``source_fingerprint`` is
+    # computed once before discovery (cheap content hash) so the
+    # discovery and plan steps can do constant-time cache lookups.
+    # Hit/miss is recorded under cache.json for the --since command.
+    source_fingerprint: SourceFingerprint | None = None
+    discovery_cache_hit: bool | None = None
+    discovery_cache_key: str | None = None
+    plan_cache_hit: bool | None = None
+    plan_cache_key: str | None = None
+    # v1.2.0: bounded concurrency for run_modules. ``module_concurrency=1``
+    # preserves the original sequential behaviour.
+    module_concurrency: int = 1
 
 
 class RunLifecycle:
@@ -114,10 +133,22 @@ class RunLifecycle:
         artifacts_root: Path | None = None,
         registry: ModuleRegistry | None = None,
         safety_policy: SafetyPolicy | None = None,
+        project_root: Path | None = None,
+        cache_store: CacheStore | None = None,
     ) -> None:
         self._artifacts_root = artifacts_root or Path(".sentinel") / "runs"
         self._registry = registry or default_registry()
         self._safety = safety_policy or SafetyPolicy()
+        # v1.2.0: ``project_root`` is the directory whose source we hash
+        # for the cache + ``--since`` features. Defaults to CWD so existing
+        # callers do not need to pass it. ``cache_store`` defaults to a
+        # sibling ``cache/`` next to the artifact root so a custom
+        # ``artifacts_root`` (e.g. tests using ``tmp_path``) gets an
+        # isolated cache, never polluting the workspace's ``.sentinel/cache``.
+        self._project_root = (project_root or Path.cwd()).resolve()
+        self._cache_store = cache_store or CacheStore(
+            self._artifacts_root.resolve().parent / "cache"
+        )
         self._ensure_default_hooks()
         # The last :class:`LifecycleContext` populated by ``execute``. The
         # CLI / SDK reads this immediately after a synchronous call to
@@ -156,6 +187,7 @@ class RunLifecycle:
         dry_run: bool = False,
         ci: bool = False,
         module_options: Mapping[str, Mapping[str, Any]] | None = None,
+        module_concurrency: int = 1,
     ) -> TestRun:
         """Run the lifecycle and return the finalized :class:`TestRun`.
 
@@ -172,6 +204,7 @@ class RunLifecycle:
             dry_run=dry_run,
             ci=ci,
             module_options=dict(module_options or {}),
+            module_concurrency=max(1, int(module_concurrency)),
         )
         # Expose the in-flight context to callers (the CLI reads typed
         # results immediately after ``execute`` returns). Cleared at top of
@@ -281,132 +314,234 @@ class RunLifecycle:
         ctx.config_snapshot_path = ctx.artifacts.write_yaml("config.snapshot.yaml", ctx.config)
 
     def discover_app(self, ctx: LifecycleContext) -> None:
-        # Stub until. Phase hooks can override.
+        # v1.2.0: compute the source fingerprint once per run (cheap, the
+        # exclude set keeps this O(source files)). Failures here are
+        # non-fatal — the cache simply degrades to "always miss".
+        try:
+            ctx.source_fingerprint = compute_fingerprint(self._project_root)
+        except OSError:
+            ctx.source_fingerprint = None
+
+        # Discovery cache lookup: if a hook produced a discovery.json on
+        # a prior run with the same fingerprint we restore it here.
+        # Hooks still run afterwards (they may add evidence beyond what
+        # the cached payload carries).
+        assert ctx.artifacts is not None
+        if ctx.source_fingerprint is not None:
+            key = f"v1.{ctx.source_fingerprint.hash}"
+            ctx.discovery_cache_key = key
+            cached = self._cache_store.get("discovery", key)
+            if cached is not None:
+                ctx.artifacts.path("discovery.json").write_bytes(cached)
+                ctx.discovery_cache_hit = True
+                _LOGGER.info(
+                    "discovery cache hit",
+                    extra={"fingerprint": ctx.source_fingerprint.short()},
+                )
+            else:
+                ctx.discovery_cache_hit = False
+
         for hook in ctx.registry.phase_hooks.get(LifecyclePhase.DISCOVER_APP, []):
             hook(ctx)
 
+        # Persist any hook-produced discovery.json into the cache for
+        # the next run with the same fingerprint.
+        if ctx.source_fingerprint is not None and ctx.discovery_cache_hit is False:
+            artifact = ctx.artifacts.path("discovery.json")
+            if artifact.is_file():
+                import contextlib
+
+                with contextlib.suppress(OSError):
+                    self._cache_store.put(
+                        "discovery", ctx.discovery_cache_key or "", artifact.read_bytes()
+                    )
+
     def build_execution_plan(self, ctx: LifecycleContext) -> None:
-        # owns the real planner. For now: surface the enabled
-        # modules so dry-run output is informative.
-        ctx.plan["modules"] = sorted(self._modules_to_run(ctx))
+        # v1.2.0: plan cache. The key encodes the source fingerprint AND
+        # the requested-module set so that two runs with the same source
+        # but different ``--modules`` produce different cache entries.
+        assert ctx.artifacts is not None
+        modules = sorted(self._modules_to_run(ctx))
+        modules_sig = ",".join(modules) or "all"
+        # Replace commas (cache-key-illegal) with dashes; modules_sig is
+        # already restricted to module-name chars + the separator.
+        modules_sig_safe = modules_sig.replace(",", "-")
+
+        # Dry-run plans are cheap to recompute and their content
+        # (``dry_run: true``) must not contaminate the real-run cache.
+        # Skip both lookup and store when we're in dry-run mode.
+        if ctx.source_fingerprint is not None and not ctx.dry_run:
+            ctx.plan_cache_key = f"v1.{ctx.source_fingerprint.hash}.{modules_sig_safe}"
+            cached = self._cache_store.get("plan", ctx.plan_cache_key)
+            if cached is not None:
+                ctx.artifacts.path("plan.json").write_bytes(cached)
+                ctx.plan_cache_hit = True
+                # Re-materialise the dict so downstream hooks see the
+                # same plan whether we cached or recomputed it.
+                import json as _json
+
+                ctx.plan = _json.loads(cached.decode("utf-8"))
+                _LOGGER.info("plan cache hit", extra={"key": ctx.plan_cache_key[:20]})
+                for hook in ctx.registry.phase_hooks.get(LifecyclePhase.BUILD_EXECUTION_PLAN, []):
+                    hook(ctx)
+                return
+            ctx.plan_cache_hit = False
+
+        ctx.plan["modules"] = modules
         ctx.plan["dry_run"] = ctx.dry_run
         ctx.plan["ci"] = ctx.ci
-        assert ctx.artifacts is not None
         ctx.artifacts.write_json("plan.json", ctx.plan)
+
+        # Persist to plan cache after writing the artifact. Dry-run
+        # plans are deliberately not cached.
+        if (
+            ctx.source_fingerprint is not None
+            and ctx.plan_cache_hit is False
+            and ctx.plan_cache_key is not None
+            and not ctx.dry_run
+        ):
+            import contextlib
+
+            with contextlib.suppress(OSError):
+                self._cache_store.put(
+                    "plan",
+                    ctx.plan_cache_key,
+                    ctx.artifacts.path("plan.json").read_bytes(),
+                )
+
         for hook in ctx.registry.phase_hooks.get(LifecyclePhase.BUILD_EXECUTION_PLAN, []):
             hook(ctx)
 
     def run_modules(self, ctx: LifecycleContext) -> None:
-        # Local import: the analyzer depends on engine.orchestrator.ts_bridge,
-        # which is already loaded above. Importing here keeps the run-modules
-        # path importable in test setups that monkey-patch the analyzer.
+        """Execute every requested module — sequentially or on a thread pool.
+
+        v1.2.0: when ``ctx.module_concurrency > 1`` modules run on a
+        bounded :class:`concurrent.futures.ThreadPoolExecutor`. Safety
+        enforcement has already happened (step 6, before discovery), so
+        no module reaches the network ahead of the policy. Outcomes are
+        merged back into the context in the *input* order — deterministic
+        output regardless of which thread finishes first.
+        """
+
+        names = list(self._modules_to_run(ctx))
+        if not names:
+            return
+
+        concurrency = max(1, min(ctx.module_concurrency, len(names)))
+        if concurrency == 1:
+            for name in names:
+                outcome, typed = self._execute_one_module(ctx, name)
+                self._merge_module_result(ctx, outcome, typed)
+            return
+
+        # Parallel path. We snapshot the futures keyed by index so the
+        # input order survives whatever order they complete in.
+        from concurrent.futures import ThreadPoolExecutor
+
+        with ThreadPoolExecutor(
+            max_workers=concurrency, thread_name_prefix="sentinel-module"
+        ) as pool:
+            futures = [pool.submit(self._execute_one_module, ctx, name) for name in names]
+            for future in futures:
+                outcome, typed = future.result()
+                self._merge_module_result(ctx, outcome, typed)
+
+    def _execute_one_module(
+        self,
+        ctx: LifecycleContext,
+        name: str,
+    ) -> tuple[ModuleOutcome, ModuleResult | None]:
+        """Run a single module and return its (outcome, optional ModuleResult).
+
+        Pure for parallel-safety — no writes to ``ctx`` happen here.
+        The parent thread merges results in input order via
+        :meth:`_merge_module_result`.
+        """
+
         from engine.analyzer.categorize import categorize_module_error
         from engine.modules.base import ModulePrerequisiteError, SentinelModule
 
-        for name in self._modules_to_run(ctx):
-            factory = ctx.registry.modules.get(name)
-            if factory is None:
-                ctx.module_outcomes.append(
-                    ModuleOutcome(name=name, status="skipped", metadata={"reason": "no_factory"})
-                )
-                continue
-            try:
-                # Modules receive the config + safety decision; their
-                # real interface lands in. For we
-                # invoke and tolerate any callable. wraps the
-                # SentinelModule lifecycle: if the factory returns a
-                # SentinelModule instance we drive the seven the engineering guidelines
-                # steps and merge findings/metrics into the context.
-                result = factory(ctx.config, ctx.safety_decision)
-                if isinstance(result, SentinelModule):
-                    module_result = self._invoke_sentinel_module(ctx, name, result)
-                    ctx.typed_module_results = (*ctx.typed_module_results, module_result)
-                    ctx.typed_findings = (*ctx.typed_findings, *module_result.findings)
-                    ctx.module_outcomes.append(
-                        ModuleOutcome(
-                            name=name,
-                            status="succeeded",
-                            metadata={
-                                "module_result_id": module_result.id,
-                                "module_status": module_result.status,
-                                "findings": len(module_result.findings),
-                            },
-                        )
-                    )
-                else:
-                    ctx.module_outcomes.append(
-                        ModuleOutcome(
-                            name=name, status="succeeded", metadata={"result": str(result)}
-                        )
-                    )
-            except ModulePrerequisiteError as exc:
-                classification = categorize_module_error(
-                    module=name,
-                    exc_type=type(exc).__name__,
-                    exc_message=str(exc),
-                )
-                ctx.module_outcomes.append(
+        factory = ctx.registry.modules.get(name)
+        if factory is None:
+            return (
+                ModuleOutcome(name=name, status="skipped", metadata={"reason": "no_factory"}),
+                None,
+            )
+
+        try:
+            result = factory(ctx.config, ctx.safety_decision)
+            if isinstance(result, SentinelModule):
+                module_result = self._invoke_sentinel_module(ctx, name, result)
+                return (
                     ModuleOutcome(
                         name=name,
-                        status="errored",
-                        error_message=str(exc),
-                        error_type=type(exc).__name__,
-                        error_category=classification.category,
-                        error_confidence=classification.confidence,
-                        error_rationale=classification.rationale,
-                    )
+                        status="succeeded",
+                        metadata={
+                            "module_result_id": module_result.id,
+                            "module_status": module_result.status,
+                            "findings": len(module_result.findings),
+                        },
+                    ),
+                    module_result,
                 )
-            except TestExecutionError as exc:
-                classification = categorize_module_error(
-                    module=name,
-                    exc_type=type(exc).__name__,
-                    exc_message=exc.message,
-                )
-                ctx.module_outcomes.append(
-                    ModuleOutcome(
-                        name=name,
-                        status="errored",
-                        error_message=exc.message,
-                        error_type=type(exc).__name__,
-                        error_category=classification.category,
-                        error_confidence=classification.confidence,
-                        error_rationale=classification.rationale,
-                    )
-                )
-            except SentinelError as exc:
-                classification = categorize_module_error(
-                    module=name,
-                    exc_type=type(exc).__name__,
-                    exc_message=exc.message,
-                )
-                ctx.module_outcomes.append(
-                    ModuleOutcome(
-                        name=name,
-                        status="errored",
-                        error_message=exc.message,
-                        error_type=type(exc).__name__,
-                        error_category=classification.category,
-                        error_confidence=classification.confidence,
-                        error_rationale=classification.rationale,
-                    )
-                )
-            except Exception as exc:
-                classification = categorize_module_error(
-                    module=name,
-                    exc_type=type(exc).__name__,
-                    exc_message=str(exc),
-                )
-                ctx.module_outcomes.append(
-                    ModuleOutcome(
-                        name=name,
-                        status="errored",
-                        error_message=f"{type(exc).__name__}: {exc}",
-                        error_type=type(exc).__name__,
-                        error_category=classification.category,
-                        error_confidence=classification.confidence,
-                        error_rationale=classification.rationale,
-                    )
-                )
+            return (
+                ModuleOutcome(name=name, status="succeeded", metadata={"result": str(result)}),
+                None,
+            )
+        except (ModulePrerequisiteError, TestExecutionError, SentinelError) as exc:
+            message = (
+                exc.message if isinstance(exc, TestExecutionError | SentinelError) else str(exc)
+            )
+            classification = categorize_module_error(
+                module=name, exc_type=type(exc).__name__, exc_message=message
+            )
+            return (
+                ModuleOutcome(
+                    name=name,
+                    status="errored",
+                    error_message=message,
+                    error_type=type(exc).__name__,
+                    error_category=classification.category,
+                    error_confidence=classification.confidence,
+                    error_rationale=classification.rationale,
+                ),
+                None,
+            )
+        except Exception as exc:
+            classification = categorize_module_error(
+                module=name, exc_type=type(exc).__name__, exc_message=str(exc)
+            )
+            return (
+                ModuleOutcome(
+                    name=name,
+                    status="errored",
+                    error_message=f"{type(exc).__name__}: {exc}",
+                    error_type=type(exc).__name__,
+                    error_category=classification.category,
+                    error_confidence=classification.confidence,
+                    error_rationale=classification.rationale,
+                ),
+                None,
+            )
+
+    def _merge_module_result(
+        self,
+        ctx: LifecycleContext,
+        outcome: ModuleOutcome,
+        typed: ModuleResult | None,
+    ) -> None:
+        """Append a worker's (outcome, typed?) tuple back into the context.
+
+        Always called on the main thread, in the same input order the
+        modules were submitted in, so the resulting ``module_outcomes`` /
+        ``typed_module_results`` tuples are byte-identical to the
+        sequential path.
+        """
+
+        ctx.module_outcomes.append(outcome)
+        if typed is not None:
+            ctx.typed_module_results = (*ctx.typed_module_results, typed)
+            ctx.typed_findings = (*ctx.typed_findings, *typed.findings)
 
     def collect_evidence(self, ctx: LifecycleContext) -> None:
         # Stub: when modules emit evidence (+), aggregate it here.
@@ -445,7 +580,104 @@ class RunLifecycle:
         if ctx.finished_at is None:
             ctx.finished_at = datetime.now(UTC)
             self._finalize_status(ctx)
+        self._write_cache_report(ctx)
+        self._record_to_flake_db(ctx)
         update_latest_pointer(self._artifacts_root, ctx.artifacts.root)
+
+    def _record_to_flake_db(self, ctx: LifecycleContext) -> None:
+        """Append this run + its module/test outcomes to the flake DB.
+
+        Best-effort: any sqlite error is logged and swallowed — the
+        audit never fails because the bookkeeping failed.
+        """
+
+        if ctx.run_id is None:
+            return
+        try:
+            from engine.persistence.flake_db import FlakeDb, Outcome
+        except Exception:
+            return
+
+        db_path = self._project_root / ".sentinel" / "flake.db"
+        try:
+            with FlakeDb.open(db_path) as db:
+                db.record_run(
+                    ctx.run_id,
+                    started_at=ctx.started_at.isoformat(),
+                    status=ctx.status,
+                )
+                # Typed module results carry one duration + status per
+                # module; the unit of flake tracking is the module name
+                # (per-test granularity arrives once modules emit it).
+                outcomes: list[Outcome] = []
+                seen: set[tuple[str, str]] = set()
+                for typed in ctx.typed_module_results:
+                    key = (typed.name, "__module__")
+                    if key in seen:
+                        continue
+                    seen.add(key)
+                    outcome_status: str = "passed"
+                    if typed.status in {"failed", "errored", "incomplete"}:
+                        outcome_status = "failed"
+                    elif typed.status == "skipped":
+                        outcome_status = "skipped"
+                    outcomes.append(
+                        Outcome(
+                            run_id=ctx.run_id,
+                            module=typed.name,
+                            test_id="__module__",
+                            outcome=outcome_status,  # type: ignore[arg-type]
+                            duration_ms=int(typed.duration_ms or 0),
+                        )
+                    )
+                # Fallback for non-typed factories: derive from
+                # module_outcomes so the DB still has a row per module.
+                for outcome in ctx.module_outcomes:
+                    key = (outcome.name, "__module__")
+                    if key in seen:
+                        continue
+                    seen.add(key)
+                    outcomes.append(
+                        Outcome(
+                            run_id=ctx.run_id,
+                            module=outcome.name,
+                            test_id="__module__",
+                            outcome=("passed" if outcome.status == "succeeded" else "failed"),
+                        )
+                    )
+                db.record_outcomes(outcomes)
+        except Exception:
+            _LOGGER.warning(
+                "flake DB write failed; skipping",
+                extra={"run_id": ctx.run_id},
+            )
+
+    def _write_cache_report(self, ctx: LifecycleContext) -> None:
+        """Write ``cache.json`` so the next run's ``--since`` can read it."""
+
+        assert ctx.artifacts is not None
+        fp_info = (
+            FingerprintInfo(
+                hash=ctx.source_fingerprint.hash,
+                short=ctx.source_fingerprint.short(),
+                file_count=ctx.source_fingerprint.file_count,
+                total_bytes=ctx.source_fingerprint.total_bytes,
+            )
+            if ctx.source_fingerprint is not None
+            else None
+        )
+        report = CacheReport(
+            source_fingerprint=fp_info,
+            discovery=CachePhaseInfo(
+                cache_hit=ctx.discovery_cache_hit,
+                cache_key=ctx.discovery_cache_key,
+            ),
+            plan=CachePhaseInfo(
+                cache_hit=ctx.plan_cache_hit,
+                cache_key=ctx.plan_cache_key,
+            ),
+        )
+        write_cache_report(ctx.artifacts.path("cache.json"), report)
 
     def return_deterministic_exit_code(self, ctx: LifecycleContext) -> None:
         # Status was finalized in persist_artifacts; this step is the
@@ -552,6 +784,7 @@ class RunLifecycle:
         ctx.finished_at = datetime.now(UTC)
         assert ctx.artifacts is not None
         self._write_short_circuit_run(ctx)
+        self._write_cache_report(ctx)
         update_latest_pointer(self._artifacts_root, ctx.artifacts.root)
 
     def _write_short_circuit_run(

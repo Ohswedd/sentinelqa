@@ -27,6 +27,7 @@ from sentinel_cli.commands import (
     discover_cmd,
     doctor_cmd,
     fix_cmd,
+    flake_cmd,
     functional_cmd,
     generate_cmd,
     init_cmd,
@@ -338,6 +339,16 @@ def build_app() -> typer.Typer:
             "for known CVEs, checks lockfile freshness, scans "
             "postinstall hooks, scans a configured container image, "
             "and audits SPDX licenses."
+        ),
+    )
+    cli.add_typer(
+        flake_cmd.flake_app,
+        name="flake",
+        help=(
+            "Inspect the cross-run flake DB. `flake list` shows the "
+            "top-N flakiest (module, test_id) pairs; `flake stats` "
+            "prints total runs / outcomes recorded. The DB is "
+            "populated automatically by `sentinel audit`."
         ),
     )
 

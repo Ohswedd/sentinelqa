@@ -18,6 +18,8 @@ from pathlib import Path
 from typing import Annotated
 
 import typer
+from engine.cache import compute_fingerprint
+from engine.cache.run_info import read_cache_report
 from engine.config.loader import load_config
 from engine.errors.codes import (
     EXIT_CONFIG_ERROR,
@@ -25,6 +27,10 @@ from engine.errors.codes import (
     EXIT_SUCCESS,
     EXIT_TEST_EXECUTION_FAILED,
     EXIT_UNSAFE_TARGET,
+)
+from engine.orchestrator.changed_modules import (
+    GitNotAvailableError,
+    select_modules,
 )
 from engine.orchestrator.run_lifecycle import RunLifecycle
 from engine.policy.compliance import (
@@ -101,6 +107,50 @@ def run_audit(
             ),
         ),
     ] = None,
+    changed_only: Annotated[
+        bool,
+        typer.Option(
+            "--changed-only",
+            help=(
+                "Restrict the run to modules impacted by the git diff "
+                "against --diff-base. Exits 0 with no modules run when "
+                "no audit-relevant files changed (docs, README, etc.)."
+            ),
+        ),
+    ] = False,
+    diff_base: Annotated[
+        str,
+        typer.Option(
+            "--diff-base",
+            help=("Git ref to diff against when --changed-only is set " "(default: origin/main)."),
+        ),
+    ] = "origin/main",
+    since: Annotated[
+        str | None,
+        typer.Option(
+            "--since",
+            help=(
+                "Skip the run when the source fingerprint matches the "
+                "given run id's (use 'latest' to point at the most recent "
+                "run). Useful in CI: 'sentinel audit --since latest' is "
+                "a no-op when nothing source-relevant changed."
+            ),
+        ),
+    ] = None,
+    parallel_modules: Annotated[
+        int,
+        typer.Option(
+            "--parallel-modules",
+            min=1,
+            max=16,
+            help=(
+                "Number of modules to execute concurrently after the "
+                "safety policy enforces (default: 1 = sequential). "
+                "Modules run on a bounded thread pool; outcomes are "
+                "collected in input order."
+            ),
+        ),
+    ] = 1,
 ) -> None:
     """Execute the full audit lifecycle."""
 
@@ -139,6 +189,66 @@ def run_audit(
 
     artifacts_root = output if output is not None else Path(".sentinel") / "runs"
 
+    # --since: short-circuit the whole audit if the prior run's source
+    # fingerprint matches the current one. Read-only: we never mutate
+    # the prior run; we only compare its cache.json.
+    if since is not None:
+        target_dir = artifacts_root / "latest" if since == "latest" else artifacts_root / since
+        prior_cache = read_cache_report(target_dir / "cache.json")
+        if prior_cache is None or prior_cache.source_fingerprint is None:
+            sys.stderr.write(
+                f"--since: no readable cache.json under {target_dir!s}; running normally.\n"
+            )
+        else:
+            current_fp = compute_fingerprint(Path.cwd())
+            if current_fp.hash == prior_cache.source_fingerprint.hash:
+                if state.mode == "json":
+                    with json_stdout() as out:
+                        out.emit(
+                            {
+                                "command": "audit",
+                                "status": "unchanged",
+                                "since_run_id": prior_cache.source_fingerprint.short,
+                                "fingerprint": current_fp.hash,
+                            }
+                        )
+                elif state.mode != "quiet":
+                    sys.stdout.write(
+                        f"source unchanged since {target_dir.name} "
+                        f"(fingerprint {current_fp.short()}); no audit needed.\n"
+                    )
+                return
+
+    # --changed-only: restrict requested_modules to the diff-impacted set.
+    if changed_only:
+        try:
+            selection = select_modules(
+                diff_base,
+                cwd=Path.cwd(),
+                intersect_with=(frozenset(requested_modules) if requested_modules else None),
+            )
+        except GitNotAvailableError as exc:
+            sys.stderr.write(f"--changed-only: {exc}\n")
+            raise typer.Exit(code=EXIT_CONFIG_ERROR) from exc
+        if selection.empty():
+            if state.mode == "json":
+                with json_stdout() as out:
+                    out.emit(
+                        {
+                            "command": "audit",
+                            "status": "no-op",
+                            "diff_base": diff_base,
+                            "changed_files": [str(p) for p in selection.changed_files],
+                        }
+                    )
+            elif state.mode != "quiet":
+                sys.stdout.write(
+                    f"no audit-relevant changes since {diff_base}; "
+                    f"{len(selection.changed_files)} file(s) considered.\n"
+                )
+            return
+        requested_modules = sorted(selection.modules)
+
     if watch:
         if state.ci:
             sys.stderr.write(
@@ -154,6 +264,7 @@ def run_audit(
                 dry_run=state.dry_run,
                 ci=state.ci,
                 module_options=module_options,
+                module_concurrency=parallel_modules,
             )
             if state.mode != "quiet":
                 sys.stdout.write(f"[watch] run {run.id} → {run.status}\n")
@@ -177,6 +288,7 @@ def run_audit(
         dry_run=state.dry_run,
         ci=state.ci,
         module_options=module_options,
+        module_concurrency=parallel_modules,
     )
 
     exit_code = _status_to_exit_code(test_run.status)
