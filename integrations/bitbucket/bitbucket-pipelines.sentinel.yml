@@ -1,0 +1,80 @@
+# SentinelQA — drop-in Bitbucket Pipelines template (v1.5.0).
+#
+# Usage (in the project's `bitbucket-pipelines.yml`):
+#
+#   image: python:3.12
+#
+#   definitions:
+#     sentinelqa-step: &sentinelqa-step
+#       name: SentinelQA audit
+#       script:
+#         - apt-get update -y && apt-get install -y --no-install-recommends curl ca-certificates git
+#         - curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+#         - apt-get install -y --no-install-recommends nodejs
+#         - if [ -n "${SENTINELQA_VERSION}" ]; then python -m pip install "sentinelqa==${SENTINELQA_VERSION}"; fi
+#         - npx --yes playwright install --with-deps chromium
+#         - >
+#           if [ -z "${SENTINELQA_URL}" ]; then
+#             echo "SENTINELQA_URL must be set; refusing to audit an empty target."
+#             exit 4
+#           fi
+#         - >
+#           args="--config sentinel.config.yaml --ci --mode ${SENTINELQA_MODE:-standard} --url ${SENTINELQA_URL}";
+#           if [ -n "${SENTINELQA_DIFF:-}" ]; then args="${args} --diff ${SENTINELQA_DIFF}"; fi;
+#           if [ -n "${SENTINELQA_FAIL_UNDER:-}" ]; then args="${args} --fail-under ${SENTINELQA_FAIL_UNDER}"; fi;
+#           sentinel ci ${args}
+#       artifacts:
+#         - .sentinel/runs/**
+#
+#   pipelines:
+#     pull-requests:
+#       '**':
+#         - step: *sentinelqa-step
+#     branches:
+#       main:
+#         - step: *sentinelqa-step
+#
+# Secrets:
+#   - Repository → Repository settings → Repository variables:
+#     - SENTINELQA_VERSION       (optional; pin the installed wheel)
+#     - SENTINELQA_URL           (required; deployed preview URL)
+#     - SENTINELQA_BITBUCKET_TOKEN (optional; repo access token for PR-comment posting)
+#
+# This file is informational — Bitbucket Pipelines does NOT support
+# `include:` like GitLab. Copy the relevant block into your own
+# `bitbucket-pipelines.yml`. We ship the file under `integrations/bitbucket/`
+# so the GitHub mirror can index it and so docs link to a canonical source.
+
+definitions:
+  sentinelqa-step: &sentinelqa-step
+    name: SentinelQA audit
+    image: python:3.12
+    caches:
+      - pip
+      - node
+    script:
+      - apt-get update -y && apt-get install -y --no-install-recommends curl ca-certificates git
+      - curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+      - apt-get install -y --no-install-recommends nodejs
+      - if [ -n "${SENTINELQA_VERSION:-}" ]; then python -m pip install "sentinelqa==${SENTINELQA_VERSION}"; fi
+      - npx --yes playwright install --with-deps chromium
+      - >
+        if [ -z "${SENTINELQA_URL:-}" ]; then
+          echo "SENTINELQA_URL must be set; refusing to audit an empty target.";
+          exit 4;
+        fi
+      - >
+        args="--config sentinel.config.yaml --ci --mode ${SENTINELQA_MODE:-standard} --url ${SENTINELQA_URL}";
+        if [ -n "${SENTINELQA_DIFF:-}" ]; then args="${args} --diff ${SENTINELQA_DIFF}"; fi;
+        if [ -n "${SENTINELQA_FAIL_UNDER:-}" ]; then args="${args} --fail-under ${SENTINELQA_FAIL_UNDER}"; fi;
+        sentinel ci ${args}
+    artifacts:
+      - .sentinel/runs/**
+
+pipelines:
+  pull-requests:
+    '**':
+      - step: *sentinelqa-step
+  branches:
+    main:
+      - step: *sentinelqa-step

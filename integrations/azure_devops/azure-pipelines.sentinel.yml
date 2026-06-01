@@ -1,0 +1,104 @@
+# SentinelQA — drop-in Azure DevOps Pipelines template (v1.5.0).
+#
+# Usage (in the project's pipeline YAML):
+#
+#   resources:
+#     repositories:
+#       - repository: sentinelqa
+#         type: github
+#         name: Ohswedd/sentinelqa
+#         endpoint: github
+#
+#   trigger:
+#     branches:
+#       include: [main]
+#
+#   pr:
+#     branches:
+#       include: ['*']
+#
+#   stages:
+#     - template: integrations/azure_devops/azure-pipelines.sentinel.yml@sentinelqa
+#       parameters:
+#         url: '$(SENTINELQA_URL)'
+#         mode: 'standard'
+#         fail_under: 80
+#         version: ''   # optional pin
+#
+# Secrets:
+#   - Variable group `sentinelqa-secrets` with `SENTINELQA_URL` (mandatory).
+#   - Optional `SENTINELQA_AZURE_TOKEN` for PR-comment posting via REST.
+#
+parameters:
+  - name: url
+    type: string
+  - name: mode
+    type: string
+    default: 'standard'
+  - name: diff
+    type: string
+    default: ''
+  - name: fail_under
+    type: string
+    default: ''
+  - name: version
+    type: string
+    default: ''
+  - name: python_version
+    type: string
+    default: '3.12'
+  - name: node_version
+    type: string
+    default: '20'
+
+stages:
+  - stage: SentinelQA
+    displayName: 'SentinelQA audit'
+    jobs:
+      - job: audit
+        displayName: 'sentinel ci'
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - task: UsePythonVersion@0
+            inputs:
+              versionSpec: '${{ parameters.python_version }}'
+          - task: NodeTool@0
+            inputs:
+              versionSpec: '${{ parameters.node_version }}.x'
+          - script: |
+              set -euo pipefail
+              if [ -n "${{ parameters.version }}" ]; then
+                python -m pip install --upgrade pip
+                python -m pip install "sentinelqa==${{ parameters.version }}"
+              fi
+              npx --yes playwright install --with-deps chromium
+            displayName: 'Install SentinelQA + Playwright'
+          - script: |
+              set -euo pipefail
+              if [ -z "${{ parameters.url }}" ]; then
+                echo "url parameter must be set; refusing to audit an empty target."
+                exit 4
+              fi
+              args="--config sentinel.config.yaml --ci --mode ${{ parameters.mode }} --url ${{ parameters.url }}"
+              if [ -n "${{ parameters.diff }}" ]; then
+                args="${args} --diff ${{ parameters.diff }}"
+              fi
+              if [ -n "${{ parameters.fail_under }}" ]; then
+                args="${args} --fail-under ${{ parameters.fail_under }}"
+              fi
+              sentinel ci ${args}
+            displayName: 'Run SentinelQA'
+            env:
+              SENTINELQA_CI: '1'
+          - task: PublishBuildArtifacts@1
+            condition: always()
+            inputs:
+              pathtoPublish: '.sentinel/runs'
+              artifactName: 'sentinelqa-runs'
+          - task: PublishTestResults@2
+            condition: always()
+            inputs:
+              testResultsFormat: 'JUnit'
+              testResultsFiles: '.sentinel/runs/*/junit.xml'
+              failTaskOnFailedTests: false
