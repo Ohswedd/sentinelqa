@@ -56,7 +56,6 @@ jobs:
             --include-fragments
             --exclude-path node_modules
             --exclude-path .venv
-            --exclude-path the build plan
             --exclude-path tests/golden
             --exclude-path apps/docs/src/content/docs
             './**/*.md'
