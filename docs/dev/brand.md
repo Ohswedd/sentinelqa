@@ -29,15 +29,8 @@ served (favicons + the social-preview OG image) in
 | Apple touch icon      | `docs/assets/brand/apple-touch-icon-180.png`    | iOS / iPadOS home-screen.                                  |
 | Social preview        | `docs/assets/brand/social-preview-1280x640.png` | GitHub social card + OG image.                             |
 
-All PNGs are generated procedurally from
-[`scripts/release/gen_brand_pngs.py`](../../scripts/release/gen_brand_pngs.py).
-The script is deterministic (same Pillow version → byte-identical
-output) so the generated files are safe to commit. Re-run after
-changing the source design:
-
-```bash
-uv run python -m scripts.release.gen_brand_pngs
-```
+The PNGs are committed alongside the SVG sources. Replace the
+placeholders with the registered mark before publication.
 
 ## Naming
 
