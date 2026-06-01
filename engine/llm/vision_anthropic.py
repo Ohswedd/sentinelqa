@@ -91,7 +91,9 @@ def anthropic_vision_adapter(
                 detail=f"httpx not available: {exc}",
             )
 
-        def _transport(method: str, url: str, headers: dict, json: dict) -> tuple[int, dict]:
+        def _transport(
+            method: str, url: str, headers: dict[str, str], json: dict[str, Any]
+        ) -> tuple[int, dict[str, Any]]:
             with httpx.Client(timeout=timeout_seconds) as client:
                 resp = client.request(method, url, headers=headers, json=json)
                 return resp.status_code, resp.json()

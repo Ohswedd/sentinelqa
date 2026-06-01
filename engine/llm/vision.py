@@ -210,7 +210,7 @@ def analyze_failure_screenshot(
     )
 
 
-def _resolve_adapter(provider_name: VisionProviderName):
+def _resolve_adapter(provider_name: VisionProviderName) -> object | None:
     """Return the canonical adapter callable for a provider, or ``None``."""
 
     if provider_name == "null":

@@ -150,7 +150,7 @@ def get_default_provider(
     requested: str | None = None,
     env: dict[str, str] | None = None,
     probe: bool = True,
-):
+) -> object:
     """Resolve + instantiate the default provider in one call."""
 
     resolved = resolve_default_provider(requested=requested, env=env, probe=probe)

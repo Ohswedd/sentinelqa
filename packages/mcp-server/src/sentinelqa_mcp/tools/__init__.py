@@ -92,6 +92,8 @@ class SentinelToolset:
 
         from sentinelqa_mcp.tools.accessibility_audit import AccessibilityAuditTool
         from sentinelqa_mcp.tools.audit import AuditTool
+        from sentinelqa_mcp.tools.compare_runs import CompareRunsTool
+        from sentinelqa_mcp.tools.coverage_gaps import CoverageGapsTool
         from sentinelqa_mcp.tools.discover import DiscoverTool
         from sentinelqa_mcp.tools.explain_failure import ExplainFailureTool
         from sentinelqa_mcp.tools.generate_tests import GenerateTestsTool
@@ -99,6 +101,7 @@ class SentinelToolset:
         from sentinelqa_mcp.tools.ping import PingTool
         from sentinelqa_mcp.tools.plan import PlanTool
         from sentinelqa_mcp.tools.read_report import ReadReportTool
+        from sentinelqa_mcp.tools.replay_with_change import ReplayWithChangeTool
         from sentinelqa_mcp.tools.run_tests import RunTestsTool
         from sentinelqa_mcp.tools.security_audit import SecurityAuditTool
         from sentinelqa_mcp.tools.suggest_fix import SuggestFixTool
@@ -119,6 +122,9 @@ class SentinelToolset:
                 ExplainFailureTool(),
                 SuggestFixTool(),
                 VerifyFixTool(),
+                CompareRunsTool(),
+                CoverageGapsTool(),
+                ReplayWithChangeTool(),
             )
         )
 

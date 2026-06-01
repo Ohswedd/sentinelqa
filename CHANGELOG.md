@@ -10,6 +10,60 @@ and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html). See
 
 _No unreleased changes._
 
+## [1.4.0] - 2026-06-01
+
+LLM / Agent release. Eight additions that make the agent loop sharper
+without breaching the deterministic-first contract.
+
+### Added
+
+- **Local-LLM defaults** (`engine/llm/defaults.py`). 5-step
+  resolution chain: explicit caller → `SENTINELQA_LLM_PROVIDER` env
+  → cloud API-key env vars (Anthropic / OpenAI / Gemini / Mistral /
+  Groq / OpenRouter) → local Ollama TCP probe →
+  `null`. `SENTINELQA_DISABLE_LOCAL_LLM=1` forces opt-out.
+- **Vision LLM bridge** (`engine/llm/vision.py` +
+  `vision_anthropic.py`). `VisionRequest` → `VisionAnalysis` with a
+  locked system prompt asking for ONE sentence describing the
+  screenshot; PNG / JPEG / WebP / GIF magic-byte sniffing; sentence
+  sanitiser capping output at 280 characters. Anthropic Messages-API
+  adapter ships; OpenAI / Gemini return `available=False` until
+  their adapters land.
+- **`sentinel ask "..."`** (`apps/cli/.../ask_cmd.py`). Read-only NL
+  query over a completed run. Locked prompt template wraps the
+  question as untrusted data, ships the run context as a bounded
+  JSON block, falls back to a deterministic explainer when no LLM
+  provider is available. JSON / quiet / human output modes.
+- **MCP tool: `sentinel.compare_runs`** — diff two runs, return new
+  / resolved / persistent findings, severity regressions /
+  improvements, and the quality-score delta.
+- **MCP tool: `sentinel.coverage_gaps`** — walk discovery.json +
+  coverage.json and return uncovered routes / forms / API endpoints
+  ranked by risk (1–5).
+- **MCP tool: `sentinel.replay_with_change`** — apply a unified-diff
+  patch to a materialised copy of the working tree, run the lifecycle
+  on the patched tree, return the findings diff vs the source run.
+- **LLM-generated remediation patches**
+  (`engine/healer/patch_builder.py`). Builds a locked prompt asking
+  for a unified-diff and runs a strict safety check that rejects:
+  removed `expect(...)`, `assert ...`, or `page.waitFor*` calls;
+  `test.skip` / `test.only` additions; bug-swallowing try/except;
+  multi-file diffs; diffs over 60 lines; modifications to the test
+  file itself.
+- **`sentinel auth record` recorder primitives**
+  (`engine/auth/recorder.py`). Codegen command builder + transcript
+  parser + optional LLM post-condition suggester (selector /
+  url_pattern / text_contains / cookie_present) + profile-YAML
+  writer.
+
+### Status
+
+The `run.json` / `findings.json` / `score.json` / JUnit / SARIF wire
+schemas are unchanged from `1.0.0`. The Python SDK API snapshot is
+unchanged. The MCP wire protocol is unchanged; three new tools are
+additive (`sentinel.compare_runs`, `sentinel.coverage_gaps`,
+`sentinel.replay_with_change`).
+
 ## [1.3.0] - 2026-06-01
 
 Module-gaps release. Thirteen additions covering the most common
