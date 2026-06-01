@@ -14,13 +14,17 @@ import type {
   DomSnapshotEvent,
   EvidenceEvent,
   EvidenceKind,
+  NetworkFailureEvent,
   NetworkRequestEvent,
   NetworkResponseEvent,
+  PageErrorEvent,
   StepEndEvent,
   StepStartEvent,
 } from './protocol.js';
 import type { EventEmitter } from './protocol.js';
 import { redact, redactHeaders, redactUrl } from './redact.js';
+
+const FAILURE_BODY_PREVIEW_BYTES = 2048;
 
 let stepCounter = 0;
 
@@ -267,13 +271,29 @@ export function _resetRequestCounterForTests(): void {
  * in-process callers (and tests).
  */
 export function redactedNetwork(page: RoutablePage, ctx: StepContext): NetworkInterceptor {
-  const inflight = new Map<string, { startNs: bigint; requestId: string }>();
+  // v1.3.0: ``inflight`` now also retains the request-side method +
+  // redacted headers so the ``network.failure`` event has everything
+  // it needs without a second listener traversal.
+  const inflight = new Map<
+    string,
+    {
+      startNs: bigint;
+      requestId: string;
+      method: string;
+      requestHeaders: Record<string, string>;
+    }
+  >();
   const testId = ctx.testId ?? null;
 
   page.on('request', (req) => {
     const requestId = nextRequestId();
-    inflight.set(req.url(), { startNs: process.hrtime.bigint(), requestId });
-    const headers = redactHeaders(req.headers());
+    const requestHeaders = redactHeaders(req.headers());
+    inflight.set(req.url(), {
+      startNs: process.hrtime.bigint(),
+      requestId,
+      method: req.method(),
+      requestHeaders,
+    });
     const postBuffer = req.postDataBuffer();
     const length = postBuffer === null ? null : postBuffer.byteLength;
     ctx.emitter.emit<NetworkRequestEvent>({
@@ -283,7 +303,7 @@ export function redactedNetwork(page: RoutablePage, ctx: StepContext): NetworkIn
       url: redactUrl(req.url()),
       method: req.method(),
       content_length: length,
-      content_type: extractContentType(headers),
+      content_type: extractContentType(requestHeaders),
     });
   });
 
@@ -297,19 +317,58 @@ export function redactedNetwork(page: RoutablePage, ctx: StepContext): NetworkIn
     const contentLengthHeader = headers['content-length'] ?? headers['Content-Length'];
     const contentLength =
       contentLengthHeader === undefined ? null : safeParseInt(contentLengthHeader);
+    const status = res.status();
     ctx.emitter.emit<NetworkResponseEvent>({
       type: 'network.response',
       test_id: testId,
       request_id: entry?.requestId ?? 'unknown',
       url: redactUrl(url),
-      status: res.status(),
+      status,
       duration_ms: durationMs,
       content_length: contentLength,
       content_type: extractContentType(headers),
     });
+
+    // v1.3.0 — network forensics: when a 5xx happens during a test
+    // we capture the request + response (redacted) and a bounded body
+    // preview so the failure isn't opaque downstream. Body capture is
+    // best-effort — Playwright's ``body()`` rejects after redirects or
+    // when the response has been consumed; the catch keeps the
+    // listener silent on those paths.
+    if (status >= 500 && status < 600) {
+      void capturePreview(res).then((preview) => {
+        ctx.emitter.emit<NetworkFailureEvent>({
+          type: 'network.failure',
+          test_id: testId,
+          request_id: entry?.requestId ?? 'unknown',
+          url: redactUrl(url),
+          method: entry?.method ?? 'UNKNOWN',
+          status,
+          request_headers: entry?.requestHeaders ?? {},
+          response_headers: headers,
+          response_body_preview: preview,
+          duration_ms: durationMs,
+        });
+      });
+    }
   });
 
   return { inflight };
+}
+
+interface BodyCapableResponse {
+  body?(): Promise<Buffer>;
+}
+
+async function capturePreview(res: BodyCapableResponse): Promise<string> {
+  if (typeof res.body !== 'function') return '';
+  try {
+    const buffer = await res.body();
+    const slice = buffer.subarray(0, FAILURE_BODY_PREVIEW_BYTES).toString('utf8');
+    return redact(slice) as string;
+  } catch {
+    return '';
+  }
 }
 
 function extractContentType(headers: Record<string, string>): string | null {
@@ -376,6 +435,54 @@ export function redactedConsole(page: ConsoleEmitterPage, ctx: StepContext): voi
       source,
     });
   });
+}
+
+// ---------------------------------------------------------------------
+// v1.3.0 — Unhandled page errors
+// ---------------------------------------------------------------------
+
+/**
+ * Minimal Playwright surface for `pageerror`. Listeners receive a
+ * native ``Error`` whose ``stack`` is best-effort populated by the
+ * browser. Both ``message`` and ``stack`` pass through ``redact()``
+ * before emission so secrets that surface in stack traces stay local.
+ */
+export interface PageErrorEmitterPage {
+  on(event: 'pageerror', listener: (err: Error) => void): void;
+}
+
+/**
+ * Attach a ``pageerror`` listener that emits one ``page.error`` JSONL
+ * event for every unhandled browser exception during the run.
+ *
+ * The shape mirrors :class:`PageErrorEvent` (protocol.ts). The
+ * underlying Playwright ``pageerror`` fires for window-level
+ * exceptions; unhandled promise rejections that surface as
+ * ``unhandledrejection`` are emitted too on modern Playwright builds.
+ */
+export function redactedPageErrors(page: PageErrorEmitterPage, ctx: StepContext): void {
+  const testId = ctx.testId ?? null;
+  page.on('pageerror', (err) => {
+    const message = redact(err.message ?? '') as string;
+    const stack = redact(err.stack ?? '') as string;
+    const sourceUrl = extractSourceFromStack(stack);
+    ctx.emitter.emit<PageErrorEvent>({
+      type: 'page.error',
+      test_id: testId,
+      name: err.name ?? 'Error',
+      message,
+      stack,
+      source_url: sourceUrl,
+    });
+  });
+}
+
+const STACK_FILE_RE = /\(?((?:https?|file|chrome-extension|webpack):\/\/[^\s)]+)/;
+
+function extractSourceFromStack(stack: string): string {
+  const match = STACK_FILE_RE.exec(stack);
+  if (match === null) return '';
+  return redactUrl(match[1] ?? '');
 }
 
 // ---------------------------------------------------------------------

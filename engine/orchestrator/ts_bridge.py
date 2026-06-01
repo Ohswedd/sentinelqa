@@ -183,6 +183,41 @@ class ConsoleEvent(_EventBase):
     source: str
 
 
+class NetworkFailureEvent(_EventBase):
+    """v1.3.0 — emitted alongside ``network.response`` for any 5xx.
+
+    Carries the request + response headers (already redacted by the
+    TS side) plus a bounded body preview so the failing test's
+    evidence can include the original failure without re-running.
+    """
+
+    type: Literal["network.failure"]
+    test_id: str | None = None
+    request_id: str = Field(min_length=1)
+    url: str
+    method: str = Field(min_length=1, max_length=10)
+    status: int = Field(ge=500, le=599)
+    request_headers: dict[str, str] = Field(default_factory=dict)
+    response_headers: dict[str, str] = Field(default_factory=dict)
+    response_body_preview: str = Field(default="", max_length=8192)
+    duration_ms: int = Field(ge=0)
+
+
+class PageErrorEvent(_EventBase):
+    """v1.3.0 — unhandled browser exceptions caught via ``pageerror``.
+
+    Both ``message`` and ``stack`` arrive already redacted from the TS
+    side; do not redact again.
+    """
+
+    type: Literal["page.error"]
+    test_id: str | None = None
+    name: str = Field(min_length=1, max_length=128)
+    message: str = Field(max_length=8000)
+    stack: str = Field(default="", max_length=16000)
+    source_url: str = Field(default="", max_length=4096)
+
+
 class DomSnapshotEvent(_EventBase):
     type: Literal["dom.snapshot"]
     test_id: str | None = None
@@ -256,7 +291,9 @@ TsEvent = Annotated[
     | EvidenceEvent
     | NetworkRequestEvent
     | NetworkResponseEvent
+    | NetworkFailureEvent
     | ConsoleEvent
+    | PageErrorEvent
     | DomSnapshotEvent
     | ModuleEventEvent
     | LogEvent
@@ -282,7 +319,9 @@ _EVENT_REGISTRY: dict[str, type[_EventBase]] = {
     "evidence": EvidenceEvent,
     "network.request": NetworkRequestEvent,
     "network.response": NetworkResponseEvent,
+    "network.failure": NetworkFailureEvent,
     "console": ConsoleEvent,
+    "page.error": PageErrorEvent,
     "dom.snapshot": DomSnapshotEvent,
     "module.event": ModuleEventEvent,
     "log": LogEvent,
