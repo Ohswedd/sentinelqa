@@ -222,7 +222,9 @@ describe('redactedNetwork — 5xx forensics (v1.3.0)', () => {
     expect(types).toContain('network.failure');
     const failure = ctx.sink
       .events()
-      .find((e): e is Extract<TsEvent, { type: 'network.failure' }> => e.type === 'network.failure');
+      .find(
+        (e): e is Extract<TsEvent, { type: 'network.failure' }> => e.type === 'network.failure',
+      );
     expect(failure?.status).toBe(500);
     expect(failure?.method).toBe('POST');
     expect(failure?.request_headers).toBeDefined();
@@ -293,7 +295,9 @@ describe('redactedNetwork — 5xx forensics (v1.3.0)', () => {
 
     const failure = ctx.sink
       .events()
-      .find((e): e is Extract<TsEvent, { type: 'network.failure' }> => e.type === 'network.failure');
+      .find(
+        (e): e is Extract<TsEvent, { type: 'network.failure' }> => e.type === 'network.failure',
+      );
     expect(failure).toBeDefined();
     expect(failure?.response_body_preview).toBe('');
   });

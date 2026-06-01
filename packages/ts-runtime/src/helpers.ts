@@ -243,6 +243,11 @@ export interface NetworkResponse {
   status(): number;
   headers(): Record<string, string>;
   request(): NetworkRequest;
+  // v1.3.0: optional best-effort body accessor used by the 5xx
+  // forensics capture. Playwright's real ``Response.body()`` returns
+  // a Buffer; we type it loosely so the helper degrades gracefully
+  // when the runtime doesn't expose it.
+  body?(): Promise<Buffer>;
 }
 
 export interface NetworkInterceptor {
@@ -356,11 +361,7 @@ export function redactedNetwork(page: RoutablePage, ctx: StepContext): NetworkIn
   return { inflight };
 }
 
-interface BodyCapableResponse {
-  body?(): Promise<Buffer>;
-}
-
-async function capturePreview(res: BodyCapableResponse): Promise<string> {
+async function capturePreview(res: NetworkResponse): Promise<string> {
   if (typeof res.body !== 'function') return '';
   try {
     const buffer = await res.body();

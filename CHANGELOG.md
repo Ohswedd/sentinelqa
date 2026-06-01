@@ -10,6 +10,111 @@ and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html). See
 
 _No unreleased changes._
 
+## [1.3.0] - 2026-06-01
+
+Module-gaps release. Thirteen additions covering the most common
+holes a security-conscious team notices on day one: browser-side
+forensics, deeper security/compliance scanning, realtime-transport
+auditing, PII detection, image optimisation, i18n/RTL, and 2FA /
+WebAuthn flow recording.
+
+### Added
+
+Browser runtime captures:
+
+- **JavaScript / TypeScript error capture.** Every unhandled
+  browser exception now produces a structured `page.error` event
+  (TS runtime + Python parser + `Finding` converter). Includes
+  error name, redacted message, redacted stack, and a best-effort
+  source URL extracted from the stack.
+- **5xx network forensics.** Every response in the 500–599 range
+  during a test now produces a `network.failure` event with the
+  redacted request + response headers and a bounded (2 KiB) body
+  preview. Converted into a `network-5xx` `Finding` (CWE-755)
+  with severity bumped when the corresponding test failed.
+
+Security module:
+
+- **Open-redirect deeper scan.** Enumerator finds every URL
+  parameter from a curated 28-name list (`redirect`, `next`,
+  `return_to`, ...); bypass-payload generator emits 13 canonical
+  vectors (protocol-relative, `@`-injection, CRLF, IPv4 decimal,
+  IPv6 loopback, double-URL-encoded, dot-bypass, ...); response
+  evaluator strips userinfo before the allowlist check.
+- **CSP / SRI / HSTS scoring.** Each header now returns a 0-100
+  strictness score with reasons. CSP penalises `'unsafe-inline'`,
+  wildcards, missing `default-src`/`frame-ancestors`/`object-src`.
+  SRI scores the fraction of off-host scripts + stylesheets covered
+  by an `integrity` attribute. HSTS applies the
+  [hstspreload.org](https://hstspreload.org/) rules.
+- **HTTP/2 + HTTP/3 negotiation probe.** Records ALPN, HTTP/2,
+  HTTP/3, and `Alt-Svc` for the target; emits per-gap findings
+  and a compact `A+`-style grade.
+- **PII detection in response bodies.** Pattern matcher for SSN
+  (area-sanity-checked), credit card (Luhn-verified), email,
+  US phone, IPv4 (skips loopback), IBAN, ZIP+4. Every match is
+  masked at output (`***-**-1234`) so PII never leaves the module.
+- **Service-worker audit.** Detects registration + scope from the
+  HTML; flags eager `Notification.requestPermission` calls (the
+  most-disliked PWA anti-pattern) and `CacheFirst` strategies on
+  sensitive endpoints (`/api/me`, `/auth/...`).
+
+API module:
+
+- **WebSocket + Server-Sent Events coverage.** Detection of
+  `wss://` URLs and `new EventSource(...)` calls in HTML + JS
+  bundles; evaluators for cross-origin handshakes (CSWSH),
+  unauthenticated upgrades, unbounded message size; SSE checks
+  for retry-storm intervals and `Last-Event-ID` handling.
+- **GraphQL subscriptions.** Schema parser extracts every field on
+  the `Subscription` type; auth evaluator flags missing
+  `@auth`/`@requireAuth` directives; session evaluator catches
+  anonymous handshakes, high message rates, uncapped payloads,
+  and missing connection rate-limits.
+
+Performance module:
+
+- **Image / favicon optimisation.** HTML scanner flags heavy
+  JPEG/PNG without WebP/AVIF fallback inside a `<picture>` ladder,
+  missing `loading="lazy"` on below-fold images, and missing
+  `width`/`height` attributes (CLS contributors). Optional alt-text
+  audit overlaps with a11y.
+
+Compliance module:
+
+- **Cookie consent → behaviour parity.** Classifies cookies as
+  `strictly_necessary` / `analytics` / `marketing` / `tracking` /
+  `unknown` via a curated allowlist + 20+ regex patterns (Google
+  Analytics, Facebook Pixel, Microsoft UET, Hotjar, ...). Diff
+  between the initial cookie jar and the post-reject jar; any
+  non-essential survivor becomes a `gdpr:Art.6` finding.
+
+Functional module:
+
+- **i18n / RTL audit.** Detects untranslated English UI strings on
+  non-English renders (Sign in / Submit / Cancel / Continue / ...);
+  enforces `<html dir="rtl">` for Arabic / Hebrew / Farsi / Urdu;
+  flags `<html lang>` mismatches after a locale switch.
+
+Auth subsystem:
+
+- **2FA / WebAuthn flow recording.** Detects TOTP / WebAuthn /
+  SMS / email-link MFA prompts from the login HTML. Computes
+  RFC 6238 TOTP codes from a base32 secret. Emits a declarative
+  `WebAuthnVirtualAuthenticator` spec the runner converts into a
+  Chrome DevTools virtual authenticator (no physical key needed
+  in CI). Small DSL (`build_totp_script`, `build_webauthn_script`)
+  feeds the runner.
+
+### Status
+
+The `run.json` / `findings.json` / `score.json` / JUnit / SARIF
+wire schemas are unchanged from `1.0.0`. Two new JSONL event types
+(`page.error`, `network.failure`) flow over the TS↔Python bridge;
+they're additive (`schema_version` on existing events is unchanged).
+The Python SDK API surface is unchanged. The MCP wire protocol is
+unchanged.
+
 ## [1.2.0] - 2026-06-01
 
 Test-economics release. Six additions that make audits cheap to run
