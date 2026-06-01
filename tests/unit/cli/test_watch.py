@@ -143,3 +143,55 @@ def test_default_exclude_covers_common_generated_trees() -> None:
 def test_iter_files_handles_empty_tree(tmp_path: Path) -> None:
     opts = WatchOptions(root=tmp_path)
     assert list(iter_files(opts)) == []
+
+
+def test_format_change_summary_truncates_long_lists(tmp_path: Path) -> None:
+    """When more than 3 files change the summary appends '(+N more)'."""
+
+    from sentinel_cli.watch import _format_change_summary
+
+    paths = tuple(tmp_path / f"file{i}.py" for i in range(7))
+    msg = _format_change_summary(paths, tmp_path)
+    assert "7 file(s) changed" in msg
+    assert "(+4 more)" in msg
+
+
+def test_emit_to_stderr_writes_to_stderr(capsys) -> None:
+    """The default printer used by the audit command writes to stderr."""
+
+    from sentinel_cli.watch import emit_to_stderr
+
+    emit_to_stderr("hello-from-test")
+    captured = capsys.readouterr()
+    assert captured.out == ""
+    assert "hello-from-test" in captured.err
+
+
+def test_watch_loop_logs_change_summary(tmp_path: Path) -> None:
+    """When a file changes the log callback receives a '[watch] N file(s)' line."""
+
+    target = _write(tmp_path / "main.py")
+    runs: list[int] = []
+    messages: list[str] = []
+    fake_clock = [0.0]
+
+    def _audit() -> None:
+        runs.append(1)
+        if len(runs) == 1:
+            target.write_text("changed\n", encoding="utf-8")
+            import os as _os
+
+            _os.utime(target, (10.0, 10.0))
+
+    def _sleep(_s: float) -> None:
+        fake_clock[0] += 1.0
+
+    watch_loop(
+        WatchOptions(root=tmp_path, debounce_ms=10, poll_ms=10),
+        _audit,
+        iterations=3,
+        sleep=_sleep,
+        now=lambda: fake_clock[0],
+        out=messages.append,
+    )
+    assert any("file(s) changed" in m for m in messages)

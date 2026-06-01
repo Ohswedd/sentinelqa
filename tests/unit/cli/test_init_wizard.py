@@ -149,3 +149,82 @@ def test_is_interactive_returns_true_for_tty_stream() -> None:
             return True
 
     assert init_wizard.is_interactive(_TtyLike()) is True
+
+
+def test_is_interactive_returns_false_when_isatty_raises() -> None:
+    """OS-level failures from ``isatty`` must be treated as non-interactive."""
+
+    class _Broken:
+        def isatty(self) -> bool:
+            raise OSError("closed handle")
+
+    assert init_wizard.is_interactive(_Broken()) is False
+
+
+def test_header_panel_when_no_hints_found() -> None:
+    """The header panel handles a fresh project with no detection hits."""
+
+    from rich.console import Console
+
+    detection = init_detect.Detection(
+        framework="unknown",
+        package_manager="unknown",
+        has_playwright=False,
+        project_name=None,
+        base_url=None,
+    )
+    panel = init_wizard._header_panel(detection)
+    console = Console(record=True, width=80)
+    console.print(panel)
+    rendered = console.export_text()
+    assert "no project hints" in rendered
+
+
+def test_ask_text_uses_prompt(monkeypatch) -> None:
+    """The default ``_ask_text`` helper routes through Rich's Prompt.ask."""
+
+    from rich.console import Console
+    from rich.prompt import Prompt
+
+    monkeypatch.setattr(Prompt, "ask", lambda *_a, default, console: f"  {default}-stripped  ")
+    out = init_wizard._ask_text(Console(), "Name", default="x")
+    assert out == "x-stripped"
+
+
+def test_run_wizard_falls_back_to_default_prompters(monkeypatch) -> None:
+    """When ``prompt_text``/``prompt_bool`` are omitted, the defaults are used."""
+
+    from rich.prompt import Confirm, Prompt
+
+    monkeypatch.setattr(Prompt, "ask", lambda *_a, default, console: default)
+    monkeypatch.setattr(Confirm, "ask", lambda *_a, default, console: default)
+    detection = init_detect.Detection(
+        framework="nextjs",
+        package_manager="pnpm",
+        has_playwright=True,
+        project_name="auto",
+        base_url=None,
+    )
+    answers = init_wizard.run_wizard(detection=detection)
+    assert answers.project_name == "auto"
+    assert answers.auth_strategy == "none"
+
+
+def test_ask_bool_uses_confirm(monkeypatch) -> None:
+    """The default ``_ask_bool`` helper routes through Rich's Confirm.ask."""
+
+    from rich.console import Console
+    from rich.prompt import Confirm
+
+    captured: dict[str, object] = {}
+
+    def fake_ask(label: object, *, default: bool, console: object) -> bool:
+        captured["label"] = label
+        captured["default"] = default
+        return True
+
+    monkeypatch.setattr(Confirm, "ask", fake_ask)
+    out = init_wizard._ask_bool(Console(), "Enable foo?", default=False)
+    assert out is True
+    assert "Enable foo?" in str(captured["label"])
+    assert captured["default"] is False

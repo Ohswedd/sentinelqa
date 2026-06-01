@@ -10,6 +10,74 @@ and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html). See
 
 _No unreleased changes._
 
+## [1.1.0] - 2026-06-02
+
+Developer-experience release. Seven additions that close the gap between
+"installed" and "first useful audit", without changing any persisted
+schema, exit code, or scoring math.
+
+### Added
+
+- **Interactive `sentinel init` wizard.** Five Rich-styled prompts —
+  project name, base URL, auth strategy, eight module booleans, confirm
+  — each defaulted from project detection (package.json /
+  pyproject.toml / lockfiles). Five Enter presses produce a working
+  `sentinel.config.yaml`. `--non-interactive`, `--json`, and `--quiet`
+  bypass the wizard and use the detection-only renderer that shipped in
+  `1.0.0`, so CI invocations are unchanged.
+- **`sentinel audit --watch`.** A stdlib-only file-watch loop re-runs
+  the audit on file changes during local development. Refuses to start
+  in CI mode. New `--watch-root <path>` lets the user point the
+  watcher at a sub-directory.
+- **`sentinel migrate`.** Adapts an existing Cypress or Playwright
+  test suite into SentinelQA-tagged adapter specs under
+  `tests/sentinel/migrated/`. Conservative by design — never rewrites
+  assertions or selectors. Honors `--dry-run`, `--force`,
+  `--framework`, `--path`. Writes `.sentinel/migrate/manifest.json` so
+  re-runs are idempotent.
+- **VS Code extension.** New TypeScript workspace at
+  `apps/vscode-extension/` (`Ohswedd.sentinelqa-vscode`). Findings
+  tree view grouped by severity, jump-to-source on `code_ref`, inline
+  "Apply fix" command wrapping `sentinel fix --apply`,
+  refresh / run-audit toolbar buttons. Two settings:
+  `sentinelqa.projectRoot` and `sentinelqa.cliCommand`.
+- **Browser extension.** New Manifest V3 workspace at
+  `apps/browser-extension/` ("SentinelQA — Audit this page"). Posts
+  the active tab's URL to a local `sentinel mcp --http` server on
+  loopback (`127.0.0.1` / `localhost` / `::1` only); a hardened
+  validator (`src/loopback.ts` + 8 vitest cases) refuses public
+  hosts, `localhost.attacker.example`-style impersonation, non-http
+  schemes, and out-of-range ports.
+- **Shell completion advertised in `--help`.** `sentinel` now ships
+  with `add_completion=True`, exposing the standard Typer
+  `--install-completion` / `--show-completion` surface (bash, zsh,
+  fish, powershell). New doc page `docs/user/shell-completion.md`
+  walks through install per shell.
+- **Onboarding doctor diagnostics with OS-aware install hints.**
+  Every `sentinel doctor` dependency failure now appends a
+  copy-pasteable install command tailored to the user's OS
+  (Homebrew on macOS, NodeSource on Debian/Ubuntu, dnf on Fedora,
+  pacman on Arch, winget on Windows). New
+  `apps/cli/src/sentinel_cli/platform_install_hints.py` carries the
+  catalogue for Python / Node / Playwright / Docker / httpx across
+  six platforms.
+
+### Changed
+
+- `sentinel --help` lists the new `migrate` command, advertises
+  `--install-completion`, and carries a one-line completion hint in
+  the root help string.
+- `sentinel doctor` suggestions are longer (now include the install
+  hint suffix). JSON-mode output is unchanged structurally.
+
+### Status
+
+All schemas (`run.json`, `findings.json`, `score.json`, JUnit, SARIF,
+agent envelope) are unchanged from `1.0.0`. Exit codes are unchanged.
+The Python SDK public surface is unchanged. The MCP wire protocol is
+unchanged. This release is a strict superset of `1.0.0` for callers
+that don't opt into the new commands.
+
 ## [1.0.0] - 2026-06-01
 
 First public release.

@@ -2,6 +2,7 @@
 // Copyright (c) 2026 SentinelQA contributors.
 
 import { describe, it, expect } from 'vitest';
+
 import { validateLoopbackTarget } from './loopback';
 
 describe('validateLoopbackTarget', () => {

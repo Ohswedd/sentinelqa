@@ -6,12 +6,12 @@ known values (module names, severities, run IDs).
 
 ## Install
 
-| Shell        | Command                                                 |
-| ------------ | ------------------------------------------------------- |
-| `bash`       | `sentinel --install-completion bash`                    |
-| `zsh`        | `sentinel --install-completion zsh`                     |
-| `fish`       | `sentinel --install-completion fish`                    |
-| `powershell` | `sentinel --install-completion powershell`              |
+| Shell        | Command                                    |
+| ------------ | ------------------------------------------ |
+| `bash`       | `sentinel --install-completion bash`       |
+| `zsh`        | `sentinel --install-completion zsh`        |
+| `fish`       | `sentinel --install-completion fish`       |
+| `powershell` | `sentinel --install-completion powershell` |
 
 Re-open your terminal — or source the appropriate rc file — and start
 typing:

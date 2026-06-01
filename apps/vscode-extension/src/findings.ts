@@ -4,8 +4,8 @@
 // Pure parser for SentinelQA findings.json files. Lives separately from
 // extension.ts so it can be tested headless (no `vscode` dependency).
 
-import { readFileSync, existsSync, readdirSync, statSync } from 'fs';
-import { join } from 'path';
+import { readFileSync, existsSync, readdirSync, statSync } from 'node:fs';
+import { join } from 'node:path';
 
 export type Severity = 'critical' | 'high' | 'medium' | 'low' | 'info';
 
@@ -62,22 +62,20 @@ export function loadFindings(runDir: string): FindingsDocument | null {
   }
   const raw = readFileSync(findingsPath, 'utf-8');
   const parsed = JSON.parse(raw) as Record<string, unknown>;
-  const runId = typeof parsed['run_id'] === 'string' ? (parsed['run_id'] as string) : 'unknown';
-  const findingsArray = Array.isArray(parsed['findings']) ? parsed['findings'] : [];
+  const runId = typeof parsed.run_id === 'string' ? parsed.run_id : 'unknown';
+  const findingsArray = Array.isArray(parsed.findings) ? parsed.findings : [];
   const findings: Finding[] = [];
   for (const entry of findingsArray) {
     if (typeof entry !== 'object' || entry === null) continue;
     const f = entry as Record<string, unknown>;
-    const id = typeof f['id'] === 'string' ? (f['id'] as string) : '';
-    const title = typeof f['title'] === 'string' ? (f['title'] as string) : '(untitled)';
-    const moduleName = typeof f['module'] === 'string' ? (f['module'] as string) : 'unknown';
-    const severity = normaliseSeverity(f['severity']);
-    const description =
-      typeof f['description'] === 'string' ? (f['description'] as string) : '';
-    const recommendation =
-      typeof f['recommendation'] === 'string' ? (f['recommendation'] as string) : undefined;
-    const codeRef = extractCodeRef(f['code_ref']);
-    const fixable = Boolean(f['repair_proposal']);
+    const id = typeof f.id === 'string' ? f.id : '';
+    const title = typeof f.title === 'string' ? f.title : '(untitled)';
+    const moduleName = typeof f.module === 'string' ? f.module : 'unknown';
+    const severity = normaliseSeverity(f.severity);
+    const description = typeof f.description === 'string' ? f.description : '';
+    const recommendation = typeof f.recommendation === 'string' ? f.recommendation : undefined;
+    const codeRef = extractCodeRef(f.code_ref);
+    const fixable = Boolean(f.repair_proposal);
     if (!id) continue;
     findings.push({
       id,
@@ -121,9 +119,9 @@ function normaliseSeverity(input: unknown): Severity {
 function extractCodeRef(input: unknown): CodeRef | undefined {
   if (typeof input !== 'object' || input === null) return undefined;
   const ref = input as Record<string, unknown>;
-  const path = typeof ref['path'] === 'string' ? (ref['path'] as string) : null;
+  const path = typeof ref.path === 'string' ? ref.path : null;
   if (!path) return undefined;
-  const lineRaw = ref['line'];
+  const lineRaw = ref.line;
   const line =
     typeof lineRaw === 'number' && Number.isFinite(lineRaw) ? Math.floor(lineRaw) : undefined;
   return { path, line };

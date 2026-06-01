@@ -6,8 +6,18 @@
   "license": "Apache-2.0",
   "publisher": "Ohswedd",
   "description": "VS Code integration for SentinelQA — browse findings, jump to source, and apply fix proposals from the latest audit run.",
-  "categories": ["Testing", "Linters", "Other"],
-  "keywords": ["sentinelqa", "playwright", "qa", "testing", "release-confidence"],
+  "categories": [
+    "Testing",
+    "Linters",
+    "Other"
+  ],
+  "keywords": [
+    "sentinelqa",
+    "playwright",
+    "qa",
+    "testing",
+    "release-confidence"
+  ],
   "homepage": "https://github.com/Ohswedd/sentinelqa#readme",
   "repository": {
     "type": "git",
@@ -23,7 +33,10 @@
     "node": ">=20"
   },
   "main": "./dist/extension.js",
-  "activationEvents": ["onView:sentinelqa.findings", "onCommand:sentinelqa.refreshFindings"],
+  "activationEvents": [
+    "onView:sentinelqa.findings",
+    "onCommand:sentinelqa.refreshFindings"
+  ],
   "contributes": {
     "configuration": {
       "title": "SentinelQA",

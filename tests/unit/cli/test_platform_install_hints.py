@@ -4,6 +4,8 @@
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import pytest
 
 from sentinel_cli.platform_install_hints import (
@@ -88,3 +90,67 @@ def test_format_hint_falls_back_to_unknown_when_plat_missing(monkeypatch) -> Non
     assert s != ""
     # The 'unknown' bucket for python uses the uv installer.
     assert "uv" in s
+
+
+def test_detect_platform_reports_macos_on_darwin(monkeypatch) -> None:
+    import platform as _platform
+
+    monkeypatch.setattr(_platform, "system", lambda: "Darwin")
+    assert detect_platform() == "macos"
+
+
+def test_detect_platform_reports_windows(monkeypatch) -> None:
+    import platform as _platform
+
+    monkeypatch.setattr(_platform, "system", lambda: "Windows")
+    assert detect_platform() == "windows"
+
+
+def test_detect_platform_reports_unknown_for_obscure_kernel(monkeypatch) -> None:
+    import platform as _platform
+
+    monkeypatch.setattr(_platform, "system", lambda: "Haiku")
+    assert detect_platform() == "unknown"
+
+
+def _patch_os_release(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, body: str | None) -> None:
+    import platform as _platform
+
+    from sentinel_cli import platform_install_hints as mod
+
+    monkeypatch.setattr(_platform, "system", lambda: "Linux")
+    osr: Path = tmp_path / "os-release"
+    if body is not None:
+        osr.write_text(body, encoding="utf-8")
+
+    def _proxy(arg: str) -> Path:
+        if arg == "/etc/os-release":
+            return osr if body is not None else tmp_path / "definitely-not-here"
+        return Path(arg)
+
+    monkeypatch.setattr(mod, "Path", _proxy)
+
+
+def test_detect_linux_family_resolves_debian(monkeypatch, tmp_path) -> None:
+    _patch_os_release(monkeypatch, tmp_path, 'ID=ubuntu\nID_LIKE="debian"\n')
+    assert detect_platform() == "debian"
+
+
+def test_detect_linux_family_resolves_fedora(monkeypatch, tmp_path) -> None:
+    _patch_os_release(monkeypatch, tmp_path, 'ID=fedora\nVERSION_ID="41"\n')
+    assert detect_platform() == "fedora"
+
+
+def test_detect_linux_family_resolves_arch(monkeypatch, tmp_path) -> None:
+    _patch_os_release(monkeypatch, tmp_path, "ID=arch\n")
+    assert detect_platform() == "arch"
+
+
+def test_detect_linux_family_returns_unknown_when_missing(monkeypatch, tmp_path) -> None:
+    _patch_os_release(monkeypatch, tmp_path, body=None)
+    assert detect_platform() == "unknown"
+
+
+def test_detect_linux_family_returns_unknown_for_unknown_id(monkeypatch, tmp_path) -> None:
+    _patch_os_release(monkeypatch, tmp_path, "ID=plan9\n")
+    assert detect_platform() == "unknown"

@@ -87,3 +87,71 @@ def test_migrate_help_lists_migrate_command() -> None:
     result = runner.invoke(app, ["--help"], terminal_width=120)
     assert result.exit_code == 0
     assert "migrate" in result.output
+
+
+def test_migrate_invalid_framework_exits_with_error(tmp_path: Path) -> None:
+    runner = CliRunner()
+    app = build_app()
+    result = runner.invoke(app, ["migrate", "--path", str(tmp_path), "--framework", "selenium"])
+    assert result.exit_code == 2
+    assert "must be 'cypress' or 'playwright'" in result.output
+
+
+def test_migrate_no_sources_json_mode(tmp_path: Path) -> None:
+    runner = CliRunner()
+    app = build_app()
+    result = runner.invoke(app, ["--json", "migrate", "--path", str(tmp_path)])
+    assert result.exit_code == 0, result.output
+    payload = json.loads(result.stdout)
+    assert payload["command"] == "migrate"
+    assert payload["results"] == []
+
+
+def test_migrate_quiet_mode_writes_files_without_stdout(tmp_path: Path) -> None:
+    _write(tmp_path / "tests" / "smoke.spec.ts")
+    runner = CliRunner()
+    app = build_app()
+    result = runner.invoke(app, ["--quiet", "migrate", "--path", str(tmp_path)])
+    assert result.exit_code == 0, result.output
+    assert result.stdout.strip() == ""
+    assert (tmp_path / "tests" / "sentinel" / "migrated").is_dir()
+
+
+def test_migrate_re_run_marks_unchanged(tmp_path: Path) -> None:
+    """Running twice produces 'unchanged' the second time."""
+
+    _write(tmp_path / "tests" / "smoke.spec.ts")
+    runner = CliRunner()
+    app = build_app()
+    runner.invoke(app, ["migrate", "--path", str(tmp_path)])
+    second = runner.invoke(app, ["--json", "migrate", "--path", str(tmp_path)])
+    assert second.exit_code == 0, second.output
+    payload = json.loads(second.stdout)
+    statuses = {r["status"] for r in payload["results"]}
+    assert statuses == {"unchanged"}
+
+
+def test_migrate_skipped_when_existing_drifted_without_force(tmp_path: Path) -> None:
+    _write(tmp_path / "tests" / "smoke.spec.ts")
+    target = tmp_path / "tests" / "sentinel" / "migrated" / "tests-smoke-spec.spec.ts"
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text("// stale, unrelated content\n", encoding="utf-8")
+    runner = CliRunner()
+    app = build_app()
+    result = runner.invoke(app, ["--json", "migrate", "--path", str(tmp_path)])
+    assert result.exit_code == 0, result.output
+    payload = json.loads(result.stdout)
+    statuses = {r["status"] for r in payload["results"]}
+    assert statuses == {"skipped"}
+
+
+def test_migrate_force_overwrites_existing(tmp_path: Path) -> None:
+    _write(tmp_path / "tests" / "smoke.spec.ts")
+    target = tmp_path / "tests" / "sentinel" / "migrated" / "tests-smoke-spec.spec.ts"
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text("// stale\n", encoding="utf-8")
+    runner = CliRunner()
+    app = build_app()
+    result = runner.invoke(app, ["--json", "migrate", "--path", str(tmp_path), "--force"])
+    assert result.exit_code == 0, result.output
+    assert "SENTINELQA AUTO-GENERATED" in target.read_text(encoding="utf-8")

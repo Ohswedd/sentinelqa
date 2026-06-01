@@ -5,10 +5,12 @@
 // orchestration of the parser in `findings.ts`. The parser stays free
 // of any `vscode` import so it can be tested headless.
 
+import { spawn } from 'node:child_process';
+import { existsSync } from 'node:fs';
+import { join, isAbsolute, resolve as resolvePath } from 'node:path';
+
 import * as vscode from 'vscode';
-import { spawn } from 'child_process';
-import { existsSync } from 'fs';
-import { join, isAbsolute, resolve as resolvePath } from 'path';
+
 import {
   type Finding,
   type FindingsDocument,
@@ -114,10 +116,7 @@ class FindingNode extends FindingsNode {
   }
 
   toTreeItem(): vscode.TreeItem {
-    const item = new vscode.TreeItem(
-      this.finding.title,
-      vscode.TreeItemCollapsibleState.None,
-    );
+    const item = new vscode.TreeItem(this.finding.title, vscode.TreeItemCollapsibleState.None);
     item.description = `[${this.finding.module}]`;
     item.tooltip = this.tooltip();
     if (this.finding.codeRef) {
@@ -135,7 +134,9 @@ class FindingNode extends FindingsNode {
     const md = new vscode.MarkdownString();
     md.isTrusted = true;
     md.appendMarkdown(`**${this.finding.title}**\n\n`);
-    md.appendMarkdown(`Module: \`${this.finding.module}\` · Severity: \`${this.finding.severity}\`\n\n`);
+    md.appendMarkdown(
+      `Module: \`${this.finding.module}\` · Severity: \`${this.finding.severity}\`\n\n`,
+    );
     if (this.finding.description) md.appendMarkdown(this.finding.description + '\n\n');
     if (this.finding.recommendation)
       md.appendMarkdown(`**Recommendation:** ${this.finding.recommendation}`);
@@ -168,7 +169,7 @@ function resolveProjectRoot(): string {
 
 function resolveCliCommand(): { command: string; args: readonly string[] } {
   const raw =
-    vscode.workspace.getConfiguration('sentinelqa').get<string>('cliCommand') || 'sentinel';
+    vscode.workspace.getConfiguration('sentinelqa').get<string>('cliCommand') ?? 'sentinel';
   const parts = raw.trim().split(/\s+/);
   return { command: parts[0], args: parts.slice(1) };
 }
@@ -217,7 +218,7 @@ export function activate(context: vscode.ExtensionContext): void {
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand('sentinelqa.runAudit', async () => {
+    vscode.commands.registerCommand('sentinelqa.runAudit', () => {
       const { command, args } = resolveCliCommand();
       const root = resolveProjectRoot();
       const channel = vscode.window.createOutputChannel('SentinelQA');
@@ -234,18 +235,18 @@ export function activate(context: vscode.ExtensionContext): void {
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand('sentinelqa.applyFix', async (node: FindingsNode) => {
+    vscode.commands.registerCommand('sentinelqa.applyFix', (node: FindingsNode) => {
       if (!(node instanceof FindingNode)) return;
       const { command, args } = resolveCliCommand();
       const root = resolveProjectRoot();
       const channel = vscode.window.createOutputChannel('SentinelQA');
       channel.show(true);
-      channel.appendLine(`$ ${command} ${[...args, 'fix', '--apply', '--finding-id', node.finding.id].join(' ')}`);
-      const child = spawn(
-        command,
-        [...args, 'fix', '--apply', '--finding-id', node.finding.id],
-        { cwd: root },
+      channel.appendLine(
+        `$ ${command} ${[...args, 'fix', '--apply', '--finding-id', node.finding.id].join(' ')}`,
       );
+      const child = spawn(command, [...args, 'fix', '--apply', '--finding-id', node.finding.id], {
+        cwd: root,
+      });
       child.stdout.on('data', (d: Buffer) => channel.append(d.toString('utf-8')));
       child.stderr.on('data', (d: Buffer) => channel.append(d.toString('utf-8')));
       child.on('close', (code: number) => {

@@ -1,10 +1,12 @@
 // SPDX-License-Identifier: Apache-2.0
 // Copyright (c) 2026 SentinelQA contributors.
 
+import { mkdtempSync, rmSync, writeFileSync, mkdirSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { mkdtempSync, rmSync, writeFileSync, mkdirSync } from 'fs';
-import { tmpdir } from 'os';
-import { join } from 'path';
+
 import { findLatestRunDir, groupBySeverity, loadFindings } from './findings';
 
 let workspace: string;
@@ -102,9 +104,30 @@ describe('loadFindings', () => {
 describe('groupBySeverity', () => {
   it('returns groups in the canonical severity order', () => {
     const findings = [
-      { id: '1', title: 't', module: 'm', severity: 'low' as const, description: '', fixable: false },
-      { id: '2', title: 't', module: 'm', severity: 'critical' as const, description: '', fixable: false },
-      { id: '3', title: 't', module: 'm', severity: 'medium' as const, description: '', fixable: false },
+      {
+        id: '1',
+        title: 't',
+        module: 'm',
+        severity: 'low' as const,
+        description: '',
+        fixable: false,
+      },
+      {
+        id: '2',
+        title: 't',
+        module: 'm',
+        severity: 'critical' as const,
+        description: '',
+        fixable: false,
+      },
+      {
+        id: '3',
+        title: 't',
+        module: 'm',
+        severity: 'medium' as const,
+        description: '',
+        fixable: false,
+      },
     ];
     const groups = groupBySeverity(findings);
     const order = Array.from(groups.keys());
