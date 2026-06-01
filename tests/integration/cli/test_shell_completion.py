@@ -4,6 +4,7 @@
 
 from __future__ import annotations
 
+import re
 from pathlib import Path
 
 from typer.testing import CliRunner
@@ -12,15 +13,32 @@ from sentinel_cli.app import build_app
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
 
+_ANSI = re.compile(r"\x1b\[[0-9;]*m")
+
+
+def _strip(output: str) -> str:
+    """Strip ANSI escapes and collapse Rich's panel-wrap whitespace.
+
+    Rich may break long option names across lines when the rendered
+    width is narrow (CI runners often report 80 cols even when Click
+    is told otherwise). Collapsing trailing-pad + leading-pad pairs
+    re-joins those splits so substring assertions are stable.
+    """
+
+    stripped = _ANSI.sub("", output)
+    # Re-join lines that Rich wrapped inside an option-column box.
+    stripped = re.sub(r"-\s*\n\s*│?\s*", "-", stripped)
+    return re.sub(r"\n\s*│\s*", " ", stripped)
+
 
 def test_help_advertises_install_completion() -> None:
     """The install command must be discoverable from `sentinel --help`."""
 
     runner = CliRunner()
     app = build_app()
-    result = runner.invoke(app, ["--help"], terminal_width=120)
+    result = runner.invoke(app, ["--help"], terminal_width=200)
     assert result.exit_code == 0, result.output
-    assert "--install-completion" in result.output
+    assert "--install-completion" in _strip(result.output)
 
 
 def test_help_advertises_show_completion() -> None:
@@ -28,9 +46,9 @@ def test_help_advertises_show_completion() -> None:
 
     runner = CliRunner()
     app = build_app()
-    result = runner.invoke(app, ["--help"], terminal_width=120)
+    result = runner.invoke(app, ["--help"], terminal_width=200)
     assert result.exit_code == 0, result.output
-    assert "--show-completion" in result.output
+    assert "--show-completion" in _strip(result.output)
 
 
 def test_help_mentions_documentation_pointer() -> None:
@@ -38,9 +56,9 @@ def test_help_mentions_documentation_pointer() -> None:
 
     runner = CliRunner()
     app = build_app()
-    result = runner.invoke(app, ["--help"], terminal_width=120)
+    result = runner.invoke(app, ["--help"], terminal_width=200)
     assert result.exit_code == 0, result.output
-    assert "Shell completions" in result.output
+    assert "Shell completions" in _strip(result.output)
 
 
 def test_completion_doc_exists_and_lists_every_shell() -> None:
