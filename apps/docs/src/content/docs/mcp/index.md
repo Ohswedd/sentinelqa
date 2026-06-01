@@ -23,6 +23,8 @@ Logs go to stderr. Stdout is reserved for MCP wire bytes . The HTTP transport ne
 |---|---|
 | `sentinel.accessibility_audit` | Run accessibility checks only. |
 | `sentinel.audit` | End-to-end audit across every enabled module. |
+| `sentinel.compare_runs` | (no description — update gen_mcp_reference.py) |
+| `sentinel.coverage_gaps` | (no description — update gen_mcp_reference.py) |
 | `sentinel.discover` | Crawl + map the target app. |
 | `sentinel.explain_failure` | Return the Analyzer's categorization + hypothesis for a failure. |
 | `sentinel.generate_tests` | Generate Playwright specs from a plan. |
@@ -30,6 +32,7 @@ Logs go to stderr. Stdout is reserved for MCP wire bytes . The HTTP transport ne
 | `sentinel.ping` | Health check; returns server version + protocol version. |
 | `sentinel.plan` | Build a deterministic test plan from a discovery payload. |
 | `sentinel.read_report` | Read a top-level artifact under a run directory (path-traversal rejected, ≤ 256 KiB). |
+| `sentinel.replay_with_change` | (no description — update gen_mcp_reference.py) |
 | `sentinel.run_tests` | Drive the runner against generated/user specs. |
 | `sentinel.security_audit` | Run safe-security checks only. |
 | `sentinel.suggest_fix` | Return Healer proposals + module recommendations for a finding. |

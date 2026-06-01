@@ -59,7 +59,7 @@ def test_build_default_server_constructs_canonical_registry(tmp_path: Path) -> N
     )
     server = build_default_server(project_path=tmp_path)
     assert isinstance(server, MCPServer)
-    assert len(server.toolset) == 13
+    assert len(server.toolset) == 16
 
 
 async def _call_envelope(

@@ -20,6 +20,7 @@ import typer
 from sentinel_cli.commands import (
     a11y_cmd,
     api_cmd,
+    ask_cmd,
     audit_cmd,
     auth_cmd,
     chaos_cmd,
@@ -187,6 +188,15 @@ def build_app() -> typer.Typer:
         name="migrate",
         help="Adapt an existing Cypress or Playwright suite into SentinelQA-tagged specs.",
     )(migrate_cmd.run_migrate)
+    cli.command(
+        name="ask",
+        help=(
+            "Read-only natural-language query over a completed run. "
+            'Example: `sentinel ask "why did the score drop?" --run-id RUN-...`. '
+            "Falls back to a deterministic explainer when no LLM provider "
+            "is configured."
+        ),
+    )(ask_cmd.run_ask)
     cli.command(
         name="discover",
         help="Crawl the target, build the discovery graph + risk map, write artifacts.",
