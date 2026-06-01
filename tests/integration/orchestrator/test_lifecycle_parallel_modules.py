@@ -93,7 +93,9 @@ def test_parallel_modules_preserve_input_order(tmp_path: Path) -> None:
         "performance",
         "api",
     }
-    outcome_names = [o.name for o in lifecycle._last_context.module_outcomes]
+    last_ctx = lifecycle._last_context
+    assert last_ctx is not None
+    outcome_names = [o.name for o in last_ctx.module_outcomes]
     # Lifecycle iterates in its own canonical order (functional, api,
     # accessibility, performance, ...). Outcomes must follow that.
     assert outcome_names == ["functional", "api", "accessibility", "performance"]
@@ -118,7 +120,9 @@ def test_parallel_module_failure_does_not_block_siblings(tmp_path: Path) -> None
     config = load_config(tmp_path / "sentinel.config.yaml")
     test_run = lifecycle.execute(config, module_concurrency=4)
 
-    statuses = {o.name: o.status for o in lifecycle._last_context.module_outcomes}
+    last_ctx = lifecycle._last_context
+    assert last_ctx is not None
+    statuses = {o.name: o.status for o in last_ctx.module_outcomes}
     assert statuses["functional"] == "errored"
     assert statuses["api"] == "succeeded"
     # Run finishes; status reflects the error (incomplete since a module errored).
@@ -141,7 +145,9 @@ def test_concurrency_one_matches_sequential_behaviour(tmp_path: Path) -> None:
 
     config = load_config(tmp_path / "sentinel.config.yaml")
     test_run = lifecycle.execute(config, module_concurrency=1)
-    statuses = {o.name: o.status for o in lifecycle._last_context.module_outcomes}
+    last_ctx = lifecycle._last_context
+    assert last_ctx is not None
+    statuses = {o.name: o.status for o in last_ctx.module_outcomes}
     assert statuses == {"functional": "succeeded", "api": "succeeded"}
     assert test_run.status == "passed"
 

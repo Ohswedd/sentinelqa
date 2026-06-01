@@ -81,6 +81,63 @@ def test_flake_help_lists_subcommands() -> None:
     assert "stats" in result.output
 
 
+def test_flake_list_human_output_lists_seeded_test(tmp_path: Path) -> None:
+    """The default (human) mode prints the table header + each row."""
+
+    db_path = tmp_path / "flake.db"
+    _seed_db(db_path)
+    runner = CliRunner(mix_stderr=False)
+    app = build_app()
+    result = runner.invoke(app, ["flake", "list", "--db", str(db_path)])
+    assert result.exit_code == 0, result.output
+    assert "MODULE" in result.stdout
+    assert "functional" in result.stdout
+    assert "login-flow" in result.stdout
+    assert "50%" in result.stdout
+
+
+def test_flake_list_quiet_mode_is_tab_separated(tmp_path: Path) -> None:
+    db_path = tmp_path / "flake.db"
+    _seed_db(db_path)
+    runner = CliRunner(mix_stderr=False)
+    app = build_app()
+    result = runner.invoke(app, ["--quiet", "flake", "list", "--db", str(db_path)])
+    assert result.exit_code == 0, result.output
+    lines = [line for line in result.stdout.splitlines() if line.strip()]
+    assert any(line.startswith("functional\tlogin-flow\t5/10") for line in lines), result.stdout
+
+
+def test_flake_stats_human_mode_prints_runs(tmp_path: Path) -> None:
+    db_path = tmp_path / "flake.db"
+    _seed_db(db_path)
+    runner = CliRunner(mix_stderr=False)
+    app = build_app()
+    result = runner.invoke(app, ["flake", "stats", "--db", str(db_path)])
+    assert result.exit_code == 0
+    assert "runs    : 10" in result.stdout
+
+
+def test_flake_list_missing_db_human_mode_explains(tmp_path: Path) -> None:
+    runner = CliRunner(mix_stderr=False)
+    app = build_app()
+    result = runner.invoke(app, ["flake", "list", "--db", str(tmp_path / "missing.db")])
+    assert result.exit_code == 0
+    assert "No flake DB found" in result.stdout
+
+
+def test_flake_list_empty_db_human_mode_shows_no_pairs(tmp_path: Path) -> None:
+    db_path = tmp_path / "empty.db"
+    # Touch the DB so the file-exists check passes but no rows are recorded.
+    from engine.persistence import FlakeDb
+
+    FlakeDb.open(db_path).close()
+    runner = CliRunner(mix_stderr=False)
+    app = build_app()
+    result = runner.invoke(app, ["flake", "list", "--db", str(db_path)])
+    assert result.exit_code == 0
+    assert "No (module, test_id) pairs" in result.stdout
+
+
 def test_flake_list_respects_min_runs(tmp_path: Path) -> None:
     db_path = tmp_path / "flake.db"
     db_path.parent.mkdir(parents=True, exist_ok=True)

@@ -258,6 +258,100 @@ def test_parallel_modules_flag_runs_to_completion(
     assert result.exit_code == 0, result.output
 
 
+def test_since_with_unknown_run_id_warns_and_runs(
+    runner: CliRunner, cli, tmp_path: Path, monkeypatch
+) -> None:
+    """An unknown ``--since`` run id falls back to running normally."""
+
+    project = tmp_path / "proj"
+    project.mkdir()
+    monkeypatch.chdir(project)
+    write_config(project)
+    result = runner.invoke(
+        cli,
+        [
+            "--config",
+            str(project / "sentinel.config.yaml"),
+            "audit",
+            "--since",
+            "RUN-DOESNOTEXIST",
+            "--output",
+            str(tmp_path / "runs"),
+        ],
+    )
+    assert result.exit_code == 0, result.output
+    # Stderr message routing varies under Click's runner; the durable
+    # contract is: an unknown ``--since`` does NOT short-circuit, so a
+    # real run happened and a run_id is present in stdout.
+    assert "run_id" in result.stdout
+
+
+def test_since_human_mode_prints_unchanged_message(
+    runner: CliRunner, cli, tmp_path: Path, monkeypatch
+) -> None:
+    project = tmp_path / "proj"
+    project.mkdir()
+    monkeypatch.chdir(project)
+    write_config(project)
+    (project / "src").mkdir()
+    (project / "src" / "main.py").write_text("x = 1\n", encoding="utf-8")
+    artifacts = tmp_path / "runs"
+    runner.invoke(
+        cli,
+        [
+            "--config",
+            str(project / "sentinel.config.yaml"),
+            "audit",
+            "--output",
+            str(artifacts),
+        ],
+    )
+    second = runner.invoke(
+        cli,
+        [
+            "--config",
+            str(project / "sentinel.config.yaml"),
+            "audit",
+            "--since",
+            "latest",
+            "--output",
+            str(artifacts),
+        ],
+    )
+    assert second.exit_code == 0
+    assert "source unchanged" in second.stdout
+
+
+def test_changed_only_human_mode_prints_no_op_message(
+    runner: CliRunner, cli, tmp_path: Path, monkeypatch
+) -> None:
+    project = tmp_path / "proj"
+    project.mkdir()
+    monkeypatch.chdir(project)
+    _init_git_repo(project)
+    write_config(project)
+    (project / "src").mkdir()
+    (project / "src" / "main.ts").write_text("export const x = 1;\n", encoding="utf-8")
+    _stage_commit(project, "init")
+    (project / "README.md").write_text("# project\n", encoding="utf-8")
+
+    result = runner.invoke(
+        cli,
+        [
+            "--config",
+            str(project / "sentinel.config.yaml"),
+            "audit",
+            "--changed-only",
+            "--diff-base",
+            "HEAD",
+            "--output",
+            str(tmp_path / "runs"),
+        ],
+    )
+    assert result.exit_code == 0
+    assert "no audit-relevant changes" in result.stdout
+
+
 def test_parallel_modules_rejects_out_of_range(runner: CliRunner, cli, tmp_path: Path) -> None:
     project = tmp_path / "proj"
     project.mkdir()
