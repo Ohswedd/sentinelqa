@@ -71,6 +71,21 @@ importers:
         specifier: 5.7.2
         version: 5.7.2
 
+  apps/vscode-extension:
+    devDependencies:
+      '@types/node':
+        specifier: 20.17.9
+        version: 20.17.9
+      '@types/vscode':
+        specifier: 1.86.0
+        version: 1.86.0
+      typescript:
+        specifier: 5.7.2
+        version: 5.7.2
+      vitest:
+        specifier: 2.1.8
+        version: 2.1.8(@types/node@20.17.9)
+
   packages/shared-schema:
     devDependencies:
       '@types/node':
@@ -991,6 +1006,9 @@ packages:
 
   '@types/unist@3.0.3':
     resolution: {integrity: sha512-ko/gIFJRv177XgZsZcBwnqJN5x/Gien8qNOn0D5bQU/zAzVf9Zt3BlcUiLqhV9y4ARk0GbT3tnUiPNgnTXzc/Q==}
+
+  '@types/vscode@1.86.0':
+    resolution: {integrity: sha512-DnIXf2ftWv+9LWOB5OJeIeaLigLHF7fdXF6atfc7X5g2w/wVZBgk0amP7b+ub5xAuW1q7qP5YcFvOcit/DtyCQ==}
 
   '@typescript-eslint/eslint-plugin@8.16.0':
     resolution: {integrity: sha512-5YTHKV8MYlyMI6BaEG7crQ9BhSc8RxzshOReKwZwRWN0+XvvTOm+L/UYLCYxFpfwYuAAqhxiq4yae0CMFwbL7Q==}
@@ -4699,6 +4717,8 @@ snapshots:
   '@types/unist@2.0.11': {}
 
   '@types/unist@3.0.3': {}
+
+  '@types/vscode@1.86.0': {}
 
   '@typescript-eslint/eslint-plugin@8.16.0(@typescript-eslint/parser@8.16.0(eslint@9.16.0(jiti@2.6.1))(typescript@5.7.2))(eslint@9.16.0(jiti@2.6.1))(typescript@5.7.2)':
     dependencies:

@@ -2,3 +2,5 @@ packages:
   - 'packages/*'
   - 'apps/dashboard'
   - 'apps/docs'
+  - 'apps/vscode-extension'
+  - 'apps/browser-extension'

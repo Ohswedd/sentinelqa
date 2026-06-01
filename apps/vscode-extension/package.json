@@ -1,0 +1,119 @@
+{
+  "name": "sentinelqa-vscode",
+  "displayName": "SentinelQA",
+  "version": "1.1.0",
+  "private": true,
+  "license": "Apache-2.0",
+  "publisher": "Ohswedd",
+  "description": "VS Code integration for SentinelQA — browse findings, jump to source, and apply fix proposals from the latest audit run.",
+  "categories": ["Testing", "Linters", "Other"],
+  "keywords": ["sentinelqa", "playwright", "qa", "testing", "release-confidence"],
+  "homepage": "https://github.com/Ohswedd/sentinelqa#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ohswedd/sentinelqa.git",
+    "directory": "apps/vscode-extension"
+  },
+  "bugs": {
+    "url": "https://github.com/Ohswedd/sentinelqa/issues"
+  },
+  "icon": "icon.png",
+  "engines": {
+    "vscode": "^1.86.0",
+    "node": ">=20"
+  },
+  "main": "./dist/extension.js",
+  "activationEvents": ["onView:sentinelqa.findings", "onCommand:sentinelqa.refreshFindings"],
+  "contributes": {
+    "configuration": {
+      "title": "SentinelQA",
+      "properties": {
+        "sentinelqa.projectRoot": {
+          "type": "string",
+          "default": "",
+          "description": "Override the project root (defaults to the first workspace folder)."
+        },
+        "sentinelqa.cliCommand": {
+          "type": "string",
+          "default": "sentinel",
+          "description": "Command to invoke the SentinelQA CLI (e.g. 'sentinel', 'uv run sentinel')."
+        }
+      }
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "sentinelqa",
+          "title": "SentinelQA",
+          "icon": "$(shield)"
+        }
+      ]
+    },
+    "views": {
+      "sentinelqa": [
+        {
+          "id": "sentinelqa.findings",
+          "name": "Findings",
+          "icon": "$(shield)",
+          "contextualTitle": "SentinelQA Findings"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "sentinelqa.refreshFindings",
+        "title": "SentinelQA: Refresh findings",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "sentinelqa.runAudit",
+        "title": "SentinelQA: Run audit",
+        "icon": "$(play)"
+      },
+      {
+        "command": "sentinelqa.openFinding",
+        "title": "SentinelQA: Open finding source"
+      },
+      {
+        "command": "sentinelqa.applyFix",
+        "title": "SentinelQA: Apply fix proposal",
+        "icon": "$(wrench)"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "sentinelqa.refreshFindings",
+          "when": "view == sentinelqa.findings",
+          "group": "navigation@1"
+        },
+        {
+          "command": "sentinelqa.runAudit",
+          "when": "view == sentinelqa.findings",
+          "group": "navigation@2"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "sentinelqa.applyFix",
+          "when": "view == sentinelqa.findings && viewItem == finding.fixable",
+          "group": "inline"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "clean": "rm -rf dist",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --passWithNoTests"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "20.17.9",
+    "@types/vscode": "1.86.0",
+    "typescript": "5.7.2",
+    "vitest": "2.1.8"
+  }
+}
