@@ -61,7 +61,7 @@ before pushing the tag:
 The runbook at `docs/release/publish-runbook.md` is the single
 owner-facing document that drives an actual publish:
 
-1. Sign the `v1.0.0` block of `docs/release/pre-1.0-review.md` (trademark rows + signature).
+1. Sign the `v1.0.0` block of the pre-tag review process (trademark rows + signature).
 2. Run all four dry-runs locally.
 3. `git tag -s v1.0.0`; `git push origin v1.0.0`.
 4. Approve each of the four publish workflows in the GitHub Environments UI as they trigger.
@@ -98,7 +98,7 @@ venv at `/opt/sentinelqa`. The existing
 
 - our engineering rules(Ownership), §40 (Versioning & release rules), §41 (Telemetry).
 - `docs/dev/semver.md` (tag plan; `v1.0.0` row).
-- `docs/release/pre-1.0-review.md` (sign-off contract).
+- the pre-tag review process (sign-off contract).
 - `docs/release/publish-runbook.md` (the runbook this ADR authorises).
 - (per-task specs).
 - ADR-0013 (Docker runner pinning).

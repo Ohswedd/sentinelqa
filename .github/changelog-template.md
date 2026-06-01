@@ -56,7 +56,6 @@ _Status: pre-1.0 — see [`docs/dev/semver.md`](https://github.com/Ohswedd/senti
 
 ## Signed off
 
-- Owner: @ohswedd
-- Pre-1.0 review: [`docs/release/pre-1.0-review.md`](https://github.com/Ohswedd/sentinelqa/blob/main/docs/release/pre-1.0-review.md)
+- Maintainer: @ohswedd
 
-_No AI tools are co-authors of this release (our engineering rules)._
+_No AI tools are co-authors of this release._

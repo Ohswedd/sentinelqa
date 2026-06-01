@@ -8,7 +8,7 @@ our engineering rules(Competitor awareness), `docs/dev/trademarks-and-naming.md`
 This page documents how the SentinelQA name, mark, and assets may be
 used. The current mark is a **placeholder** by design — the human owner
 replaces it with the registered mark before the `v1.0.0` publish
-(`docs/release/pre-1.0-review.md`).
+(the pre-tag review process).
 
 ## Assets
 
@@ -72,7 +72,7 @@ until the public flip).
 Until `v1.0.0`, the mark and the trademark posture are both
 **provisional**:
 
-- The mark is a placeholder design (a generic shield + monogram). The owner replaces it with the registered mark per `docs/release/pre-1.0-review.md` ("Trademarks" section).
+- The mark is a placeholder design (a generic shield + monogram). The owner replaces it with the registered mark per the pre-tag review process ("Trademarks" section).
 - The trademark search lanes (USPTO / EUIPO / UKIPO) are documented in [`docs/dev/trademarks-and-naming.md`](./trademarks-and-naming.md); the registered-marks lanes remain open until owner sign-off.
 
 If you spot a conflict — another product, package, or domain using
@@ -89,5 +89,5 @@ Missing or corrupt assets fail CI.
 ## Related
 
 - `docs/dev/trademarks-and-naming.md` — trademark posture + search lanes.
-- `docs/release/pre-1.0-review.md` — pre-1.0 sign-off checklist (includes "trademarks" rows the owner signs before any publish).
+- the pre-tag review process — pre-1.0 sign-off checklist (includes "trademarks" rows the owner signs before any publish).
 - `apps/docs/astro.config.mjs` — `head` section wires the favicons + Open Graph + Twitter Card images.

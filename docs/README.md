@@ -31,7 +31,7 @@ Project documentation. the documentation, CLAUDE §34.
 - [`trademarks-and-naming.md`](./dev/trademarks-and-naming.md) — placeholder; trademark clearance lands in Phase 28.
 - [`ci-and-branch-protection.md`](./dev/ci-and-branch-protection.md) — workflow inventory and required GitHub branch-protection rules.
 - [`status-labels.md`](./dev/status-labels.md) — the four documentation status labels (`Planned`, `Experimental`, `Stable`, `Deprecated`).
-- [`agent-workflow.md`](./dev/agent-workflow.md) — playbook for LLM coding agents (the loop).
+-
 
 ### `user/`
 

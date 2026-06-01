@@ -66,7 +66,7 @@ A separate ruleset protects release tags:
 - **Restrict creation to admins:** enabled.
 - **Disallow force-update / deletion:** enabled.
 
-Tags ratify a release per `docs/release/pre-1.0-review.md`; only the
+Tags ratify a release per the pre-tag review process; only the
 owner can mint them.
 
 ## Verification
@@ -103,5 +103,5 @@ clear "not yet applicable" message and exits 0.
 
 - [`.github/CODEOWNERS`](../../.github/CODEOWNERS) — who can approve.
 - [`docs/dev/ci-and-branch-protection.md`](./ci-and-branch-protection.md) — prose overview; this doc is the machine-checkable spec.
-- [`docs/release/pre-1.0-review.md`](../release/pre-1.0-review.md) — the gate that any `v*` tag must pass.
+- the pre-tag review process — the gate that any `v*` tag must pass.
 - [](../../) — task spec.

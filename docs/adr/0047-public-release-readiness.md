@@ -90,5 +90,5 @@ lives inside a fenced code block, not in an action path.
 - our engineering rules(Versioning + release rules) — frames the supported-versions policy in `docs/dev/security-policy.md`.
 - our engineering rules(Competitor awareness) — frames the brand-usage doc.
 - — task spec for every Phase-35 artifact.
-- `docs/release/pre-1.0-review.md` — sign-off contract for tags; Phase 35.08 references the v0.7.0 row.
+- the pre-tag review process — sign-off contract for tags; Phase 35.08 references the v0.7.0 row.
 - `docs/dev/semver.md` — supported-versions policy that the security policy doc inherits from.

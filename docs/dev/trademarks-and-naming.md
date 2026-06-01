@@ -19,7 +19,7 @@ This is the Phase 28 trademark verdict for the product name **"SentinelQA"**. Un
 | EUIPO TMview search (EU)                             | **AWAITING owner action** | _pending_  | Human owner only        | Run the search at <https://www.tmview.tmdn.org/>. Same blocker as USPTO.                                                                                                                                                                                                                                                     |
 | UKIPO mark search (UK)                               | **AWAITING owner action** | _pending_  | Human owner only        | Run the search at <https://www.gov.uk/search-for-trademark>. Same blocker.                                                                                                                                                                                                                                                   |
 
-The three registered-marks lanes are not deferred scope — they are **owner-only** actions that must clear before the first public release, and they are captured as explicit pre-tag blockers in `docs/release/pre-1.0-review.md` (Phase 28 task 28.06).
+The three registered-marks lanes are not deferred scope — they are **owner-only** actions that must clear before the first public release, and they are captured as explicit pre-tag blockers in the pre-tag review process (Phase 28 task 28.06).
 
 ## Adjacent-name landscape (informational)
 
@@ -73,4 +73,4 @@ This verdict explicitly says: continued use of "SentinelQA" inside this private 
 - Filing for a trademark.
 - Issuing public marketing under the SentinelQA name.
 
-Those steps unlock once the registered-marks rows above are signed off by the human owner in this file _and_ in `docs/release/pre-1.0-review.md`.
+Those steps unlock once the registered-marks rows above are signed off by the human owner in this file _and_ in the pre-tag review process.

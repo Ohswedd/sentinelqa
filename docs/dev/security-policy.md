@@ -52,7 +52,7 @@ extension in writing with the reporter.
 
 1. The fix lands on a private fork or in a draft GHSA — never on `main` before publication.
 2. A regression test that proves the fix lands in the same PR .
-3. When the embargo lifts, the GHSA is published, the patch release is tagged via `docs/release/pre-1.0-review.md`, `CHANGELOG.md` gets a `### Security` section under that release, and the reporter is credited.
+3. When the embargo lifts, the GHSA is published, the patch release is tagged via the pre-tag review process, `CHANGELOG.md` gets a `### Security` section under that release, and the reporter is credited.
 
 ## Dependabot
 
@@ -85,13 +85,13 @@ That setting cannot be configured on a private repo before the flip.
 4. Fix on a feature branch named `security/<short-slug>`. Tests first, then the fix.
 5. Open a draft GHSA — never a public PR — for the patch. Use the `cve` field if a CVE has been minted.
 6. Coordinate disclosure with the reporter; agree on a publication date inside the 90-day window (sooner for criticals).
-7. Tag the patch release per `docs/release/pre-1.0-review.md`, publish the GHSA, update `CHANGELOG.md`, post the deprecation notice on the docs site.
+7. Tag the patch release per the pre-tag review process, publish the GHSA, update `CHANGELOG.md`, post the deprecation notice on the docs site.
 8. If the safety boundary was touched, open an ADR (`docs/adr/_template.md`) before the publication date.
 
 ## Related
 
 - [`SECURITY.md`](../../SECURITY.md) — public disclosure path.
 - [`docs/dev/semver.md`](./semver.md) — supported-versions policy.
-- [`docs/release/pre-1.0-review.md`](../release/pre-1.0-review.md) — pre-tag review the owner signs.
+- the pre-tag review process — pre-tag review the owner signs.
 - [`.github/dependabot.yml`](../../.github/dependabot.yml) — Dependabot config.
 - [](../../) — task spec.

@@ -66,7 +66,7 @@ Closes: #117
 ### 3. `docs` — documentation-only
 
 ```
-docs(dev): document the agent execution loop in agent-workflow.md
+docs(dev): document the agent execution loop in CONTRIBUTING.md
 
 Adds a step-by-step description of so a fresh agent can
 pick up the active phase without re-deriving the loop.

@@ -18,7 +18,7 @@ Pick the prefix that best fits the change. One prefix per branch.
 | ----------- | -------------------------------------------------------------- | ------------------------------------- |
 | `feature/`  | New product capability or new module phase                     | `feature/phase-05-discovery-crawler`  |
 | `fix/`      | Bug fix in existing behavior                                   | `fix/cli-exit-code-on-missing-config` |
-| `docs/`     | Documentation-only change (no code, no tests of code behavior) | `docs/agent-workflow-update`          |
+| `docs/`     | Documentation-only change (no code, no tests of code behavior) | `docs/contributing-polish`            |
 | `refactor/` | Internal restructuring without behavior change                 | `refactor/extract-policy-loader`      |
 | `security/` | Security boundary, hardening, secret hygiene                   | `security/redaction-coverage`         |
 | `ci/`       | CI/CD workflow change                                          | `ci/cache-pnpm-store`                 |
