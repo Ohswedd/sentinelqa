@@ -10,7 +10,7 @@ Accepted
 ## Context
 
 our product spec Open Question #1 asked whether the release should be a Python-first
-CLI or a Node-first CLI. The PRD's recommended answer was Python CLI +
+CLI or a Node-first CLI. The the documentation's recommended answer was Python CLI +
 TS runtime, and have shipped to that decision —
 every command (`sentinel discover/plan/generate/test/audit/…`), the
 SDK, the MCP server, the orchestrator, the scoring engine, and the

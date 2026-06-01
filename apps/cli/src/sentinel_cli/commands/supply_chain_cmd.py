@@ -14,7 +14,7 @@ stages without the full module:
 - ``sentinel supply-chain osv --sbom <path>`` — run an OSV lookup
  against an existing ``sbom/index.json``.
 
-Exit codes (CLAUDE §13):
+Exit codes:
 
 - ``0`` — no high/critical findings.
 - ``1`` — quality gate failed (high/critical, or module incomplete).

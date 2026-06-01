@@ -1,24 +1,21 @@
 // `sentinel-ts run` — spawn Playwright, route reporter events to
-// stdout. Python (engine/runner Phase 08) invokes this binary.
-//
+// stdout. Python (engine/runner ) invokes this binary.
 // Design:
-//   - `--input <path>` points to a run-config JSON described by the
-//     `RunConfigSchema` below. The shape is locked here (TS) and
-//     mirrored in `engine/orchestrator/ts_bridge.py` (Phase 04.04).
-//   - We spawn `playwright test` via the Playwright bin resolved from
-//     `node_modules`, with `--reporter=<our reporter path>` and the
-//     test files from the run-config. The reporter (reporter.ts) writes
-//     JSONL events to stdout; the child's stdout is inherited so events
-//     flow straight to the parent (Python).
-//   - Stderr is captured and re-emitted only when the run fails — this
-//     keeps the JSONL stream clean.
-//
+// - `--input <path>` points to a run-config JSON described by the
+// `RunConfigSchema` below. The shape is locked here (TS) and
+// mirrored in `engine/orchestrator/ts_bridge.py` ().
+// - We spawn `playwright test` via the Playwright bin resolved from
+// `node_modules`, with `--reporter=<our reporter path>` and the
+// test files from the run-config. The reporter (reporter.ts) writes
+// JSONL events to stdout; the child's stdout is inherited so events
+// flow straight to the parent (Python).
+// - Stderr is captured and re-emitted only when the run fails — this
+// keeps the JSONL stream clean.
 // Exit codes:
-//   0  all tests passed
-//   1  at least one test failed / timed_out
-//   2  Playwright itself errored, config invalid, or spawn failed
-//
-// CLAUDE §21: no stealth, no evasion, no arbitrary sleeps.
+// 0 all tests passed
+// 1 at least one test failed / timed_out
+// 2 Playwright itself errored, config invalid, or spawn failed
+// the engineering guidelines: no stealth, no evasion, no arbitrary sleeps.
 
 import { spawn } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
@@ -43,7 +40,7 @@ const RunConfigSchema = z
     retries: z.number().int().min(0).default(0),
     grep: z.string().min(1).max(512).nullable().optional(),
     env: z.record(z.string()).default({}),
-    // Phase 31 / ADR-0043. Absolute path to a Playwright `storage_state`
+    // / ADR-0043. Absolute path to a Playwright `storage_state`
     // JSON file. The runner forwards it via the env var
     // `SENTINELQA_STORAGE_STATE`; generated tests read that env var and
     // configure each Playwright context accordingly. CLI
@@ -62,7 +59,7 @@ export interface RunnerOptions {
   /** Override the browser. */
   readonly browserOverride?: 'chromium' | 'firefox' | 'webkit';
   /**
-   * Phase 31 / ADR-0043. Override `storage_state_path` from the config.
+   * / ADR-0043. Override `storage_state_path` from the config.
    * The runner forwards the final path to Playwright via the env var
    * `SENTINELQA_STORAGE_STATE`. Empty string clears the env var.
    */
@@ -174,7 +171,7 @@ export async function runPlaywright(opts: RunnerOptions): Promise<number> {
     SENTINELQA_TARGET: config.target,
   };
 
-  // Phase 31 / ADR-0043. CLI override wins over the config value;
+  // / ADR-0043. CLI override wins over the config value;
   // passing an empty string explicitly clears the env var. We resolve
   // through `if`s so the "empty string = disable" branch is explicit
   // (it would silently fall through with `??`).
@@ -248,8 +245,8 @@ export async function listTests(
 }
 
 /** Skip-listed directories applied to every glob result. Mirrors the
- *  filter inside `fallbackGlob` so Node's native glob produces the same
- *  set on Node ≥ 22. */
+ * filter inside `fallbackGlob` so Node's native glob produces the same
+ * set on Node ≥ 22. */
 function isAlwaysSkipped(relPath: string): boolean {
   const parts = relPath.split('/');
   for (const part of parts.slice(0, -1)) {
@@ -283,10 +280,10 @@ export function compileGlob(pattern: string): RegExp {
   const PH_QMARK = '\x03';
   const body = pattern
     // 1. Escape every regex meta we care about EXCEPT the wildcards
-    //    `*` and `?` — those mean glob, not regex.
+    // `*` and `?` — those mean glob, not regex.
     .replace(/[.+^${}()|[\]\\]/g, '\\$&')
     // 2. Tokenise wildcards to private placeholders so step 3 can
-    //    expand them without colliding with regex syntax (`(?:`, `)?`).
+    // expand them without colliding with regex syntax (`(?:`, `)?`).
     .replace(/\*\*\//g, PH_GLOBSTAR_SLASH)
     .replace(/\*\*/g, PH_GLOBSTAR)
     .replace(/\*/g, PH_STAR)

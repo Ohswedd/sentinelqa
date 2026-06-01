@@ -1,14 +1,12 @@
 // `sentinel-ts` — the CLI Python orchestrates to run Playwright specs.
-// PRD §15, CLAUDE.md §8 (Python ↔ TS contract).
-//
+// the documentation, the engineering guidelines (Python ↔ TS contract).
 // Commands:
-//   sentinel-ts --help / --version
-//   sentinel-ts run --input <path> [--run-dir <path>] [--browser ...]
-//   sentinel-ts list-tests --pattern <glob>
-//   sentinel-ts validate-helpers [--json]
-//
+// sentinel-ts --help / --version
+// sentinel-ts run --input <path> [--run-dir <path>] [--browser ...]
+// sentinel-ts list-tests --pattern <glob>
+// sentinel-ts validate-helpers [--json]
 // `--ci` is accepted on every subcommand. In CI mode we never write
-// progress spinners or non-JSONL chatter to stdout (CLAUDE §13/§39).
+// progress spinners or non-JSONL chatter to stdout.
 import { stderr, stdout, argv, exit } from 'node:process';
 
 import { auditA11y, type AuditA11yLauncher } from './a11y/audit.js';
@@ -53,7 +51,7 @@ Commands:
                      against routes listed in a JSON config.
                        --input <path>      Run-config JSON (required). See
                                            perf/audit.ts for the schema.
-  discover           Playwright-driven crawl backend (PRD §9.1, ADR-0010).
+  discover           Playwright-driven crawl backend (ADR-0010).
                        --config <path|->   Discovery-config JSON. Use a
                                            dash to read from stdin (the
                                            Python PlaywrightCrawlBackend
@@ -158,7 +156,7 @@ async function handleRun(args: readonly string[], opts: DispatchOptions): Promis
       exitCode: 2,
     };
   }
-  // Phase 31 / ADR-0043. CLI override for the storage_state path.
+  // / ADR-0043. CLI override for the storage_state path.
   // Empty string is a valid value: it disables the env var even when
   // the run-config carried a path.
   const storageStateOverride = takeFlag(args, '--storage-state');

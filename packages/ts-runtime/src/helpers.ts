@@ -1,5 +1,5 @@
 // Helpers consumed by SentinelQA-generated tests and by the runner
-// (PRD §15.2, CLAUDE.md §21). Each helper is fully decoupled from
+//. Each helper is fully decoupled from
 // Playwright's test-runner state — they take an `EventEmitter`
 // explicitly. Generated tests pull the emitter from the `sentinelTest`
 // fixture (see ./playwright.ts).
@@ -147,7 +147,7 @@ export interface PageLike {
  * Always-on evidence capture. Writes the requested artifacts into the
  * run directory and emits one `evidence` event per artifact. The
  * default writes a screenshot + DOM snapshot — matching the
- * `captureEvidence(page, label)` contract in PRD §15.2.
+ * `captureEvidence(page, label)` contract in the documentation
  */
 export async function captureEvidence(
   ctx: EvidenceContext,
@@ -357,7 +357,7 @@ function mapConsoleLevel(playwrightType: string): ConsoleLevel {
 
 /**
  * Listen for browser `console` events, redact each message, and emit a
- * `console` JSONL event per call. CLAUDE §33: every message passes
+ * `console` JSONL event per call. the engineering guidelines: every message passes
  * through `redact()` so secrets in console.log output never reach
  * Python.
  */
@@ -399,7 +399,7 @@ export interface DomSnapshotRef {
 
 /**
  * Capture a full HTML snapshot plus a hash of the accessibility tree.
- * The hash is the *content* digest the Healer (Phase 20) compares
+ * The hash is the *content* digest the Healer () compares
  * against when deciding whether a locator change is legitimate.
  *
  * `axTreeHash` is `sha256` of the JSON-stringified accessibility tree
@@ -451,7 +451,7 @@ function sha256(input: string): string {
  * run-config when the user opted in; the fixture reads it and merges
  * with the rest of the context options.
  *
- * The path is deterministic: `<runDir>/har/<test-id>.har`. CLAUDE §11
+ * The path is deterministic: `<runDir>/har/<test-id>.har`. the engineering guidelines
  * — per-run isolation, no cross-run bleed.
  */
 export interface HarConfig {

@@ -45,7 +45,7 @@ class FailureHistory(BaseModel):
 
 _MAX_AUTO_RETRIES: Final[int] = 2
 """Hard cap on additional retries the analyzer will recommend regardless
-of category. Matches CLAUDE §23 — auto-loops must be conservative."""
+of category. Matches the engineering guidelines — auto-loops must be conservative."""
 
 
 def should_retry(
@@ -61,7 +61,7 @@ def should_retry(
             decision="no_action",
             reason=(
                 f"Already retried {signal.retries} time(s); further auto-retries "
-                "would violate the conservative auto-loop boundary (CLAUDE §23)."
+                "would violate the conservative auto-loop boundary."
             ),
             confidence=0.95,
         )

@@ -41,7 +41,7 @@ def patched_registry() -> Iterator[ModuleRegistry]:
     """Register a stub functional module on the process-wide default registry.
 
     lifecycle uses the process registry by default; this fixture
-    plugs in a no-op factory so ``audit()`` finishes without trying to
+    plugs in a no-op factory so ``audit`` finishes without trying to
     spawn Playwright.
     """
 

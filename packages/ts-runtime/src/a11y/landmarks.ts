@@ -1,5 +1,4 @@
-// Phase 11 landmark structure check.
-//
+// landmark structure check.
 // Mirrors `modules/accessibility/checks/landmarks.py`: <main> required
 // (exactly one), <header> / <nav> / <footer> recommended.
 

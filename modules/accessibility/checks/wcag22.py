@@ -23,7 +23,7 @@ Every check accepts simple, deterministic Python inputs (typed
 can be exercised from unit tests and from the TS runtime's serialised
 DOM probes without DOM dependencies.
 
-CLAUDE §28 / wording rule: descriptions begin with
+the engineering guidelines: descriptions begin with
 "Automated WCAG 2.2 check found" — never "your app is WCAG 2.2
 compliant".
 """

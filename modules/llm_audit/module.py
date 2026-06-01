@@ -1,9 +1,9 @@
 """``LlmAuditModule`` (, the documentation, ADR-0024).
 
-Lifecycle (CLAUDE §9):
+Lifecycle:
 
 - ``validate_prerequisites`` — no-op; missing signals simply skip the
- corresponding check (CLAUDE §37 — no fake completion, but no over-
+ corresponding check (the engineering guidelines— no fake completion, but no over-
  reporting either).
 - ``plan`` — reads :class:`LlmAuditModuleOptions`
  off ``ctx.options``, locates discovery + signal artifacts.

@@ -20,7 +20,7 @@ sentinelqa: extends:.sentinelqa variables: SENTINELQA_URL: 'https://preview-${CI
 
 | Variable                | Default    | Notes                                                       |
 | ----------------------- | ---------- | ----------------------------------------------------------- |
-| `SENTINELQA_URL`        | _(empty)_  | Required preview URL (CLAUDE §6 allowlist still applies).   |
+| `SENTINELQA_URL`        | _(empty)_  | Required preview URL.                                       |
 | `SENTINELQA_MODE`       | `standard` | `fast` / `standard` / `full` / `nightly` / `release`.       |
 | `SENTINELQA_DIFF`       | _(empty)_  | Git diff range; empty disables diff-aware selection.        |
 | `SENTINELQA_FAIL_UNDER` | _(empty)_  | Override `policy.min_quality_score`; empty inherits config. |

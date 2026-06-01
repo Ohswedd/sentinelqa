@@ -9,7 +9,7 @@ Three subcommands:
 - ``validate <path>`` — validate a standalone JSON/TOML manifest
  before publishing, without needing the plugin installed.
 
-Exit codes (CLAUDE §13):
+Exit codes:
 
 - ``0`` — success.
 - ``2`` — invalid CLI usage / missing plugin / bad manifest path.

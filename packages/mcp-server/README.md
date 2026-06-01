@@ -57,4 +57,4 @@ A Claude Desktop config snippet lives at
 Every tool that takes a `url` argument runs `SafetyPolicy.enforce`
 before any SDK call. Unsafe targets surface as an envelope with
 `result=null` and a single `UNSAFE_TARGET` error agent-message
-(CLAUDE §6, our product spec).
+.

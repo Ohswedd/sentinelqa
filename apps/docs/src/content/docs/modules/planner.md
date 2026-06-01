@@ -8,7 +8,7 @@ The planner translates the discovery output into a `TestPlan`: an
 ordered list of `Flow`s with priorities, coverage estimates, and
 optional LLM-suggested refinements.
 
-Authority: the documentation, ADR-0011.
+.
 
 ## Determinism first
 

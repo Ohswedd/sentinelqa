@@ -8,7 +8,7 @@ import {
 } from '../playwright.js';
 
 describe('SENTINEL_PLAYWRIGHT_DEFAULTS', () => {
-  it('matches CLAUDE §21 defaults', () => {
+  it('matches the documented defaults', () => {
     expect(SENTINEL_PLAYWRIGHT_DEFAULTS).toStrictEqual({
       trace: 'on-first-retry',
       screenshot: 'only-on-failure',

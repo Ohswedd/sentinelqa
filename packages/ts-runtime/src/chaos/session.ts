@@ -1,23 +1,20 @@
-// Phase 23.03 — Session chaos helpers.
-//
+// — Session chaos helpers.
 // Two scenarios live here:
-//
-//   - `session.expired_token`       — every outgoing request gets an
-//                                     `Authorization: Bearer expired.token.here`
-//                                     header rewrite. The page's own
-//                                     fetch logic must decide whether
-//                                     to redirect / surface a reauth
-//                                     prompt.
-//   - `session.missing_permissions` — when an operator provides a
-//                                     sandbox JWT, the helper strips
-//                                     declared permission claims and
-//                                     re-signs *with the same sandbox
-//                                     key*. There is no real
-//                                     re-signing path here: production
-//                                     JWT secrets never flow through
-//                                     this helper.
-//
-// CLAUDE §6 / §33: the helper rewrites *outgoing* headers only. It
+// - `session.expired_token` — every outgoing request gets an
+// `Authorization: Bearer expired.token.here`
+// header rewrite. The page's own
+// fetch logic must decide whether
+// to redirect / surface a reauth
+// prompt.
+// - `session.missing_permissions` — when an operator provides a
+// sandbox JWT, the helper strips
+// declared permission claims and
+// re-signs *with the same sandbox
+// key*. There is no real
+// re-signing path here: production
+// JWT secrets never flow through
+// this helper.
+// the engineering guidelines: the helper rewrites *outgoing* headers only. It
 // never reads or persists the real user's token; redact rules in
 // `redact.ts` already cover Authorization headers in logs.
 

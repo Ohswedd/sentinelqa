@@ -28,7 +28,7 @@ The single source of truth is `engine/errors/codes.py:ERROR_REGISTRY`; this page
 ### Configuration (exit 2)
 
 - **E-CFG-001** — `Configuration file is missing or unreadable: {path}` - _Fix:_ Create `sentinel.config.yaml` at the project root or pass `--config <path>`.
-- **E-CFG-002** — `Configuration failed schema validation: {detail}` - _Fix:_ Run `sentinel doctor` for a precise diff against the expected schema (the documentation).
+- **E-CFG-002** — `Configuration failed schema validation: {detail}` - _Fix:_ Run `sentinel doctor` for a precise diff against the expected schema.
 - **E-CFG-003** — `Inline secret detected at config key {field!r}; secrets must come from environment variables.` - _Fix:_ Replace the literal value with the corresponding `*_env` key (e.g. `password_env: TEST_USER_PASSWORD`).
 
 ### Safety boundary (exit 4)

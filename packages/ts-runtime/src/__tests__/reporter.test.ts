@@ -1,7 +1,6 @@
 // Unit tests for the Playwright reporter — drive the reporter
 // callbacks with hand-built test objects and assert the emitted JSONL
 // stream matches the protocol.
-//
 // The "Playwright object" types are quite large; we cast a minimal
 // payload to the interface so vitest can exercise the mapping logic
 // without spinning up real Playwright.

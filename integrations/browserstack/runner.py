@@ -42,7 +42,7 @@ logger = logging.getLogger("sentinelqa.integrations.browserstack")
 
 
 class BrowserStackQuotaExceededError(RuntimeError):
-    """Raised (or returned in run() outcome) when the account is at quota."""
+    """Raised (or returned in run outcome) when the account is at quota."""
 
 
 # Backwards-friendly alias kept so existing call-sites can still

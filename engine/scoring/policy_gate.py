@@ -8,7 +8,7 @@ and step 14 (``apply_quality_gates``).
 After ``apply_quality_gates`` runs, the lifecycle's ``_finalize_status``
 reads ``ctx.quality_gate_passed`` and stamps ``test_run.status``.
 The CLI then maps that status onto the canonical exit-code grid
-via :mod:`engine.policy.exit_codes` (the documentation):
+via :mod:`engine.policy.exit_codes` :
 
 - ``passed`` → 0
 - ``failed`` → 1

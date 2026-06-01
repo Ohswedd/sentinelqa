@@ -1,22 +1,19 @@
 // `sentinel-ts discover` — Playwright-driven crawl backend.
-// Phase 17 task 07 + ADR-0010 follow-up. Drives Chromium against a
+// task 07 + ADR-0010 follow-up. Drives Chromium against a
 // target URL, emits `discovery.page` / `discovery.endpoint` JSONL
 // events that the Python `PlaywrightCrawlBackend` consumes.
-//
 // Design choices:
-//
 // - The launcher is injected (`DiscoverLauncher`) so unit tests can run
-//   without Chromium. The production launcher dynamically imports
-//   `@playwright/test`; importing this module never pulls Chromium in.
+// without Chromium. The production launcher dynamically imports
+// `@playwright/test`; importing this module never pulls Chromium in.
 // - Config is read either from a file (`--config <path>`) or from
-//   stdin (`--config -`). Stdin is the path the Python adapter uses.
+// stdin (`--config -`). Stdin is the path the Python adapter uses.
 // - The crawl is breadth-first, capped by `max_pages` AND `max_depth`.
 // - Every request includes the configured User-Agent and the
-//   `X-SentinelQA-Test-Run` header (CLAUDE §6 / PRD §2.2).
+// `X-SentinelQA-Test-Run` header.
 // - Endpoint events fire whenever the browser observes a request whose
-//   path starts with `/api/` or whose response Content-Type is JSON.
-//
-// The implementation is intentionally small. Phase 22 will expand the
+// path starts with `/api/` or whose response Content-Type is JSON.
+// The implementation is intentionally small. will expand the
 // endpoint heuristics; for now we err on the side of recall.
 
 import {

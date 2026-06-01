@@ -2,7 +2,7 @@
 
 Status: `Stable`
 
-Authority: project engineering rules. Implementation: this doc, `commitlint.config.cjs`, `.pre-commit-config.yaml`.
+. Implementation: this doc, `commitlint.config.cjs`, `.pre-commit-config.yaml`.
 
 ## The rule
 

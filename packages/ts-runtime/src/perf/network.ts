@@ -1,12 +1,10 @@
-// Phase 12.03/12.04 — network instrumentation: API timings + JS bundle size.
-//
+// /12.04 — network instrumentation: API timings + JS bundle size.
 // We attach a Playwright `response` handler to the page; every response
 // is classified as either an API call (matched by content-type / path
 // heuristic) or a JS file (filtered by content-type). API durations are
 // reported per request; JS bundle sizes (both wire bytes and decoded
 // bytes) accumulate into a single summary.
-//
-// CLAUDE §27: the timings here are lab synthetic. The Python side carries
+// the engineering guidelines: the timings here are lab synthetic. The Python side carries
 // the synthetic label through to every finding.
 
 import type { ApiSample, BundleSummary } from './types.js';

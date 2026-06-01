@@ -3,7 +3,7 @@
 The Protocol is the public surface every adapter must satisfy. We check
 ``isinstance(provider, LlmProvider)`` at runtime, the class-level
 ``name`` and ``version`` attributes, and the method signatures of
-``complete()`` / ``doctor()``.
+``complete`` / ``doctor``.
 """
 
 from __future__ import annotations

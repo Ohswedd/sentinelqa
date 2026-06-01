@@ -8,7 +8,7 @@ SentinelQA runs in CI the same way it runs locally — same lifecycle,
 same exit codes, same artifacts. The integrations layer adds PR
 posting, mode presets, and diff-aware test selection.
 
-Authority: our product spec, ADR-0022.
+.
 
 ## Five modes
 

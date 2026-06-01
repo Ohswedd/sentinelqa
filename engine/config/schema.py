@@ -1,6 +1,6 @@
-"""Pydantic models for ``sentinel.config.yaml`` (the documentation).
+"""Pydantic models for ``sentinel.config.yaml``.
 
-Every key in the example YAML in the PRD maps to one of these models. The
+Every key in the example YAML in the the documentation maps to one of these models. The
 loader (`engine.config.loader`) rejects unknown keys (`extra="forbid"`) and
 runs the validators below, so malformed configs fail fast at the CLI
 boundary with a precise error code (E-CFG-002).
@@ -140,7 +140,7 @@ class ModulesConfig(SentinelModel):
 class SecurityChecksConfig(SentinelModel):
     """`security.checks:` block (, ADR-0018).
 
-    Boolean per-check toggles. Defaults follow CLAUDE §26 "safe by default":
+    Boolean per-check toggles. Defaults follow the engineering guidelines"safe by default":
 
     - Always-on safe HTTP checks: headers, cookies, CORS, CSRF, reflected
     XSS, IDOR, frontend secrets.
@@ -226,7 +226,7 @@ class SecurityConfig(SentinelModel):
 
 
 class PerformanceBudgets(SentinelModel):
-    """`performance.budgets:` block (the documentation, CLAUDE §27)."""
+    """`performance.budgets:` block."""
 
     lcp_ms: int = Field(default=2500, ge=0)
     cls: float = Field(default=0.1, ge=0)
@@ -242,7 +242,7 @@ class PerformanceBudgets(SentinelModel):
 class PerformanceConfig(SentinelModel):
     """`performance:` block (, ADR-0017).
 
-    Performance checks are explicitly **synthetic** lab measurements (CLAUDE §27);
+    Performance checks are explicitly **synthetic** lab measurements;
     the module never claims to mirror Real-User Monitoring. Routes default to
     empty so ``sentinel audit`` short-circuits the module unless the caller
     (CLI, SDK, or `discovery.json`) supplies a plan. ``samples`` is the per-route
@@ -280,7 +280,7 @@ class VisualMaskConfig(SentinelModel):
     the baseline filename); ``selector`` is the CSS selector the TS
     capture helper hides before screenshot. The Python diff layer ALSO
     accepts a static rectangle (``rect``) so test fixtures can verify
-    masking without driving Playwright (the documentation + CLAUDE §29).
+    masking without driving Playwright (the documentation + the engineering guidelines).
     """
 
     route: str = Field(min_length=1, max_length=512)
@@ -318,7 +318,7 @@ _DEFAULT_VIEWPORTS: tuple[VisualViewportConfig, ...] = (
 
 
 class VisualConfig(SentinelModel):
-    """`visual:` block (the documentation, CLAUDE §29).
+    """`visual:` block.
 
     The visual module consumes already-captured PNGs from a run's
     ``visual/current/`` tree and diffs them against the baselines under
@@ -395,7 +395,7 @@ class PlannerLlmConfig(SentinelModel):
 
     The deterministic planner ships in ; the LLM adapter is opt-in
     behind ``enabled``. Provider keys are never inlined — only env-var
-    names go in YAML, in line with :class:`AuthConfig` and CLAUDE §33.
+    names go in YAML, in line with :class:`AuthConfig` and the engineering guidelines
     """
 
     enabled: bool = False
@@ -419,9 +419,9 @@ class AnalyzerLlmConfig(SentinelModel):
     The deterministic analyzer ships in ; the LLM explainer is
     opt-in behind ``enabled``. Provider keys are never inlined — only
     env-var names go in YAML, in line with :class:`AuthConfig` and
-    CLAUDE §33. The explainer adds at most one sentence of refinement
+    the engineering guidelines
     to each deterministic hypothesis; it never replaces the
-    deterministic category, hypothesis, or confidence (CLAUDE §23).
+    deterministic category, hypothesis, or confidence.
     """
 
     enabled: bool = False
@@ -553,7 +553,7 @@ class AccessibilityConfig(SentinelModel):
 
     Drives the AccessibilityModule. ``axe.tags`` defaults to the WCAG 2.0
     A + AA rule sets plus axe's curated best-practice set so the module
-    catches common defects without overclaiming compliance (CLAUDE §28).
+    catches common defects without overclaiming compliance.
     """
 
     axe: AccessibilityAxeConfig = Field(
@@ -581,14 +581,14 @@ class ApiAuthTestUser(SentinelModel):
 
 
 class ApiConfig(SentinelModel):
-    """`api:` block (, the documentation, our engineering rules).
+    """``api:`` configuration block.
 
     Drives the ApiModule. Contract / negative / auth / latency /
     pagination / error-shape / backward-compat checks are individually
-    gated through ``enabled_checks`` so operators can subset what runs
-    (the documentation). Payload bounds are clamped so a misconfigured run
-    cannot turn into accidental fuzzing — ``negative_max_payload_kb``
-    is capped at 64 KB, ``negative_max_variants_per_endpoint`` at 16.
+    gated through ``enabled_checks`` so operators can subset what runs.
+    Payload bounds are clamped so a misconfigured run cannot turn into
+    accidental fuzzing — ``negative_max_payload_kb`` is capped at
+    64 KB, ``negative_max_variants_per_endpoint`` at 16.
     Aggressive fuzzing has **no** opt-in flag here, anywhere in the
     schema, or in any CLI surface (our engineering rules + the
     ``tests/security/test_api_no_aggressive_flags.py`` guard).
@@ -966,7 +966,7 @@ class ReportConfig(SentinelModel):
 
 
 class RootConfig(SentinelModel):
-    """The fully-parsed `sentinel.config.yaml` (the documentation)."""
+    """The fully-parsed `sentinel.config.yaml`."""
 
     SCHEMA_VERSION: ClassVar[str] = CONFIG_SCHEMA_VERSION
 

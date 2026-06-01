@@ -3,12 +3,12 @@
 Every provider adapter — Anthropic, OpenAI, Gemini, Ollama, Azure OpenAI,
 Vertex AI, Mistral, Groq, OpenRouter — implements this single shape. The
 caller (planner / analyzer / healer / future) builds an :class:`LlmRequest`,
-passes it to ``provider.complete()``, and receives an :class:`LlmResponse`
+passes it to ``provider.complete``, and receives an :class:`LlmResponse`
 whose ``parsed`` payload has been pre-validated against the request's
 ``response_schema``.
 
-The Protocol is deliberately small: one ``complete()`` call, one
-``doctor()`` health probe, and class-level ``name`` / ``version`` for the
+The Protocol is deliberately small: one ``complete`` call, one
+``doctor`` health probe, and class-level ``name`` / ``version`` for the
 registry. Caller-specific shape (the planner's proposal envelope, the
 analyzer's refinement envelope) is enforced by passing the appropriate
 schema into the request — the provider itself stays caller-agnostic.

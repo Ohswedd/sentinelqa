@@ -8,8 +8,6 @@ Every SentinelQA capability is implemented as a **module**: a
 self-registering subclass of `SentinelModule` with a fixed seven-step
 lifecycle.
 
-Authority: our engineering rules §9, our product spec
-
 ## Lifecycle
 
 ```

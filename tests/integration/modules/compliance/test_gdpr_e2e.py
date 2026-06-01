@@ -140,7 +140,7 @@ def test_missing_signals_file_keeps_module_silent(tmp_path: Path) -> None:
     module.collect_evidence(ctx, outcome)
     findings = module.emit_findings(ctx, outcome)
     assert findings == ()
-    # CLAUDE §37: no fake completion — the index.json reflects that
+    # the engineering guidelines: no fake completion — the index.json reflects that
     # nothing actually ran.
     index = json.loads((ctx.run_dir / "compliance" / "index.json").read_text())
     assert index["gdpr_ran"] is False

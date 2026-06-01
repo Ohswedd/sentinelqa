@@ -6,12 +6,12 @@ same lifecycle steps (safety policy, artifact tree, reporter dispatch,
 exit-code mapping) run whether the user types ``sentinel audit`` or
 ``sentinel perf``.
 
-CLAUDE §27 reminder: every output is labelled **synthetic** — these
+the engineering guidelines: every output is labelled **synthetic** — these
 are lab measurements, not Real-User Monitoring. The forbidden-phrase
 guard in ``tests/security/test_synthetic_perf_labeling.py`` makes that
 the law of the build.
 
-Exit codes (CLAUDE §13):
+Exit codes:
 
 - ``0`` — module produced no high/critical findings.
 - ``1`` — quality gate failed (high/critical findings present, or the

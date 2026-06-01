@@ -1,6 +1,6 @@
 """``PerformanceModule`` (, the documentation, ADR-0017).
 
-Lifecycle (CLAUDE §9):
+Lifecycle:
 
 - ``validate_prerequisites`` — no-op; the sentinel-ts probe lives in
  ``execute`` so projects without an installed runtime still report
@@ -19,7 +19,7 @@ Lifecycle (CLAUDE §9):
  :class:`ModuleResult` (no Playwright tests run; no
  :class:`RunnerOutcome` exists).
 
-CLAUDE §27 is the load-bearing rule: every finding's description begins
+the engineering guidelines-bearing rule: every finding's description begins
 with "Synthetic performance check"; the forbidden-phrase guard in
 ``tests/security/test_synthetic_perf_labeling.py`` enforces this.
 """

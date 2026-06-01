@@ -133,7 +133,7 @@ def run_discover(
     # 07 — `discovery.engine` selects the crawl backend.
     # HTTP is the default; `playwright` lights up Chromium-driven
     # SPA crawling (ADR-0010). Construction is intentionally lazy: the
-    # Playwright backend only resolves `sentinel-ts` when `.crawl()` runs,
+    # Playwright backend only resolves `sentinel-ts` when `.crawl` runs,
     # so HTTP runs never pay a startup cost.
     crawler: Crawler
     if config.discovery.engine == "playwright":

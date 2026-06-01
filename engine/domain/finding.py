@@ -1,4 +1,4 @@
-"""Finding entity (the documentation)."""
+"""Finding entity."""
 
 from __future__ import annotations
 

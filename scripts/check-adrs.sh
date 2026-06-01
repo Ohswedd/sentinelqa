@@ -2,13 +2,13 @@
 # Validate every numbered ADR under docs/adr/ against the canonical template.
 #
 # Required headings (in order, exactly as written below):
-#   # ADR-NNNN: <title>
-#   ## Status
-#   ## Context
-#   ## Decision
-#   ## Consequences
-#   ## Alternatives considered
-#   ## References
+# # ADR-NNNN: <title>
+# ## Status
+# ## Context
+# ## Decision
+# ## Consequences
+# ## Alternatives considered
+# ## References
 #
 # Exits 0 if all ADRs comply, 1 otherwise. Wired into `make adr-check` and
 # .github/workflows/ci.yml (Phase 00.07).
@@ -43,7 +43,7 @@ while IFS= read -r -d '' file; do
   fi
   # Only validate files matching NNNN-*.md
   if [[ ! "$base" =~ ^[0-9]{4}-.*\.md$ ]]; then
-    echo "WARN  $file: filename does not match NNNN-kebab-case.md; skipping" >&2
+    echo "WARN $file: filename does not match NNNN-kebab-case.md; skipping" >&2
     continue
   fi
 
@@ -51,12 +51,12 @@ while IFS= read -r -d '' file; do
   local_failures=0
   for heading in "${REQUIRED_HEADINGS[@]}"; do
     if ! grep -Eq "$heading" "$file"; then
-      echo "FAIL  $file: missing required heading matching: $heading"
+      echo "FAIL $file: missing required heading matching: $heading"
       local_failures=$((local_failures + 1))
     fi
   done
   if (( local_failures == 0 )); then
-    echo "OK    $file"
+    echo "OK $file"
   else
     failures=$((failures + 1))
   fi

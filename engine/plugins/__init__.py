@@ -1,4 +1,4 @@
-"""SentinelQA plugin loader (our product spec, CLAUDE §22).
+"""SentinelQA plugin loader (our product spec, the engineering guidelines).
 
 This package owns the host-side of the plugin contract: discovery via
 ``importlib.metadata.entry_points``, manifest validation, semver

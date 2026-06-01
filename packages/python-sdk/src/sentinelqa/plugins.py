@@ -1,4 +1,4 @@
-"""Public plugin contracts (our product spec, CLAUDE §22).
+"""Public plugin contracts (our product spec, the engineering guidelines).
 
 This is the SDK-public surface third-party plugins implement. Each
 Protocol pins:
@@ -11,7 +11,7 @@ Protocol pins:
 The Protocols are intentionally minimal. A plugin author depends on
 :mod:`sentinelqa.plugins` and the SDK's public domain models
 (``Finding``, ``ModuleResult``, etc.) — never on :mod:`engine.*`. The
-loader in :mod:`engine.plugins` ( ) does the actual
+loader in :mod:`engine.plugins`  does the actual
 entry-point discovery, manifest validation, semver compatibility check,
 and ``PluginContext`` wiring.
 
@@ -31,17 +31,17 @@ from engine.domain.module_result import ModuleResult
 from sentinelqa._models import AuditResult
 
 # ---------------------------------------------------------------------------
-# Versioning ( )
+# Versioning
 # ---------------------------------------------------------------------------
 
 #: Semantic version of the plugin protocol surface. Plugins declare a
 #: ``requires_protocol`` semver range against this. Bumping the major
-#: requires an ADR (CLAUDE §22, §40).
+#: requires an ADR.
 PROTOCOL_VERSION: str = "1.0.0"
 
 
 # ---------------------------------------------------------------------------
-# Runtime context ( )
+# Runtime context
 # ---------------------------------------------------------------------------
 
 
@@ -62,7 +62,7 @@ class PluginContext(Protocol):
     run_id: str
     #: Target URL the audit is running against (already safety-checked).
     target_url: str
-    #: Per-run artifact directory (our product spec, CLAUDE §11).
+    #: Per-run artifact directory (our product spec, the engineering guidelines).
     run_dir: Path
     #: Read-only snapshot of the loaded SentinelQA config.
     config_snapshot: Mapping[str, Any]
@@ -93,7 +93,7 @@ class _PluginBase(Protocol):
     name: str
     #: Plugin's own semver string (independent of :data:`PROTOCOL_VERSION`).
     version: str
-    #: Declared capabilities. Forbidden capabilities (CLAUDE §6,
+    #: Declared capabilities. Forbidden capabilities (the engineering guidelines,
     #: ``engine.policy.forbidden_features.FORBIDDEN_CAPABILITIES``)
     #: are rejected at load time.
     capabilities: frozenset[str]
@@ -122,7 +122,7 @@ class ScannerPlugin(_PluginBase, Protocol):
     """Custom audit module (the documentation "Scanner plugin", §22.2).
 
     Returns a typed :class:`ModuleResult` exactly like a built-in
-    module (CLAUDE §9). The orchestrator merges the result into the run
+    module. The orchestrator merges the result into the run
     so scoring, reporting, and policy gating treat it identically.
     """
 
@@ -157,7 +157,7 @@ class ReporterPlugin(_PluginBase, Protocol):
     """Custom report writer (the documentation "Reporter plugin").
 
     The plugin advertises which format names it emits and is invoked
-    after scoring + policy decision (CLAUDE §10). Returns a mapping of
+    after scoring + policy decision. Returns a mapping of
     ``{format_name: written_path}`` so the dispatcher can record the
     emitted artifacts on ``run.json``.
 
@@ -185,7 +185,7 @@ class PolicyPlugin(_PluginBase, Protocol):
     Receives the same inputs as the built-in policy gate and
     returns a release decision. The orchestrator records both the
     built-in decision and any plugin decisions; the strictest verdict
-    wins (CLAUDE §25).
+    wins.
     """
 
     kind: ClassVar[str] = "policy"
@@ -204,7 +204,7 @@ class AuthPlugin(_PluginBase, Protocol):
 
     Replaces the generated-login fixture for projects with bespoke
     auth flows (SSO, MFA bypass tokens, vendor-specific test
-    credentials). MUST NOT log or persist credentials (CLAUDE §33).
+    credentials). MUST NOT log or persist credentials.
     """
 
     kind: ClassVar[str] = "auth"
@@ -223,7 +223,7 @@ class DataFixturePlugin(_PluginBase, Protocol):
 
     Seeds and tears down per-run test data. Only invoked when
     ``security.mode == authorized_destructive`` and the manifest
-    declares the ``data.seed`` capability (CLAUDE §6).
+    declares the ``data.seed`` capability.
     """
 
     kind: ClassVar[str] = "data_fixture"

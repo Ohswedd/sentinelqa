@@ -22,7 +22,7 @@ USER_AGENT: Final[str] = "SentinelQA-Api/1.0 (+https://sentinelqa.dev)"
 
 # Absolute hard cap; the config schema already clamps `negative_max_payload_kb`
 # at 64 KB, but the client refuses anything larger regardless of config to
-# guarantee CLAUDE §30 ("no aggressive fuzzing") at the I/O layer.
+# guarantee the engineering guidelines("no aggressive fuzzing") at the I/O layer.
 ABSOLUTE_MAX_REQUEST_BYTES: Final[int] = 64 * 1024
 
 

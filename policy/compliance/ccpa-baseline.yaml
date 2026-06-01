@@ -5,7 +5,7 @@
 # - do-not-sell-link-missing (link presence)
 # - do-not-sell-link-opt-out-missing (link target has a working form)
 #
-# WORDING NOTE (CLAUDE §28): the label says "(automated)" so the pack
+# WORDING NOTE: the label says "(automated)" so the pack
 # never claims legal CCPA conformance.
 
 pack:

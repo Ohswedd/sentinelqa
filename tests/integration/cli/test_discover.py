@@ -99,7 +99,7 @@ def test_discover_blocks_unsafe_target(
     monkeypatch.chdir(fresh_project)
     write_config(fresh_project, base_url="http://localhost:3000")
     # Public host that is NOT in target.allowed_hosts → safety policy refuses.
-    # We invoke main() so the outermost SentinelError handler maps the raised
+    # We invoke main so the outermost SentinelError handler maps the raised
     # UnsafeTargetError to its deterministic exit code (4).
     from sentinel_cli.main import main
 

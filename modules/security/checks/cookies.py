@@ -6,7 +6,7 @@ looking cookies (name matches ``session|auth|jwt|token`` or set on a
 login response — we use the name heuristic for the release) escalate the
 severity to ``high``.
 
-CLAUDE §33: cookie *values* never leave the process — we read the
+the engineering guidelines: cookie *values* never leave the process — we read the
 attributes only and never log or persist the value.
 """
 

@@ -1,7 +1,6 @@
-// Phase 11 — orchestrates the per-route accessibility audit and writes
+// — orchestrates the per-route accessibility audit and writes
 // the JSON artifacts (`<run-dir>/a11y/<route-slug>.json` + `index.json`)
 // the Python module reads.
-//
 // The orchestrator accepts an injectable `launcher` and `pageVisitor`
 // so the CLI subcommand can wire in Playwright in production while
 // tests substitute a deterministic stub.

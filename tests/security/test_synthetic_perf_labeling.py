@@ -1,4 +1,4 @@
-"""CLAUDE §27 guard: every product output of the performance module must
+"""the engineering guidelines: every product output of the performance module must
 label its measurements as *synthetic*, and must never claim Real-User
 Monitoring or "real user" telemetry. Synthetic lab measurements are a
 proxy for release confidence — calling them RUM would mislead users.

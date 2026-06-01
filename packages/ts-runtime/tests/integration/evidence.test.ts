@@ -13,7 +13,7 @@
 //   * `harConfig` produces a deterministic per-test HAR path.
 //   * For a failing test the reporter (loaded directly) emits one
 //     `evidence` event per attached trace/screenshot/video — proving
-//     failure evidence is *always* present (CLAUDE §21).
+//     failure evidence is *always* present (see documentation).
 
 import { mkdtemp, readFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';

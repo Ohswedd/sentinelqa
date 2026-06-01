@@ -2,7 +2,7 @@
 
 The Action lives at ``integrations/github/action.yml`` and is invoked by
 the reusable workflow under ``integrations/github/workflows/``. The
-smoke target on the example Next.js app lands in (CLAUDE §16);
+smoke target on the example Next.js app lands in;
 this test enforces the structural contract here so the YAML can never
 drift away from our product spec1.
 """
@@ -96,7 +96,7 @@ def test_action_yaml_run_step_uses_ci_flag() -> None:
     ],
 )
 def test_action_yaml_never_logs_secrets(field: str) -> None:
-    """CLAUDE §33: tokens must never be echoed by the Action body."""
+    """the engineering guidelines: tokens must never be echoed by the Action body."""
 
     raw = ACTION_YAML.read_text()
     # We allow `secrets.GITHUB_TOKEN` references in caller workflows but

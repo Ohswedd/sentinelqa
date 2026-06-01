@@ -12,7 +12,7 @@ The seven gates:
 3. **Timestamps monotonic** — entries are append-only (no edits to
  prior lines / no out-of-order timestamps).
 4. **Safety decisions recorded** — at least one ``policy_decision`` /
- ``safety`` entry per run (CLAUDE §6, §10).
+ ``safety`` entry per run.
 5. **Module events recorded** — at least one ``module_start`` *and*
  one ``module_end`` entry per module that ran.
 6. **Artifact events recorded** — at least one ``artifact_written``

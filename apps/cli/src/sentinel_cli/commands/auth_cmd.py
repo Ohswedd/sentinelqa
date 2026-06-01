@@ -15,7 +15,7 @@ Subcommands:
  so the operator can copy it to a teammate's machine. Mandatory
  ``--i-acknowledge`` flag with a stderr warning banner.
 
-Exit codes (CLAUDE §13):
+Exit codes:
 
 - ``0`` — success.
 - ``2`` — invalid CLI usage / unsafe host / CI mode rejection /

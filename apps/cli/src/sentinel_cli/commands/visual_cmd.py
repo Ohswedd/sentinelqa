@@ -5,7 +5,7 @@ Replaces the stub. Three subcommands:
 - ``diff`` (default) — diff ``current/`` PNGs against baselines via
  the canonical :class:`RunLifecycle`.
 - ``accept`` — promote ``current/`` PNGs into the baseline
- tree. Refused in CI (CLAUDE §29, §39): every CI-mode invocation of
+ tree. Refused in CI: every CI-mode invocation of
  ``accept`` exits with :data:`EXIT_UNSAFE_TARGET` and writes an
  audit-log entry.
 - ``capture`` — record an externally-supplied PNG tree as
@@ -14,7 +14,7 @@ Replaces the stub. Three subcommands:
  visual sub-tree; this subcommand wraps the bookkeeping so users
  can feed PNGs from another tool in the interim.
 
-Exit codes (CLAUDE §13):
+Exit codes:
 
 - ``0`` — no visual findings.
 - ``1`` — quality gate failed (differ / size_mismatch / missing_current).
@@ -224,12 +224,12 @@ def diff_cmd(
             )
     elif state.mode != "quiet":
         sys.stdout.write(
-            f"run_id            : {test_run.id}\n"
-            f"run_status        : {test_run.status}\n"
-            f"module_status     : {raw_status}\n"
-            f"findings          : {len(findings)}\n"
-            f"high_or_critical  : {high_or_critical}\n"
-            f"differing         : {differing}\n"
+            f"run_id : {test_run.id}\n"
+            f"run_status : {test_run.status}\n"
+            f"module_status : {raw_status}\n"
+            f"findings : {len(findings)}\n"
+            f"high_or_critical : {high_or_critical}\n"
+            f"differing : {differing}\n"
         )
 
     raise typer.Exit(code=exit_code)
@@ -284,7 +284,7 @@ def accept_cmd(
         sys.stderr.write(
             "sentinel visual accept: refusing to promote baselines in CI mode. "
             "Baselines must be reviewed by a human and accepted locally "
-            "(CLAUDE §29).\n"
+            ".\n"
         )
         # Audit the refusal to the visual subdir so the operator has a
         # paper trail of every CI-blocked attempt.
@@ -393,8 +393,8 @@ def accept_cmd(
     elif state.mode != "quiet":
         sys.stdout.write(
             f"baselines_dir : {resolved_baselines}\n"
-            f"promoted      : {len(promoted)}\n"
-            f"index         : {index_path}\n"
+            f"promoted : {len(promoted)}\n"
+            f"index : {index_path}\n"
         )
 
     raise typer.Exit(code=EXIT_SUCCESS)
@@ -458,9 +458,7 @@ def capture_cmd(
                 }
             )
     elif state.mode != "quiet":
-        sys.stdout.write(
-            f"run_id : {run_id}\n" f"dest   : {dest_root}\n" f"copied : {len(copied)}\n"
-        )
+        sys.stdout.write(f"run_id : {run_id}\n" f"dest : {dest_root}\n" f"copied : {len(copied)}\n")
 
     raise typer.Exit(code=EXIT_SUCCESS)
 

@@ -6,7 +6,7 @@ against the configured budgets in :class:`engine.config.schema.PerformanceBudget
 and produces typed :class:`PageBudgetFinding` records the findings layer
 translates into :class:`engine.domain.finding.Finding`.
 
-All measurements are explicitly **synthetic** (CLAUDE §27): the lab numbers
+All measurements are explicitly **synthetic**: the lab numbers
 are reproducible and useful for catching regressions, but they are not
 Real-User Monitoring. The finding descriptions always include the word
 "synthetic" so consumers cannot mistake one for the other.
@@ -96,7 +96,7 @@ def evaluate_page_budgets(
 
     INP is only evaluated when the browser surfaced at least one sample;
     a missing INP is reported by the runner via ``inp_supported=False``
-    and does NOT count as a violation (the documentation, CLAUDE §27 — we report
+    and does NOT count as a violation (our published policy— we report
     what we measured, not what we guessed).
     """
 

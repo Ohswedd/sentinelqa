@@ -16,7 +16,7 @@ from tests.integration.cli.conftest import write_config
 def _ensure_chaos_registered() -> None:
     """Some earlier tests clear the orchestrator registry. Re-register chaos.
 
-    `register_with_default_registry()` is idempotent (CLAUDE §9 module
+    `register_with_default_registry` is idempotent (the engineering guidelines
     contract), so calling it per-test costs nothing and keeps the
     chaos CLI tests independent of suite ordering.
     """

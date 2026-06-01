@@ -1,6 +1,6 @@
 """Stub command factory for unimplemented commands.
 
-Stubs are reachable from `sentinel --help` (CLAUDE §13) but raise the
+Stubs are reachable from `sentinel --help` but raise the
 internal-error exit code (7) when invoked. The help text names the
 phase where the real implementation lands so users can follow the plan.
 """
@@ -18,7 +18,7 @@ def register_stub(app: typer.Typer, *, name: str, phase: str, summary: str) -> N
     This satisfies the spec in : every the documentation command is
     registered, and the unimplemented ones surface a deterministic
     "not yet implemented" failure rather than silently doing nothing
-    (CLAUDE §37: no fake completion).
+    (the engineering guidelines: no fake completion).
     """
 
     help_text = f"{summary} (lands in Phase {phase})"
@@ -26,7 +26,7 @@ def register_stub(app: typer.Typer, *, name: str, phase: str, summary: str) -> N
     @app.command(name=name, help=help_text)
     def _stub() -> None:
         # The CLI message points at the phase; the exception body carries
-        # the structured detail the main() exception handler renders.
+        # the structured detail the main exception handler renders.
         raise InternalError(
             f"`sentinel {name}` is not yet implemented (lands in Phase {phase}).",
             technical_context={"command": name, "phase": phase},

@@ -1,18 +1,14 @@
-// Phase 23.02 — Network chaos helpers.
-//
+// — Network chaos helpers.
 // `chaosNetwork(page, options)` installs a Playwright `route()` handler
 // that injects one of four bounded scenarios:
-//
-//   - `network.slow_3g`    — delay every response by RTT + payload/ms.
-//   - `network.offline`    — abort every outgoing request.
-//   - `network.api_500`    — match `apiPattern` and return HTTP 500.
-//   - `network.api_timeout`— match `apiPattern` and stall, then abort
-//                            after `timeoutAbortMs` ms.
-//
-// CLAUDE §6 / §29: the scenarios above are *bounded* — `slow_3g`
+// - `network.slow_3g` — delay every response by RTT + payload/ms.
+// - `network.offline` — abort every outgoing request.
+// - `network.api_500` — match `apiPattern` and return HTTP 500.
+// - `network.api_timeout`— match `apiPattern` and stall, then abort
+// after `timeoutAbortMs` ms.
+// the engineering guidelines: the scenarios above are *bounded* — `slow_3g`
 // cannot drop below 100 Kbps, `api_timeout` cannot exceed 120 s, and
 // neither `offline` nor `api_500` exposes any "stealth" knob.
-//
 // The helper returns an `observeNetworkChaos()` callback the test caller
 // invokes with the observed UI state (e.g. `'no_error_state'` if the
 // page never rendered an error banner after a forced 500). The
@@ -123,7 +119,7 @@ export async function chaosNetwork(
  * Build a typed ChaosEvent from a UI-side observation. Callers invoke
  * this after their assertions decide whether the app handled the chaos
  * gracefully. `evidence` is a flat string→string map so the JSONL line
- * stays trivially redactable (CLAUDE §33).
+ * stays trivially redactable.
  */
 export function observeNetworkChaos(args: {
   readonly scenario: NetworkScenarioId;

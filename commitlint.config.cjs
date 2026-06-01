@@ -1,19 +1,19 @@
 /**
  * SentinelQA commitlint configuration.
  *
- * Enforces Conventional Commits per CLAUDE.md §4 with a deliberately narrow
+ * Enforces Conventional Commits per the engineering guidelines with a deliberately narrow
  * type whitelist. The whitelist matches the one documented in
  * docs/dev/commits.md; any change to either file must be mirrored in the
  * other.
  *
  * Wired in via .pre-commit-config.yaml (commit-msg stage). Bypassing the hook
- * with --no-verify is forbidden by CLAUDE.md §4 unless explicitly authorized.
+ * with --no-verify is forbidden by the engineering guidelines unless explicitly authorized.
  */
 
 module.exports = {
   extends: ['@commitlint/config-conventional'],
   rules: {
-    // CLAUDE.md §4 type whitelist
+    // the engineering guidelines type whitelist
     'type-enum': [
       2,
       'always',
@@ -24,7 +24,7 @@ module.exports = {
     'scope-empty': [1, 'never'], // scopes are encouraged but not strictly required
     'scope-case': [2, 'always', 'kebab-case'],
     'subject-empty': [2, 'never'],
-    // Subjects often legitimately contain proper nouns ("SentinelQA", "PRD", "CI"),
+    // Subjects often legitimately contain proper nouns ("SentinelQA", "the documentation", "CI"),
     // so do not force a single case style on the subject line.
     'subject-case': [0],
     // Cap headline length so commit lists stay scannable, but leave room for

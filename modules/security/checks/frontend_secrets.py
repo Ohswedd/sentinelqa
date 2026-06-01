@@ -14,7 +14,7 @@ Two sub-scans:
  skipped.
 
 The scanner never persists the matched secret value — only a short
-masked preview (``"AKIA…"``) and the category. CLAUDE §33 forbids
+masked preview (``"AKIA…"``) and the category. the engineering guidelines
 secrets-in-logs full stop.
 """
 

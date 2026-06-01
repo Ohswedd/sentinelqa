@@ -13,10 +13,10 @@ ships the first concrete audit module (`functional`, the documentation) and, in 
 
 Several pressures shaped the answer:
 
-- **CLAUDE §9** mandates a seven-step lifecycle for every module: validate prerequisites → plan checks → execute → collect evidence → emit findings → emit metrics → summarize. Until nothing actually implemented those steps, so a future plugin author would have invented their own.
-- **CLAUDE §10** requires module failures to produce typed partial results, not abort the run. rehomed the broad `except Exception` in `run_modules` so module crashes get categorized; has to wire the success path next to it.
+- **the engineering guidelines** mandates a seven-step lifecycle for every module: validate prerequisites → plan checks → execute → collect evidence → emit findings → emit metrics → summarize. Until nothing actually implemented those steps, so a future plugin author would have invented their own.
+- **the engineering guidelines** requires module failures to produce typed partial results, not abort the run. rehomed the broad `except Exception` in `run_modules` so module crashes get categorized; has to wire the success path next to it.
 - **our product spec** requires every medium/high/critical finding to carry evidence. The runner attaches evidence per `TestExecution`; the module has to translate those failures into `Finding` records with evidence intact.
-- **CLAUDE §13** demands deterministic exit codes per command. `sentinel functional` has to map module + finding status onto the canonical 0/1/2/4/5/6 grid.
+- **the engineering guidelines** demands deterministic exit codes per command. `sentinel functional` has to map module + finding status onto the canonical 0/1/2/4/5/6 grid.
 - ** / 07** already produce flow extractors and templated specs.'s tag conventions have to slot in without re-flowing the planner or generator.
 
 We also wanted to ensure the contract is **observable from the lifecycle**. Before, `LifecycleContext.typed_module_results` existed but no module populated it; the CLI/SDK had no typed handle on module output.
@@ -25,7 +25,7 @@ We also wanted to ensure the contract is **observable from the lifecycle**. Befo
 
 We adopt the following conventions for SentinelQA audit modules:
 
-1. **The module contract lives in `engine/modules/base.py`.** `SentinelModule` is an `abc.ABC` with the seven CLAUDE §9 steps as instance methods. Subclasses must implement `execute(ctx, specs)`; the other six methods have working defaults so simple modules don't restate boilerplate. `run(ctx)` orchestrates the seven steps and is what the lifecycle calls. The companion `ModuleContext` dataclass freezes the inputs the orchestrator hands the module (config, safety decision, artifacts dir, run id, target, id generator, per-module options).
+1. **The module contract lives in `engine/modules/base.py`.** `SentinelModule` is an `abc.ABC` with the seven the engineering guidelines`execute(ctx, specs)`; the other six methods have working defaults so simple modules don't restate boilerplate. `run(ctx)` orchestrates the seven steps and is what the lifecycle calls. The companion `ModuleContext` dataclass freezes the inputs the orchestrator hands the module (config, safety decision, artifacts dir, run id, target, id generator, per-module options).
 
 2. **Concrete modules live under `modules/<name>/`** so's plugin discovery can flip them on without restructuring. `modules/functional/__init__.py` re-exports `FunctionalModule` and self-registers with the process-wide `ModuleRegistry` on import. The factory `_factory(config, decision)` returns a fresh `FunctionalModule`; tests inject custom runners via the constructor's `runner_factory=` kwarg, never by replacing the global.
 
@@ -54,7 +54,7 @@ We adopt the following conventions for SentinelQA audit modules:
 
 ## References
 
-- PRD section(s): our product spec, §10.1, §10.2, §18, §20, §21.3.
+- the documentation section(s): our product spec, §10.1, §10.2, §18, §20, §21.3.
 - our engineering rules rule(s): our engineering rules(Module contract), §10 (Run lifecycle), §13 (CLI), §16 (Testing standard), §17 (Quality gates), §24 (Findings), §37 (No placeholder completion).
 - External: Playwright test tagging (`https://playwright.dev/docs/test-annotations#tag-tests`).
 - Related ADRs: ADR-0007 (Run lifecycle), ADR-0008 (Report schemas), ADR-0009 (Python ↔ TS protocol), ADR-0012 (Generated test conventions), ADR-0013 (Runner architecture), ADR-0014 (Analyzer rules). will supersede the import-time registration mechanism with an entry-point ADR.

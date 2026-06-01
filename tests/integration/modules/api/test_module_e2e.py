@@ -1,4 +1,4 @@
-"""End-to-end coverage of ApiModule.run() against an httpserver fixture.
+"""End-to-end coverage of ApiModule.run against an httpserver fixture.
 
 Hits the dispatch branches in ``modules.api.module._run_audit`` that
 unit tests of individual checks cannot reach (OpenAPI + GraphQL

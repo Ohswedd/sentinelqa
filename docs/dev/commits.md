@@ -2,7 +2,7 @@
 
 Status: `Stable`
 
-Authority: project engineering rules. Enforcement: `commitlint.config.cjs` invoked by `.pre-commit-config.yaml` at the `commit-msg` stage.
+. Enforcement: `commitlint.config.cjs` invoked by `.pre-commit-config.yaml` at the `commit-msg` stage.
 
 ## Format
 

@@ -6,7 +6,7 @@
 # - consent-banner-missing (Art. 6)
 # - asymmetric-consent (EDPB Guidelines 03/2022)
 #
-# WORDING NOTE (CLAUDE §28): the label says "(automated)" so the pack
+# WORDING NOTE: the label says "(automated)" so the pack
 # never claims legal GDPR conformance.
 
 pack:

@@ -27,7 +27,7 @@ Domain core in `engine/` MUST NOT depend directly on Typer, Click, FastAPI, Play
 ## Consequences
 
 - **Positive:** Each runtime stays best-of-breed. Python keeps its strict type-checker (`mypy`) and lint stack (`ruff`); TypeScript keeps the Playwright-native dev loop. Neither runtime pretends to be the other.
-- **Positive:** The JSONL bridge gives us a deterministic boundary we can record, replay, and version — which fits the "evidence in one place" thesis (the documentation).
+- **Positive:** The JSONL bridge gives us a deterministic boundary we can record, replay, and version — which fits the "evidence in one place" thesis.
 - **Negative / trade-off:** Two ecosystems mean two lockfiles (`uv.lock`, `pnpm-lock.yaml`), two test runners (`pytest`, `vitest`), two CI matrices, and contributors must be at least conversant in both. Documented in `docs/dev/local-setup.md`.
 - **Negative / trade-off:** Spawning a subprocess per run adds a fixed startup cost. Acceptable today; revisitable if perf phases (12, 28) show it matters.
 - **Follow-up obligations:** ships the JSONL contract as an explicit message schema; any future change to that contract requires a new ADR.

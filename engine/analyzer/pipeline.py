@@ -40,8 +40,8 @@ class Analyzer:
 
     Usage:
 
-    >>> analyzer = Analyzer()
-    >>> for result in analyzer.analyze(signals, context=AnalyzerContext()):......
+    >>> analyzer = Analyzer
+    >>> for result in analyzer.analyze(signals, context=AnalyzerContext):......
 
     The LLM explainer is injected via the ``llm`` argument so callers
     keep full control over budget enforcement and provider selection
@@ -106,7 +106,7 @@ def sort_results(results: Sequence[AnalyzerResult]) -> tuple[AnalyzerResult, ...
 
 
 def is_healer_candidate(result: AnalyzerResult) -> bool:
-    """Return ``True`` if Healer should attempt a repair (the documentation).
+    """Return ``True`` if Healer should attempt a repair.
 
     The Healer is intentionally narrow: it operates only on
     ``test_bug``-categorized failures. App bugs, environment failures,

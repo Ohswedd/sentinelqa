@@ -1,6 +1,6 @@
 """Translate :class:`A11yPageResult` into typed :class:`Finding` records.
 
-CLAUDE §28 is the load-bearing rule: the module's text must never make
+the engineering guidelines-bearing rule: the module's text must never make
 a full-WCAG-compliance claim. Outputs say "Automated accessibility
 check found: <detail>". The forbidden-phrase guard in
 ``tests/security/test_no_wcag_compliance_claims.py`` enforces this.
@@ -241,7 +241,7 @@ def findings_from_pages(
 
 
 def short_rule_hash(rule_id: str, route: str, selector: str) -> str:
-    """Stable short hash used in finding titles for grouping (the documentation)."""
+    """Stable short hash used in finding titles for grouping."""
 
     digest = hashlib.sha1(
         f"{rule_id}|{route}|{selector}".encode(),

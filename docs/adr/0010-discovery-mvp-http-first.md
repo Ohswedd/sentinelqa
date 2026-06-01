@@ -9,7 +9,7 @@ Accepted
 
 ## Context
 
-builds the Discovery module (the documentation): the component that produces a
+builds the Discovery module : the component that produces a
 `DiscoveryGraph` (routes, elements, forms, API endpoints, auth boundaries) and
 a `RiskMap` for the Planner to prioritize work against. Discovery
 is the upstream input for every later module — Planner, Generator, Runner,
@@ -57,7 +57,7 @@ ships an **HTTP-first** Discovery release:
 - The `Crawler` is declared via a `CrawlBackend` Protocol; the HTTP backend is the only one shipped in.
 
 The `DiscoveryGraph` / `RiskMap` schemas are written so a Playwright-driven
-backend can produce the same outputs in a later phase without breaking
+backend can produce the same outputs in a future release without breaking
 downstream consumers.
 
 A Playwright-driven backend that handles CSR SPAs lands in as (added in
@@ -81,6 +81,6 @@ backends produce equivalent `DiscoveryGraph` shapes against a fixture SPA.
 
 ## References
 
-- PRD section(s): the documentation (Discovery module), §2.2 (Compliant realism), §11 (Architecture), §15 (TypeScript Runtime), §21 (CI/CD), §32 (Recommended Build Order).
+- the documentation section(s): the documentation (Discovery module), §2.2 (Compliant realism), §11 (Architecture), §15 (TypeScript Runtime), §21 (CI/CD), §32 (Recommended Build Order).
 - our engineering rules rule(s): §6 (Safety boundary), §8 (Runtime ownership), §9 (Module contract), §10 (Run lifecycle), §17 (Quality gates), §31 (LLM-Code audit), §34 (Documentation rules).
 - Related ADRs: [ADR-0009](./0009-python-ts-protocol.md) (Python ↔ TS JSONL protocol — the bridge the backend will use).

@@ -56,7 +56,7 @@ def configure_logging(
         return
 
     if mode == "json":
-        # JSON mode (CLAUDE §13): stdout is reserved for the CLI's
+        # JSON mode: stdout is reserved for the CLI's
         # machine-readable payload (one JSON object per line, emitted via
         # `sentinel_cli.json_mode.json_stdout`). All log records — including
         # INFO — go to stderr so piping stdout through `jq` stays clean.

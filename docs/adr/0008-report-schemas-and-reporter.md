@@ -14,7 +14,7 @@ report be machine-readable, schema-stable, and versioned; §24 demands every
 finding be evidence-backed. our product spec names the entities, §19 the score, §20
 the evidence/reporting contract, §21 the CI handshake.'s job is
 to lock the wire formats SentinelQA emits before any module phase (05+)
-fills them in, so later phases write against frozen schemas rather than
+fills them in, so later additions write against frozen schemas rather than
 inventing one each.
 
 Two concrete failure modes drove the decision:
@@ -81,7 +81,7 @@ contracts.
 
 ## References
 
-- PRD section(s): our product spec (Configuration), §18 (Data model), §19 (Quality scoring), §20 (Evidence & reporting), §21 (CI), §24 (Finding schema).
+- the documentation section(s): our product spec (Configuration), §18 (Data model), §19 (Quality scoring), §20 (Evidence & reporting), §21 (CI), §24 (Finding schema).
 - our engineering rules rule(s): our engineering rules(Artifact rules), §16 (Testing), §17 (Quality gates), §24 (Findings rules), §25 (Quality score rules), §32 (Error handling), §33 (Logging & secrets), §38 (Report rules).
 - External: - SARIF 2.1.0 OASIS spec — https://docs.oasis-open.org/sarif/sarif/v2.1.0/errata01/os/sarif-v2.1.0-errata01-os-complete.html - JUnit XML / Surefire reporting — https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd
 - Related ADRs: ADR-0005 (Config schema), ADR-0006 (Safety policy), ADR-0007 (Run lifecycle).

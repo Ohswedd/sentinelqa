@@ -8,8 +8,6 @@ Every audit follows the same canonical pipeline. The steps are defined
 in `engine.orchestrator.run_lifecycle.RunLifecycle.execute` and the
 order is enforced by typed phase enums — modules cannot bypass it.
 
-Authority: our engineering rules §10, our product spec
-
 ## The 17 steps
 
 1. **load config**

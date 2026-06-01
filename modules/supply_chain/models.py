@@ -2,7 +2,7 @@
 
 Mirrors the on-disk shapes the module writes under ``<run-dir>/sbom/``
 and ``<run-dir>/supply_chain/``. The schema version is bumped under an
-ADR (CLAUDE §34) and is enforced at parse time. / ADR-0045
+ADR and is enforced at parse time. / ADR-0045
 owns version ``"1"``.
 """
 
@@ -16,7 +16,7 @@ from engine.domain.finding import Severity
 from pydantic import Field, field_validator
 
 SUPPLY_CHAIN_SCHEMA_VERSION: str = "1"
-"""Bump under an ADR (CLAUDE §34). Owned by Phase 33."""
+"""Bump under an ADR. Owned by Phase 33."""
 
 
 # Lockfile ecosystems we understand. CycloneDX 1.5 expects ``purl``

@@ -13,22 +13,22 @@ adapter behind the existing CLI surface.
 
 ### Inputs
 
-| Name                      | Required | Default                | Notes                                                                              |
-| ------------------------- | -------- | ---------------------- | ---------------------------------------------------------------------------------- |
-| `url`                     | yes      | —                      | Preview URL. Must be local, staging, or allowlisted (CLAUDE §6, our product spec). |
-| `config`                  | no       | `sentinel.config.yaml` | Path to the config file.                                                           |
-| `mode`                    | no       | `standard`             | `fast` / `standard` / `full` / `nightly` / `release`.                              |
-| `fail-under`              | no       | `''`                   | Override `policy.min_quality_score`; empty inherits config.                        |
-| `diff`                    | no       | `''`                   | Git diff range for impacted-tests mode (e.g. `origin/main...HEAD`).                |
-| `python-version`          | no       | `3.12`                 | Forwarded to `actions/setup-python`.                                               |
-| `node-version`            | no       | `20`                   | Forwarded to `actions/setup-node`.                                                 |
-| `sentinelqa-version`      | no       | `''`                   | PyPI version spec; empty skips install (caller pre-installed).                     |
-| `install-playwright`      | no       | `true`                 | Run `npx playwright install --with-deps chromium`.                                 |
-| `upload-artifacts`        | no       | `true`                 | Upload report.html / findings.json / sarif.json / traces.                          |
-| `upload-sarif`            | no       | `true`                 | Upload SARIF to GitHub code scanning.                                              |
-| `artifact-name`           | no       | `sentinelqa-report`    | `actions/upload-artifact@v4` name.                                                 |
-| `artifact-retention-days` | no       | `14`                   | Retention for uploaded artifacts.                                                  |
-| `working-directory`       | no       | `.`                    | Working directory in which to run the audit.                                       |
+| Name                      | Required | Default                | Notes                                                               |
+| ------------------------- | -------- | ---------------------- | ------------------------------------------------------------------- |
+| `url`                     | yes      | —                      | Preview URL. Must be local, staging, or allowlisted.                |
+| `config`                  | no       | `sentinel.config.yaml` | Path to the config file.                                            |
+| `mode`                    | no       | `standard`             | `fast` / `standard` / `full` / `nightly` / `release`.               |
+| `fail-under`              | no       | `''`                   | Override `policy.min_quality_score`; empty inherits config.         |
+| `diff`                    | no       | `''`                   | Git diff range for impacted-tests mode (e.g. `origin/main...HEAD`). |
+| `python-version`          | no       | `3.12`                 | Forwarded to `actions/setup-python`.                                |
+| `node-version`            | no       | `20`                   | Forwarded to `actions/setup-node`.                                  |
+| `sentinelqa-version`      | no       | `''`                   | PyPI version spec; empty skips install (caller pre-installed).      |
+| `install-playwright`      | no       | `true`                 | Run `npx playwright install --with-deps chromium`.                  |
+| `upload-artifacts`        | no       | `true`                 | Upload report.html / findings.json / sarif.json / traces.           |
+| `upload-sarif`            | no       | `true`                 | Upload SARIF to GitHub code scanning.                               |
+| `artifact-name`           | no       | `sentinelqa-report`    | `actions/upload-artifact@v4` name.                                  |
+| `artifact-retention-days` | no       | `14`                   | Retention for uploaded artifacts.                                   |
+| `working-directory`       | no       | `.`                    | Working directory in which to run the audit.                        |
 
 ### Outputs
 

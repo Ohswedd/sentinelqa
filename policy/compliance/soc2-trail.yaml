@@ -6,7 +6,7 @@
 # artefact as evidence ("our release-confidence engine produces this
 # trail per run; here is the artefact").
 #
-# WORDING NOTE (CLAUDE §28): the pack documents the gates, never that
+# WORDING NOTE: the pack documents the gates, never that
 # the target product is SOC 2 compliant.
 
 pack:

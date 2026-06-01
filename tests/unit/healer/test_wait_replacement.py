@@ -80,7 +80,7 @@ def test_invalid_line_returns_none() -> None:
 
 
 def test_scope_boundary_stops_search() -> None:
-    """An assertion in a different test() block should not anchor the repair."""
+    """An assertion in a different test block should not anchor the repair."""
 
     src = (
         "test('a', async ({ page }) => {\n"

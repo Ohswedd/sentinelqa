@@ -153,10 +153,10 @@ def load_from_entry_point(
 
     Performs (in order):
 
-    1. ``entry_point.load()`` — import the target object.
+    1. ``entry_point.load`` — import the target object.
     2. Instantiate if it is a class.
     3. Synthesise a manifest from class attrs and validate it.
-    4. Reject forbidden capabilities (CLAUDE §6).
+    4. Reject forbidden capabilities.
     5. Reject incompatible ``requires_protocol``.
     6. ``isinstance`` check against the Protocol for the declared
     ``kind``.

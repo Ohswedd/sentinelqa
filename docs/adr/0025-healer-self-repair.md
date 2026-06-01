@@ -16,7 +16,7 @@ assertions cannot be weakened silently, hand-edited specs cannot be
 overwritten. the documentation names the `sentinel fix` CLI surface.
 the documentation already shipped `sentinel.verify_fix` as the
 agent-observable confirmation loop — but only as the verifier; the
-Healer's apply-fix logic was deferred to.
+Healer's apply-fix logic was scheduled for.
 
 We have three structural decisions to make:
 

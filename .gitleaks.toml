@@ -59,7 +59,7 @@ paths = [
   '''^tests/integration/modules/llm_audit/test_broken_fixture_sweep\.py$''',
   '''^tests/fixtures/llm_audit_broken/source_files\.json$''',
   '''^tests/fixtures/llm_audit_broken/signals\.json$''',
-  # release-package inspector test writes a synthetic .pem
+  # release-package inspector test writes a synthetic.pem
   # member into an in-memory tarball to prove the inspector flags it.
   # The body is a literal PEM-style header with no key bytes.
   '''^tests/integration/release/test_built_packages\.py$''',

@@ -1,6 +1,5 @@
-// Phase 11 keyboard navigation + focus checks.
-//
-// CLAUDE §28: outputs always say "Automated accessibility check found"
+// keyboard navigation + focus checks.
+// the engineering guidelines: outputs always say "Automated accessibility check found"
 // — they never make a full-compliance claim.
 
 import type { KeyboardIssue } from './types.js';

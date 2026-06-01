@@ -1,4 +1,4 @@
-"""Form entity (the documentation)."""
+"""Form entity."""
 
 from __future__ import annotations
 

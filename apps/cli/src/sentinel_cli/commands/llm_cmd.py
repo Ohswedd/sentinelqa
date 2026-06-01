@@ -4,12 +4,12 @@ Three subcommands:
 
 - ``sentinel llm list`` — prints registered providers + per-provider
  default model + whether the credential env var is set. JSON mode.
-- ``sentinel llm doctor`` — runs each provider's ``doctor()`` probe and
+- ``sentinel llm doctor`` — runs each provider's ``doctor`` probe and
  reports reachability + latency. JSON mode.
 - ``sentinel llm price`` — prints the cost table for a given
  ``provider/model`` pair. JSON mode.
 
-Exit codes (CLAUDE §13):
+Exit codes:
 
 - ``0`` — success.
 - ``1`` — at least one configured provider is unreachable.

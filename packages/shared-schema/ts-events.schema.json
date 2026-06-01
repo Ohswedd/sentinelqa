@@ -9,159 +9,295 @@
     "propertyName": "type"
   },
   "oneOf": [
-    { "$ref": "#/$defs/runStart" },
-    { "$ref": "#/$defs/runEnd" },
-    { "$ref": "#/$defs/testStart" },
-    { "$ref": "#/$defs/testEnd" },
-    { "$ref": "#/$defs/stepStart" },
-    { "$ref": "#/$defs/stepEnd" },
-    { "$ref": "#/$defs/evidence" },
-    { "$ref": "#/$defs/networkRequest" },
-    { "$ref": "#/$defs/networkResponse" },
-    { "$ref": "#/$defs/consoleEvent" },
-    { "$ref": "#/$defs/domSnapshot" },
-    { "$ref": "#/$defs/moduleEvent" },
-    { "$ref": "#/$defs/logEvent" },
-    { "$ref": "#/$defs/errorEvent" },
-    { "$ref": "#/$defs/discoveryPage" },
-    { "$ref": "#/$defs/discoveryEndpoint" }
+    {
+      "$ref": "#/$defs/runStart"
+    },
+    {
+      "$ref": "#/$defs/runEnd"
+    },
+    {
+      "$ref": "#/$defs/testStart"
+    },
+    {
+      "$ref": "#/$defs/testEnd"
+    },
+    {
+      "$ref": "#/$defs/stepStart"
+    },
+    {
+      "$ref": "#/$defs/stepEnd"
+    },
+    {
+      "$ref": "#/$defs/evidence"
+    },
+    {
+      "$ref": "#/$defs/networkRequest"
+    },
+    {
+      "$ref": "#/$defs/networkResponse"
+    },
+    {
+      "$ref": "#/$defs/consoleEvent"
+    },
+    {
+      "$ref": "#/$defs/domSnapshot"
+    },
+    {
+      "$ref": "#/$defs/moduleEvent"
+    },
+    {
+      "$ref": "#/$defs/logEvent"
+    },
+    {
+      "$ref": "#/$defs/errorEvent"
+    },
+    {
+      "$ref": "#/$defs/discoveryPage"
+    },
+    {
+      "$ref": "#/$defs/discoveryEndpoint"
+    }
   ],
   "$defs": {
     "envelope": {
       "type": "object",
       "required": ["type", "schema_version", "seq", "ts"],
       "properties": {
-        "type": { "type": "string" },
+        "type": {
+          "type": "string"
+        },
         "schema_version": {
           "type": "string",
           "pattern": "^\\d+\\.\\d+\\.\\d+$"
         },
-        "seq": { "type": "integer", "minimum": 1 },
-        "ts": { "type": "string", "format": "date-time" }
+        "seq": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "ts": {
+          "type": "string",
+          "format": "date-time"
+        }
       }
     },
     "serializedError": {
       "type": "object",
       "required": ["name", "message"],
       "properties": {
-        "name": { "type": "string" },
-        "message": { "type": "string" },
-        "stack": { "type": "string" }
+        "name": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "stack": {
+          "type": "string"
+        }
       },
       "additionalProperties": false
     },
     "runStart": {
       "allOf": [
-        { "$ref": "#/$defs/envelope" },
+        {
+          "$ref": "#/$defs/envelope"
+        },
         {
           "type": "object",
           "required": ["type", "run_id", "target", "started_at"],
           "properties": {
-            "type": { "const": "run.start" },
-            "run_id": { "type": "string", "minLength": 1 },
-            "target": { "type": "string", "minLength": 1 },
-            "started_at": { "type": "string", "format": "date-time" }
+            "type": {
+              "const": "run.start"
+            },
+            "run_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "target": {
+              "type": "string",
+              "minLength": 1
+            },
+            "started_at": {
+              "type": "string",
+              "format": "date-time"
+            }
           }
         }
       ]
     },
     "runEnd": {
       "allOf": [
-        { "$ref": "#/$defs/envelope" },
+        {
+          "$ref": "#/$defs/envelope"
+        },
         {
           "type": "object",
           "required": ["type", "run_id", "finished_at", "status", "tests_total", "tests_failed"],
           "properties": {
-            "type": { "const": "run.end" },
-            "run_id": { "type": "string", "minLength": 1 },
-            "finished_at": { "type": "string", "format": "date-time" },
+            "type": {
+              "const": "run.end"
+            },
+            "run_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "finished_at": {
+              "type": "string",
+              "format": "date-time"
+            },
             "status": {
               "type": "string",
               "enum": ["passed", "failed", "timed_out", "interrupted", "errored"]
             },
-            "tests_total": { "type": "integer", "minimum": 0 },
-            "tests_failed": { "type": "integer", "minimum": 0 }
+            "tests_total": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "tests_failed": {
+              "type": "integer",
+              "minimum": 0
+            }
           }
         }
       ]
     },
     "testStart": {
       "allOf": [
-        { "$ref": "#/$defs/envelope" },
+        {
+          "$ref": "#/$defs/envelope"
+        },
         {
           "type": "object",
           "required": ["type", "test_id", "title", "file"],
           "properties": {
-            "type": { "const": "test.start" },
-            "test_id": { "type": "string", "minLength": 1 },
-            "title": { "type": "string" },
-            "file": { "type": "string" }
+            "type": {
+              "const": "test.start"
+            },
+            "test_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "title": {
+              "type": "string"
+            },
+            "file": {
+              "type": "string"
+            }
           }
         }
       ]
     },
     "testEnd": {
       "allOf": [
-        { "$ref": "#/$defs/envelope" },
+        {
+          "$ref": "#/$defs/envelope"
+        },
         {
           "type": "object",
           "required": ["type", "test_id", "duration_ms", "status", "retries"],
           "properties": {
-            "type": { "const": "test.end" },
-            "test_id": { "type": "string", "minLength": 1 },
-            "duration_ms": { "type": "integer", "minimum": 0 },
+            "type": {
+              "const": "test.end"
+            },
+            "test_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "duration_ms": {
+              "type": "integer",
+              "minimum": 0
+            },
             "status": {
               "type": "string",
               "enum": ["passed", "failed", "timed_out", "skipped"]
             },
-            "retries": { "type": "integer", "minimum": 0 },
-            "error": { "$ref": "#/$defs/serializedError" }
+            "retries": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "error": {
+              "$ref": "#/$defs/serializedError"
+            }
           }
         }
       ]
     },
     "stepStart": {
       "allOf": [
-        { "$ref": "#/$defs/envelope" },
+        {
+          "$ref": "#/$defs/envelope"
+        },
         {
           "type": "object",
           "required": ["type", "test_id", "step_id", "name"],
           "properties": {
-            "type": { "const": "step.start" },
-            "test_id": { "type": ["string", "null"] },
-            "step_id": { "type": "string", "minLength": 1 },
-            "name": { "type": "string" }
+            "type": {
+              "const": "step.start"
+            },
+            "test_id": {
+              "type": ["string", "null"]
+            },
+            "step_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "name": {
+              "type": "string"
+            }
           }
         }
       ]
     },
     "stepEnd": {
       "allOf": [
-        { "$ref": "#/$defs/envelope" },
+        {
+          "$ref": "#/$defs/envelope"
+        },
         {
           "type": "object",
           "required": ["type", "test_id", "step_id", "duration_ms", "ok"],
           "properties": {
-            "type": { "const": "step.end" },
-            "test_id": { "type": ["string", "null"] },
-            "step_id": { "type": "string", "minLength": 1 },
-            "duration_ms": { "type": "integer", "minimum": 0 },
-            "ok": { "type": "boolean" },
-            "error": { "$ref": "#/$defs/serializedError" }
+            "type": {
+              "const": "step.end"
+            },
+            "test_id": {
+              "type": ["string", "null"]
+            },
+            "step_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "duration_ms": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "ok": {
+              "type": "boolean"
+            },
+            "error": {
+              "$ref": "#/$defs/serializedError"
+            }
           }
         }
       ]
     },
     "evidence": {
       "allOf": [
-        { "$ref": "#/$defs/envelope" },
+        {
+          "$ref": "#/$defs/envelope"
+        },
         {
           "type": "object",
           "required": ["type", "test_id", "step_id", "evidence_kind", "path", "label"],
           "properties": {
-            "type": { "const": "evidence" },
-            "test_id": { "type": ["string", "null"] },
-            "step_id": { "type": ["string", "null"] },
+            "type": {
+              "const": "evidence"
+            },
+            "test_id": {
+              "type": ["string", "null"]
+            },
+            "step_id": {
+              "type": ["string", "null"]
+            },
             "evidence_kind": {
               "type": "string",
               "enum": [
@@ -174,153 +310,277 @@
                 "console_log"
               ]
             },
-            "path": { "type": "string", "minLength": 1 },
-            "label": { "type": "string" }
+            "path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "label": {
+              "type": "string"
+            }
           }
         }
       ]
     },
     "networkRequest": {
       "allOf": [
-        { "$ref": "#/$defs/envelope" },
+        {
+          "$ref": "#/$defs/envelope"
+        },
         {
           "type": "object",
           "required": ["type", "test_id", "request_id", "url", "method"],
           "properties": {
-            "type": { "const": "network.request" },
-            "test_id": { "type": ["string", "null"] },
-            "request_id": { "type": "string", "minLength": 1 },
-            "url": { "type": "string" },
-            "method": { "type": "string" },
-            "content_length": { "type": ["integer", "null"], "minimum": 0 },
-            "content_type": { "type": ["string", "null"] }
+            "type": {
+              "const": "network.request"
+            },
+            "test_id": {
+              "type": ["string", "null"]
+            },
+            "request_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "url": {
+              "type": "string"
+            },
+            "method": {
+              "type": "string"
+            },
+            "content_length": {
+              "type": ["integer", "null"],
+              "minimum": 0
+            },
+            "content_type": {
+              "type": ["string", "null"]
+            }
           }
         }
       ]
     },
     "networkResponse": {
       "allOf": [
-        { "$ref": "#/$defs/envelope" },
+        {
+          "$ref": "#/$defs/envelope"
+        },
         {
           "type": "object",
           "required": ["type", "test_id", "request_id", "url", "status", "duration_ms"],
           "properties": {
-            "type": { "const": "network.response" },
-            "test_id": { "type": ["string", "null"] },
-            "request_id": { "type": "string", "minLength": 1 },
-            "url": { "type": "string" },
-            "status": { "type": "integer", "minimum": 0 },
-            "duration_ms": { "type": "integer", "minimum": 0 },
-            "content_length": { "type": ["integer", "null"], "minimum": 0 },
-            "content_type": { "type": ["string", "null"] }
+            "type": {
+              "const": "network.response"
+            },
+            "test_id": {
+              "type": ["string", "null"]
+            },
+            "request_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "url": {
+              "type": "string"
+            },
+            "status": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "duration_ms": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "content_length": {
+              "type": ["integer", "null"],
+              "minimum": 0
+            },
+            "content_type": {
+              "type": ["string", "null"]
+            }
           }
         }
       ]
     },
     "consoleEvent": {
       "allOf": [
-        { "$ref": "#/$defs/envelope" },
+        {
+          "$ref": "#/$defs/envelope"
+        },
         {
           "type": "object",
           "required": ["type", "test_id", "level", "message", "source"],
           "properties": {
-            "type": { "const": "console" },
-            "test_id": { "type": ["string", "null"] },
+            "type": {
+              "const": "console"
+            },
+            "test_id": {
+              "type": ["string", "null"]
+            },
             "level": {
               "type": "string",
               "enum": ["log", "debug", "info", "warn", "error"]
             },
-            "message": { "type": "string" },
-            "source": { "type": "string" }
+            "message": {
+              "type": "string"
+            },
+            "source": {
+              "type": "string"
+            }
           }
         }
       ]
     },
     "domSnapshot": {
       "allOf": [
-        { "$ref": "#/$defs/envelope" },
+        {
+          "$ref": "#/$defs/envelope"
+        },
         {
           "type": "object",
           "required": ["type", "test_id", "step_id", "path", "label"],
           "properties": {
-            "type": { "const": "dom.snapshot" },
-            "test_id": { "type": ["string", "null"] },
-            "step_id": { "type": ["string", "null"] },
-            "path": { "type": "string" },
-            "label": { "type": "string" }
+            "type": {
+              "const": "dom.snapshot"
+            },
+            "test_id": {
+              "type": ["string", "null"]
+            },
+            "step_id": {
+              "type": ["string", "null"]
+            },
+            "path": {
+              "type": "string"
+            },
+            "label": {
+              "type": "string"
+            }
           }
         }
       ]
     },
     "moduleEvent": {
       "allOf": [
-        { "$ref": "#/$defs/envelope" },
+        {
+          "$ref": "#/$defs/envelope"
+        },
         {
           "type": "object",
           "required": ["type", "module", "name", "payload"],
           "properties": {
-            "type": { "const": "module.event" },
-            "module": { "type": "string" },
-            "name": { "type": "string" },
-            "payload": { "type": "object" }
+            "type": {
+              "const": "module.event"
+            },
+            "module": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "payload": {
+              "type": "object"
+            }
           }
         }
       ]
     },
     "logEvent": {
       "allOf": [
-        { "$ref": "#/$defs/envelope" },
+        {
+          "$ref": "#/$defs/envelope"
+        },
         {
           "type": "object",
           "required": ["type", "level", "msg", "fields"],
           "properties": {
-            "type": { "const": "log" },
+            "type": {
+              "const": "log"
+            },
             "level": {
               "type": "string",
               "enum": ["debug", "info", "warn", "error"]
             },
-            "msg": { "type": "string" },
-            "fields": { "type": "object" }
+            "msg": {
+              "type": "string"
+            },
+            "fields": {
+              "type": "object"
+            }
           }
         }
       ]
     },
     "errorEvent": {
       "allOf": [
-        { "$ref": "#/$defs/envelope" },
+        {
+          "$ref": "#/$defs/envelope"
+        },
         {
           "type": "object",
           "required": ["type", "code", "message"],
           "properties": {
-            "type": { "const": "error" },
-            "code": { "type": "string", "minLength": 1 },
-            "message": { "type": "string" },
-            "stack": { "type": "string" }
+            "type": {
+              "const": "error"
+            },
+            "code": {
+              "type": "string",
+              "minLength": 1
+            },
+            "message": {
+              "type": "string"
+            },
+            "stack": {
+              "type": "string"
+            }
           }
         }
       ]
     },
     "discoveryPage": {
       "allOf": [
-        { "$ref": "#/$defs/envelope" },
+        {
+          "$ref": "#/$defs/envelope"
+        },
         {
           "type": "object",
           "required": ["type", "url", "status_code", "depth", "elapsed_ms"],
           "properties": {
-            "type": { "const": "discovery.page" },
-            "url": { "type": "string", "minLength": 1, "maxLength": 4096 },
-            "status_code": { "type": "integer", "minimum": 0, "maximum": 600 },
-            "content_type": { "type": ["string", "null"] },
-            "depth": { "type": "integer", "minimum": 0, "maximum": 100 },
-            "elapsed_ms": { "type": "integer", "minimum": 0 },
-            "html": { "type": "string", "maxLength": 2000000 },
+            "type": {
+              "const": "discovery.page"
+            },
+            "url": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "status_code": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 600
+            },
+            "content_type": {
+              "type": ["string", "null"]
+            },
+            "depth": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 100
+            },
+            "elapsed_ms": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "html": {
+              "type": "string",
+              "maxLength": 2000000
+            },
             "discovered_links": {
               "type": "array",
-              "items": { "type": "string" }
+              "items": {
+                "type": "string"
+              }
             },
             "discovered_script_srcs": {
               "type": "array",
-              "items": { "type": "string" }
+              "items": {
+                "type": "string"
+              }
             }
           }
         }
@@ -328,14 +588,26 @@
     },
     "discoveryEndpoint": {
       "allOf": [
-        { "$ref": "#/$defs/envelope" },
+        {
+          "$ref": "#/$defs/envelope"
+        },
         {
           "type": "object",
           "required": ["type", "method", "path"],
           "properties": {
-            "type": { "const": "discovery.endpoint" },
-            "method": { "type": "string", "minLength": 1, "maxLength": 10 },
-            "path": { "type": "string", "minLength": 1, "maxLength": 2048 },
+            "type": {
+              "const": "discovery.endpoint"
+            },
+            "method": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 10
+            },
+            "path": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048
+            },
             "status_code": {
               "type": ["integer", "null"],
               "minimum": 0,

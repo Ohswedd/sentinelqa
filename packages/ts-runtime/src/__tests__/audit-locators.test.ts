@@ -1,5 +1,5 @@
 // Tests for `auditLocators` (runner.ts) + the sentinel-ts CLI subcommand
-// added in Phase 07 task 04.
+// added in task 04.
 
 import { describe, expect, it } from 'vitest';
 

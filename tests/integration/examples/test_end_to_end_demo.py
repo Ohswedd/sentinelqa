@@ -28,7 +28,7 @@ def test_compose_file_ties_examples_together_on_loopback() -> None:
     compose = yaml.safe_load((DEMO / "docker-compose.yml").read_text(encoding="utf-8"))
     services = compose["services"]
     assert set(services) == {"fastapi", "nextjs"}
-    # Both services bind to 127.0.0.1 only — CLAUDE §6 / our product spec safety boundary.
+    # Both services bind to 127.0.0.1 only — the engineering guidelines
     assert services["fastapi"]["ports"] == ["127.0.0.1:8000:8000"]
     assert services["nextjs"]["ports"] == ["127.0.0.1:3000:3000"]
     # The Next.js service must wait on the FastAPI backend.

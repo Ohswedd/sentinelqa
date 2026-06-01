@@ -10,7 +10,7 @@ banner-aware — the healer refuses to overwrite hand-edited files
 unless `--allow-weaken` is set, and the assertion-weakening guard
 rejects any proposal that decreases the assertion count.
 
-Authority: the documentation, ADR-0025, our engineering rules §23.
+.
 
 ## Three proposers
 

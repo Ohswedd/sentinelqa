@@ -46,7 +46,7 @@ def _stable_serial_for(detected: DetectedLockfile, components: Sequence[SbomComp
     CycloneDX requires the ``serialNumber`` field to be a URN-style UUID.
     For reproducibility we derive a UUID v5 from (lockfile-path, sorted
     name@version list) so two runs over the same lockfile emit the
-    byte-identical SBOM. ``Date.now()``-style randomness would break
+    byte-identical SBOM. ``Date.now``-style randomness would break
     fixture-driven goldens.
     """
 

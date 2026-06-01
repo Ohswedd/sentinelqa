@@ -1,4 +1,4 @@
-"""Project entity (the documentation)."""
+"""Project entity."""
 
 from __future__ import annotations
 

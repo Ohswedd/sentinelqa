@@ -16,7 +16,17 @@
       "pattern": "^sentinel\\.[a-z_]+$"
     },
     "result": {
-      "anyOf": [{ "type": "object" }, { "type": "array" }, { "type": "null" }]
+      "anyOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ]
     },
     "errors": {
       "type": "array",
@@ -24,12 +34,27 @@
         "type": "object",
         "required": ["type", "code", "exit_code", "message"],
         "properties": {
-          "type": { "type": "string", "const": "error" },
-          "code": { "type": "string" },
-          "exit_code": { "type": "integer", "minimum": 0, "maximum": 7 },
-          "message": { "type": "string" },
-          "suggested_fix": { "type": "string" },
-          "context": { "type": "object" }
+          "type": {
+            "type": "string",
+            "const": "error"
+          },
+          "code": {
+            "type": "string"
+          },
+          "exit_code": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 7
+          },
+          "message": {
+            "type": "string"
+          },
+          "suggested_fix": {
+            "type": "string"
+          },
+          "context": {
+            "type": "object"
+          }
         },
         "additionalProperties": true
       },
@@ -37,7 +62,9 @@
     },
     "evidence_refs": {
       "type": "array",
-      "items": { "type": "string" },
+      "items": {
+        "type": "string"
+      },
       "default": []
     }
   },
@@ -45,10 +72,21 @@
     {
       "description": "result XOR errors-non-empty: error envelopes carry no result.",
       "anyOf": [
-        { "properties": { "result": { "not": { "type": "null" } } } },
         {
           "properties": {
-            "errors": { "type": "array", "minItems": 1 }
+            "result": {
+              "not": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "properties": {
+            "errors": {
+              "type": "array",
+              "minItems": 1
+            }
           },
           "required": ["errors"]
         }

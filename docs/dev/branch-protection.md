@@ -2,7 +2,6 @@
 
 Status: `Stable`
 
-Authority: project engineering rules
 §39 (CI rules);.
 
 This file is the **machine-checkable** spec for the

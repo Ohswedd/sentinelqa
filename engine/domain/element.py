@@ -1,4 +1,4 @@
-"""Element entity (the documentation).
+"""Element entity.
 
 A semantic DOM element captured by discovery and referenced by
 generated tests so selectors can be regenerated from the

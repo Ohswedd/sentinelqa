@@ -81,7 +81,7 @@ Every tool — success or failure — returns the same shape:
 
 - `schema_version` is `AGENT_ENVELOPE_SCHEMA_VERSION = "1"`. Bumps follow the same deprecation policy as the SDK (ADR-0021).
 - `result` is `null` only when `errors` is non-empty (an error envelope carries no result).
-- `errors[]` items are exactly the `SentinelError.to_agent_message` shape — `code`, `exit_code`, `message`, `suggested_fix`, `technical_context`, redacted by the engine's redactor (our engineering rules §33).
+- `errors[]` items are exactly the `SentinelError.to_agent_message` shape — `code`, `exit_code`, `message`, `suggested_fix`, `technical_context`, redacted by the engine's redactor.
 - `evidence_refs[]` is a flat list of relative paths beneath the run directory (`run.json`, `findings.json`, `traces/...`, etc.) that the caller can fetch via subsequent `sentinel.read_report` calls.
 
 The envelope shape is locked by a Draft 2020-12 schema at
@@ -139,7 +139,7 @@ Coverage floor for `packages/mcp-server/src/sentinelqa_mcp/`: 85 %
 ## Consequences
 
 - **Positive:** - Zero new runtime dependencies. The Pydantic 2.10.x pin and the locked SDK / domain models stay byte-identical. - Wire bytes are SentinelQA's, not a vendor library's. Byte-locked goldens and replay debugging stay deterministic across upgrades. - The transport is a thin adapter (~400 LoC) we can fully test in process. No subprocess fan-out for tests, no flakiness from starlette / uvicorn startup races. - Local HTTP debug loop is loopback-only — there is no accidental public exposure path.
-- **Negative / trade-off:** - We track the MCP spec ourselves. New protocol versions require a deliberate update (we reject unknown versions, which is the safe default for an audit tool). The transport adapter is wrapped behind a `MCPTransport` protocol so swapping it for the official SDK in a later phase is a one-class change if our hand-rolled implementation proves limiting. - We do not gain MCP SDK's built-in OAuth flow, SSE streaming, or the experimental `roots`/`resources`/`prompts` surfaces. We do not need any of those for our product spec If we ever do, that lands as a separate ADR.
+- **Negative / trade-off:** - We track the MCP spec ourselves. New protocol versions require a deliberate update (we reject unknown versions, which is the safe default for an audit tool). The transport adapter is wrapped behind a `MCPTransport` protocol so swapping it for the official SDK in a future release is a one-class change if our hand-rolled implementation proves limiting. - We do not gain MCP SDK's built-in OAuth flow, SSE streaming, or the experimental `roots`/`resources`/`prompts` surfaces. We do not need any of those for our product spec If we ever do, that lands as a separate ADR.
 - **Follow-up obligations:** - (Healer) supplies `Sentinel.verify_fix`'s actual apply-fix logic. The Phase-18 MCP `sentinel.verify_fix` already works without it — the agent applies fixes, the MCP tool verifies. When lands, the MCP tool grows an opt-in `apply` mode that delegates to the Healer; the existing decision matrix is preserved. - (Plugin Architecture) may expose a way for third-party audit modules to register MCP tools alongside the built-ins. The `ToolRegistry` already supports late registration — no schema bump is required. - (Docs) ships the Claude Desktop walkthrough as a doc page; `docs/user/mcp.md` is the Phase-18 stub.
 
 ## Alternatives considered
@@ -151,7 +151,7 @@ Coverage floor for `packages/mcp-server/src/sentinelqa_mcp/`: 85 %
 
 ## References
 
-- PRD section(s): our product spec (Agent rules), §16 (MCP / LLM Tool Interface), §31 open question 5 (yes, day-one MCP).
+- the documentation section(s): our product spec (Agent rules), §16 (MCP / LLM Tool Interface), §31 open question 5 (yes, day-one MCP).
 - our engineering rules rule(s): our engineering rules(Safety boundary), §15 (Agent Interface Rules), §35 (Dependency Rules).
 - External: MCP base spec (https://spec.modelcontextprotocol.io/specification/2024-11-05/), JSON-RPC 2.0 (https://www.jsonrpc.org/specification).
 - Related ADRs: ADR-0006 (Safety policy), ADR-0007 (Run lifecycle), ADR-0014 (Analyzer — `explain_failure` underlying logic), ADR-0021 (Public SDK surface — `to_agent_message`), ADR-0022 (CI integration — diff-aware selector reused by `verify_fix`).

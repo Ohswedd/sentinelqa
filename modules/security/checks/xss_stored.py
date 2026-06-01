@@ -1,14 +1,14 @@
 """Stored-XSS safe probe.
 
 This check is **off by default** and ONLY runs when ALL of the following
-hold (CLAUDE §6, §26 + our product spec):
+hold (the engineering guidelines, §26 + our product spec):
 
 - ``config.security.mode == "authorized_destructive"``.
 - ``config.security.checks.xss_stored`` is true.
 - ``config.target.proof_of_authorization`` points at a valid proof doc.
 
 When any precondition is missing, the check returns a ``skipped=True``
-result with an explanatory reason (it never silently passes — CLAUDE
+result with an explanatory reason (it never silently passes — the engineering guidelines
 §37 forbids fake completion).
 
 The probe submits a unique non-executable marker into the first

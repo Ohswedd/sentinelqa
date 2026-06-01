@@ -8,7 +8,7 @@ The generator turns a `TestPlan` into Playwright `*.spec.ts` files under
 `tests/sentinel/`. Templates are Jinja2 with `StrictUndefined` and a
 mandatory banner so re-runs preserve hand-edited content.
 
-Authority: the documentation, ADR-0012.
+.
 
 ## Outputs
 

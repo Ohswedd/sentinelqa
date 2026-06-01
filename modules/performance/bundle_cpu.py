@@ -5,7 +5,7 @@ during the synthetic page loads and observes long tasks via
 ``PerformanceObserver({ entryTypes: ['longtask'] })``. This module
 evaluates those aggregates against the configured budgets.
 
-CLAUDE §27 reminder: long-task counts are lab synthetic measurements.
+the engineering guidelines: long-task counts are lab synthetic measurements.
 A blocked main thread in a headless browser is a real signal, but it is
 not the same as a blocked main thread on a constrained user device. The
 finding text says so explicitly.

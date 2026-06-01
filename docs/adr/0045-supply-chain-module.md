@@ -14,7 +14,7 @@ attack surface the documentation enumerates. Two recurring asks from the
 post-release review forced us to take the second half of release
 confidence seriously:
 
-1. **The build inputs are themselves an attack surface.** A clean run against a runtime that ships with a poisoned `lodash` or `colors.js` is still a regression — and modern incidents (`event-stream`, `ua-parser-js`, `node-ipc`, `xz`) all landed via dependency tampering rather than the application code path. PRD §10.7 only catches the latter.
+1. **The build inputs are themselves an attack surface.** A clean run against a runtime that ships with a poisoned `lodash` or `colors.js` is still a regression — and modern incidents (`event-stream`, `ua-parser-js`, `node-ipc`, `xz`) all landed via dependency tampering rather than the application code path. the documentation
 2. **Compliance teams want SBOMs.** SPDX / CycloneDX SBOMs are now a hard requirement for FedRAMP, SOC 2, the EU Cyber Resilience Act, and most enterprise procurement reviews. A release-confidence engine that cannot emit an SBOM is not a release-confidence engine for those audiences.
 
 our engineering rules

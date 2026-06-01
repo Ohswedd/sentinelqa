@@ -30,7 +30,7 @@ from engine.domain.test_plan import TestPlan
 PROMPT_VERSION: str = "1"
 """Bump when the locked prompt at ``llm_prompts/planner.v1.md`` changes.
 
-Version bumps require a new ADR per CLAUDE §34.
+Version bumps require a new ADR per the engineering guidelines.
 """
 
 # Per-1k-token prices (USD). These are deliberately conservative; the
@@ -166,7 +166,7 @@ def parse_provider_response(raw: str) -> tuple[_ProposalFlow, ...]:
     """Parse an LLM response into validated proposals.
 
     Malformed envelopes raise :class:`ValueError`; the caller turns that
-    into an empty proposal list (CLAUDE §32 — typed errors are actionable).
+    into an empty proposal list (the engineering guidelines— typed errors are actionable).
     """
 
     try:

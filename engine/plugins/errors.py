@@ -26,7 +26,7 @@ class PluginIncompatibleError(PluginError):
 
 
 class PluginCapabilityForbiddenError(PluginError):
-    """Plugin declares a capability on the forbidden list (CLAUDE §6)."""
+    """Plugin declares a capability on the forbidden list."""
 
     DEFAULT_CODE = "E-PLG-001"
 

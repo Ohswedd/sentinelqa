@@ -5,7 +5,7 @@
 # deterministic checks (focus-not-obscured, target-size-min,
 # dragging-movements, redundant-entry, accessible-authentication).
 #
-# WORDING NOTE (CLAUDE §28): the label says "(automated)" so the pack
+# WORDING NOTE: the label says "(automated)" so the pack
 # never claims a target is WCAG 2.2 compliant — only that the
 # automated checks ran.
 

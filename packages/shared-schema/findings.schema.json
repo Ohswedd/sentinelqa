@@ -2,12 +2,14 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://schemas.sentinelqa.dev/findings.schema.json",
   "title": "SentinelQA Findings Envelope",
-  "description": "Top-level wire format for `.sentinel/runs/<run-id>/findings.json`. PRD §18.2, §20; CLAUDE.md §24.",
+  "description": "Top-level wire format for `.sentinel/runs/<run-id>/findings.json`. the documentation, §20.",
   "type": "object",
   "additionalProperties": false,
   "required": ["schema_version", "run_id", "generated_at", "count", "findings"],
   "properties": {
-    "schema_version": { "const": "2" },
+    "schema_version": {
+      "const": "2"
+    },
     "run_id": {
       "type": "string",
       "pattern": "^RUN-[A-Z0-9]{12}$"
@@ -22,7 +24,9 @@
     },
     "findings": {
       "type": "array",
-      "items": { "$ref": "#/$defs/Finding" }
+      "items": {
+        "$ref": "#/$defs/Finding"
+      }
     }
   },
   "$defs": {
@@ -88,14 +92,21 @@
           "minLength": 1,
           "maxLength": 8000
         },
-        "location": { "$ref": "#/$defs/Location" },
+        "location": {
+          "$ref": "#/$defs/Location"
+        },
         "evidence": {
           "type": "array",
-          "items": { "$ref": "#/$defs/Evidence" }
+          "items": {
+            "$ref": "#/$defs/Evidence"
+          }
         },
         "reproduction_steps": {
           "type": "array",
-          "items": { "type": "string", "minLength": 1 }
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
         },
         "suggested_fix": {
           "type": ["string", "null"],
@@ -133,7 +144,9 @@
           "type": "string",
           "format": "date-time"
         },
-        "schema_version": { "const": "2" }
+        "schema_version": {
+          "const": "2"
+        }
       }
     },
     "Location": {
@@ -141,10 +154,22 @@
       "additionalProperties": false,
       "required": ["route", "selector", "file", "line"],
       "properties": {
-        "route": { "type": ["string", "null"], "maxLength": 2048 },
-        "selector": { "type": ["string", "null"], "maxLength": 2048 },
-        "file": { "type": ["string", "null"], "maxLength": 2048 },
-        "line": { "type": ["integer", "null"], "minimum": 0 }
+        "route": {
+          "type": ["string", "null"],
+          "maxLength": 2048
+        },
+        "selector": {
+          "type": ["string", "null"],
+          "maxLength": 2048
+        },
+        "file": {
+          "type": ["string", "null"],
+          "maxLength": 2048
+        },
+        "line": {
+          "type": ["integer", "null"],
+          "minimum": 0
+        }
       }
     },
     "Evidence": {
@@ -170,8 +195,13 @@
             "source_ref"
           ]
         },
-        "path": { "type": "string", "minLength": 1 },
-        "redacted": { "type": "boolean" }
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "redacted": {
+          "type": "boolean"
+        }
       }
     }
   }

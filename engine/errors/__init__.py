@@ -4,7 +4,7 @@ Every exception that crosses a CLI/SDK boundary is a subclass of
 :class:`SentinelError`. Each subclass maps to exactly one CLI exit code via
 the registry in :mod:`engine.errors.codes`, so the CLI never needs to guess.
 
-Wire format for SDK/MCP consumers: ``error.to_agent_message()`` returns a
+Wire format for SDK/MCP consumers: ``error.to_agent_message`` returns a
 dict suitable for serialization (redaction applied), keyed by:
 
 - ``type`` — always ``"error"``

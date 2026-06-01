@@ -1,6 +1,6 @@
 """SDK-level result models.
 
-These models are the SDK's public output shapes (the documentation). They wrap
+These models are the SDK's public output shapes. They wrap
 the engine's typed domain entities but only expose what callers should
 rely on. Pydantic v2 with ``model_config = ConfigDict(frozen=True)`` so
 results are immutable and safe to share across threads / async tasks.
@@ -143,7 +143,7 @@ class AuditResult(BaseModel):
 
     @property
     def failures(self) -> tuple[Finding, ...]:
-        """Findings at critical/high severity (the documentation).
+        """Findings at critical/high severity.
 
         Order matches :attr:`findings` (already sorted by writer).
         """

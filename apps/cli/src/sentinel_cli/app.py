@@ -101,7 +101,7 @@ def build_app() -> typer.Typer:
             bool,
             typer.Option(
                 "--json",
-                help="Emit only machine-readable JSON on stdout (CLAUDE §13).",
+                help="Emit only machine-readable JSON on stdout.",
             ),
         ] = False,
         verbose: Annotated[
@@ -152,7 +152,7 @@ def build_app() -> typer.Typer:
 
         del version  # consumed by the eager callback
 
-        # CI mode auto-detects from env vars (CLAUDE §39).
+        # CI mode auto-detects from env vars.
         effective_ci = ci or detect_ci_default()
 
         state = GlobalState(
@@ -166,7 +166,7 @@ def build_app() -> typer.Typer:
         )
         ctx.obj = state
 
-        # Defer the actual logging configuration to main() so tests can
+        # Defer the actual logging configuration to main so tests can
         # exercise the app without polluting global handlers. Subcommands
         # that need a logger pull `engine.get_logger(...)` directly.
 
@@ -208,7 +208,7 @@ def build_app() -> typer.Typer:
         help=(
             "Run synthetic performance checks (LCP/CLS/INP/TTFB, API P95, "
             "JS bundle, long tasks, repeated-nav stability) via the lifecycle. "
-            "All measurements are lab synthetic (CLAUDE §27), not RUM."
+            "All measurements are lab synthetic, not RUM."
         ),
     )(perf_cmd.run_perf)
     cli.command(

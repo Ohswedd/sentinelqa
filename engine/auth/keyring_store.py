@@ -108,7 +108,7 @@ def _resolve_iterations() -> int:
 class KeyringStore:
     """Acquire / store the master key, OS-keyring first.
 
-    Construct with the defaults (``KeyringStore()``) for production code;
+    Construct with the defaults (``KeyringStore``) for production code;
     pass overrides in tests via :meth:`with_backends` (see the unit tests).
     """
 
@@ -134,7 +134,7 @@ class KeyringStore:
 
         Tries the OS keyring first, then falls back to the passphrase
         path. Either way, the returned :class:`MasterKey` is fresh —
-        owners should ``.close()`` it (or use it as a context manager).
+        owners should ``.close`` it (or use it as a context manager).
         """
 
         keyring_key = self._load_from_keyring()

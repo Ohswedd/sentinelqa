@@ -9,7 +9,7 @@ non-negotiable; it is enforced in code (config-load, every URL-bearing
 tool, CI gates) and in tests (security-policy AST guards run on every
 CI pass).
 
-Authority: our product spec, our engineering rules §6.
+.
 
 ## Forbidden
 

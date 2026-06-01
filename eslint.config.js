@@ -40,7 +40,7 @@ export default tseslint.config(
       unicorn,
     },
     rules: {
-      // CLAUDE.md §21: no `any` — be explicit.
+      // the engineering guidelines: no `any` — be explicit.
       '@typescript-eslint/no-explicit-any': 'error',
       '@typescript-eslint/no-unused-vars': [
         'error',

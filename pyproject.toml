@@ -125,8 +125,8 @@ warn_return_any = true
 warn_unreachable = true
 no_implicit_optional = true
 # Files list grows phase by phase as engine/* and modules/* sub-packages ship
-# their first .py files (onward). Listing empty directories here makes
-# mypy error with "no .py[i] files". See docs/adr/0003-package-managers.md.
+# their first.py files (onward). Listing empty directories here makes
+# mypy error with "no.py[i] files". See docs/adr/0003-package-managers.md.
 files = [
     "apps/cli/src",
     "packages/python-sdk/src",

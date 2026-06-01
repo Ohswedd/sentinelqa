@@ -18,7 +18,7 @@ single 0..100 quality score plus a typed release decision (`pass`,
 - **Reproducible.** Same inputs → same `score.json` bytes; CI cannot flip on cosmetic re-runs.
 - **Explainable.** A reviewer must be able to read off "why does this run score 87.25, why is it blocked, which finding triggered which rule?" without spelunking through code.
 - **Composable.** Modules ship findings + module results into the lifecycle; the scoring layer is the only place that turns those into a numeric score and a release decision.
-- **Reachable through the canonical exit-code grid** (the documentation) — `blocked` → exit 1, `unsafe_target_rejected` → exit 4, `inconclusive` → exit 6 (incomplete) or 0 (dry-run).
+- **Reachable through the canonical exit-code grid** — `blocked` → exit 1, `unsafe_target_rejected` → exit 4, `inconclusive` → exit 6 (incomplete) or 0 (dry-run).
 
 already shipped the wire format
 (`packages/shared-schema/score.schema.json`) and the writer that
@@ -42,7 +42,7 @@ plus a lifecycle hook:
 
 4. **`engine/scoring/policy_gate.py`** glues the three together via `apply_policy_gate(...)` and registers the two lifecycle hooks `_score_hook` (CALCULATE*QUALITY_SCORE) and `_gate_hook` (APPLY_QUALITY_GATES). The score hook derives an \_effective* status from `module_outcomes` (any errored → incomplete → inconclusive) because `LifecycleContext.status` is not finalized until `generate_reports`. The gate hook flips `quality_gate_passed = False` only when the decision is `blocked`; `_finalize_status` then stamps `failed`.
 
-5. **`sentinel report --explain-score`** (replaces the Phase-15 stub for the explain path only) renders the math behind a completed run's `score.json`. It prints per-axis contributions, severity penalties, blockers, and policy thresholds, and writes a deterministic `score-explanation.md` next to the source `score.json`. Calling `sentinel report` without `--explain-score` still surfaces a "lands in" error (exit 7) — no fake completion (CLAUDE §37).
+5. **`sentinel report --explain-score`** (replaces the Phase-15 stub for the explain path only) renders the math behind a completed run's `score.json`. It prints per-axis contributions, severity penalties, blockers, and policy thresholds, and writes a deterministic `score-explanation.md` next to the source `score.json`. Calling `sentinel report` without `--explain-score` still surfaces a "lands in" error (exit 7) — no fake completion.
 
 ### P0 / P1 priority detection — release note
 
@@ -70,6 +70,6 @@ to that field without changing the public scoring contract.
 
 ## References
 
-- PRD section(s): our product spec (Quality Scoring Model), §13.2 (Exit codes), §17.1 (Configuration), §20 (Evidence & Reporting).
+- the documentation section(s): our product spec (Quality Scoring Model), §13.2 (Exit codes), §17.1 (Configuration), §20 (Evidence & Reporting).
 - our engineering rules rule(s): our engineering rules(Quality score rules), §39 (CI rules), §34 (ADR triggers), §37 (No fake completion).
 - Related ADRs: ADR-0008 (Report schemas & reporter pipeline), ADR-0013 (Runner architecture), ADR-0015 (Module contract).

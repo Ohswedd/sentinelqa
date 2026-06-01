@@ -1,9 +1,9 @@
-# SentinelQA configuration example (PRD §17.1).
+# SentinelQA configuration example.
 #
 # Copy this file to `sentinel.config.yaml` at your project root and edit
 # the values for your app. Secrets MUST come from environment variables —
 # the loader rejects inline values for password / token / api_key keys.
-# Authority: PRD §17, CLAUDE.md §6 (safety boundary), CLAUDE.md §12 (config rules).
+# Authority: our published policy (safety boundary), the engineering guidelines (config rules).
 version: 1
 
 project:
@@ -25,7 +25,7 @@ source:
 target:
   base_url: http://localhost:3000
   # Every host SentinelQA is allowed to touch. Wildcards are rejected
-  # explicitly — list each authorized host (CLAUDE.md §6).
+  # explicitly — list each authorized host.
   allowed_hosts:
     - localhost
     - 127.0.0.1
@@ -86,7 +86,7 @@ security:
 
 performance:
   # All performance measurements are SYNTHETIC (lab) — they catch
-  # regressions reliably but are not Real-User Monitoring (CLAUDE §27).
+  # regressions reliably but are not Real-User Monitoring.
   budgets:
     lcp_ms: 2500
     cls: 0.1
@@ -152,12 +152,12 @@ planner:
   # Deterministic core ships in Phase 06. The LLM adapter is opt-in
   # behind the `enabled` flag (ADR-0011). Provider keys are read from the
   # env var named in `api_key_env`; they are never inlined here
-  # (CLAUDE.md §33).
+  #.
   llm:
     enabled: false
     # provider: "null" | "openai" | "anthropic"
     provider: "null"
-    # model: ""   # leave empty to use the provider's default
+    # model: "" # leave empty to use the provider's default
     # api_key_env: OPENAI_API_KEY
     max_proposals: 10
     max_usd_per_run: 0.50
@@ -166,12 +166,12 @@ planner:
 analyzer:
   # Deterministic core ships in Phase 09. The LLM explainer adds at most
   # one sentence of refinement to the deterministic hypothesis — it never
-  # replaces the category, hypothesis, or confidence (CLAUDE §23).
+  # replaces the category, hypothesis, or confidence.
   llm:
     enabled: false
     # provider: "null" | "openai" | "anthropic"
     provider: "null"
-    # model: ""   # leave empty to use the provider's default
+    # model: "" # leave empty to use the provider's default
     # api_key_env: ANTHROPIC_API_KEY
     max_usd_per_run: 0.25
     request_timeout_seconds: 20.0
@@ -179,7 +179,7 @@ analyzer:
 accessibility:
   # `sentinel a11y` controls (Phase 11, ADR-0016).
   # `axe.tags` defaults to WCAG 2.0 A + AA plus axe's curated
-  # best-practice set. CLAUDE §28: outputs always say "Automated
+  # best-practice set. the engineering guidelines: outputs always say "Automated
   # accessibility check found" — they never claim "fully WCAG compliant".
   axe:
     tags:
@@ -187,15 +187,15 @@ accessibility:
       - wcag2aa
       - best-practice
   # routes:
-  #   - /
-  #   - /dashboard
+  # - /
+  # - /dashboard
   keyboard_max_tabs: 200
   request_timeout_seconds: 30.0
 
 policy:
-  # Release-gate thresholds (PRD §19.4, CLAUDE.md §25). Phase 14 wires
+  # Release-gate thresholds (our published policy). Phase 14 wires
   # these into `engine.scoring`. The severity_penalty_* fields default
-  # to the midpoint of the PRD §19.2 ranges and only need an override
+  # to the midpoint of the the documentation ranges and only need an override
   # if you want stricter or looser per-finding penalties.
   min_quality_score: 85
   block_on_critical: true
@@ -203,25 +203,25 @@ policy:
   max_flake_rate: 0.03
   allow_medium_a11y: false
   max_failed_p1_flows: 0
-  severity_penalty_high: 17.5      # range 10..25
-  severity_penalty_medium: 6.5     # range 3..10
-  severity_penalty_low: 2.0        # range 1..3
+  severity_penalty_high: 17.5 # range 10..25
+  severity_penalty_medium: 6.5 # range 3..10
+  severity_penalty_low: 2.0 # range 1..3
 
   # Phase 25 deeper-integration toggles. Every adapter is off by default;
   # tokens are read from environment variables at call time, never logged
-  # (CLAUDE.md §33). CI must never receive real BrowserStack / Sauce Labs
+  #. CI must never receive real BrowserStack / Sauce Labs
   # / Slack / Jira / Linear credentials — see the credential-leak guard
   # at `tests/integration/integrations/test_credential_leak_guard.py`.
   github:
-    auto_create_issue: false       # Phase 25.04 — open GitHub issues for criticals
+    auto_create_issue: false # Phase 25.04 — open GitHub issues for criticals
   integrations:
-    jira: {}                       # set project_key + base_url to enable
-    linear: {}                     # set team_id to enable
+    jira: {} # set project_key + base_url to enable
+    linear: {} # set team_id to enable
     slack:
       enabled: false
       webhook_env: "SLACK_WEBHOOK_URL"
 
-  # Phase 33 Supply-Chain & Dependency Audit (PRD §10.7.3, ADR-0045).
+  # Phase 33 Supply-Chain & Dependency Audit (the documentation.3, ADR-0045).
   # Every check is defensive / read-only. Network access is limited to
   # `api.osv.dev` (OSV lookup) and the configured container scanner
   # (Trivy or Grype) running against the configured image only. When the
@@ -229,13 +229,13 @@ policy:
   # downgraded to `skipped` with an info-severity recommendation — never
   # silently passed.
   supply_chain:
-    max_lockfile_age_days: 180     # CWE-1357 freshness threshold
+    max_lockfile_age_days: 180 # CWE-1357 freshness threshold
     sbom:
       enabled: true
     osv:
       enabled: true
       api_base: "https://api.osv.dev"
-      rate_limit_rps: 5.0          # protects the public OSV endpoint
+      rate_limit_rps: 5.0 # protects the public OSV endpoint
       request_timeout_seconds: 30.0
     freshness:
       enabled: true
@@ -243,7 +243,7 @@ policy:
       enabled: true
     container:
       enabled: true
-      image: null                  # e.g. "my-app@sha256:<digest>"
+      image: null # e.g. "my-app@sha256:<digest>"
       max_findings: 200
     licenses:
       enabled: true
@@ -260,15 +260,15 @@ policy:
         - GPL-3.0-only
         - AGPL-3.0-only
         - AGPL-3.0-or-later
-      unknown_severity: low        # info | low | medium | high
+      unknown_severity: low # info | low | medium | high
 
 runner:
   # `sentinel test` controls (Phase 08, ADR-0013). The runner is
   # Playwright-native; choose between local execution and the pinned
   # Docker image (`mcr.microsoft.com/playwright:v1.49.0-jammy`).
-  workers: auto              # auto | <int 1-64>
-  # shards: "1/4"            # uncomment to split across CI nodes
-  browser: chromium          # chromium | firefox | webkit
+  workers: auto # auto | <int 1-64>
+  # shards: "1/4" # uncomment to split across CI nodes
+  browser: chromium # chromium | firefox | webkit
   headless: true
   timeout_ms: 30000
   docker: false
@@ -279,7 +279,7 @@ runner:
     backoff_ms: 1000
   quarantine:
     # Strict YAML list (test_id, reason, expires_at, issue_url).
-    # See ADR-0013 / CLAUDE.md §23 — entries past `expires_at` OR
+    # See ADR-0013 / the engineering guidelines — entries past `expires_at` OR
     # further out than `max_age_days` are rejected at load time, by design.
     path: tests/sentinel/.quarantine.yaml
     max_age_days: 14
@@ -289,7 +289,7 @@ healer:
   # auto-applies — `sentinel fix` runs in review-only mode unless the
   # operator switches to `safe` (locator + wait repairs at or above the
   # threshold) or `aggressive` (also fixture + assertion repairs; the
-  # latter still require --allow-weaken per CLAUDE.md §23).
+  # latter still require --allow-weaken per the engineering guidelines).
   auto_apply: "off"
   auto_apply_threshold: 0.9
 
@@ -301,11 +301,11 @@ report:
     - junit
     - sarif
 
-# Phase 34 — Compliance Packs (PRD §10.4.2, ADR-0046). Packs are
+# Phase 34 — Compliance Packs (the documentation.2, ADR-0046). Packs are
 # loaded from `policy/compliance/<id>.yaml` (built-in) or by absolute
 # path. Run with `sentinel audit --compliance-pack <id-or-path>`.
 # Built-in pack ids: wcag-2.2-aa, gdpr-baseline, ccpa-baseline,
-# soc2-trail. Pack labels always say "(automated)"; CLAUDE.md §28
+# soc2-trail. Pack labels always say "(automated)"; the engineering guidelines
 # forbids "compliant" claims in product output.
 #
 # See docs/user/compliance-packs.md for the pack schema, custom-pack

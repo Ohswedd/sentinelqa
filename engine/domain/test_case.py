@@ -1,4 +1,4 @@
-"""TestCase entity (the documentation)."""
+"""TestCase entity."""
 
 from __future__ import annotations
 

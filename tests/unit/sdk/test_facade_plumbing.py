@@ -180,7 +180,7 @@ def test_run_plan_invokes_audit(tmp_path: Path, patched_registry: ModuleRegistry
     _write_minimal_config(tmp_path)
     qa = Sentinel(project_path=tmp_path)
     result = qa.run_plan(_empty_plan(), spec_root=tmp_path / "tests")
-    # Defers to qa.audit() which uses the stubbed module — must end
+    # Defers to qa.audit which uses the stubbed module — must end
     # up "passed" because the empty plan produced no failures.
     assert result.status == "passed"
 

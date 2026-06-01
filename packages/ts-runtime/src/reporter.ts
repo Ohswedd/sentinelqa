@@ -1,12 +1,10 @@
 // Custom Playwright reporter — translates Playwright's reporter
-// callbacks into SentinelQA JSONL events (PRD §11.3, CLAUDE §8). Loaded
+// callbacks into SentinelQA JSONL events. Loaded
 // by Playwright via `--reporter=<path>`; sentinel-ts (04.03) wires this
 // path through.
-//
 // The reporter writes events through an `EventEmitter` whose sink is
 // `process.stdout` by default. Python (the parent process) reads stdout
 // line by line and parses each event.
-//
 // Browser launching, evidence capture, etc. are Playwright's job — the
 // reporter just observes and emits.
 

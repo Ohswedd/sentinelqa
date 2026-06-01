@@ -92,7 +92,7 @@ venv at `/opt/sentinelqa`. The existing
 - **Single mega-workflow.** Rejected — one approval gate per registry forces a per-registry decision, which matches how the owner thinks about ROI vs risk. A single workflow would either require a single approval that authorises every registry simultaneously (too coarse) or four sequential approvals inside one job (too implicit).
 - **Auto-tag from `main` after CI is green.** Rejected — the our engineering rules authorisation. Auto-tagging would couple "tests pass" with "ship to the world", and they are not the same decision.
 - **Use long-lived PyPI / npm tokens.** Rejected — PyPI Trusted Publisher (OIDC) and npm `--provenance` (OIDC) are both stable in 2026 and avoid storing high-blast-radius secrets in the repo. The only registry without an OIDC option today is Docker Hub, which still uses an account access token (rotatable; scoped per-repo).
-- **Skip Docker Hub.** Rejected — the Playwright runner image is a stated PRD deliverable (our product spec ADR-0013); shipping it as the published `sentinelqa/runner` closes that loop.
+- **Skip Docker Hub.** Rejected — the Playwright runner image is a stated the documentation deliverable (our product spec ADR-0013); shipping it as the published `sentinelqa/runner` closes that loop.
 
 ## References
 

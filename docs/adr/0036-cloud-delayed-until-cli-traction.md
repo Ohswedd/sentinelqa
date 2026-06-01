@@ -29,7 +29,7 @@ documented adoption.** Concretely:
 
 ## Consequences
 
-- **Positive:** focus stays on making the core engine excellent — better discovery, better generator, better healer, better LLM-Code audits. The differentiator the PRD claims (release-confidence engine for LLM-built apps) is a CLI story first.
+- **Positive:** focus stays on making the core engine excellent — better discovery, better generator, better healer, better LLM-Code audits. The differentiator the the documentation claims (release-confidence engine for LLM-built apps) is a CLI story first.
 - **Positive:** zero burn on hosting, security posture, multi-tenancy during the trust-building phase.
 - **Negative / trade-off:** features that are easier with a backend (cross-machine trends, shared baselines, team analytics) wait. Users who need them today integrate via their own CI artifact store.
 - **Follow-up obligations:** (Final Hardening) revisits this ADR. If demand has materialised, the next product cycle writes a new ADR superseding ADR-0033 + this one. Otherwise this ADR stays Accepted and the cloud waits another cycle.

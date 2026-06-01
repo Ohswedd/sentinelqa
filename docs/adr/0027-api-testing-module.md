@@ -23,7 +23,7 @@ Three structural decisions framed the implementation:
 
 1. **Runtime ownership.** The module talks HTTP to the target rather than driving a browser, so Python (with `httpx`) is the obvious home. The TS runtime is reserved for the Playwright-driven modules (functional, a11y, perf, visual). Putting the API checks in Python keeps them unit-testable with `httpx.MockTransport` and avoids a second inter-runtime contract just for HTTP probes.
 2. **Schema validation library.** OpenAPI specs are validated at load time with `openapi-spec-validator==0.7.1` (already a project dependency from discovery). Per-response schema validation uses `jsonschema==4.23.0` against the OpenAPI Schema Object sub-tree. OpenAPI 3.0 Schema Objects are a near-superset of JSON Schema Draft 7; for release we treat unsupported keywords as advisory. GraphQL parsing uses `graphql-core==3.2.5` for SDL build + type inspection.
-3. **How the no-fuzz boundary is enforced.** CLAUDE §30 forbids aggressive fuzzing. The question is _where_ the guard lives — inside individual check runners (each one bounds its own variants) or at the HTTP boundary (one cap, regardless of caller intent). The decision is **both**, because either alone is fragile.
+3. **How the no-fuzz boundary is enforced.** the engineering guidelines— inside individual check runners (each one bounds its own variants) or at the HTTP boundary (one cap, regardless of caller intent). The decision is **both**, because either alone is fragile.
 
 ## Decision
 

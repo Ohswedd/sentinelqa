@@ -1,4 +1,4 @@
-"""CLAUDE §28 + wording rule: compliance outputs never claim
+"""the engineering guidelines+ wording rule: compliance outputs never claim
 the target is *compliant*. Allowed: "Automated <regime> check found",
 "Automated <regime> check passed", "manual review recommended".
 Forbidden in product outputs: "fully WCAG/GDPR/CCPA/SOC 2 compliant",

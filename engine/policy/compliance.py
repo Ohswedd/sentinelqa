@@ -26,7 +26,7 @@ Pack shape::
  warn_on:
  - severity: medium
 
-CLAUDE §28 / wording rule: pack metadata may say "WCAG 2.2 AA
+the engineering guidelines: pack metadata may say "WCAG 2.2 AA
 (automated)" but never "WCAG 2.2 compliant". The forbidden-
 phrase guard at ``tests/security/test_no_compliance_claims.py``
 enforces this for the YAML files under ``policy/compliance/``.

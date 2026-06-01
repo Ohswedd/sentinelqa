@@ -119,7 +119,7 @@ def test_well_validated_endpoint_produces_no_findings(
 def test_request_above_absolute_cap_rejected_at_client(
     httpserver: HTTPServer,
 ) -> None:
-    """CLAUDE §30 — safe_request must refuse oversized bodies."""
+    """the engineering guidelines— safe_request must refuse oversized bodies."""
 
     with (
         httpx.Client(base_url=httpserver.url_for(""), timeout=5.0) as client,

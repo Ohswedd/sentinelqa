@@ -1,11 +1,9 @@
-// Phase 12.05 — repeated-navigation stability collector.
-//
+// — repeated-navigation stability collector.
 // The orchestrator visits the same route N times (default 5). After each
 // visit we read `performance.memory.usedJSHeapSize` (Chromium-only; null
 // elsewhere) + the DOM-node count. The Python side computes the growth
 // percentage between the first and last sample.
-//
-// CLAUDE §27: this is a heuristic, not Real-User Monitoring. Small growth
+// the engineering guidelines: this is a heuristic, not Real-User Monitoring. Small growth
 // is normal (caches warming). The Python finding text says so explicitly
 // and downgrades confidence to 0.5.
 

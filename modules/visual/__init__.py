@@ -14,7 +14,7 @@ falls below ``visual.perceptual.min_similarity``).
 Baselines never auto-accept in CI: the :func:`apps/cli sentinel visual`
 ``accept`` subcommand refuses to promote ``current`` PNGs when the
 ``--ci`` flag is set or ``CI`` / ``SENTINEL_CI`` is truthy in the
-environment (the documentation, CLAUDE §29, §39).
+environment (our published policy, §39).
 
 ADR-0026 documents the storage layout, the diff algorithm, the masking
 contract, and the CI-acceptance guard.

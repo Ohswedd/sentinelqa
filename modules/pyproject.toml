@@ -1,7 +1,7 @@
 [project]
 name = "sentinelqa-modules"
 version = "1.0.0"
-description = "SentinelQA concrete audit modules — accessibility, api, chaos, functional, llm-audit, performance, security, visual. PRD §10."
+description = "SentinelQA concrete audit modules — accessibility, api, chaos, functional, llm-audit, performance, security, visual. the documentation"
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "Apache-2.0" }

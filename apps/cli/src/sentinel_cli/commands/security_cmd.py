@@ -6,13 +6,13 @@ same lifecycle steps (safety policy, artifact tree, reporter dispatch,
 exit-code mapping) run whether the user types ``sentinel audit`` or
 ``sentinel security``.
 
-CLAUDE §6 / §26 reminder: dangerous probes (stored XSS, SQLi against
+the engineering guidelines: dangerous probes (stored XSS, SQLi against
 non-local hosts) require ``--mode authorized_destructive`` plus a
 ``--proof-of-authorization`` document. Without them the module
 silently skips those checks (no fake completion — the result records
 ``skipped=True`` with the precise reason).
 
-Exit codes (CLAUDE §13):
+Exit codes:
 
 - ``0`` — module produced no high/critical findings.
 - ``1`` — quality gate failed (high/critical findings present, or the
@@ -94,7 +94,7 @@ def run_security(
             "--mode",
             help=(
                 "safe | authorized_destructive. Overrides config.security.mode + "
-                "config.target.mode (CLAUDE §6 / §26)."
+                "config.target.mode."
             ),
         ),
     ] = None,
@@ -259,12 +259,12 @@ def run_security(
             )
     elif state.mode != "quiet":
         sys.stdout.write(
-            f"run_id            : {test_run.id}\n"
-            f"run_status        : {test_run.status}\n"
-            f"module_status     : {raw_status}\n"
-            f"findings          : {len(findings)}\n"
-            f"high_or_critical  : {high_or_critical}\n"
-            f"mode              : {config.security.mode}\n"
+            f"run_id : {test_run.id}\n"
+            f"run_status : {test_run.status}\n"
+            f"module_status : {raw_status}\n"
+            f"findings : {len(findings)}\n"
+            f"high_or_critical : {high_or_critical}\n"
+            f"mode : {config.security.mode}\n"
         )
 
     raise typer.Exit(code=exit_code)

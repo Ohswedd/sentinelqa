@@ -132,7 +132,7 @@ def test_fast_mode_intersects_with_config_disabled_modules() -> None:
     cfg = _config(modules=ModulesConfig(security=False))
     plan = mode_plan("fast", config=cfg)
     # security disabled in config → must not be in fast plan even though
-    # the preset wants it (config is authoritative — CLAUDE §17).
+    # the preset wants it (config is authoritative — the engineering guidelines).
     assert "security" not in plan.modules
 
 

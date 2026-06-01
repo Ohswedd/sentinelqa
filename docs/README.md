@@ -2,7 +2,7 @@
 
 Status: `Stable`
 
-Project documentation. the documentation, CLAUDE §34.
+Project documentation. our published policy
 
 ## Sub-trees
 
@@ -41,4 +41,4 @@ Empty in. Populated from onward with CLI usage, SDK reference, module catalog, a
 
 Every doc carries a status label from our engineering rules (`Planned`, `Experimental`, `Stable`, `Deprecated`). See [`dev/status-labels.md`](./dev/status-labels.md).
 
-When a doc references a PRD or our engineering rules rule, it cites the section number (e.g. "our engineering rules", "the documentation"). Citations let future contributors trace the source even if line numbers shift.
+When a doc references a the documentation or our engineering rules rule, it cites the section number (e.g. "our engineering rules", "the documentation"). Citations let future contributors trace the source even if line numbers shift.

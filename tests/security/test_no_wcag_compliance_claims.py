@@ -1,4 +1,4 @@
-"""CLAUDE §28 guard: the accessibility module must never claim "fully WCAG
+"""the engineering guidelines: the accessibility module must never claim "fully WCAG
 compliant" / "WCAG compliant" in its outputs.
 
 The guard greps every file under ``modules/accessibility/`` and

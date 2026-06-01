@@ -1,4 +1,4 @@
-"""Flow entity (the documentation).
+"""Flow entity.
 
 A flow is an end-to-end user journey assembled from routes and elements.
 The planner produces flows; the generator turns each

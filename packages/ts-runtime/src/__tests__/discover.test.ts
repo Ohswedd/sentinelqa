@@ -1,5 +1,5 @@
 // Tests for `runDiscover` + the sentinel-ts CLI subcommand added in
-// Phase 17 task 07.
+// task 07.
 
 import { describe, expect, it } from 'vitest';
 

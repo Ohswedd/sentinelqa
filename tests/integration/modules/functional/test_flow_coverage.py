@@ -186,7 +186,7 @@ def test_payment_sandbox_template_uses_documented_test_card(
     """The payment template uses Stripe's published 4242 test card and gates
     the test on ``SENTINEL_PAYMENT_SANDBOX=1`` — never a real key.
 
-    This is a safety-boundary check (CLAUDE §6, our product spec): the generator
+    This is a safety-boundary check: the generator
     must never emit a spec that submits a production card number.
     """
 
@@ -222,7 +222,7 @@ def test_login_spec_uses_env_var_credentials_not_inline(
     tmp_path: Path,
     representative_graph: tuple[DiscoveryGraph, RiskMap, IdGenerator],
 ) -> None:
-    """Generated login specs must read credentials from env vars (CLAUDE §33)."""
+    """Generated login specs must read credentials from env vars."""
 
     graph, risk, ids = representative_graph
     config = load_config(_write_config(tmp_path))

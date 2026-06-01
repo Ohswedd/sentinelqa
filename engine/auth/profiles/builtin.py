@@ -15,7 +15,7 @@ from typing import Final
 from engine.auth.profiles.model import AuthProfile
 
 # ---------------------------------------------------------------------------
-# OAuth profiles ()
+# OAuth profiles
 # ---------------------------------------------------------------------------
 
 _GOOGLE_OAUTH = AuthProfile(
@@ -59,7 +59,7 @@ _MICROSOFT_ENTRA = AuthProfile(
 )
 
 # ---------------------------------------------------------------------------
-# LLM-web profiles ()
+# LLM-web profiles
 #
 # These exist so the operator can capture their OWN logged-in session in
 # a consumer LLM web app — typically to audit a workflow they built on

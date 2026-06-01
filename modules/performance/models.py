@@ -1,4 +1,4 @@
-"""Typed performance result models (, ADR-0017, CLAUDE §27).
+"""Typed performance result models (, ADR-0017, the engineering guidelines).
 
 The performance module follows the same shape as the accessibility
 module: per-route synthetic measurements, a dedicated runner Protocol,
@@ -122,7 +122,7 @@ class NavStabilitySummary(BaseModel):
 
 
 class PerformancePageResult(BaseModel):
-    """Aggregate performance result for one route (CLAUDE §27: synthetic).
+    """Aggregate performance result for one route (the engineering guidelines: synthetic).
 
     Every numeric the Python layer reads comes from this envelope; the
     Python deterministic evaluators are the single source of truth for

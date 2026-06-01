@@ -2,7 +2,7 @@
 
 Public surface:
 
-- :class:`CiMode` — typed alias for the five mode names (the documentation).
+- :class:`CiMode` — typed alias for the five mode names.
 - :class:`ModePlan` — the resolved preset (modules + tag filter + policy
  overrides).
 - :func:`apply_mode` — pure function that turns a ``RootConfig`` + mode

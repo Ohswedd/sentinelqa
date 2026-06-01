@@ -41,7 +41,7 @@ class AuthProfile:
     it so the operator can verify they're authorized to audit their
     own account on the platform.
     category:
-    ``"oauth"`` () or ``"llm-web"``. Lets the
+    ``"oauth"``  or ``"llm-web"``. Lets the
     ``sentinel auth list-profiles`` output and the docs group them
     sensibly.
     """

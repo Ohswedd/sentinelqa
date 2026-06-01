@@ -332,7 +332,7 @@ def run_dependency_scan(
     """Drive the configured dependency-scanner adapters.
 
     ``project_root`` is the directory that contains the lockfile(s);
-    in practice it is ``Path.cwd()`` for the CLI but tests pin a
+    in practice it is ``Path.cwd`` for the CLI but tests pin a
     temporary directory.
     """
 

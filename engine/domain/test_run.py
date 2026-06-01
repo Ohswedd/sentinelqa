@@ -1,4 +1,4 @@
-"""TestRun entity (the documentation).
+"""TestRun entity.
 
 The top-level container for one audit invocation. References every module
 result, holds the snapshotted config, and decides whether the run is

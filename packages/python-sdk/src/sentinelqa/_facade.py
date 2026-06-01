@@ -394,7 +394,7 @@ class Sentinel:
         )
 
     # ------------------------------------------------------------------
-    # run_plan(plan) — sync + async (the documentation)
+    # run_plan(plan) — sync + async
     # ------------------------------------------------------------------
 
     def run_plan(
@@ -466,7 +466,7 @@ class Sentinel:
         return self._resolve_run_dir(run_id=run_id, latest=latest)
 
     # ------------------------------------------------------------------
-    # verify_fix(run_id, suggestion) — sync + async (the documentation)
+    # verify_fix(run_id, suggestion) — sync + async
     # ------------------------------------------------------------------
 
     def verify_fix(
@@ -516,7 +516,7 @@ class Sentinel:
     def _audit_log_path(self) -> Path:
         # Discovery / planner paths that run outside the orchestrator still
         # need a writable audit log so safety decisions are persisted
-        # (the documentation). Use a sibling directory of the artifacts root.
+        # . Use a sibling directory of the artifacts root.
         log_dir = self._artifacts_root.parent / "sdk-audit"
         log_dir.mkdir(parents=True, exist_ok=True)
         return log_dir / "audit.log"

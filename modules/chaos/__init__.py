@@ -4,7 +4,7 @@ Importing this package wires :class:`ChaosModule` into the default
 orchestrator registry so ``sentinel chaos`` and ``sentinel audit``
 (when ``modules.chaos = true``) both pick it up automatically.
 
-Scenarios (the documentation):
+Scenarios :
 
 - Network: slow_3g, offline, api_500, api_timeout.
 - Session: expired token, missing permissions.
@@ -15,7 +15,7 @@ Safety boundary:
 
 - ``modules.chaos`` is OFF by default in :class:`ModulesConfig` — the
  scenarios above are surfaced only by explicit opt-in or via the CI
- ``nightly`` preset (the documentation).
+ ``nightly`` preset.
 - Session-claim manipulation runs Playwright-side only; the helpers
  never re-sign or forge production JWTs.
 - No aggressive / evasion / detection-bypass knob exists on the CLI

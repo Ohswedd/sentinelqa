@@ -1,5 +1,4 @@
-// Phase 23 — wire types shared with `modules/chaos/models.py`.
-//
+// — wire types shared with `modules/chaos/models.py`.
 // The TS-side `ChaosEvent` is the JSONL payload the helpers in this
 // directory append to `<run-dir>/chaos/events.jsonl`. The Python module
 // parses that file via `modules.chaos.ingestion`, so any change here

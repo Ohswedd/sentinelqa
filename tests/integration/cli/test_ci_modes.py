@@ -133,7 +133,7 @@ def test_fail_under_wins_over_release_default(
 
 
 def test_invalid_mode_exits_config_error(fresh_project: Path, tmp_path: Path) -> None:
-    """Exit code 2 (config error) — verified via ``main()`` so the typed
+    """Exit code 2 (config error) — verified via ``main`` so the typed
     ``InvalidCiModeError`` is mapped per :mod:`sentinel_cli.main`."""
 
     from sentinel_cli.main import main

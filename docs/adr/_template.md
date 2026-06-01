@@ -29,7 +29,7 @@ For each alternative: a one-line description and the specific reason it was reje
 
 ## References
 
-- PRD section(s): PRD §N.M (Title)
+- the documentation section(s): the documentation(Title)
 - our engineering rules rule(s): our engineering rules(Title)
 - External: links to RFCs, blog posts, vendor docs.
 - Related ADRs: ADR-XXXX.

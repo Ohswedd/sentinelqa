@@ -27,7 +27,7 @@ class CheckContext:
 
     The HTTP client is configured by the module once and shared across
     checks so connection pooling, headers, and timeouts stay consistent
-    (CLAUDE §7 — adapters at the boundary).
+    (the engineering guidelines— adapters at the boundary).
     """
 
     run_id: str

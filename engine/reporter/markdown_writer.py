@@ -1,7 +1,7 @@
-"""Markdown report (`report.md`, ).
+"""Markdown report writer (`report.md`).
 
-A concise Markdown summary optimized for PR comments and quick scans
-(the documentation). The full HTML report lands in. Style rules:
+A concise Markdown summary optimized for PR comments and quick scans.
+The full HTML report is produced separately. Style rules:
 
 - Deterministic ordering: findings sorted by severity (critical → info)
  then by id; modules sorted alphabetically.

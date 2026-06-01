@@ -93,7 +93,7 @@ login` when an audit fails with `E-AUTH-002`. We accept the friction — silent 
 
 ## References
 
-- PRD section(s): our product spec (Safety Boundary), our product spec (Testing Capabilities), our product spec (Configuration).
+- the documentation section(s): our product spec (Safety Boundary), our product spec (Testing Capabilities), our product spec (Configuration).
 - our engineering rules rule(s): our engineering rules(Non-negotiable safety boundary), our engineering rules(Logging and Secrets), our engineering rules(Implementation Order — auth lands after the core engine is stable).
 - External: [Playwright `storage_state` docs](https://playwright.dev/docs/auth), [PyCA cryptography AES-GCM](https://cryptography.io/en/latest/hazmat/primitives/aead/#cryptography.hazmat.primitives.ciphers.aead.AESGCM), [NIST SP 800-132 (PBKDF2)](https://csrc.nist.gov/publications/detail/sp/800-132/final), [Python keyring library](https://pypi.org/project/keyring/).
 - Related ADRs: ADR-0006 (Safety policy), ADR-0018 (Security module), ADR-0029 (Plugin architecture).

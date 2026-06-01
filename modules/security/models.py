@@ -15,7 +15,7 @@ from engine.domain.finding import Severity
 from pydantic import Field, field_validator
 
 SECURITY_RESULT_SCHEMA_VERSION: str = "1"
-"""Bump under an ADR (CLAUDE §34). Owned by Phase 13."""
+"""Bump under an ADR. Owned by Phase 13."""
 
 
 CheckName = str  # one of: "headers", "cookies", "cors", "csrf", "xss_reflected",

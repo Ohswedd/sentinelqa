@@ -1,6 +1,6 @@
 """CLI entry point (`sentinel` console script).
 
-`main()` is the integer-returning function we wire into pyproject's
+`main` is the integer-returning function we wire into pyproject's
 ``[project.scripts]``. It catches every :class:`SentinelError` at the
 outermost boundary and maps to the deterministic exit code; anything
 that escapes as a plain exception is funneled into the internal-error

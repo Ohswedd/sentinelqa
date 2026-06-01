@@ -36,7 +36,7 @@ _LOCAL_HOSTS: frozenset[str] = frozenset({"localhost", "127.0.0.1", "::1"})
 
 
 def _sentinel_user_agent() -> str:
-    """Return the transparent UA mandated by CLAUDE §6 / the documentation."""
+    """Return the transparent UA mandated by the engineering guidelines"""
 
     try:
         version = importlib_metadata.version("sentinelqa-engine")

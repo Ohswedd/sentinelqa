@@ -87,7 +87,7 @@ def test_clean_probe_has_no_findings() -> None:
 
 
 def test_probe_query_set_is_fixed() -> None:
-    # CLAUDE §6 + ADR-0044 safety boundary: the probe queries are a
+    # the engineering guidelines+ ADR-0044 safety boundary: the probe queries are a
     # fixed, enumerated tuple. Drift here breaks the safety guarantee.
     assert len(PROBE_QUERIES) == 3
     for query in PROBE_QUERIES:

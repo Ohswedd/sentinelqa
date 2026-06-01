@@ -1,6 +1,6 @@
 """Strict JSON-mode helpers.
 
-``json_stdout()`` is the only sanctioned way to emit machine-readable
+``json_stdout`` is the only sanctioned way to emit machine-readable
 output. While the context is active:
 
 - stdout receives only the JSON objects passed to :func:`emit`.
@@ -28,7 +28,7 @@ _ENV_ASSERT = "SENTINELQA_ASSERT_JSON_STDOUT"
 
 
 class _StrictJsonStream:
-    """Wraps a TextIO so only `emit()` may write, and only JSON lines."""
+    """Wraps a TextIO so only `emit` may write, and only JSON lines."""
 
     def __init__(self, target: TextIO) -> None:
         self._target = target
@@ -47,7 +47,7 @@ def json_stdout() -> Generator[_StrictJsonStream, None, None]:
     success. When ``SENTINELQA_ASSERT_JSON_STDOUT=1`` we install a write
     hook that aborts the process if anything other than a JSON line is
     written to stdout via direct ``print``/``sys.stdout.write`` — this
-    is a test-time invariant check (CLAUDE §13: JSON mode must output
+    is a test-time invariant check (the engineering guidelines: JSON mode must output
     only machine-readable JSON).
     """
 

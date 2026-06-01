@@ -78,7 +78,7 @@ def test_plugin_protocols_keys_match_kind_attribute() -> None:
 
 @pytest.mark.parametrize("protocol_cls", PLUGIN_KINDS)
 def test_each_plugin_is_a_runtime_checkable_protocol(protocol_cls: type) -> None:
-    # The loader uses isinstance() to verify the plugin implements its
+    # The loader uses isinstance to verify the plugin implements its
     # declared kind; runtime_checkable is therefore mandatory.
     assert issubclass(protocol_cls, Protocol)  # type: ignore[arg-type]
     # runtime_checkable sets this private marker (CPython detail but
@@ -115,7 +115,7 @@ def _has_method(cls: type, method: str) -> bool:
 def test_scanner_plugin_has_run_method_returning_module_result() -> None:
     assert _has_method(ScannerPlugin, "run")
     hints = get_type_hints(ScannerPlugin.run)
-    # The PRD pins ScannerPlugin.run(ctx) -> ModuleResult.
+    # The the documentation pins ScannerPlugin.run(ctx) -> ModuleResult.
     assert "context" in hints
     assert hints["return"].__name__ == "ModuleResult"
 

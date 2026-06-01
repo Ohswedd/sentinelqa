@@ -1,8 +1,7 @@
-// Phase 12.04 — long-task collector via PerformanceObserver.
-//
+// — long-task collector via PerformanceObserver.
 // PerformanceObserver({ entryTypes: ['longtask'] }) reports any main-thread
 // task longer than 50ms. We install the observer before navigation and
-// summarise after the load completes. CLAUDE §27: this is a synthetic
+// summarise after the load completes. the engineering guidelines: this is a synthetic
 // lab measurement, not Real-User Monitoring.
 
 import type { LongTaskSummary } from './types.js';

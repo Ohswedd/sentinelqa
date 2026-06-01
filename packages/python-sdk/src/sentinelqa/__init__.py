@@ -8,7 +8,7 @@ the stable contract documented in our product spec
 Importing this package is cheap: heavy submodules (orchestrator, planner,
 discovery, generator, runner, reporter) are imported lazily by the
 :class:`Sentinel` facade. ``import sentinelqa`` must stay under 200 ms so
-agent-facing tooling (the documentation) starts quickly.
+agent-facing tooling  starts quickly.
 """
 
 from __future__ import annotations
@@ -62,7 +62,7 @@ __all__ = [
     "DependencyMissingError",
     "TestExecutionError",
     "QualityGateFailedError",
-    # Schema versions — every public wire shape is versioned (the documentation).
+    # Schema versions — every public wire shape is versioned.
     "RUN_SCHEMA_VERSION",
     "FINDINGS_SCHEMA_VERSION",
     "SCORE_SCHEMA_VERSION",

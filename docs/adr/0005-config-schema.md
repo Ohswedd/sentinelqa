@@ -44,14 +44,14 @@ The task spec lists `engine/config/schema.py`, `loader.py`, `schema_check.py`, a
 
 ## Alternatives considered
 
-- **TOML or JSON.** Rejected. YAML is the existing PRD format and the ecosystem norm for QA tools; switching now would invalidate the PRD's example and offer no upside for the security boundary.
+- **TOML or JSON.** Rejected. YAML is the existing the documentation format and the ecosystem norm for QA tools; switching now would invalidate the the documentation's example and offer no upside for the security boundary.
 - **Pure dataclass + manual validation.** Rejected. We'd reinvent Pydantic v2's error reporting and JSON-Schema export poorly, then spend ongoing time keeping them aligned.
 - **Allow inline secrets and rely on git hooks to catch them.** Rejected. Defense in depth: gitleaks (pre-commit) catches commits; the loader catches misuse of the file. Both. our engineering rules— which is impossible to guarantee if the config can carry them.
 - **Auto-coerce strings to AnyUrl in tests via plugin.** Rejected. The cost of writing the URL once is lower than the cost of teaching reviewers to trust the magic.
 
 ## References
 
-- PRD section(s): our product spec (Configuration Specification), our product spec (Data Model — Project / Target).
+- the documentation section(s): our product spec (Configuration Specification), our product spec (Data Model — Project / Target).
 - our engineering rules rule(s): our engineering rules(Config rules), our engineering rules(Logging & secrets), our engineering rules(Safety boundary), our engineering rules(Required ADR triggers — "Config schema").
 - External: Pydantic v2 strict mode docs; OWASP YAML parsing guidance (`yaml.safe_load`).
 - Related ADRs: ADR-0002 (Language strategy — Python owns config), ADR-0003 (Package managers — uv workspace), ADR-0006 (Safety policy — consumer of `target.proof_of_authorization`).

@@ -12,7 +12,7 @@ The command thinly wraps the FunctionalModule :
 - `--workers`, `--shard`, `--retries` map directly onto the runner config.
 - `--url` overrides ``target.base_url`` for this invocation only.
 
-Exit codes follow the canonical grid (CLAUDE §13):
+Exit codes follow the canonical grid:
 
 - ``0`` — every functional test passed (no findings ≥ high).
 - ``1`` — quality gate failed (flake rate exceeded or blocking findings).

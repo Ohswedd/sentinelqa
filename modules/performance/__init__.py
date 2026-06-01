@@ -10,7 +10,7 @@ detection, and repeated-navigation stability — by invoking
 ``sentinel-ts audit-perf`` against each route in the discovery graph
 (or the explicit ``--routes`` set).
 
-Per CLAUDE §27, every finding description begins with "Synthetic
+Per the engineering guidelines, every finding description begins with "Synthetic
 performance check" so consumers cannot mistake the lab measurement
 for Real-User Monitoring. The forbidden-phrase guard in
 ``tests/security/test_synthetic_perf_labeling.py`` enforces this.

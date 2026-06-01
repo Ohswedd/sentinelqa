@@ -1,4 +1,4 @@
-// Phase 12 — wire types for the per-route performance JSON artifacts.
+// — wire types for the per-route performance JSON artifacts.
 // These mirror the Pydantic models in modules/performance/models.py
 // exactly. Bump PERF_RESULT_SCHEMA_VERSION on both sides together.
 

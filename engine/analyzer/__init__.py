@@ -1,7 +1,7 @@
-"""Analyzer module (the documentation).
+"""Analyzer module.
 
 Interprets failed-test signals from the Runner and the
-lifecycle's module-error path (CLAUDE §10) and emits, per failure:
+lifecycle's module-error path and emits, per failure:
 
  * A typed :class:`~engine.analyzer.models.FailureClassification`.
  * A short :class:`~engine.analyzer.models.RootCauseHypothesis` with
@@ -10,7 +10,7 @@ lifecycle's module-error path (CLAUDE §10) and emits, per failure:
  * A :class:`~engine.analyzer.models.RetryDecision` consumed by the
  runner's retry/quarantine policy.
  * An optional LLM refinement that NEVER replaces the deterministic
- output (CLAUDE §23).
+ output.
 
 The Analyzer is deterministic by default. LLM refinement is opt-in
 behind ``analyzer.llm.enabled`` and is bounded by a per-run USD budget

@@ -1,19 +1,15 @@
 // `@sentinelqa/ts-runtime/playwright` — the surface SentinelQA-generated
-// tests import (PRD §15.2, CLAUDE.md §21).
-//
+// tests import.
 // Two pieces live here:
-//
-//   sentinelTest      — Playwright `test.extend` with auto fixtures:
-//                       `sentinel`  → { emitter, testId, runDir }
-//                       `_network`  → installs redactedNetwork on the page
-//
-//   SENTINEL_PLAYWRIGHT_DEFAULTS
-//                     — the `use` block sentinel-ts merges into the
-//                       Playwright config (trace, screenshot, video).
-//                       CLAUDE §21: trace `on-first-retry`,
-//                       screenshot `only-on-failure`,
-//                       video `retain-on-failure`.
-//
+// sentinelTest — Playwright `test.extend` with auto fixtures:
+// `sentinel` → { emitter, testId, runDir }
+// `_network` → installs redactedNetwork on the page
+// SENTINEL_PLAYWRIGHT_DEFAULTS
+// — the `use` block sentinel-ts merges into the
+// Playwright config (trace, screenshot, video).
+// the engineering guidelines: trace `on-first-retry`,
+// screenshot `only-on-failure`,
+// video `retain-on-failure`.
 // Tests can call `sentinelStep(sentinel, name, fn)` and
 // `captureEvidence(sentinel, page, label)` directly; the `sentinel`
 // fixture exposes the right context shape.
@@ -27,7 +23,7 @@ import { EventEmitter } from './protocol.js';
 
 /**
  * Default `use` block for generated tests + sentinel-ts runs.
- * CLAUDE.md §21 — these defaults are mandatory.
+ * the engineering guidelines — these defaults are mandatory.
  */
 export const SENTINEL_PLAYWRIGHT_DEFAULTS = {
   trace: 'on-first-retry',
@@ -36,7 +32,7 @@ export const SENTINEL_PLAYWRIGHT_DEFAULTS = {
 } as const satisfies Partial<PlaywrightWorkerOptions>;
 
 /**
- * Phase 31 / ADR-0043. When `sentinel-ts run --storage-state <path>` is
+ * / ADR-0043. When `sentinel-ts run --storage-state <path>` is
  * passed (or `storage_state_path` is set in the run-config), the runner
  * exports the env var `SENTINELQA_STORAGE_STATE`. This helper reads
  * that env var and returns a `{storageState: <path>}` overlay the
@@ -86,7 +82,7 @@ export function buildSentinelFixture(
 /**
  * Playwright `test.extend` overlay. Generated tests import this:
  *
- *   import { sentinelTest as test, expect } from '@sentinelqa/ts-runtime/playwright';
+ * import { sentinelTest as test, expect } from '@sentinelqa/ts-runtime/playwright';
  *
  * The `sentinel` fixture is the only auto-fixture: the network
  * interceptor is wired by reading `sentinel` so users don't pay the

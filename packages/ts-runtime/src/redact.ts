@@ -1,11 +1,9 @@
-// TypeScript mirror of `engine.policy.redaction` (CLAUDE.md §33).
-//
+// TypeScript mirror of `engine.policy.redaction`.
 // Python owns the rules. They are exported by
 // `scripts/export-redaction-rules.py` into
 // `packages/shared-schema/redaction-rules.json` and consumed here. CI
 // re-runs the exporter in `--check` mode so the JSON cannot drift from
 // the Python source.
-//
 // Parity guarantee: for every input in
 // `tests/golden/redaction/parity.json`, the Python `redact()` and the
 // TS `redact()` produce byte-identical output.

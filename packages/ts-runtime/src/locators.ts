@@ -1,25 +1,21 @@
-// Semantic-first locator utilities (PRD §9.3 Generator, §27 Example
-// test; CLAUDE §21 TS rules, §22 Generated tests).
-//
+// Semantic-first locator utilities (the documentation, §27 Example
+// test; the engineering guidelines, §22 Generated tests).
 // Two surfaces:
-//
-//   1. `bestLocator(page, target)` — pick a locator using a
-//      semantic-first strategy chain (getByRole → getByLabel →
-//      getByPlaceholder → getByText → getByTestId → getByAltText →
-//      getByTitle). Returns the *first* strategy whose locator matches
-//      exactly one element. Used by Phase 07 (Generator) to produce
-//      readable specs.
-//
-//   2. `auditLocatorBrittleness(spec)` — static analysis over a
-//      generated TS spec. Warns on brittle patterns
-//      (`page.locator('div:nth-of-type(3)')`, raw XPath, raw `page.$`
-//      queries, etc.). Used by Phase 07 as a sanity check before
-//      writing a spec to disk, and by Phase 20 (Healer) when proposing
-//      locator repairs.
-//
-//   3. `describeLocator(locator)` — captures the descriptor (role,
-//      accessible name, text, landmarks) so the Healer (Phase 20) can
-//      regenerate when the DOM changes.
+// 1. `bestLocator(page, target)` — pick a locator using a
+// semantic-first strategy chain (getByRole → getByLabel →
+// getByPlaceholder → getByText → getByTestId → getByAltText →
+// getByTitle). Returns the *first* strategy whose locator matches
+// exactly one element. Used by (Generator) to produce
+// readable specs.
+// 2. `auditLocatorBrittleness(spec)` — static analysis over a
+// generated TS spec. Warns on brittle patterns
+// (`page.locator('div:nth-of-type(3)')`, raw XPath, raw `page.$`
+// queries, etc.). Used by as a sanity check before
+// writing a spec to disk, and by (Healer) when proposing
+// locator repairs.
+// 3. `describeLocator(locator)` — captures the descriptor (role,
+// accessible name, text, landmarks) so the Healer () can
+// regenerate when the DOM changes.
 
 import { Project, SyntaxKind } from 'ts-morph';
 
@@ -113,7 +109,7 @@ function applyStrategy(page: QueryablePage, strategy: LocatorStrategy): LocatorL
  * locator matches exactly one element. Returns `null` when no strategy
  * yields a unique match — the caller (Generator / Healer) decides
  * whether to fall back to a brittle CSS selector or fail the spec
- * outright (CLAUDE §21 prefers the latter).
+ * outright.
  */
 export async function bestLocator(
   page: QueryablePage,
@@ -184,7 +180,7 @@ export interface EvaluableLocator {
 }
 
 /**
- * Capture the descriptor used by the Healer (Phase 20) when proposing
+ * Capture the descriptor used by the Healer () when proposing
  * locator repairs. Includes role, accessible name, visible text,
  * surrounding ARIA landmarks (parents with role attributes), and
  * `tagName`. All fields default to `null` when missing so the
@@ -278,7 +274,7 @@ const SEMANTIC_METHODS = new Set([
  * Audit a TypeScript spec source for brittle locator patterns.
  * Returns a list of warnings with line/column anchors. Uses ts-morph
  * for AST traversal so we catch `page.locator(...)` / `page.$(...)` /
- * `page.$$(...)` and chained accessors. CLAUDE §21 forbids brittle
+ * `page.$$(...)` and chained accessors. the engineering guidelines
  * locators unless no semantic option exists; we report and leave the
  * call-site decision to the human reviewer.
  */
@@ -348,7 +344,7 @@ export function auditLocatorBrittleness(spec: string): BrittlenessAudit {
         line: 1,
         column: 1,
         message:
-          'spec uses raw selectors but no semantic locator (getByRole / getByLabel / …); CLAUDE §21 prefers semantic locators wherever possible',
+          'spec uses raw selectors but no semantic locator (getByRole / getByLabel / …); prefer semantic locators wherever possible',
         snippet: '',
       });
     }

@@ -6,7 +6,7 @@ growth from the first to the last sample and emits a low-confidence
 ``potential-memory-leak`` finding when growth exceeds the configured
 threshold.
 
-CLAUDE §27 reminder: this is a heuristic. A small growth is normal
+the engineering guidelines: this is a heuristic. A small growth is normal
 (caches warming, background telemetry). The finding text says
 "potential" and confidence is intentionally below 1.0 so the Phase-14
 quality gate does not over-fail on noise.

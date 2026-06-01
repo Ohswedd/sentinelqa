@@ -1,7 +1,7 @@
 """Canonical chaos scenario catalog (, the documentation).
 
 Each :class:`ChaosScenario` is a *named, bounded* injection the TS
-chaos helpers know how to perform via Playwright's ``route()`` API
+chaos helpers know how to perform via Playwright's ``route`` API
 (network/data scenarios) or its session / navigation primitives
 (session/ux scenarios). The catalog is the single source of truth
 both runtimes consult: the Python module uses it to validate
@@ -11,7 +11,7 @@ across language boundaries.
 
 The catalog deliberately mirrors the documentation's flat scenario list (and
 nothing more). New scenarios must be added here first; our engineering rules
-forbids drive-by chaos additions without explicit PRD updates.
+forbids drive-by chaos additions without explicit the documentation updates.
 """
 
 from __future__ import annotations

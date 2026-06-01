@@ -21,7 +21,7 @@ Three structural decisions framed the implementation:
 
 1. **Where the diff math runs.** The task file (`03-diff-threshold.md`) floats both a TS-side `pixelmatch` pipeline and a Python-side Pillow pipeline. The TS path is faster on raw throughput but adds a second inter-runtime contract and forces every test to spin up Node, which the other modules do not require for their unit tier.
 2. **Whether the module captures.** Capture means driving Playwright through the Phase-04 TS runtime to write PNGs into a known tree. Diff means consuming PNGs that already live on disk. The other already-shipped modules (`security`, `llm_audit`) consume signals that an earlier phase captured. Mirroring that pattern keeps the visual module testable without a browser.
-3. **How baseline acceptance is gated.** CLAUDE §29 forbids CI auto-accept. The question is where the guard lives — inside the library (refuse `promote_to_baseline` when an env var is truthy) or at the CLI (refuse the `accept` subcommand). A library guard ties the policy to a global env-var read that's awkward to unit-test; a CLI guard keeps the policy at the system boundary and lets the library remain a pure-function surface.
+3. **How baseline acceptance is gated.** the engineering guidelines-accept. The question is where the guard lives — inside the library (refuse `promote_to_baseline` when an env var is truthy) or at the CLI (refuse the `accept` subcommand). A library guard ties the policy to a global env-var read that's awkward to unit-test; a CLI guard keeps the policy at the system boundary and lets the library remain a pure-function surface.
 
 ## Decision
 
@@ -36,7 +36,7 @@ that consumes PNGs already on disk. Concretely:
 
 - **Masking contract.** `visual.masks` accepts either a `selector` (the TS capture helper hides the element before screenshot) or a static `rect` (the Python diff layer paints both images grey before comparison). Selector-only masks are recorded but not drawn — the capture layer is responsible. The wildcard route `*` applies a mask to every captured route; the prefix glob `admin*` applies it to every route that begins with `admin`.
 
-- **Viewport contract.** Defaults match the PRD reference: `mobile (375×812)`, `tablet (768×1024)`, `desktop (1280×800)`. Viewport name is the on-disk segment, lowercased + alnum-only.
+- **Viewport contract.** Defaults match the the documentation reference: `mobile (375×812)`, `tablet (768×1024)`, `desktop (1280×800)`. Viewport name is the on-disk segment, lowercased + alnum-only.
 
 - **CI-acceptance guard at the CLI boundary.** `sentinel visual
 accept` refuses to promote PNGs into the baseline tree whenever `state.ci` is true OR `CI` / `SENTINEL_CI` is truthy in the environment. The refusal writes an audit-log entry (`event:
@@ -54,14 +54,14 @@ accept` refuses to promote PNGs into the baseline tree whenever `state.ci` is tr
 
 ## Alternatives considered
 
-- **TS-side `pixelmatch` diff.** Faster per-pixel throughput but doubles the inter-runtime contract surface and forces every visual unit test to spin Node. Rejected because the current unit tier finishes in 0.3s and Pillow scales adequately for the PRD's reference viewports.
-- **Library-side CI guard via env-var read.** Awkward to unit-test (every test needs to monkeypatch the env), and CLAUDE §29's "no auto-accept in CI" is a CLI-level policy, not a data-layer invariant. Rejected in favour of the CLI guard.
+- **TS-side `pixelmatch` diff.** Faster per-pixel throughput but doubles the inter-runtime contract surface and forces every visual unit test to spin Node. Rejected because the current unit tier finishes in 0.3s and Pillow scales adequately for the the documentation's reference viewports.
+- **Library-side CI guard via env-var read.** Awkward to unit-test (every test needs to monkeypatch the env), and the engineering guidelines's "no auto-accept in CI" is a CLI-level policy, not a data-layer invariant. Rejected in favour of the CLI guard.
 - **Selector-only masking.** Simpler contract but unmaskable in unit tests without driving a browser. Rejected because the rect mask is required for fixture-driven coverage of the dynamic-content suppression behaviour.
 - **Single shared baseline across viewports.** Rejected because responsive UIs render genuinely different content at mobile vs desktop; conflating them collapses the signal.
 
 ## References
 
-- PRD section(s): the documentation (Visual), our product spec (Risks — visual noise), the documentation (visual config block), the documentation (`sentinel visual`).
+- the documentation section(s): the documentation (Visual), our product spec (Risks — visual noise), the documentation (visual config block), the documentation (`sentinel visual`).
 - our engineering rules rule(s): our engineering rules(Module contract), §13 (CLI rules), §29 (Visual regression rules), §39 (CI rules).
 - External: Wang, Z. et al., "Image Quality Assessment: From Error Visibility to Structural Similarity," IEEE TIP 2004 (SSIM derivation).
 - Related ADRs: ADR-0015 (module contract), ADR-0023 (MCP/agent interface — the `sentinel visual` CLI commands surface through the audit lifecycle the MCP server already drives).

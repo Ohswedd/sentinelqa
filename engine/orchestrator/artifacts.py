@@ -1,7 +1,7 @@
-"""Run artifact tree per CLAUDE §11.
+"""Run artifact tree per the engineering guidelines
 
 Each run lives at ``.sentinel/runs/<run-id>/``. Files are created on
-demand (CLAUDE §11: "when available") and writes are atomic (write to
+demand (the engineering guidelines: "when available") and writes are atomic (write to
 a sibling ``*.tmp`` then ``os.replace``). Sensitive payloads pass
 through :func:`engine.policy.redaction.redact` before JSON
 serialization.
@@ -52,7 +52,7 @@ class ArtifactDirectory:
         # `_jsonable` first so domain objects / Pydantic models / Paths
         # become primitives; THEN `redact` so secret keys and values are
         # masked. Reversing the order causes redact to coerce Path objects
-        # via repr() rather than str.
+        # via repr rather than str.
         #
         # ``redaction_depth`` caps recursion in :func:`redact`. The 6-deep
         # default suits run.json / findings.json / score.json (shallow
