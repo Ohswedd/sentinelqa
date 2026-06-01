@@ -2,8 +2,14 @@
 
 Scaffolds a new SentinelQA project: writes `sentinel.config.yaml`,
 patches `.gitignore`, creates `.sentinel/` runtime tree, and drops a
-starter GitHub Action. Idempotent — re-running is a no-op unless
-`--force` is supplied.
+starter GitHub Action.
+
+Runs an interactive wizard by default when stdout is a TTY (five
+prompts, each with a detected default — five presses of Enter are
+enough to land a working config). Pass ``--non-interactive`` or
+``--json`` to bypass the wizard and fall back to detection-only
+defaults. Idempotent: re-running is a no-op unless ``--force`` is
+supplied.
 """
 
 from __future__ import annotations
@@ -15,7 +21,7 @@ from typing import Annotated, Any
 import typer
 from engine.config.loader import dump_config
 
-from sentinel_cli import init_detect
+from sentinel_cli import init_detect, init_wizard
 from sentinel_cli.json_mode import json_stdout
 from sentinel_cli.state import GlobalState
 
@@ -70,24 +76,39 @@ def run_init(
         bool,
         typer.Option(
             "--non-interactive",
-            help="Never prompt; fall back to safe defaults on detection misses.",
+            help="Never prompt; fall back to detection-only defaults.",
         ),
     ] = False,
 ) -> None:
     """Implement the `init` command."""
 
     state: GlobalState = ctx.obj
-    del non_interactive  # reserved for future interactive features
 
     actions: list[dict[str, Any]] = []
 
     detection = init_detect.detect(path)
 
-    config_yaml = init_detect.render_config(
-        project_root=path,
-        detection=detection,
-        dump_config=dump_config,
+    use_wizard = (
+        not non_interactive
+        and state.mode != "json"
+        and state.mode != "quiet"
+        and init_wizard.is_interactive(sys.stdin)
+        and init_wizard.is_interactive(sys.stdout)
     )
+
+    if use_wizard:
+        answers = init_wizard.run_wizard(detection=detection)
+        config_yaml = init_wizard.render_config_from_answers(
+            project_root=path,
+            answers=answers,
+            dump_config=dump_config,
+        )
+    else:
+        config_yaml = init_detect.render_config(
+            project_root=path,
+            detection=detection,
+            dump_config=dump_config,
+        )
 
     config_path = path / "sentinel.config.yaml"
     actions.append(_write_if_needed(config_path, config_yaml, force=force))
