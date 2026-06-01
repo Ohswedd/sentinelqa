@@ -1,6 +1,6 @@
-"""Negative-case check (Phase 22.04, CLAUDE.md §30).
+"""Negative-case check (Phase 22.04, our engineering rules).
 
-Per CLAUDE.md §30 / PRD §10.3 we generate a small, bounded set of
+Per our engineering rules / the documentation we generate a small, bounded set of
 variants for each documented request body and assert that the server
 rejects them. We never:
 
@@ -214,7 +214,7 @@ def _evaluate_negative_response(
                 description=(
                     f"Server returned {status} for a {label!r} variant. "
                     "Invalid input should surface as 4xx with a structured "
-                    "error, not a 5xx (CLAUDE.md §30)."
+                    "error, not a 5xx."
                 ),
                 method=op.method.upper(),
                 route=op.path,

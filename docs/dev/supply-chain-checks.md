@@ -2,11 +2,11 @@
 
 This document is the operator-facing reference for the
 `sentinel supply-chain` command and the underlying
-`modules.supply_chain` package (Phase 33, PRD §10.7.3, ADR-0045).
+`modules.supply_chain` package (Phase 33, the documentation.3, ADR-0045).
 
-Every check is **defensive / read-only**. CLAUDE.md §6 forbids
+Every check is **defensive / read-only**. our engineering rules
 stealth, evasion, fingerprint spoofing, or aggressive scanning;
-CLAUDE.md §26 requires safe defaults. The Phase 33 module honours
+our engineering rules
 both: the OSV adapter only ever talks to `api.osv.dev`; the
 container scanner runs only against the configured image; the
 postinstall scanner reads scripts — it never executes them.
@@ -186,21 +186,17 @@ The forbidden-token grep at
 `tests/security/test_no_offensive_supply_chain.py` keeps these
 literals out of `modules/supply_chain/` and the CLI:
 
-- `exploit`, `shellcode`, `obfuscate`, `evade`, `stealth`,
-  `captcha_bypass`, `deobfuscate`.
+- `exploit`, `shellcode`, `obfuscate`, `evade`, `stealth`, `captcha_bypass`, `deobfuscate`.
 
 The same test verifies that:
 
-- `modules/supply_chain/postinstall.py` never invokes
-  `subprocess.run(` / `subprocess.Popen(` / `subprocess.call(` /
-  `os.system(` — the scanner reads only.
-- `modules/supply_chain/container.py` never contains
-  `docker pull`, `image inspect`, or `--privileged` directives.
+- `modules/supply_chain/postinstall.py` never invokes `subprocess.run(` / `subprocess.Popen(` / `subprocess.call(` / `os.system(` — the scanner reads only.
+- `modules/supply_chain/container.py` never contains `docker pull`, `image inspect`, or `--privileged` directives.
 
 ## Related references
 
 - ADR-0045 (`docs/adr/0045-supply-chain-module.md`).
-- Phase 33 README (`plans/phase-33-supply-chain/README.md`).
+- Phase 33 README ().
 - CycloneDX 1.5 — https://cyclonedx.org/specification/overview/
 - OSV API — https://google.github.io/osv.dev/post-v1-querybatch/
 - Trivy — https://aquasecurity.github.io/trivy/

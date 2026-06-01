@@ -1,4 +1,4 @@
-"""Auto-apply gating policy (Phase 20.06, CLAUDE.md §23).
+"""Auto-apply gating policy (Phase 20.06, our engineering rules).
 
 The Healer never decides on its own whether a proposal applies. This
 module computes :class:`AutoApplyDecision` for one proposal given:
@@ -17,7 +17,7 @@ mode adds ``fixture`` and ``assertion`` repairs but ``assertion``
 still requires ``allow_weaken=True``.
 
 All decisions carry a human-readable reason — the CLI logs that
-reason in ``audit.log`` (CLAUDE.md §11) on every applied repair.
+reason in ``audit.log`` on every applied repair.
 """
 
 from __future__ import annotations
@@ -88,10 +88,7 @@ def decide_auto_apply(
     if proposal.kind == "assertion" and not allow_weaken:
         return AutoApplyDecision(
             should_apply=False,
-            reason=(
-                "assertion repairs require --allow-weaken even in aggressive "
-                "mode (CLAUDE.md §23)."
-            ),
+            reason=("assertion repairs require --allow-weaken even in aggressive " "mode."),
         )
 
     if proposal.confidence < auto_apply_threshold:

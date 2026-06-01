@@ -1,4 +1,4 @@
-"""API latency budgets (Phase 12.03, PRD §10.5, CLAUDE §27).
+"""API latency budgets (Phase 12.03, the documentation, CLAUDE §27).
 
 The TS runtime observes every XHR/fetch response during the synthetic
 page loads and reports the raw samples + a per-endpoint summary. This

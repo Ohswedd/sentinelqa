@@ -16,7 +16,7 @@ Public surface:
   ``tests/security/test_no_credentials_in_profiles.py`` enforces that
   invariant at the field-name level.
 
-Hard rules (CLAUDE.md §6, §33):
+Hard rules (our engineering rules, §33):
 
 - The operator signs in interactively in a real browser. SentinelQA never
   harvests usernames / passwords / OTPs / OAuth bearer tokens.

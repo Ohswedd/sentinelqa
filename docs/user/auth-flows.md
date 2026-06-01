@@ -21,10 +21,7 @@ You have a staging app behind Google / GitHub / Microsoft OAuth, or
 your own SSO. Run the one-time interactive capture:
 
 ```bash
-sentinel auth login github-myorg \
-  --url https://staging.example.com/login \
-  --profile github-oauth \
-  --ttl 24
+sentinel auth login github-myorg \ --url https://staging.example.com/login \ --profile github-oauth \ --ttl 24
 ```
 
 The CLI opens a headed Chromium at the login URL. Sign in normally —
@@ -35,13 +32,8 @@ on one of the profile's `success_url_patterns`).
 In your `sentinel.config.yaml`:
 
 ```yaml
-target:
-  base_url: https://staging.example.com/
-  allowed_hosts:
-    - staging.example.com
-auth:
-  strategy: browser_session
-  session_name: github-myorg
+target: base_url: https://staging.example.com/ allowed_hosts: - staging.example.com
+auth: strategy: browser_session session_name: github-myorg
 ```
 
 Subsequent `sentinel audit` runs replay the encrypted session
@@ -81,10 +73,7 @@ common consumer LLM apps:
 The flow is the same as case (1). Capture once:
 
 ```bash
-sentinel auth login claude-projects \
-  --url https://claude.ai/login \
-  --profile claude-ai \
-  --ttl 12
+sentinel auth login claude-projects \ --url https://claude.ai/login \ --profile claude-ai \ --ttl 12
 ```
 
 …and point `auth.strategy: browser_session` + the session name in your
@@ -109,10 +98,7 @@ If a teammate needs the same session — for example, during an on-call
 incident — you can export it:
 
 ```bash
-sentinel auth export myorg \
-  --host staging.example.com \
-  --out /secure-share/staging-session.json \
-  --i-acknowledge
+sentinel auth export myorg \ --host staging.example.com \ --out /secure-share/staging-session.json \ --i-acknowledge
 ```
 
 The `--i-acknowledge` flag is mandatory; without it the command
@@ -125,13 +111,9 @@ Transport the file using your standard secrets-handling channel
 (1Password, encrypted USB, age-encrypted Slack DM — never plaintext
 email or chat). On the receiving machine:
 
-1. Run `sentinel auth login myorg --url https://staging.example.com/`
-   once so the keyring master key exists.
-2. Drop the file at `<run-dir>/auth/storage_state.json` and point the
-   TS runner at it via `sentinel-ts run --storage-state /path`, OR
-3. Re-import it into the vault by re-capturing (the canonical path —
-   sharing the encrypted vault file directly across machines is a
-   future enhancement).
+1. Run `sentinel auth login myorg --url https://staging.example.com/` once so the keyring master key exists.
+2. Drop the file at `<run-dir>/auth/storage_state.json` and point the TS runner at it via `sentinel-ts run --storage-state /path`, OR
+3. Re-import it into the vault by re-capturing (the canonical path — sharing the encrypted vault file directly across machines is a future enhancement).
 
 When the teammate is done, both of you should:
 
@@ -148,13 +130,10 @@ shred /secure-share/staging-session.json
 
 - `sentinel auth login` — capture a session interactively.
 - `sentinel auth list` — list vault entries (redacted metadata only).
-- `sentinel auth list-profiles` — show the built-in OAuth + LLM-web
-  profiles.
+- `sentinel auth list-profiles` — show the built-in OAuth + LLM-web profiles.
 - `sentinel auth revoke <name> --host <host>` — delete one entry.
-- `sentinel auth revoke --all` — delete every entry (requires typed
-  confirmation; refused in CI without `--yes-i-mean-it`).
-- `sentinel auth export <name> --host <host> --out <path> --i-acknowledge`
-  — decrypt and write the plaintext storage_state.
+- `sentinel auth revoke --all` — delete every entry (requires typed confirmation; refused in CI without `--yes-i-mean-it`).
+- `sentinel auth export <name> --host <host> --out <path> --i-acknowledge` — decrypt and write the plaintext storage_state.
 
 For the vault's on-disk layout, cryptography choices, and
 audit-log contract, see [`docs/dev/auth-internals.md`](../dev/auth-internals.md).

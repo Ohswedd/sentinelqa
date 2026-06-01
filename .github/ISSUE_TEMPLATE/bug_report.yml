@@ -69,10 +69,10 @@ body:
     id: prd-section
     attributes:
       label: Affected PRD section(s)
-      description: e.g. PRD §9.4 Runner — helps the triage owner route the report.
+      description: e.g. the documentation Runner — helps the triage owner route the report.
   - type: checkboxes
     id: safety
     attributes:
-      label: Safety boundary impact (CLAUDE.md §6 / PRD §2)
+      label: Safety boundary impact (our engineering rules)
       options:
         - label: This bug affects the safety boundary. If checked, the report will be triaged under `security/`.

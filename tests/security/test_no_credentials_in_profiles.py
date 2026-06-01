@@ -1,6 +1,6 @@
 """AST guard: ``engine/auth/profiles/`` must not declare credential fields.
 
-CLAUDE.md §6 + §33 forbid SentinelQA from harvesting credentials.
+our engineering rules + §33 forbid SentinelQA from harvesting credentials.
 Auth profiles are documentation; if a future contributor adds a field
 named ``password`` / ``token`` / ``secret`` / ``key`` / ``credential`` /
 ``otp`` to :class:`engine.auth.profiles.AuthProfile` (or to any data
@@ -65,7 +65,7 @@ def test_profiles_have_no_credential_fields() -> None:
             offenders.append((klass, field))
     assert not offenders, (
         f"engine/auth/profiles/ declares credential-shaped fields: {offenders}. "
-        "SentinelQA never harvests credentials (CLAUDE.md §6 + §33). "
+        "SentinelQA never harvests credentials (our engineering rules + §33). "
         "If you have a legitimate non-credential field whose name happens to "
         "contain one of the forbidden words, add it to _ALLOWED_FIELDS in "
         "this guard."

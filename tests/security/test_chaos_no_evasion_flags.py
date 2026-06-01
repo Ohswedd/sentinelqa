@@ -1,6 +1,6 @@
 """Phase 23 — the chaos module must not ship stealth / evasion knobs.
 
-CLAUDE.md §6 forbids stealth automation, bot-detection bypass,
+our engineering rules forbids stealth automation, bot-detection bypass,
 fingerprint evasion, proxy rotation for evasion, rate-limit bypass,
 etc. This guard pairs two complementary checks (same shape as
 :mod:`tests.security.test_api_no_aggressive_flags`):
@@ -87,7 +87,7 @@ def test_no_forbidden_literal_in_chaos_module(literal: str) -> None:
             continue
         text = path.read_text(encoding="utf-8", errors="ignore")
         assert literal not in text, (
-            f"Forbidden literal {literal!r} found in {path}. CLAUDE.md §6 "
+            f"Forbidden literal {literal!r} found in {path}. our engineering rules "
             "forbids stealth / evasion paths in the chaos module."
         )
 
@@ -128,12 +128,12 @@ def test_chaos_cli_has_no_forbidden_flag(pattern: re.Pattern[str]) -> None:
         if pattern.match(name):
             raise AssertionError(
                 f"Forbidden CLI option {name!r} matches {pattern.pattern!r}. "
-                "CLAUDE.md §6 forbids stealth / evasion / bypass flags."
+                "our engineering rules forbids stealth / evasion / bypass flags."
             )
 
 
 def test_chaos_module_off_by_default() -> None:
-    """The module must remain off by default in ModulesConfig (PRD §17)."""
+    """The module must remain off by default in ModulesConfig."""
 
     from engine.config.schema import ModulesConfig
 

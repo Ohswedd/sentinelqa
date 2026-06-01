@@ -1,4 +1,4 @@
-"""Agent-message builders for the SDK (PRD §14.2, CLAUDE.md §15).
+"""Agent-message builders for the SDK (the documentation, our engineering rules).
 
 Every public exception, every :class:`Finding`, every
 :class:`RepairSuggestion`, and the top-level :class:`AuditResult` expose
@@ -89,7 +89,7 @@ def repair_suggestion_to_agent_message(
 ) -> dict[str, Any]:
     """Return the canonical agent-message dict for a :class:`RepairSuggestion`.
 
-    Matches the CLAUDE.md §23 proposal schema verbatim — every healer
+    Matches the our engineering rules proposal schema verbatim — every healer
     suggestion must surface ``original``, ``proposed``, ``confidence``,
     ``reason``, ``evidence``, and ``requires_human_review`` so reviewers
     can judge without rerunning the failing test.
@@ -186,7 +186,7 @@ def _suggest_next_actions(result: AuditResult) -> list[str]:
     if result.status == "unsafe_blocked":
         actions.append(
             "Add the target host to `target.allowed_hosts` only if you own or "
-            "are authorized to test it (PRD §2, CLAUDE.md §6)."
+            "are authorized to test it (our product spec, our engineering rules)."
         )
         return actions
     if result.status == "dry_run":

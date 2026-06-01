@@ -1,7 +1,7 @@
 """``score.json`` writer (task 03.03).
 
 Persists the quality score with **deterministic float formatting** so the
-JSON output is byte-stable across runs (CLAUDE.md §25 — score must be
+JSON output is byte-stable across runs (our engineering rules — score must be
 reproducible). Phase 14 owns the actual score *computation*; this module
 only writes whatever is handed to it.
 """
@@ -42,7 +42,7 @@ SEVERITY_BUCKETS: Final[tuple[str, ...]] = (
     "info",
 )
 
-# Default policy values mirror PRD §17.1 and CLAUDE.md §17. They are
+# Default policy values mirror the documentation and our engineering rules. They are
 # applied when the caller hasn't yet wired the real policy (Phase 14+),
 # so the file always has a complete record.
 DEFAULT_POLICY: Final[Mapping[str, Any]] = {

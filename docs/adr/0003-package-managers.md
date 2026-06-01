@@ -9,9 +9,9 @@ Accepted
 
 ## Context
 
-Two runtimes (ADR-0002) need deterministic installs, fast cold starts on CI, monorepo-aware workspace handling, and a single lockfile per ecosystem that humans actually read. CLAUDE.md §17 demands reproducible quality gates; PRD §11.3 implies that "install + lint + typecheck + test" must be a one-shot, repeatable command. The choice of package managers fixes the baseline ergonomics of every future phase.
+Two runtimes (ADR-0002) need deterministic installs, fast cold starts on CI, monorepo-aware workspace handling, and a single lockfile per ecosystem that humans actually read. our engineering rules; the documentation implies that "install + lint + typecheck + test" must be a one-shot, repeatable command. The choice of package managers fixes the baseline ergonomics of every future phase.
 
-We also need to decide how the coverage floor (CLAUDE.md §17) interacts with a Phase-00 codebase that ships no production code: enforcing 80% coverage on an empty source tree would either always-fail or be vacuously satisfied.
+We also need to decide how the coverage floor interacts with a Phase-00 codebase that ships no production code: enforcing 80% coverage on an empty source tree would either always-fail or be vacuously satisfied.
 
 ## Decision
 
@@ -37,7 +37,7 @@ We also need to decide how the coverage floor (CLAUDE.md §17) interacts with a 
 
 ## References
 
-- PRD §11.3 Language strategy, §32 Recommended Build Order.
-- CLAUDE.md §17 Quality Gates, §35 Dependency Rules.
+- the documentation Language strategy, §32 Recommended Build Order.
+- our engineering rules§35 Dependency Rules.
 - External: <https://docs.astral.sh/uv/>, <https://pnpm.io/workspaces>.
 - Related ADRs: ADR-0001 (repository structure), ADR-0002 (language strategy).

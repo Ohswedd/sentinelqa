@@ -1,4 +1,4 @@
-"""Property-based redaction tests (CLAUDE.md §33)."""
+"""Property-based redaction tests."""
 
 from __future__ import annotations
 

@@ -1,4 +1,4 @@
-"""Test quarantine list (Phase 08.04, CLAUDE.md §23).
+"""Test quarantine list (Phase 08.04, our engineering rules).
 
 The quarantine list is a strict YAML file at
 ``tests/sentinel/.quarantine.yaml`` (configurable via
@@ -20,7 +20,7 @@ Rules:
 - Every field is required. Unknown fields are rejected.
 - ``expires_at`` MUST be ≤ today + ``max_age_days`` (default 14). The
   loader refuses to load expired entries — this is intentional: a stale
-  quarantine is a hidden quality regression (CLAUDE.md §23).
+  quarantine is a hidden quality regression.
 - ``issue_url`` MUST be ``http(s)://`` so the quarantine cannot become a
   silent forever-skip.
 """
@@ -163,7 +163,7 @@ def quarantine_to_findings(
     module: str,
     run_id: str,
 ) -> tuple[dict[str, Any], ...]:
-    """Translate quarantine entries into PRD §24-compliant ``info`` findings.
+    """Translate quarantine entries into our product spec-compliant ``info`` findings.
 
     Returned as plain dicts (NOT Finding instances) because the Phase 14
     score module will lift these into typed Findings once it owns the

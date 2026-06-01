@@ -13,7 +13,7 @@ outcomes are findings:
 
 The probe is hard-gated behind ``security.mode == 'authorized_destructive'``,
 a non-empty ``target.proof_of_authorization``, and a hard endpoint cap
-(``max_endpoints``, default 50). CLAUDE.md §6: no payload mutation,
+(``max_endpoints``, default 50). our engineering rules: no payload mutation,
 no escape-attempt logic, no detection-evasion code path.
 """
 

@@ -1,5 +1,5 @@
 <!--
-SentinelQA PR template. Authority: CLAUDE.md §18 (Definition of Done) and §5
+SentinelQA PR template. Authority: our engineering rules (Definition of Done) and §5
 (PRD discipline). Tick every box before merging.
 -->
 
@@ -10,31 +10,31 @@ SentinelQA PR template. Authority: CLAUDE.md §18 (Definition of Done) and §5
 
 ## Linked
 
-- Phase / task: <!-- e.g. plans/phase-05-discovery-module/01-crawler.md -->
-- PRD section(s): <!-- e.g. PRD §9.1 -->
+- Phase / task: <!-- e.g.  -->
+- PRD section(s): <!-- e.g. the documentation -->
 - ADR(s) added/updated: <!-- docs/adr/0007-…md, or "none" -->
 - Closes: <!-- #123 or "none" -->
 
-## Definition of Done (CLAUDE.md §18)
+## Definition of Done (our engineering rules)
 
 - [ ] Implementation matches PRD.
 - [ ] Tests exist and pass (unit + relevant integration / CLI / schema /
-      security policy / report — whichever apply per `CLAUDE.md` §16).
+      security policy / report — whichever apply per our engineering rules).
 - [ ] `make ci` is green locally on the branch tip.
-- [ ] `PRD.md` updated if behavior, CLI/SDK contract, lifecycle, safety
+- [ ] our product spec updated if behavior, CLI/SDK contract, lifecycle, safety
       boundary, report schema, data model, or scoring changed
-      (`CLAUDE.md` §5).
-- [ ] ADR added/updated if a `CLAUDE.md` §34 trigger was reached.
+      (our engineering rules).
+- [ ] ADR added/updated if a our engineering rules trigger was reached.
 - [ ] No secrets, tokens, or real customer data introduced
-      (`CLAUDE.md` §33; verified by gitleaks).
+      (our engineering rules; verified by gitleaks).
 - [ ] No `Co-authored-by:` trailer naming any AI tool
-      (`CLAUDE.md` §3; verified by the no-ai-coauthor workflow).
+      (our engineering rules; verified by the no-ai-coauthor workflow).
 - [ ] Conventional Commits used; commitlint green.
-- [ ] `plans/STATUS.md` updated (active task marked done; pointer
+- [ ] updated (active task marked done; pointer
       advanced).
 - [ ] `git status` clean after the final commit.
 
-## Safety review (CLAUDE.md §6, PRD §2)
+## Safety review (our engineering rules, our product spec)
 
 - [ ] No stealth, CAPTCHA bypass, fingerprint evasion, rate-limit bypass,
       cookie/session theft, or destructive defaults introduced.

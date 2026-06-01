@@ -38,37 +38,13 @@ login flow watches and the ToS URL it cites.
 ## Adding a custom profile
 
 1. Open `engine/auth/profiles/builtin.py`.
-2. Append a new `AuthProfile` literal:
-
-   ```python
-   _MY_PROFILE = AuthProfile(
-       name="my-profile",
-       label="My App",
-       login_url_pattern="https://example.com/login",
-       success_url_patterns=(
-           "https://example.com/dashboard",
-       ),
-       mfa_hint="Approve in your authenticator app.",
-       tos_url="https://example.com/terms",
-       category="oauth",  # or "llm-web"
-   )
-   ```
+2. Append a new `AuthProfile` literal: `python _MY_PROFILE = AuthProfile( name="my-profile", label="My App", login_url_pattern="https://example.com/login", success_url_patterns=( "https://example.com/dashboard", ), mfa_hint="Approve in your authenticator app.", tos_url="https://example.com/terms", category="oauth", # or "llm-web" ) `
 
 3. Add the constant to the `BUILTIN_PROFILES` tuple in the same file.
-4. The `AuthProfile.__post_init__` validator enforces:
-   - Every URL is HTTPS with a host.
-   - `success_url_patterns` is non-empty.
-   - `category` is `"oauth"` or `"llm-web"`.
-5. Field names like `password`, `secret`, `token`, `key`,
-   `credential`, `otp` will fail the AST guard. If you have a
-   legitimate non-credential field whose name happens to contain one
-   of those substrings, add it to the `_ALLOWED_FIELDS` set in
-   `tests/security/test_no_credentials_in_profiles.py` with a comment
-   explaining why.
+4. The `AuthProfile.__post_init__` validator enforces: - Every URL is HTTPS with a host. - `success_url_patterns` is non-empty. - `category` is `"oauth"` or `"llm-web"`.
+5. Field names like `password`, `secret`, `token`, `key`, `credential`, `otp` will fail the AST guard. If you have a legitimate non-credential field whose name happens to contain one of those substrings, add it to the `_ALLOWED_FIELDS` set in `tests/security/test_no_credentials_in_profiles.py` with a comment explaining why.
 
-6. Add a parametrized entry to
-   `tests/unit/auth/test_profiles.py::test_profile_urls_are_https_and_have_hosts`
-   so the URL-shape guard runs against your profile.
+6. Add a parametrized entry to `tests/unit/auth/test_profiles.py::test_profile_urls_are_https_and_have_hosts` so the URL-shape guard runs against your profile.
 
 That's it — there is no registry plumbing to wire up. Profiles are
 just data; selection happens at the CLI via `--profile <name>`.
@@ -78,7 +54,7 @@ just data; selection happens at the CLI via `--profile <name>`.
 ## Why not let profiles handle credentials?
 
 Because we never want to be in the credential-handling business.
-CLAUDE.md §6 forbids harvesting; CLAUDE.md §33 forbids logging.
+our engineering rules; our engineering rules
 Adding even an optional `username_env` field on the profile dataclass
 would mean SentinelQA touches credentials, and the security boundary
 between "what SentinelQA knows" and "what your browser knows" would

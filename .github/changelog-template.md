@@ -21,7 +21,7 @@ _Status: pre-1.0 — see [`docs/dev/semver.md`](https://github.com/Ohswedd/senti
 ## Summary
 
 <!-- Two-to-four sentences. What did we ship in this version and what does it
-     unlock for users (`Can this software be trusted enough to ship?` — CLAUDE.md §45). -->
+     unlock for users (`Can this software be trusted enough to ship?` — our engineering rules). -->
 
 ## Highlights
 
@@ -59,4 +59,4 @@ _Status: pre-1.0 — see [`docs/dev/semver.md`](https://github.com/Ohswedd/senti
 - Owner: @ohswedd
 - Pre-1.0 review: [`docs/release/pre-1.0-review.md`](https://github.com/Ohswedd/sentinelqa/blob/main/docs/release/pre-1.0-review.md)
 
-_No AI tools are co-authors of this release (CLAUDE.md §3)._
+_No AI tools are co-authors of this release (our engineering rules)._

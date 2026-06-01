@@ -1,4 +1,4 @@
-"""Fixture refresh proposals (Phase 20.04, CLAUDE.md §23).
+"""Fixture refresh proposals (Phase 20.04, our engineering rules).
 
 When a data fixture (``seededRecord``) fails because the seeded
 entity is missing or the API contract changed, the Healer never

@@ -1,4 +1,4 @@
-"""Reproduce PRD §14.1 and §14.2 examples verbatim (task 16.07 DoD)."""
+"""Reproduce our product spec1 and §14.2 examples verbatim (task 16.07 DoD)."""
 
 from __future__ import annotations
 
@@ -59,7 +59,7 @@ def _write_full_config(root: Path) -> Path:
 
 
 def test_prd_14_1_basic_usage_reproduces(tmp_path: Path, patched_registry: ModuleRegistry) -> None:
-    """PRD §14.1 verbatim:
+    """our product spec1 verbatim:
 
     from sentinelqa import Sentinel
     qa = Sentinel(project_path=".")
@@ -80,7 +80,7 @@ def test_prd_14_1_basic_usage_reproduces(tmp_path: Path, patched_registry: Modul
         safe_mode=True,
     )
     # Quality score is None until scoring runs over real findings — but
-    # the attribute MUST exist (PRD §14.1 prints it). release_decision is
+    # the attribute MUST exist (our product spec1 prints it). release_decision is
     # always populated.
     assert isinstance(result, AuditResult)
     assert hasattr(result, "quality_score")
@@ -102,7 +102,7 @@ def test_prd_14_1_basic_usage_reproduces(tmp_path: Path, patched_registry: Modul
 def test_prd_14_2_agent_friendly_usage_reproduces(
     tmp_path: Path, patched_registry: ModuleRegistry
 ) -> None:
-    """PRD §14.2 verbatim:
+    """our product spec2 verbatim:
 
     from sentinelqa import Sentinel
     qa = Sentinel(project_path=".", machine_readable=True)

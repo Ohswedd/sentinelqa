@@ -1,4 +1,4 @@
-"""Deterministic page-budget evaluation (Phase 12.02, PRD §10.5, CLAUDE §27).
+"""Deterministic page-budget evaluation (Phase 12.02, the documentation, CLAUDE §27).
 
 The TS runtime collects N samples of LCP/CLS/INP/TTFB/DCL/load per route
 and reports the median back to Python. This module evaluates the median
@@ -96,7 +96,7 @@ def evaluate_page_budgets(
 
     INP is only evaluated when the browser surfaced at least one sample;
     a missing INP is reported by the runner via ``inp_supported=False``
-    and does NOT count as a violation (PRD §10.5, CLAUDE §27 — we report
+    and does NOT count as a violation (the documentation, CLAUDE §27 — we report
     what we measured, not what we guessed).
     """
 

@@ -25,7 +25,7 @@ body:
         - Reproduction steps and impact.
         - SentinelQA version / commit.
         - Whether the issue affects the safety boundary
-          (`CLAUDE.md` §6 / PRD §2).
+          (our engineering rules).
 
         Read [`SECURITY.md`](https://github.com/Ohswedd/sentinelqa/blob/main/SECURITY.md)
         for the full disclosure policy, supported-versions matrix, and 90-day

@@ -1,10 +1,10 @@
-"""Performance audit module (Phase 12, PRD §10.5, CLAUDE.md §9, §27).
+"""Performance audit module (Phase 12, the documentation, our engineering rules, §27).
 
 Importing this package wires :class:`PerformanceModule` into the default
 orchestrator registry so ``sentinel perf`` and ``sentinel audit`` both
 pick it up automatically.
 
-The module exercises PRD §10.5 capabilities — LCP/CLS/INP page budgets,
+The module exercises the documentation capabilities — LCP/CLS/INP page budgets,
 API endpoint P95 budgets, JS bundle size, long-task (CPU blocking)
 detection, and repeated-navigation stability — by invoking
 ``sentinel-ts audit-perf`` against each route in the discovery graph

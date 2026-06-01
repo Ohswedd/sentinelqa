@@ -8,13 +8,13 @@ status: Stable
 WCAG rules, plus deterministic Python-side checks for keyboard reach,
 landmark structure, and accessible-name presence.
 
-Authority: PRD §10.4, ADR-0016, CLAUDE.md §28.
+Authority: the documentation, ADR-0016, our engineering rules §28.
 
 ## Wording contract
 
 Every product output begins with **"Automated accessibility check"** —
 never "WCAG compliant," "fully accessible," or similar overreach
-(CLAUDE.md §28). The guard test `tests/security/test_no_wcag_compliance_claims.py`
+. The guard test `tests/security/test_no_wcag_compliance_claims.py`
 greps the entire module source on every CI pass.
 
 ## What it checks

@@ -1,4 +1,4 @@
-"""Shared module contract for SentinelQA audit modules (CLAUDE.md §9).
+"""Shared module contract for SentinelQA audit modules.
 
 Every capability module (functional, accessibility, performance, etc.)
 implements the abstract :class:`SentinelModule` defined in

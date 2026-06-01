@@ -1,4 +1,4 @@
-"""Typer application factory (PRD §13, CLAUDE.md §13).
+"""Typer application factory (our product spec, our engineering rules).
 
 The CLI is built as a function (`build_app`) so tests can construct
 isolated instances. Module-level `app` is what the console script and
@@ -223,21 +223,21 @@ def build_app() -> typer.Typer:
         name="api",
         help=(
             "Run API contract / negative / auth / pagination / error-shape / "
-            "backward-compat checks (Phase 22, PRD §10.3). Aggressive fuzzing "
-            "is forbidden (CLAUDE.md §30); payload sizes are clamped at the "
+            "backward-compat checks (Phase 22, the documentation). Aggressive fuzzing "
+            "is forbidden; payload sizes are clamped at the "
             "I/O layer regardless of config."
         ),
     )(api_cmd.run_api)
     cli.command(
         name="chaos",
         help=(
-            "Run safe chaos / adversarial scenarios (Phase 23, PRD §10.8): "
+            "Run safe chaos / adversarial scenarios (Phase 23, the documentation): "
             "network (slow_3g / offline / api_500 / api_timeout), session "
             "(expired token / missing permissions), UX (duplicate submit, "
             "double-click race, back-forward, refresh mid-flow), data "
             "(empty / large datasets, storage corruption). The module is "
             "off by default; --scenarios / --categories subset the run. "
-            "No aggressive / evasion flags exist (CLAUDE.md §6)."
+            "No aggressive / evasion flags exist."
         ),
     )(chaos_cmd.run_chaos)
     cli.command(
@@ -251,7 +251,7 @@ def build_app() -> typer.Typer:
     cli.command(
         name="ci",
         help=(
-            "Run the audit in CI mode (PRD §21): preset modules + tag "
+            "Run the audit in CI mode: preset modules + tag "
             "filter + policy overrides per --mode "
             "(fast/standard/full/nightly/release)."
         ),
@@ -286,7 +286,7 @@ def build_app() -> typer.Typer:
         visual_cmd.visual_app,
         name="visual",
         help=(
-            "Visual-regression checks (Phase 21, PRD §10.6). `visual diff` "
+            "Visual-regression checks (Phase 21, the documentation). `visual diff` "
             "compares captured PNGs against baselines; `visual accept` "
             "promotes captures into the baseline tree (refused in CI); "
             "`visual capture` stages an external PNG tree."
@@ -296,7 +296,7 @@ def build_app() -> typer.Typer:
         plugins_cmd.plugins_app,
         name="plugins",
         help=(
-            "Manage SentinelQA plugins (Phase 24, PRD §22, ADR-0029). "
+            "Manage SentinelQA plugins (Phase 24, our product spec, ADR-0029). "
             "`plugins list` shows installed plugins; `plugins info` "
             "prints one manifest; `plugins validate` checks a "
             "standalone manifest file."
@@ -326,7 +326,7 @@ def build_app() -> typer.Typer:
         supply_chain_cmd.supply_chain_app,
         name="supply-chain",
         help=(
-            "Supply-Chain & Dependency Audit (Phase 33, PRD §10.7.3, "
+            "Supply-Chain & Dependency Audit (Phase 33, the documentation.3, "
             "ADR-0045). Generates a CycloneDX 1.5 SBOM, queries OSV "
             "for known CVEs, checks lockfile freshness, scans "
             "postinstall hooks, scans a configured container image, "

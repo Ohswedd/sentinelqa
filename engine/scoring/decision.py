@@ -1,4 +1,4 @@
-"""Release-decision logic (task 14.03, PRD §19.3).
+"""Release-decision logic (task 14.03, the documentation).
 
 Translates the numeric score + blockers + run status into a
 :class:`engine.domain.policy_decision.PolicyDecision`. Decision

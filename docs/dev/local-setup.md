@@ -4,14 +4,14 @@ Status: `Stable`
 
 ## Prerequisites
 
-| Tool                               | Version                         | Why                                                                 |
-| ---------------------------------- | ------------------------------- | ------------------------------------------------------------------- |
-| Python                             | 3.11 or 3.12 (3.12 recommended) | Engine, SDK, CLI, modules, tests (PRD §11.3, ADR-0002).             |
-| Node.js                            | 20 LTS or 22                    | TypeScript runtime, ESLint, Vitest, Playwright (PRD §15, ADR-0002). |
-| [`uv`](https://docs.astral.sh/uv/) | 0.5.x                           | Python deps + lockfile + workspace (ADR-0003).                      |
-| [`pnpm`](https://pnpm.io/)         | ≥ 9                             | TypeScript deps + workspace (ADR-0003).                             |
-| `make`                             | GNU or BSD                      | Task runner (`Makefile`).                                           |
-| `git`                              | ≥ 2.30                          | History + pre-commit hooks.                                         |
+| Tool                               | Version                         | Why                                                                          |
+| ---------------------------------- | ------------------------------- | ---------------------------------------------------------------------------- |
+| Python                             | 3.11 or 3.12 (3.12 recommended) | Engine, SDK, CLI, modules, tests (the documentation, ADR-0002).              |
+| Node.js                            | 20 LTS or 22                    | TypeScript runtime, ESLint, Vitest, Playwright (our product spec, ADR-0002). |
+| [`uv`](https://docs.astral.sh/uv/) | 0.5.x                           | Python deps + lockfile + workspace (ADR-0003).                               |
+| [`pnpm`](https://pnpm.io/)         | ≥ 9                             | TypeScript deps + workspace (ADR-0003).                                      |
+| `make`                             | GNU or BSD                      | Task runner (`Makefile`).                                                    |
+| `git`                              | ≥ 2.30                          | History + pre-commit hooks.                                                  |
 
 Optional but recommended:
 
@@ -66,7 +66,7 @@ Lockfile: `pnpm-lock.yaml` (committed). To bump a dep: edit `package.json`, run 
 - `commit-msg` stage: commitlint.
 - `pre-push` stage: a local `make-ci` hook that runs the full quality matrix before the push completes.
 
-Bypassing hooks with `--no-verify` is forbidden by `CLAUDE.md` §4 unless explicitly authorized.
+Bypassing hooks with `--no-verify` is forbidden by our engineering rules
 
 ### Playwright
 

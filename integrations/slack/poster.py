@@ -1,6 +1,6 @@
 """Slack webhook poster reusing the Phase 15.06 Block Kit payload.
 
-CLAUDE.md §33 / §41:
+our engineering rules / §41:
 
 - ``SLACK_WEBHOOK_URL`` is read at call time; never logged.
 - The webhook URL is treated as a secret. The redacted URL we log
@@ -134,7 +134,7 @@ class SlackPoster:
         retry: RetrySpec | None = None,
     ) -> None:
         if not webhook_url.startswith("https://"):
-            raise SlackPosterError("Slack webhook URL must be https:// (CLAUDE.md §33).")
+            raise SlackPosterError("Slack webhook URL must be https://.")
         self._webhook_url = webhook_url
         self._dedup = dedup
         self._client = client or HttpClient(retry=retry)

@@ -1,6 +1,6 @@
 """Shared safety helper for URL-bearing tools (ADR-0023 safety contract).
 
-Every PRD §16 tool that takes a ``url`` argument calls
+Every our product spec tool that takes a ``url`` argument calls
 :func:`enforce_url` before any SDK call. This module is the single
 chokepoint so the AST-level safety guard
 (`tests/security/test_mcp_safety.py`) only needs to look for one

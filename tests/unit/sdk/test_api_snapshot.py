@@ -85,7 +85,7 @@ def test_snapshot_includes_prd_class_names() -> None:
         "ModuleResult",
         "RepairSuggestion",
     ):
-        assert name in root, f"PRD §14.3 class {name} missing from snapshot"
+        assert name in root, f"our product spec3 class {name} missing from snapshot"
 
 
 def test_snapshot_includes_from_dict_in_errors_module() -> None:

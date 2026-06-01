@@ -1,4 +1,4 @@
-"""``ComplianceModule`` (Phase 34, PRD §10.4.1, ADR-0046).
+"""``ComplianceModule`` (Phase 34, the documentation.1, ADR-0046).
 
 Lifecycle (CLAUDE §9):
 
@@ -60,7 +60,7 @@ _ALL_CHECKS: tuple[str, ...] = ("gdpr", "ccpa", "soc2_trail", "wcag22")
 
 
 class ComplianceModule(SentinelModule):
-    """PRD §10.4.1 compliance packs wired into the SentinelQA lifecycle."""
+    """the documentation.1 compliance packs wired into the SentinelQA lifecycle."""
 
     name: ClassVar[str] = "compliance"
 

@@ -6,7 +6,7 @@ Two scenarios:
   ``passed``, emits zero findings of severity ≥ medium, exit 0.
 - ``sample-app-broken``  → runner reports a login + role-boundary
   failure; module summarizes ``failed``, emits one high-severity
-  Finding per failure with PRD §20 evidence, exit 1.
+  Finding per failure with our product spec evidence, exit 1.
 
 The Playwright executor itself stays out of CI: we wire a deterministic
 stub runner that mirrors what the real runner would emit when pointed at
@@ -204,7 +204,7 @@ def test_functional_module_against_sample_app_broken_emits_findings(
     result = module.run(ctx)
     assert result.status == "failed"
     assert len(result.findings) == 2
-    # Every finding carries PRD §20 evidence and is severity 'high'.
+    # Every finding carries our product spec evidence and is severity 'high'.
     for finding in result.findings:
         assert finding.module == "functional"
         assert finding.severity == "high"

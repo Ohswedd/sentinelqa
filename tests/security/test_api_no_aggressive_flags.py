@@ -73,7 +73,7 @@ def test_no_forbidden_literal_in_api_module(literal: str) -> None:
             continue
         text = path.read_text(encoding="utf-8", errors="ignore")
         assert literal not in text, (
-            f"Forbidden literal {literal!r} found in {path}. CLAUDE.md §30 "
+            f"Forbidden literal {literal!r} found in {path}. our engineering rules "
             f"forbids aggressive-fuzz / brute-force / unbounded paths in "
             f"the API module."
         )
@@ -123,5 +123,5 @@ def test_api_cli_has_no_forbidden_flag(pattern: re.Pattern[str]) -> None:
         if pattern.match(name):
             raise AssertionError(
                 f"Forbidden CLI option {name!r} matches {pattern.pattern!r}. "
-                "CLAUDE.md §30 forbids aggressive-fuzz / brute-force flags."
+                "our engineering rules forbids aggressive-fuzz / brute-force flags."
             )

@@ -16,7 +16,7 @@ install:
 
 ```text
 $ sentinel plugins list
-header-checker  0.1.0  scanner  (header-checker)
+header-checker 0.1.0 scanner (header-checker)
 ```
 
 ## Manifest
@@ -25,19 +25,13 @@ The plugin declares the four required attributes plus a semver range
 against `sentinelqa.plugins.PROTOCOL_VERSION`:
 
 ```python
-class HeaderChecker:
-    kind = "scanner"
-    name = "header-checker"
-    version = "0.1.0"
-    capabilities = frozenset({"http_check"})
-    permissions = frozenset({"network.outbound", "fs.write:.sentinel/runs"})
-    requires_protocol = ">=1.0,<2.0"
+class HeaderChecker: kind = "scanner" name = "header-checker" version = "0.1.0" capabilities = frozenset({"http_check"}) permissions = frozenset({"network.outbound", "fs.write:.sentinel/runs"}) requires_protocol = ">=1.0,<2.0"
 ```
 
 `capabilities` is a free-form tag set; `permissions` is the runtime
 permission grant set (see `docs/dev/plugin-permissions.md`). The
 loader rejects any plugin declaring a capability on the SentinelQA
-forbidden list (CLAUDE.md §6).
+forbidden list .
 
 ## Run the tests
 

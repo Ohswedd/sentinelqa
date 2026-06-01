@@ -1,4 +1,4 @@
-"""``import sentinelqa`` must stay fast (PRD §14.4, task 16.02).
+"""``import sentinelqa`` must stay fast (our product spec4, task 16.02).
 
 Heavy modules (orchestrator, planner, discovery, generator, runner,
 reporter) MUST be lazy-loaded so agent-facing tooling cold-starts

@@ -1,4 +1,4 @@
-"""``sentinel functional`` — exercise PRD §10.1 functional flows (task 10.04).
+"""``sentinel functional`` — exercise the documentation functional flows (task 10.04).
 
 Replaces the Phase 02 stub. The command drives the full :class:`RunLifecycle`
 restricted to the ``functional`` module so the same lifecycle steps

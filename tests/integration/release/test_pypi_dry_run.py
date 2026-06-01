@@ -52,7 +52,7 @@ def test_dry_run_script_is_importable_and_typed() -> None:
 
 def test_dry_run_script_never_calls_twine_upload() -> None:
     """The script may NEVER invoke ``twine upload`` — that is owner-only
-    (CLAUDE.md §3 + §40 + docs/release/publish-runbook.md)."""
+    (our engineering rules + §40 + docs/release/publish-runbook.md)."""
 
     source = (REPO_ROOT / "scripts/release/dry_run_pypi.py").read_text(encoding="utf-8")
     forbidden = ("twine upload", "twine_upload", "pypi-upload", '"upload"', "'upload'")

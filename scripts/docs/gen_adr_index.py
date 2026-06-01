@@ -78,7 +78,7 @@ def render() -> str:
         "[`docs/adr/README.md`]"
         "(https://github.com/Ohswedd/sentinelqa/blob/main/docs/adr/README.md)"
         " for the lifecycle rules and when an ADR is required "
-        "(CLAUDE.md §34).",
+        ".",
         "",
         "## Index",
         "",

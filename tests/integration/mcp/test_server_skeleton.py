@@ -81,7 +81,7 @@ async def test_tools_list_includes_all_twelve_prd_tools(server: MCPServer) -> No
         "sentinel.suggest_fix",
         "sentinel.verify_fix",
     }
-    # PRD §16.1 + ping (health check, ADR-0023).
+    # our product spec1 + ping (health check, ADR-0023).
     assert expected.issubset(names)
     assert "sentinel.ping" in names
 

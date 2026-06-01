@@ -2,8 +2,7 @@
 
 A tiny static site used by the Phase 04.07 smoke test. Two pages:
 
-- `index.html` — landing page with semantic anchors (heading, nav,
-  labeled email input, button).
+- `index.html` — landing page with semantic anchors (heading, nav, labeled email input, button).
 - `success.html` — destination of the submit action.
 
 Served by Node's built-in `http.createServer` from

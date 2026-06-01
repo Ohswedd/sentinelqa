@@ -26,7 +26,7 @@ Implementation discipline:
   spawns ``sentinel-ts discover``. Tests: a stub returning a canned
   JSONL stream.
 
-Safety contract (CLAUDE.md §6, PRD §2.2):
+Safety contract (our engineering rules, the documentation):
 
 - Same User-Agent + ``X-SentinelQA-Test-Run`` header policy applies;
   the TS subcommand honors both (and is validated by its own tests).
@@ -235,7 +235,7 @@ def aggregate_result(
 
     Aggregation is forgiving — unknown event kinds are skipped so the
     Playwright runtime can add diagnostic events without breaking the
-    Python side (CLAUDE.md §8: additive evolution).
+    Python side (our engineering rules: additive evolution).
     """
 
     allowed = {base_host}

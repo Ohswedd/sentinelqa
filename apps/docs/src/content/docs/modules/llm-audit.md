@@ -9,21 +9,21 @@ LLM-generated apps tend to ship: dead buttons, fake routes,
 mock-data shipped to production, frontend-only auth, hardcoded
 credentials, missing CRUD edges, missing loading / error states.
 
-This module is the SentinelQA differentiator (CLAUDE.md §31).
+This module is the SentinelQA differentiator .
 
-Authority: PRD §10.9, ADR-0024.
+Authority: the documentation, ADR-0024.
 
 ## Sixteen detectors
 
 ```
-LLM-DEAD-BTN                        LLM-INCOMPLETE-CRUD
-LLM-FAKE-ROUTE                      LLM-UI-ONLY-AUTH (critical)
-LLM-FAKE-ENDPOINT                   LLM-HARDCODED-CRED
-LLM-MOCK-DATA-SHIPPED               LLM-CLIENT-SECRET-STORAGE
-LLM-FORM-NO-SUBMIT                  LLM-NO-LOADING-STATE
-LLM-NO-ERROR-STATE                  LLM-VALIDATION-MISMATCH-BACKEND-ACCEPTS
+LLM-DEAD-BTN LLM-INCOMPLETE-CRUD
+LLM-FAKE-ROUTE LLM-UI-ONLY-AUTH (critical)
+LLM-FAKE-ENDPOINT LLM-HARDCODED-CRED
+LLM-MOCK-DATA-SHIPPED LLM-CLIENT-SECRET-STORAGE
+LLM-FORM-NO-SUBMIT LLM-NO-LOADING-STATE
+LLM-NO-ERROR-STATE LLM-VALIDATION-MISMATCH-BACKEND-ACCEPTS
 LLM-VALIDATION-MISMATCH-FRONTEND-MISSING
-LLM-PLACEHOLDER-TEXT                LLM-CONSOLE-ERROR-IGNORED
+LLM-PLACEHOLDER-TEXT LLM-CONSOLE-ERROR-IGNORED
 LLM-UNHANDLED-PROMISE
 ```
 
@@ -32,7 +32,7 @@ LLM-UNHANDLED-PROMISE
 Hardcoded-credential snippets are double-redacted before persistence:
 the matched span is replaced with `[REDACTED:hardcoded_credential]`,
 then the line passes through `engine.policy.redaction.redact`. A test
-asserts no literal credential survives in findings (CLAUDE.md §33).
+asserts no literal credential survives in findings .
 
 ## Report differentiator
 

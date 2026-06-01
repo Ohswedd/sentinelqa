@@ -1,28 +1,19 @@
 # SentinelQA — GitLab integration
 
-GitLab-side adapter (PRD §21.1, CLAUDE.md §39):
+GitLab-side adapter (the documentation, our engineering rules §39):
 
-- `.gitlab-ci.sentinel.yml` — drop-in include with a `.sentinelqa` job
-  template; reusable via `extends:`.
+- `.gitlab-ci.sentinel.yml` — drop-in include with a `.sentinelqa` job template; reusable via `extends:`.
 - `post_mr_note.py` — upsert merge-request note helper (Task 17.03).
 
-The engine never imports this folder (CLAUDE.md §7); it's an adapter
+The engine never imports this folder ; it's an adapter
 behind the existing CLI.
 
 ## Drop-in include
 
 ```yaml
-include:
-  - project: 'sentinelqa/sentinelqa'
-    file: '/integrations/gitlab/.gitlab-ci.sentinel.yml'
+include: - project: 'sentinelqa/sentinelqa' file: '/integrations/gitlab/.gitlab-ci.sentinel.yml'
 
-sentinelqa:
-  extends: .sentinelqa
-  variables:
-    SENTINELQA_URL: 'https://preview-${CI_COMMIT_SHORT_SHA}.example.com'
-    SENTINELQA_MODE: 'standard'
-    SENTINELQA_DIFF: 'origin/main...HEAD'
-    SENTINELQA_VERSION: '0.1.0'
+sentinelqa: extends: .sentinelqa variables: SENTINELQA_URL: 'https://preview-${CI_COMMIT_SHORT_SHA}.example.com' SENTINELQA_MODE: 'standard' SENTINELQA_DIFF: 'origin/main...HEAD' SENTINELQA_VERSION: '0.1.0'
 ```
 
 ### Job variables
@@ -51,10 +42,7 @@ report.md, sarif.json, junit.xml, traces/**, screenshots/**, videos/**}`
 are uploaded for 14 days; JUnit XML is consumed by GitLab's native test
 reporting; `findings.json` is consumed as a Code Quality report.
 
-### Safety boundary (PRD §2, CLAUDE.md §6)
+### Safety boundary (our product spec, our engineering rules §6)
 
-- `sentinel ci` enforces the safety policy before any network I/O.
-  Public targets that are not on the allowlist exit code 4 and emit an
-  audit-log entry.
-- The job body never logs `SENTINELQA_GITLAB_TOKEN`; the poster reads
-  it directly from the environment, never echoes it.
+- `sentinel ci` enforces the safety policy before any network I/O. Public targets that are not on the allowlist exit code 4 and emit an audit-log entry.
+- The job body never logs `SENTINELQA_GITLAB_TOKEN`; the poster reads it directly from the environment, never echoes it.

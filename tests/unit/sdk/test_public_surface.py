@@ -45,7 +45,7 @@ def test_every_public_name_is_importable() -> None:
 
 
 def test_prd_14_3_class_names_all_present() -> None:
-    # PRD §14.3 enumerates the SDK class list verbatim.
+    # our product spec3 enumerates the SDK class list verbatim.
     prd_classes = {
         "Sentinel",
         "AuditResult",

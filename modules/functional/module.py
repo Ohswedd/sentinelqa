@@ -11,7 +11,7 @@ Lifecycle (CLAUDE §9):
 - ``collect_evidence``       — pass-through (evidence is already
   attached to each ``TestExecution`` by Phase 08 aggregation).
 - ``emit_findings``          — base class default (one high-severity
-  Finding per non-quarantined failure/timeout, with PRD §20 evidence).
+  Finding per non-quarantined failure/timeout, with our product spec evidence).
 - ``emit_metrics``           — base class default + ``flake_rate``.
 - ``summarize``              — overlays findings on the runner's
   :class:`ModuleResult`.
@@ -67,7 +67,7 @@ class FunctionalModuleOptions:
 
 
 class FunctionalModule(SentinelModule):
-    """PRD §10.1 functional flows wired into the SentinelQA lifecycle."""
+    """the documentation functional flows wired into the SentinelQA lifecycle."""
 
     name: ClassVar[str] = "functional"
 

@@ -1,4 +1,4 @@
-"""Phase 24 task 24.01 — plugin Protocol surface (PRD §22.2).
+"""Phase 24 task 24.01 — plugin Protocol surface (our product spec2).
 
 These tests pin the shape of :mod:`sentinelqa.plugins` so external
 plugin authors get a stable contract. Anything they re-export here is
@@ -96,7 +96,7 @@ def test_each_plugin_declares_kind_str(protocol_cls: type) -> None:
 
 @pytest.mark.parametrize("protocol_cls", PLUGIN_KINDS)
 def test_each_plugin_requires_four_common_attributes(protocol_cls: type) -> None:
-    # The four attributes every plugin must declare per PRD §22.2.
+    # The four attributes every plugin must declare per our product spec2.
     hints = get_type_hints(protocol_cls)
     for required in ("name", "version", "capabilities", "permissions"):
         assert required in hints, f"{protocol_cls.__name__} missing {required}"

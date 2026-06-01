@@ -1,4 +1,4 @@
-"""LLM-DEAD-BTN — buttons with no observed handler (PRD §10.9, task 19.02).
+"""LLM-DEAD-BTN — buttons with no observed handler (the documentation, task 19.02).
 
 Pure function over :class:`ButtonObservation` records. The check is
 intentionally conservative: it flags a button only when

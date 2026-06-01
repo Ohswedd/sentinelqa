@@ -3,7 +3,7 @@
 Every typed error SentinelQA emits carries:
 
 - A short symbolic `code` (e.g. `E-CFG-002`).
-- A CLI `exit_code` from the deterministic grid in `PRD.md` §13.2 / `CLAUDE.md` §13.
+- A CLI `exit_code` from the deterministic grid in our product spec/ our engineering rules
 - A human-readable `message`.
 - A `suggested_fix` line.
 - A redacted `context` dictionary.
@@ -27,39 +27,27 @@ The single source of truth is `engine/errors/codes.py:ERROR_REGISTRY`; this page
 
 ### Configuration (exit 2)
 
-- **E-CFG-001** — `Configuration file is missing or unreadable: {path}`
-  - _Fix:_ Create `sentinel.config.yaml` at the project root or pass `--config <path>`.
-- **E-CFG-002** — `Configuration failed schema validation: {detail}`
-  - _Fix:_ Run `sentinel doctor` for a precise diff against the expected schema (PRD §17.1).
-- **E-CFG-003** — `Inline secret detected at config key {field!r}; secrets must come from environment variables.`
-  - _Fix:_ Replace the literal value with the corresponding `*_env` key (e.g. `password_env: TEST_USER_PASSWORD`).
+- **E-CFG-001** — `Configuration file is missing or unreadable: {path}` - _Fix:_ Create `sentinel.config.yaml` at the project root or pass `--config <path>`.
+- **E-CFG-002** — `Configuration failed schema validation: {detail}` - _Fix:_ Run `sentinel doctor` for a precise diff against the expected schema (the documentation).
+- **E-CFG-003** — `Inline secret detected at config key {field!r}; secrets must come from environment variables.` - _Fix:_ Replace the literal value with the corresponding `*_env` key (e.g. `password_env: TEST_USER_PASSWORD`).
 
 ### Safety boundary (exit 4)
 
-- **E-SAFE-001** — `Host {host!r} is not in target.allowed_hosts and is not local.`
-  - _Fix:_ Add the host to `target.allowed_hosts` ONLY if you own or are authorized to test it. SentinelQA never permits unauthorized scans (PRD §2, CLAUDE.md §6).
-- **E-SAFE-002** — `Destructive mode requested for {host!r} without a valid proof-of-authorization document.`
-  - _Fix:_ Provide `target.proof_of_authorization` pointing at a signed doc that covers this host, actor, and scope, and is not expired.
-- **E-SAFE-003** — `Forbidden CLI flag {flag!r} requested; stealth/evasion/bypass features are not part of SentinelQA.`
-  - _Fix:_ Remove the flag. See PRD §2.1 and CLAUDE.md §6 for the full forbidden list.
+- **E-SAFE-001** — `Host {host!r} is not in target.allowed_hosts and is not local.` - _Fix:_ Add the host to `target.allowed_hosts` ONLY if you own or are authorized to test it. SentinelQA never permits unauthorized scans (our product spec, our engineering rules).
+- **E-SAFE-002** — `Destructive mode requested for {host!r} without a valid proof-of-authorization document.` - _Fix:_ Provide `target.proof_of_authorization` pointing at a signed doc that covers this host, actor, and scope, and is not expired.
+- **E-SAFE-003** — `Forbidden CLI flag {flag!r} requested; stealth/evasion/bypass features are not part of SentinelQA.` - _Fix:_ Remove the flag. See the documentation and our engineering rules
 
 ### Dependencies / plugins (exit 5)
 
-- **E-DEP-001** — `Required dependency is missing: {dependency}`
-  - _Fix:_ Run `make install` (or `uv sync --frozen --all-packages` and `pnpm install --frozen-lockfile`) and retry.
-- **E-PLG-001** — `Plugin {plugin!r} could not be loaded: {detail}`
-  - _Fix:_ Verify the plugin is installed, declares the expected entry point, and matches the host SentinelQA version.
+- **E-DEP-001** — `Required dependency is missing: {dependency}` - _Fix:_ Run `make install` (or `uv sync --frozen --all-packages` and `pnpm install --frozen-lockfile`) and retry.
+- **E-PLG-001** — `Plugin {plugin!r} could not be loaded: {detail}` - _Fix:_ Verify the plugin is installed, declares the expected entry point, and matches the host SentinelQA version.
 
 ### Runtime (exit 3) / test execution (exit 6) / internal (exit 7)
 
-- **E-RUN-001** — `Test execution failed: {detail}` (exit 6)
-  - _Fix:_ Inspect the Playwright trace and stdout under `.sentinel/runs/<run-id>/` for the failing step.
-- **E-QGATE-001** — `Quality gate failed: {detail}` (exit 1)
-  - _Fix:_ Either fix the underlying findings or adjust `policy` in `sentinel.config.yaml` if the gate is genuinely too strict.
-- **E-INT-001** — `Internal SentinelQA error: {detail}` (exit 7)
-  - _Fix:_ Re-run with `--verbose` and file a bug report including the captured stack trace; secrets are redacted by default.
-- **E-PLG-002** — `Plugin {plugin!r} crashed at runtime: {detail}` (exit 7)
-  - _Fix:_ Disable the plugin via `modules.<name>: false` while you diagnose; SentinelQA core continues without it.
+- **E-RUN-001** — `Test execution failed: {detail}` (exit 6) - _Fix:_ Inspect the Playwright trace and stdout under `.sentinel/runs/<run-id>/` for the failing step.
+- **E-QGATE-001** — `Quality gate failed: {detail}` (exit 1) - _Fix:_ Either fix the underlying findings or adjust `policy` in `sentinel.config.yaml` if the gate is genuinely too strict.
+- **E-INT-001** — `Internal SentinelQA error: {detail}` (exit 7) - _Fix:_ Re-run with `--verbose` and file a bug report including the captured stack trace; secrets are redacted by default.
+- **E-PLG-002** — `Plugin {plugin!r} crashed at runtime: {detail}` (exit 7) - _Fix:_ Disable the plugin via `modules.<name>: false` while you diagnose; SentinelQA core continues without it.
 
 ## Machine-readable surface
 
@@ -76,7 +64,7 @@ The same registry powers `error.to_agent_message()` for SDK and MCP consumers:
 }
 ```
 
-All fields are redacted before serialization (CLAUDE.md §33), so passing a `SentinelError` through `to_agent_message()` is safe in any logging or telemetry path.
+All fields are redacted before serialization, so passing a `SentinelError` through `to_agent_message()` is safe in any logging or telemetry path.
 
 ## Python SDK round-trip
 
@@ -86,13 +74,8 @@ The Python SDK (Phase 16, ADR-0021) re-exports the user-facing exception classes
 from sentinelqa import UnsafeTargetError
 from sentinelqa.errors import from_dict
 
-try:
-    qa.audit(url="http://example.com")
-except UnsafeTargetError as err:
-    msg = err.to_agent_message()         # safe to send to an LLM
-    rebuilt = from_dict(msg)             # reconstruct on the other side
-    assert rebuilt.code == err.code      # round-trip preserves code…
-    assert rebuilt.exit_code == err.exit_code  # …and the CLI exit code.
+try: qa.audit(url="http://example.com")
+except UnsafeTargetError as err: msg = err.to_agent_message() # safe to send to an LLM rebuilt = from_dict(msg) # reconstruct on the other side assert rebuilt.code == err.code # round-trip preserves code… assert rebuilt.exit_code == err.exit_code # …and the CLI exit code.
 ```
 
 The reconstructed exception is an instance of the most specific subclass registered for the code (e.g. `E-SAFE-001` → `UnknownHostError`). Unknown codes are preserved verbatim on a generic `SentinelError` so downstream tooling can still log / route on them.

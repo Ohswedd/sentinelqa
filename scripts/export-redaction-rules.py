@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """Emit ``packages/shared-schema/redaction-rules.json``.
 
-Python is the **source of truth** for redaction (CLAUDE.md §33). The TS
+Python is the **source of truth** for redaction. The TS
 runtime mirrors the rules by loading this file. CI drift-checks the JSON
 against the Python source by re-running this script and diffing.
 

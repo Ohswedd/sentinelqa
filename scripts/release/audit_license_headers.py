@@ -43,7 +43,7 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
 # Source-file extensions we audit. Python + TypeScript + TSX, per
-# plans/phase-35-public-release/03-license-headers-audit.md. JSON,
+# the build plan JSON,
 # YAML, Markdown, SVG, images, and lockfiles are not source files and
 # do not need SPDX headers.
 SOURCE_EXTENSIONS: tuple[str, ...] = (".py", ".ts", ".tsx")

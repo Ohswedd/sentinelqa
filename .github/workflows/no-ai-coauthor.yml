@@ -39,7 +39,7 @@ jobs:
           HEAD: ${{ steps.range.outputs.head }}
         run: |
           set -euo pipefail
-          # CLAUDE.md §3: no AI tool may appear as a co-author. The pattern
+          # our engineering rules: no AI tool may appear as a co-author. The pattern
           # below is intentionally broad (case-insensitive, matches whole
           # words) and covers the major AI coding assistants known at the
           # time of writing. Add new tools as they appear (see
@@ -56,7 +56,7 @@ jobs:
 
           echo "Scanning range: ${RANGE}"
           if git log --format='%B%n--%n' "${RANGE}" | grep -Eni "${PATTERN}"; then
-            echo "::error::AI co-author trailer found in commit message (CLAUDE.md §3 forbids this)."
+            echo "::error::AI co-author trailer found in commit message (our engineering rules forbids this)."
             echo "See docs/dev/ownership.md for how to remove the trailer and re-push."
             exit 1
           fi

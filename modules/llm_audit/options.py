@@ -12,7 +12,7 @@ class LlmAuditModuleOptions:
     """Inputs the CLI / orchestrator hands to the module.
 
     Each field is optional. ``checks`` lets callers run a subset
-    (CLAUDE.md §13: ``--checks <subset>`` on the CLI); when empty, the
+    (our engineering rules: ``--checks <subset>`` on the CLI); when empty, the
     module runs every registered check whose signals are available.
     ``discovery_path`` lets callers replay a Phase 05 artifact instead
     of re-discovering. ``signals_root`` is the directory the module

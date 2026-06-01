@@ -9,7 +9,7 @@ target plus optional dependency / SAST scanners. Destructive probes
 are gated by config (`security.mode: authorized_destructive`) AND a
 valid proof-of-authorization.
 
-Authority: PRD §10.7, ADR-0018, CLAUDE.md §6 / §26.
+Authority: the documentation, ADR-0018, our engineering rules §6 / §26.
 
 ## Default checks
 

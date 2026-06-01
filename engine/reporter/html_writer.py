@@ -5,7 +5,7 @@ template at :data:`HTML_TEMPLATE_PATH` against the typed inputs.
 
 The bundled CSS + JS live next to the template; both are inlined into
 the rendered HTML so the file is self-contained: it opens correctly
-from ``file://`` and never hits the network (CLAUDE.md §41).
+from ``file://`` and never hits the network.
 
 Determinism contract:
 
@@ -76,7 +76,7 @@ class HtmlReportInputs:
 
     Trends + audit log are optional — the renderer drops the trends
     section when there is no history and the audit section when the
-    audit log is empty (PRD §38 — answers the question; no fake data).
+    audit log is empty (our product spec — answers the question; no fake data).
     """
 
     run: TestRun
@@ -367,7 +367,7 @@ def _build_llm_audit_view(
     findings: Sequence[Finding],
     module_results: Sequence[ModuleResult],
 ) -> dict[str, Any] | None:
-    """Build the LLM-audit section context (PRD §10.9, §28 — differentiator).
+    """Build the LLM-audit section context (the documentation, §28 — differentiator).
 
     Returns ``None`` when the LLM-audit module did not run AND there are
     no LLM-audit findings, so the template hides the section silently.

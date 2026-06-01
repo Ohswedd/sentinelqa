@@ -10,7 +10,7 @@ ordering.
 
 The hash is :func:`hashlib.sha1` (NOT Python's randomized ``hash()``) so
 the same shard split is reproducible across processes, machines, and
-Python versions (CLAUDE.md §19 — deterministic outputs).
+Python versions (our engineering rules — deterministic outputs).
 """
 
 from __future__ import annotations

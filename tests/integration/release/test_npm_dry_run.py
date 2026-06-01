@@ -40,7 +40,7 @@ def test_dry_run_script_is_importable_and_typed() -> None:
 
 
 def test_dry_run_script_never_calls_real_publish() -> None:
-    """The script may NEVER run a real publish (CLAUDE.md §3 + §40)."""
+    """The script may NEVER run a real publish (our engineering rules + §40)."""
 
     source = (REPO_ROOT / "scripts/release/dry_run_npm.py").read_text(encoding="utf-8")
     # The script may reference these strings inside `"npm publish --dry-run"`

@@ -1,4 +1,4 @@
-"""YAML loader for ``sentinel.config.yaml`` (PRD §17, CLAUDE.md §12).
+"""YAML loader for ``sentinel.config.yaml`` (our product spec, our engineering rules).
 
 Responsibilities:
 

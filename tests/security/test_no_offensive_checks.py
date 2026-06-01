@@ -1,6 +1,6 @@
 """Safety guard for Phase 32 (ADR-0044): no offensive payloads or APIs.
 
-Every check shipped in Phase 32 must remain inside the CLAUDE.md §6
+Every check shipped in Phase 32 must remain inside the our engineering rules
 boundary — no exploit weaponisation, no WAF bypass, no aggressive
 fuzzing, no detection evasion. This test greps the Phase-32 check
 modules for forbidden tokens and asserts none appear.
@@ -62,14 +62,14 @@ def test_phase32_module_has_no_offensive_payload(module_path: Path) -> None:
             continue
         assert token not in source, (
             f"Phase 32 module {module_path} contains forbidden token "
-            f"`{token}` (CLAUDE.md §6, ADR-0044)."
+            f"`{token}` (our engineering rules, ADR-0044)."
         )
     for pattern in _FORBIDDEN_WORDS:
         if (module_path.as_posix(), pattern) in _ALLOWLIST:
             continue
         assert not re.search(pattern, source), (
             f"Phase 32 module {module_path} matches forbidden pattern "
-            f"`{pattern}` (CLAUDE.md §6, ADR-0044)."
+            f"`{pattern}` (our engineering rules, ADR-0044)."
         )
 
 
@@ -88,7 +88,7 @@ def test_jwt_module_does_not_iterate_external_wordlist() -> None:
     for token in forbidden:
         assert token not in source, (
             f"jwt_weakness.py contains `{token}` — suggests external "
-            "wordlist loading. Brute-force is forbidden (CLAUDE.md §6)."
+            "wordlist loading. Brute-force is forbidden."
         )
 
 
@@ -106,7 +106,7 @@ def test_ssrf_module_payload_list_is_a_constant() -> None:
     for token in forbidden:
         assert token not in source, (
             f"ssrf_redirect.py contains `{token}` — suggests payload "
-            "generation. Fuzzing is forbidden (CLAUDE.md §6)."
+            "generation. Fuzzing is forbidden."
         )
 
 
@@ -141,5 +141,5 @@ def test_graphql_module_has_fixed_query_set() -> None:
     forbidden = ("random.choice", "permutations", "fuzz")
     for token in forbidden:
         assert token not in source, (
-            f"graphql_safety.py contains `{token}` — fuzzing is " "forbidden (CLAUDE.md §6)."
+            f"graphql_safety.py contains `{token}` — fuzzing is " "forbidden."
         )

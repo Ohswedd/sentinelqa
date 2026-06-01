@@ -28,7 +28,7 @@ Vault operations refuse to do anything dangerous silently:
 
 - :meth:`get` requires an ``allowed_hosts`` set and raises
   :class:`engine.errors.base.VaultHostMismatchError` when the stored host
-  is not in that set (CLAUDE.md §6).
+  is not in that set.
 - :meth:`get` raises :class:`engine.errors.base.VaultEntryExpiredError`
   when the stored ``expires_at`` is in the past.
 - :meth:`list` returns redacted :class:`VaultMetadata` only — the

@@ -39,8 +39,8 @@ ALLOWED_PATHS = {
     Path("tests/security/test_api_no_aggressive_flags.py"),
     Path("tests/security/test_chaos_no_evasion_flags.py"),
     Path("tests/unit/policy/test_forbidden_features.py"),
-    Path("PRD.md"),
-    Path("CLAUDE.md"),
+    Path("our product spec"),
+    Path("our engineering rules"),
 }
 
 
@@ -69,6 +69,6 @@ def test_no_stealth_flag_strings_in_engine_or_apps(flag: str) -> None:
             continue
         text = path.read_text(encoding="utf-8", errors="ignore")
         assert flag not in text, (
-            f"Forbidden stealth flag {flag!r} found in {path}; CLAUDE.md §6 "
+            f"Forbidden stealth flag {flag!r} found in {path}; our engineering rules "
             f"forbids stealth/evasion paths anywhere in the product."
         )

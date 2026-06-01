@@ -1,4 +1,4 @@
-"""Structured logging facility for SentinelQA (CLAUDE.md §13, §33).
+"""Structured logging facility for SentinelQA (our engineering rules, §33).
 
 One logger configuration for the whole process. CLI entry calls
 :func:`configure_logging` once with the mode picked by the user

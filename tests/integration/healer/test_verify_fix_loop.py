@@ -1,6 +1,6 @@
 """Phase 20.08 — End-to-end healer → suggest_fix → verify_fix loop.
 
-This exercises the agent-observable contract documented in PRD §16.4
+This exercises the agent-observable contract documented in our product spec4
 and ADR-0025: the Healer publishes proposals, the agent (here: the
 test) picks one and applies it, then ``sentinel.verify_fix`` confirms
 the failure is gone. The MCP transport / SDK boundaries are stubbed —

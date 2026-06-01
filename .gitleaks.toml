@@ -1,9 +1,9 @@
 # SentinelQA gitleaks configuration.
 #
 # Extends gitleaks' built-in rule set with an allowlist for *test fixtures*
-# only. CLAUDE.md §33 still forbids real secrets anywhere in the tree; the
-# rules below name the exact fake-secret strings that ship inside redaction
-# tests so the scanner can see them and let them through.
+# only. Real secrets are forbidden anywhere in the tree; the rules below
+# name the exact fake-secret strings that ship inside redaction tests so
+# the scanner can see them and let them through.
 #
 # Adding a new test fixture? Either:
 #  - Use the existing fake values listed under `regexes` below, OR

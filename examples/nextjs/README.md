@@ -37,8 +37,7 @@ Local demo only — **do not deploy this app**.
 With the app running:
 
 ```bash
-sentinel audit --url http://127.0.0.1:3000 \
-    --config examples/nextjs/sentinel.config.yaml
+sentinel audit --url http://127.0.0.1:3000 \ --config examples/nextjs/sentinel.config.yaml
 ```
 
 The provided config sets `policy.min_quality_score: 85` and runs the

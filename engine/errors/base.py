@@ -137,7 +137,7 @@ class ConfigSecretInlineError(ConfigError):
 
 
 class UnsafeTargetError(SentinelError):
-    """Generic safety-boundary rejection (CLAUDE.md §6)."""
+    """Generic safety-boundary rejection."""
 
     DEFAULT_CODE = "E-SAFE-001"
 

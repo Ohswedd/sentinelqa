@@ -1,4 +1,4 @@
-"""Blocker computation (task 14.02, CLAUDE.md §25).
+"""Blocker computation (task 14.02, our engineering rules).
 
 A blocker is a finding (or a structural condition) that forces the
 release decision to ``blocked`` regardless of the numeric score.

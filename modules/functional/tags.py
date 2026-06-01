@@ -23,7 +23,7 @@ from dataclasses import dataclass
 from typing import Literal
 
 Mode = Literal["smoke", "standard", "full"]
-"""Slice mode names (Phase 10.03 + PRD §21.3 CI modes)."""
+"""Slice mode names (Phase 10.03 + the documentation CI modes)."""
 
 DEFAULT_MODE: Mode = "standard"
 """Default slice run by ``sentinel functional`` when ``--mode`` is omitted."""

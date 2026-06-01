@@ -1,4 +1,4 @@
-"""Root-cause hypothesis generation (PRD §9.5, task 09.02).
+"""Root-cause hypothesis generation (the documentation, task 09.02).
 
 For each ``FailureClassification`` we produce a 1-2 sentence hypothesis
 plus an ordered ``next_actions`` checklist. Templates are intentionally

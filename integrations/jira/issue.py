@@ -4,7 +4,7 @@
 passes ``project_key``; without it, the adapter raises. The Jira API
 expects HTTP Basic auth (email + API token).
 
-CLAUDE.md §33: credentials are read from the environment, never
+our engineering rules: credentials are read from the environment, never
 logged. Finding evidence is redacted through ``engine.policy.redaction``
 before being included in the description.
 """

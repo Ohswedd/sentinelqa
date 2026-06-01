@@ -26,8 +26,8 @@ spending compute on an audit.
 ## Modes
 
 ```bash
-uv run sentinel doctor           # human ASCII output
-uv run sentinel doctor --json    # single-line JSON
+uv run sentinel doctor # human ASCII output
+uv run sentinel doctor --json # single-line JSON
 ```
 
 The JSON form is the contract for CI; the ASCII form is for humans.

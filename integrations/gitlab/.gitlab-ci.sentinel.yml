@@ -1,4 +1,4 @@
-# SentinelQA — drop-in GitLab CI template (PRD §21.1, CLAUDE.md §39).
+# SentinelQA — drop-in GitLab CI template (product spec1, engineering rules).
 #
 # Usage (in the project's `.gitlab-ci.yml`):
 #
@@ -59,7 +59,7 @@ variables:
   script:
     - |
       if [ -z "${SENTINELQA_URL}" ]; then
-        echo "SENTINELQA_URL must be set; refusing to audit an empty target (PRD §2)."
+        echo "SENTINELQA_URL must be set; refusing to audit an empty target (product spec)."
         exit 4
       fi
       args="--config sentinel.config.yaml --ci --mode ${SENTINELQA_MODE} --url ${SENTINELQA_URL}"

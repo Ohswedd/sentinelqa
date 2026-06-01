@@ -84,7 +84,7 @@ def test_audit_passes_url_override(tmp_path: Path, patched_registry: ModuleRegis
     _write_minimal_config(tmp_path, base_url="http://localhost:3001")
     qa = Sentinel(project_path=tmp_path)
     # Pass a different but still-localhost URL — the engine accepts
-    # localhost regardless of allowed_hosts (CLAUDE.md §6).
+    # localhost regardless of allowed_hosts.
     result = qa.audit(url="http://localhost:3002")
     assert result.target_url.startswith("http://localhost:3002")
 
@@ -106,7 +106,7 @@ def test_dry_run_short_circuits(tmp_path: Path, patched_registry: ModuleRegistry
     qa = Sentinel(project_path=tmp_path)
     result = qa.audit(dry_run=True)
     assert result.status == "dry_run"
-    assert result.passed is False  # PRD §6.1: a dry run cannot claim success.
+    assert result.passed is False  # our product spec1: a dry run cannot claim success.
 
 
 def test_ci_flag_forces_ci_mode(

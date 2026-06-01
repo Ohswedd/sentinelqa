@@ -1,6 +1,6 @@
 # SentinelQA pre-commit hooks.
 # Install once per clone: `pre-commit install` (chained into `make install`).
-# See docs/dev/secret-hygiene.md and CLAUDE.md §33.
+# See docs/dev/secret-hygiene.md.
 
 default_install_hook_types: [pre-commit, commit-msg, pre-push]
 
@@ -8,28 +8,22 @@ repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
     hooks:
-      # PRD.md and CLAUDE.md intentionally use trailing-double-space as a
-      # Markdown hard line break (CommonMark §6.7). Excluding them from the
-      # auto-fixers preserves the authoring style; they are still scanned by
-      # gitleaks and detect-private-key below. Phase 03 report goldens
-      # (`tests/golden/`) are byte-for-byte fixtures written by Python's
-      # `json.dumps` / `xml.etree` / the Markdown writer — any whitespace
-      # massage here would silently break the schema-drift guard.
+      # Report goldens (`tests/golden/`) are byte-for-byte fixtures written
+      # by Python's `json.dumps` / `xml.etree` / the Markdown writer — any
+      # whitespace massage here would silently break the schema-drift guard.
       - id: trailing-whitespace
-        exclude: ^(PRD\.md|CLAUDE\.md|tests/golden/|tests/integration/scoring/expected/|apps/docs/src/content/docs/(errors|cli|sdk|mcp|adrs)/)
+        exclude: ^(tests/golden/|tests/integration/scoring/expected/|apps/docs/src/content/docs/(errors|cli|sdk|mcp|adrs)/)
       - id: end-of-file-fixer
-        exclude: ^(PRD\.md|CLAUDE\.md|tests/golden/|tests/integration/scoring/expected/|apps/docs/src/content/docs/(errors|cli|sdk|mcp|adrs)/)
+        exclude: ^(tests/golden/|tests/integration/scoring/expected/|apps/docs/src/content/docs/(errors|cli|sdk|mcp|adrs)/)
       - id: check-yaml
       - id: check-json
       - id: check-added-large-files
         args: ['--maxkb=2048']
       - id: detect-private-key
-        # The redaction tests + Phase 04 parity fixture carry PEM-shaped
-        # fixture headers so we can prove redact() catches them. The
-        # bodies are junk text, not real keys. CLAUDE.md §33's intent (no
-        # real secrets in the tree) is upheld; gitleaks still scans the
-        # same files thanks to .gitleaks.toml's narrower fixture
-        # allowlist.
+        # The redaction tests + parity fixture carry PEM-shaped fixture
+        # headers so we can prove redact() catches them. The bodies are
+        # junk text, not real keys; gitleaks still scans the same files
+        # thanks to .gitleaks.toml's narrower fixture allowlist.
         exclude: |
           (?x)^(
             tests/unit/policy/test_redaction\.py|
@@ -39,8 +33,7 @@ repos:
             tests/unit/modules/security/test_bundle_secrets\.py|
             tests/integration/modules/security/test_phase32_e2e\.py|
             tests/integration/release/test_built_packages\.py|
-            tests/integration/release/test_secret_leak\.py|
-            docs/release/secret-leak-audit-2026-05-30\.md
+            tests/integration/release/test_secret_leak\.py
           )$
       - id: check-merge-conflict
       - id: check-case-conflict
@@ -60,7 +53,7 @@ repos:
         args: [--fix, --exit-non-zero-on-fix]
       - id: ruff-format
 
-  # Conventional Commits — runs at the commit-msg stage (CLAUDE.md §4).
+  # Conventional Commits — runs at the commit-msg stage.
   - repo: https://github.com/alessandrojcm/commitlint-pre-commit-hook
     rev: v9.18.0
     hooks:
@@ -71,8 +64,8 @@ repos:
           - '@commitlint/config-conventional@19.6.0'
 
   # Pre-push: run the full quality-gate matrix before a branch leaves the
-  # laptop (CLAUDE.md §4 + §17). Bypassing with --no-verify is forbidden
-  # unless explicitly authorized.
+  # laptop. Bypassing with --no-verify is forbidden unless explicitly
+  # authorized.
   - repo: local
     hooks:
       - id: make-ci

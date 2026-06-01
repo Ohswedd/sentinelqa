@@ -7,7 +7,7 @@ Reads ``<run-dir>/healer/*.json`` for an existing run (default
 - optionally applies the proposals the gating policy approves
   (``--apply safe|aggressive``),
 - always logs every applied repair through the run's ``audit.log``
-  (CLAUDE.md §11) with the gating decision reason verbatim,
+  with the gating decision reason verbatim,
 - refuses to touch hand-edited specs (banner absence or post-generation
   mtime drift), and refuses to weaken assertions unless
   ``--allow-weaken`` is set.
@@ -17,7 +17,7 @@ materialized run directory. Re-running tests after applying is a
 separate concern (delegated to ``sentinel test --grep`` by the
 agent or human).
 
-Exit codes (CLAUDE.md §13):
+Exit codes:
 
 - ``0`` — success (proposals listed, applied, or none found).
 - ``2`` — config / CLI usage error (missing run dir, unknown id).
@@ -165,7 +165,7 @@ def run_fix(
             "--allow-weaken",
             help=(
                 "Allow assertion-stabilization repairs to auto-apply. "
-                "Required only when --apply=aggressive (CLAUDE.md §23)."
+                "Required only when --apply=aggressive."
             ),
         ),
     ] = False,

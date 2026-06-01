@@ -9,13 +9,13 @@ Accepted
 
 ## Context
 
-Phase 10 ships the first concrete audit module (`functional`, PRD §10.1) and, in doing so, has to commit to the contract every later module phase (Phase 11 a11y, Phase 12 perf, Phase 13 security, Phase 19 LLM-code audit, Phase 21 visual, Phase 22 API, Phase 23 chaos) will reuse. Before Phase 10, modules were a Phase-02 stub: the orchestrator's `run_modules` step called a `(config, decision)` factory and recorded a stringified return value; nothing typed, no findings translation, no per-module options channel.
+Phase 10 ships the first concrete audit module (`functional`, the documentation) and, in doing so, has to commit to the contract every later module phase (Phase 11 a11y, Phase 12 perf, Phase 13 security, Phase 19 LLM-code audit, Phase 21 visual, Phase 22 API, Phase 23 chaos) will reuse. Before Phase 10, modules were a Phase-02 stub: the orchestrator's `run_modules` step called a `(config, decision)` factory and recorded a stringified return value; nothing typed, no findings translation, no per-module options channel.
 
 Several pressures shaped the answer:
 
 - **CLAUDE §9** mandates a seven-step lifecycle for every module: validate prerequisites → plan checks → execute → collect evidence → emit findings → emit metrics → summarize. Until Phase 10 nothing actually implemented those steps, so a future plugin author would have invented their own.
 - **CLAUDE §10** requires module failures to produce typed partial results, not abort the run. Phase 09 rehomed the broad `except Exception` in `run_modules` so module crashes get categorized; Phase 10 has to wire the success path next to it.
-- **PRD §20** requires every medium/high/critical finding to carry evidence. The runner (Phase 08) attaches evidence per `TestExecution`; the module has to translate those failures into `Finding` records with evidence intact.
+- **our product spec** requires every medium/high/critical finding to carry evidence. The runner (Phase 08) attaches evidence per `TestExecution`; the module has to translate those failures into `Finding` records with evidence intact.
 - **CLAUDE §13** demands deterministic exit codes per command. `sentinel functional` has to map module + finding status onto the canonical 0/1/2/4/5/6 grid.
 - **Phase 06 / 07** already produce flow extractors and templated specs. Phase 10's tag conventions have to slot in without re-flowing the planner or generator.
 
@@ -33,16 +33,9 @@ We adopt the following conventions for SentinelQA audit modules:
 
 4. **Per-module options ride through the lifecycle.** `RunLifecycle.execute(... module_options={"functional": {...}})` threads each module's options into its `ModuleContext.options`. This is how `sentinel functional --mode smoke --grep @flow:login` reaches the FunctionalModule without coupling the orchestrator to module-specific knobs.
 
-5. **Default findings translation is centralized.** `build_finding_from_failed_test` turns a failed/timed-out `TestExecution` into a typed `Finding` with PRD §20 evidence. When the runner didn't capture trace/screenshot/video (rare, but possible for synthesized failures), the helper falls back to the per-module runner log (`logs/runner.<module>.log`) so the medium-or-above evidence requirement is always met. Quarantined tests are skipped at the module layer, which is the same place the `quality_gate_passed` flag gets read by Phase 14.
+5. **Default findings translation is centralized.** `build_finding_from_failed_test` turns a failed/timed-out `TestExecution` into a typed `Finding` with our product spec evidence. When the runner didn't capture trace/screenshot/video (rare, but possible for synthesized failures), the helper falls back to the per-module runner log (`logs/runner.<module>.log`) so the medium-or-above evidence requirement is always met. Quarantined tests are skipped at the module layer, which is the same place the `quality_gate_passed` flag gets read by Phase 14.
 
-6. **Canonical Playwright tag set is generator-owned.** `engine.generator.pipeline._canonical_tag_set(flow)` always emits, in order:
-
-   - `@p0..p3` (from `Flow.priority`).
-   - `@module:<name>` (mapped from the planner extractor; defaults to `functional`).
-   - `@flow:<extractor>` (the planner extractor name).
-   - `@risk:<level>` (the canonical risk bucket).
-   - Plus any planner-attached, ID-stripped tags (e.g. `@auth_boundary`).
-     Slice modes translate to a Playwright `--grep` value: `smoke → @p0`, `standard → @p0|@p1`, `full → no filter`. `TagSelection.resolve(mode, user_grep)` is the single helper consumed by `sentinel functional` (and the upcoming Phase 17 CI modes). The TS runner forwards `--grep` to `playwright test` via a new `grep?: string` field on the run-config schema (Python + TS sides locked in parity).
+6. **Canonical Playwright tag set is generator-owned.** `engine.generator.pipeline._canonical_tag_set(flow)` always emits, in order: - `@p0..p3` (from `Flow.priority`). - `@module:<name>` (mapped from the planner extractor; defaults to `functional`). - `@flow:<extractor>` (the planner extractor name). - `@risk:<level>` (the canonical risk bucket). - Plus any planner-attached, ID-stripped tags (e.g. `@auth_boundary`). Slice modes translate to a Playwright `--grep` value: `smoke → @p0`, `standard → @p0|@p1`, `full → no filter`. `TagSelection.resolve(mode, user_grep)` is the single helper consumed by `sentinel functional` (and the upcoming Phase 17 CI modes). The TS runner forwards `--grep` to `playwright test` via a new `grep?: string` field on the run-config schema (Python + TS sides locked in parity).
 
 7. **The `sentinel functional` CLI command drives the canonical lifecycle.** It loads config, applies CLI overrides (`--url`, `--retries`, `--workers`, `--shard`), resolves the tag selection, constructs `RunLifecycle`, and calls `execute(requested_modules=["functional"], module_options={"functional": {...}})`. Exit codes follow the standard grid: `0` (passed, no findings ≥ high), `1` (quality gate failed: module status `failed` or run `incomplete`), `2` (config / shard / mode error), `4` (unsafe target), `5` (runner binary missing), `6` (runner error). The command never reaches inside the lifecycle for state; it reads `lifecycle.last_context` for the typed module result.
 
@@ -61,7 +54,7 @@ We adopt the following conventions for SentinelQA audit modules:
 
 ## References
 
-- PRD section(s): PRD §9, §10.1, §10.2, §18, §20, §21.3.
-- CLAUDE.md rule(s): CLAUDE.md §9 (Module contract), §10 (Run lifecycle), §13 (CLI), §16 (Testing standard), §17 (Quality gates), §24 (Findings), §37 (No placeholder completion).
+- PRD section(s): our product spec, §10.1, §10.2, §18, §20, §21.3.
+- our engineering rules rule(s): our engineering rules(Module contract), §10 (Run lifecycle), §13 (CLI), §16 (Testing standard), §17 (Quality gates), §24 (Findings), §37 (No placeholder completion).
 - External: Playwright test tagging (`https://playwright.dev/docs/test-annotations#tag-tests`).
 - Related ADRs: ADR-0007 (Run lifecycle), ADR-0008 (Report schemas), ADR-0009 (Python ↔ TS protocol), ADR-0012 (Generated test conventions), ADR-0013 (Runner architecture), ADR-0014 (Analyzer rules). Phase 24 will supersede the import-time registration mechanism with an entry-point ADR.

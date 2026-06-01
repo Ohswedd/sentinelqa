@@ -5,7 +5,7 @@ Posts a single commit status for a pipeline run. The MR note poster
 external/pipeline status that GitLab branch protection / merge
 checks watch.
 
-CLAUDE.md §33: the project access token is read from the environment
+our engineering rules: the project access token is read from the environment
 only; never logged, never echoed in errors.
 """
 

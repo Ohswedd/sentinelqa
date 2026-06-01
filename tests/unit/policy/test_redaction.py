@@ -1,4 +1,4 @@
-"""Redaction unit tests — CLAUDE.md §33 coverage."""
+"""Redaction unit tests"""
 
 from __future__ import annotations
 

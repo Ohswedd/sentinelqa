@@ -6,7 +6,7 @@ suite, leaf certificate fingerprint + chain expiry + SAN list, and
 inspects the ``Strict-Transport-Security`` header on the matching
 HTTPS endpoint.
 
-CLAUDE.md §6: this probe is strictly read-only. It MUST NOT
+our engineering rules: this probe is strictly read-only. It MUST NOT
 - attempt a downgrade by re-handshaking with restricted cipher lists,
 - brute-force cipher suites,
 - send anything to the socket other than the TLS handshake records,

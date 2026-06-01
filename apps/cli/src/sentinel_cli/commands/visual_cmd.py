@@ -1,4 +1,4 @@
-"""``sentinel visual`` — Phase 21 / PRD §10.6 visual-regression CLI.
+"""``sentinel visual`` — Phase 21 / the documentation visual-regression CLI.
 
 Replaces the Phase 02 stub. Three subcommands:
 
@@ -60,7 +60,7 @@ from sentinel_cli.state import GlobalState, detect_ci_default
 visual_app = typer.Typer(
     name="visual",
     help=(
-        "Visual-regression checks (PRD §10.6). Three subcommands: "
+        "Visual-regression checks (the documentation). Three subcommands: "
         "`diff` (default) compares captured PNGs vs baselines; "
         "`accept` promotes captures to baselines (refused in CI); "
         "`capture` records an externally-supplied PNG tree."

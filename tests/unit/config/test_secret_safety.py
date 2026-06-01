@@ -1,4 +1,4 @@
-"""Tests confirming the loader refuses inline secrets (CLAUDE.md §33)."""
+"""Tests confirming the loader refuses inline secrets."""
 
 from __future__ import annotations
 

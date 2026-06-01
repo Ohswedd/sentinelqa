@@ -9,7 +9,7 @@ shapes against :class:`SourceFile` bodies:
   credentials,
 * env values masquerading as constants (``API_KEY = "sk-..."``).
 
-Per CLAUDE.md §33, every emitted finding routes its observed snippet
+Per our engineering rules, every emitted finding routes its observed snippet
 through :func:`engine.policy.redaction.redact` so the secret value is
 never persisted unmasked.
 """

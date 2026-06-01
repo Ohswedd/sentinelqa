@@ -1,9 +1,9 @@
 """Phase 23.02 — network chaos integration tests.
 
-These tests prove the round-trip from a TS chaos JSONL log to PRD §18.2
+These tests prove the round-trip from a TS chaos JSONL log to our product spec2
 :class:`Finding`s. They never start a real browser — the JSONL fixture
 *is* what the TS chaos helpers would emit. The acceptance criterion
-from `plans/phase-23-chaos-module/02-network-scenarios.md` is:
+from the build plan is:
 
     Fixture flow under api_500 produces a finding if no error state shown.
 """

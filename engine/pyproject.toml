@@ -43,8 +43,7 @@ dependencies = [
     # Vertex AI provider. We deliberately do NOT pull in `google-auth`
     # or `google-cloud-aiplatform`; the canonical PyCA `cryptography`
     # library is the minimal dependency that lets us sign a JWT against
-    # a service-account key file (CLAUDE.md §35 — pick the smallest
-    # well-maintained dep that does the job).
+    # a service-account key file.
     "cryptography==45.0.1",
 ]
 

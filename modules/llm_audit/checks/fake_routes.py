@@ -1,4 +1,4 @@
-"""LLM-FAKE-ROUTE + LLM-FAKE-ENDPOINT (PRD §10.9, task 19.03).
+"""LLM-FAKE-ROUTE + LLM-FAKE-ENDPOINT (the documentation, task 19.03).
 
 Two cross-reference checks:
 

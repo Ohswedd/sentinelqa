@@ -1,4 +1,4 @@
-"""Safety policy enforcement tests (PRD §2, CLAUDE.md §6)."""
+"""Safety policy enforcement tests (our product spec, our engineering rules)."""
 
 from __future__ import annotations
 

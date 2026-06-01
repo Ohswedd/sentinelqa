@@ -1,7 +1,7 @@
 """SentinelQA policy layer.
 
 Owns the safety boundary, target allowlist, audit logging, redaction, and
-the proof-of-authorization gate (PRD §2, §23; CLAUDE.md §6, §33).
+the proof-of-authorization gate (our product spec, §23; our engineering rules, §33).
 """
 
 from __future__ import annotations

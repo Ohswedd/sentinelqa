@@ -1,4 +1,4 @@
-"""``PerformanceModule`` (Phase 12, PRD §10.5, ADR-0017).
+"""``PerformanceModule`` (Phase 12, the documentation, ADR-0017).
 
 Lifecycle (CLAUDE §9):
 
@@ -56,7 +56,7 @@ PerformanceRunnerFactory = Callable[[RootConfig, SafetyDecision], PerformanceRun
 
 
 class PerformanceModule(SentinelModule):
-    """PRD §10.5 performance checks wired into the SentinelQA lifecycle."""
+    """the documentation performance checks wired into the SentinelQA lifecycle."""
 
     name: ClassVar[str] = "performance"
 

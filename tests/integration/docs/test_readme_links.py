@@ -18,7 +18,7 @@ from urllib.parse import urlparse
 REPO_ROOT = Path(__file__).resolve().parents[3]
 README = REPO_ROOT / "README.md"
 
-# Lines cap from plans/phase-35-public-release/01-readme-polish.md.
+# Lines cap from the build plan
 MAX_LINES = 250
 
 # Buzzwords forbidden by the same task ("no marketing fluff").
@@ -69,7 +69,9 @@ def test_no_marketing_buzzwords() -> None:
 
 def test_safety_boundary_present() -> None:
     text = _readme_text()
-    assert "Safety boundary" in text, "README.md must surface the CLAUDE.md §6 safety boundary."
+    assert (
+        "Safety boundary" in text
+    ), "README.md must surface the our engineering rules safety boundary."
     assert (
         "authorized testing only" in text.lower()
     ), "README.md must state SentinelQA is for authorized testing only."

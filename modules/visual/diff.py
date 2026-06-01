@@ -1,4 +1,4 @@
-"""Pixel diff + perceptual SSIM (Phase 21.03, PRD §10.6, CLAUDE §29).
+"""Pixel diff + perceptual SSIM (Phase 21.03, the documentation, CLAUDE §29).
 
 Two diff layers ship:
 

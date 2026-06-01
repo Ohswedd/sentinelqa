@@ -1,4 +1,4 @@
-"""Translate supply-chain typed reports into PRD §18.2 :class:`Finding` records."""
+"""Translate supply-chain typed reports into the documentation :class:`Finding` records."""
 
 from __future__ import annotations
 

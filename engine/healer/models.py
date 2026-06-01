@@ -1,4 +1,4 @@
-"""Healer wire types (PRD §9.6, CLAUDE.md §23).
+"""Healer wire types (the documentation, our engineering rules).
 
 The Healer emits :class:`RepairProposal` records. The shape is locked
 under ADR-0025 and mirrored by
@@ -24,7 +24,7 @@ from engine.domain.ids import validate_id
 from engine.domain.schema import REPAIR_SUGGESTION_SCHEMA_VERSION
 
 RepairKind = Literal["locator", "wait", "fixture", "assertion"]
-"""Closed set per CLAUDE.md §23 / PRD §9.6.
+"""Closed set per our engineering rules / the documentation.
 
 ``assertion`` is reserved for assertion-stabilization repairs (Phase
 20.06 task). Auto-apply of ``assertion`` repairs is forbidden unless

@@ -9,7 +9,7 @@ Covers the five canonical states from the task spec:
 - dry_run (score null, release_decision inconclusive)
 
 Also locks the deterministic-float contract: a `0.1 + 0.2`-style total
-must round to the same string on every call (CLAUDE.md §25).
+must round to the same string on every call.
 """
 
 from __future__ import annotations

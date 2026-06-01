@@ -1,4 +1,4 @@
-"""The :class:`Sentinel` facade (PRD §14, CLAUDE.md §14).
+"""The :class:`Sentinel` facade (our product spec, our engineering rules).
 
 The facade is intentionally thin: it loads config, builds a
 :class:`engine.orchestrator.run_lifecycle.RunLifecycle`, and returns
@@ -8,7 +8,7 @@ fast.
 
 Every long-running method has both a synchronous form and an ``async_``
 counterpart. The sync forms are :func:`asyncio.run` wrappers over the
-async forms (PRD §14.4 — "Async support"). This means there is exactly
+async forms (the documentation — "Async support"). This means there is exactly
 one implementation per method; we never duplicate behavior.
 """
 
@@ -37,7 +37,7 @@ if TYPE_CHECKING:
     from sentinelqa._models import AuditResult, Policy
 
 # Imported lazily by `discover` / `plan` / `generate_tests` — keeps
-# `import sentinelqa` fast (PRD §14.4 + task 16.02 target: <200 ms).
+# `import sentinelqa` fast (the documentation + task 16.02 target: <200 ms).
 
 
 class Sentinel:
@@ -133,7 +133,7 @@ class Sentinel:
     def discover(self, url: str) -> DiscoveryGraph:
         """Crawl ``url`` and return a :class:`DiscoveryGraph`.
 
-        Safety boundary (PRD §2): the engine refuses unsafe targets — an
+        Safety boundary: the engine refuses unsafe targets — an
         :class:`UnsafeTargetError` is raised before any I/O for hosts
         not in ``target.allowed_hosts`` (and not local).
         """
@@ -244,7 +244,7 @@ class Sentinel:
 
         Returns the paths of every written file. The generator's
         banner-aware writer refuses to overwrite hand-edited files
-        unless ``force=True`` (CLAUDE.md §22).
+        unless ``force=True``.
         """
 
         return asyncio.run(
@@ -322,7 +322,7 @@ class Sentinel:
         ``safe_mode=True`` (the default) forces ``security.mode='safe'``
         for this run regardless of the config on disk. Destructive checks
         require explicit opt-in plus a valid proof-of-authorization in
-        the config (PRD §2.3, CLAUDE.md §6).
+        the config (the documentation, our engineering rules).
 
         ``dry_run=True`` stops after planning (no module execution).
         ``ci`` defaults to whatever the ``CI`` environment variable
@@ -394,7 +394,7 @@ class Sentinel:
         )
 
     # ------------------------------------------------------------------
-    # run_plan(plan) — sync + async (PRD §14.2)
+    # run_plan(plan) — sync + async (the documentation)
     # ------------------------------------------------------------------
 
     def run_plan(
@@ -466,7 +466,7 @@ class Sentinel:
         return self._resolve_run_dir(run_id=run_id, latest=latest)
 
     # ------------------------------------------------------------------
-    # verify_fix(run_id, suggestion) — sync + async (PRD §14.3)
+    # verify_fix(run_id, suggestion) — sync + async (the documentation)
     # ------------------------------------------------------------------
 
     def verify_fix(
@@ -478,7 +478,7 @@ class Sentinel:
 
         The Healer module (Phase 20) owns the application logic. Until
         Phase 20 lands, calling this raises :class:`NotImplementedError`
-        with a precise pointer (CLAUDE.md §37 — no fake completion).
+        with a precise pointer (our engineering rules — no fake completion).
         """
 
         return asyncio.run(self.async_verify_fix(run_id, suggestion))
@@ -516,7 +516,7 @@ class Sentinel:
     def _audit_log_path(self) -> Path:
         # Discovery / planner paths that run outside the orchestrator still
         # need a writable audit log so safety decisions are persisted
-        # (PRD §2.3). Use a sibling directory of the artifacts root.
+        # (the documentation). Use a sibling directory of the artifacts root.
         log_dir = self._artifacts_root.parent / "sdk-audit"
         log_dir.mkdir(parents=True, exist_ok=True)
         return log_dir / "audit.log"

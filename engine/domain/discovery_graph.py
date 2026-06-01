@@ -1,4 +1,4 @@
-"""DiscoveryGraph entity (PRD §18.1)."""
+"""DiscoveryGraph entity (the documentation)."""
 
 from __future__ import annotations
 

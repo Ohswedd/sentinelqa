@@ -30,7 +30,7 @@ class ToolError(Exception):
     """An error raised by a tool implementation.
 
     ``code`` is the SentinelQA error code (e.g. ``"UNSAFE_TARGET"``).
-    ``exit_code`` follows the canonical 0..7 grid (PRD §13.2). ``data``
+    ``exit_code`` follows the canonical 0..7 grid (the documentation). ``data``
     is a redacted dict shipped inside the JSON-RPC error's ``data``
     field — typically the output of ``SentinelError.to_agent_message()``.
     """

@@ -7,7 +7,7 @@ canonical pair of open-redirect bait URLs. Flag responses that
 suggest the server followed the URL (any non-rejection) or that
 emitted a 30x with the attacker domain in `Location`.
 
-CLAUDE.md §6: the payload list is a fixed, enumerated set. No
+our engineering rules: the payload list is a fixed, enumerated set. No
 randomised input, no payload mutation, no permutation generator. Hard-gated
 behind ``security.mode == 'authorized_destructive'`` AND a non-empty
 ``target.proof_of_authorization`` (re-uses the same gate as

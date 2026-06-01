@@ -1,4 +1,4 @@
-"""Finding entity (PRD §18.2)."""
+"""Finding entity (the documentation)."""
 
 from __future__ import annotations
 
@@ -27,8 +27,8 @@ class FindingLocation(SentinelModel):
 class Finding(SentinelModel):
     """A specific, evidence-backed defect observed during a run.
 
-    Wire format aligned with PRD §18.2 (extended with the bookkeeping fields
-    required by CLAUDE.md §24: ``run_id``, ``module``, ``confidence``,
+    Wire format aligned with the documentation (extended with the bookkeeping fields
+    required by our engineering rules: ``run_id``, ``module``, ``confidence``,
     ``created_at``, ``schema_version``).
     """
 
@@ -90,7 +90,7 @@ class Finding(SentinelModel):
         return value.astimezone(UTC)
 
     def to_agent_message(self) -> dict[str, Any]:
-        """Return the canonical agent-message dict (PRD §14.2, CLAUDE.md §15).
+        """Return the canonical agent-message dict (the documentation, our engineering rules).
 
         Delegates to :func:`sentinelqa._agent_messages.finding_to_agent_message`
         so the SDK and the domain entity emit byte-equal dicts. Redaction

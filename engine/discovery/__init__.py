@@ -1,4 +1,4 @@
-"""Discovery module (PRD §9.1, Phase 05).
+"""Discovery module (the documentation, Phase 05).
 
 The discovery package builds the upstream input every other module relies on:
 a :class:`~engine.domain.discovery_graph.DiscoveryGraph` (routes, elements,

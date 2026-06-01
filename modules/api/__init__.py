@@ -1,10 +1,10 @@
-"""Safe API testing module (Phase 22, PRD §10.3, ADR-0020).
+"""Safe API testing module (Phase 22, the documentation, ADR-0020).
 
 Importing this package wires :class:`ApiModule` into the default
 orchestrator registry so ``sentinel api`` and ``sentinel audit`` both
 pick it up automatically.
 
-Capabilities (PRD §10.3, CLAUDE.md §30):
+Capabilities (the documentation, our engineering rules):
 
 - OpenAPI contract validation (per-endpoint schema check).
 - GraphQL contract validation (SDL operation probe).

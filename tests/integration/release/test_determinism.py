@@ -1,6 +1,6 @@
 """Phase 29.03 — determinism audit over the reporter pipeline.
 
-CLAUDE.md §6.8 / §19 require that the score and findings outputs be
+our engineering rules.8 / §19 require that the score and findings outputs be
 reproducible. The expensive PRD test would be ``sentinel audit`` against the
 Next.js example three times in a row, but that brings a Node/Playwright stack
 into CI and adds wall-clock latency without testing anything new on top of

@@ -1,4 +1,4 @@
-"""Wire types emitted by :class:`ApiModule` (Phase 22, PRD §10.3).
+"""Wire types emitted by :class:`ApiModule` (Phase 22, the documentation).
 
 The module persists ``api/<check>.json`` per check plus an
 ``api/index.json`` aggregate (mirrors the security module's layout).

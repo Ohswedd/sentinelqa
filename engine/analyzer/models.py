@@ -1,4 +1,4 @@
-"""Analyzer wire types (PRD §9.5, ADR-0014).
+"""Analyzer wire types (the documentation, ADR-0014).
 
 These are the inputs and outputs the analyzer pipeline operates on.
 ``FailureSignal`` is the only mutable-shape input — every other model is
@@ -30,7 +30,7 @@ FailureCategory = Literal[
     "accessibility_violation",
     "unknown",
 ]
-"""Closed set per PRD §9.5. ``unknown`` is reserved for signals that
+"""Closed set per the documentation. ``unknown`` is reserved for signals that
 slip past every rule — those carry the lowest confidence and the
 recommendation to inspect manually."""
 
@@ -43,7 +43,7 @@ RetryDecisionKind = Literal["retry", "quarantine_candidate", "no_action"]
 
 
 class AttemptOutcome(BaseModel):
-    """One Playwright retry of a single test (CLAUDE §10, PRD §9.4)."""
+    """One Playwright retry of a single test (CLAUDE §10, the documentation)."""
 
     model_config = ConfigDict(extra="forbid", frozen=True)
 
@@ -143,7 +143,7 @@ class FailureClassification(BaseModel):
 
 
 class RootCauseHypothesis(BaseModel):
-    """Short, plain-English hypothesis (PRD §9.5)."""
+    """Short, plain-English hypothesis (the documentation)."""
 
     model_config = ConfigDict(extra="forbid", frozen=True)
 
@@ -156,7 +156,7 @@ class RootCauseHypothesis(BaseModel):
 
 
 class RetryDecision(BaseModel):
-    """Whether the runner should retry this failure (PRD §9.5)."""
+    """Whether the runner should retry this failure (the documentation)."""
 
     model_config = ConfigDict(extra="forbid", frozen=True)
 

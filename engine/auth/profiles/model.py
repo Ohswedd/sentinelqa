@@ -4,7 +4,7 @@ The fields here are intentionally minimal. Adding any field whose name
 suggests credential material (password / secret / token / key / credential
 / otp) trips the structural lint in
 ``tests/security/test_no_credentials_in_profiles.py`` and the build
-breaks — see CLAUDE.md §6 / §33. Future profile additions go through
+breaks — see our engineering rules / §33. Future profile additions go through
 that guard.
 """
 

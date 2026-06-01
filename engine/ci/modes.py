@@ -1,4 +1,4 @@
-"""CI mode presets (PRD §21.3, task 17.04).
+"""CI mode presets (the documentation, task 17.04).
 
 Each mode is a preset over three knobs:
 
@@ -12,7 +12,7 @@ Each mode is a preset over three knobs:
 
 The underlying :class:`engine.orchestrator.run_lifecycle.RunLifecycle` is
 unchanged — modes are entirely a CLI-layer concern that translates into
-inputs the lifecycle already accepts (CLAUDE.md §10, §17).
+inputs the lifecycle already accepts (our engineering rules, §17).
 """
 
 from __future__ import annotations
@@ -29,7 +29,7 @@ from engine.config.schema import (
 from engine.errors.base import ConfigError
 
 CiMode = Literal["fast", "standard", "full", "nightly", "release"]
-"""Five PRD §21.3 mode names."""
+"""Five the documentation mode names."""
 
 CI_MODES: Final[tuple[CiMode, ...]] = ("fast", "standard", "full", "nightly", "release")
 """Tuple of all supported mode names in canonical order."""
@@ -38,8 +38,8 @@ DEFAULT_CI_MODE: Final[CiMode] = "standard"
 """Default `sentinel ci` mode when ``--mode`` is omitted."""
 
 # Release mode raises the gate floor to this value unless the user has
-# already configured something stricter. PRD §21.3 calls this "strict
-# policy"; we land on 90 to match the CLAUDE.md §17 "no surprises in
+# already configured something stricter. the documentation calls this "strict
+# policy"; we land on 90 to match the our engineering rules "no surprises in
 # release" stance without being so high that healthy projects fail.
 _RELEASE_MIN_QUALITY_SCORE: Final[int] = 90
 
@@ -50,7 +50,8 @@ class InvalidCiModeError(ConfigError):
     def __init__(self, *, mode: str) -> None:
         super().__init__(
             detail=(
-                f"unknown ci mode {mode!r}; expected one of {', '.join(CI_MODES)} " f"(PRD §21.3)."
+                f"unknown ci mode {mode!r}; expected one of {', '.join(CI_MODES)} "
+                f"(the documentation)."
             ),
             technical_context={"mode": mode, "supported": list(CI_MODES)},
         )
@@ -145,7 +146,7 @@ def mode_plan(mode: CiMode, *, config: RootConfig) -> ModePlan:
     """Return the :class:`ModePlan` for ``mode`` against the live ``config``.
 
     Each branch is a tiny, explicit recipe — easy to read end-to-end
-    when reviewing PRD §21.3 changes.
+    when reviewing the documentation changes.
     """
 
     if mode not in CI_MODES:
@@ -222,7 +223,7 @@ def apply_mode(
     """Return ``(effective_config, plan)`` for ``mode``.
 
     - ``fail_under`` always wins over the mode's policy override
-      (matches PRD §21.1 ``fail-under`` semantics — the user-supplied
+      (matches the documentation ``fail-under`` semantics — the user-supplied
       override is authoritative).
     - The returned config has the policy fields updated; module toggles
       are NOT mutated because the lifecycle accepts an explicit

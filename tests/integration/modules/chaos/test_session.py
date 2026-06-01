@@ -1,6 +1,6 @@
 """Phase 23.03 — session chaos integration tests.
 
-Acceptance criterion (`plans/phase-23-chaos-module/03-session-scenarios.md`):
+Acceptance criterion (the build plan):
 
     Fixture with bad UX on expired session triggers finding.
 """

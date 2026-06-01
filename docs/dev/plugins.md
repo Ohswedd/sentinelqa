@@ -2,7 +2,7 @@
 
 Status: `Stable`
 
-Authority: PRD §22 (Plugin architecture), CLAUDE.md §22, ADR-0029
+Authority: our product spec (Plugin architecture), our engineering rules-0029
 (Plugin architecture — entry-point discovery, capability/permission
 declarations, subprocess sandbox).
 
@@ -27,19 +27,13 @@ eight Protocols exported from `sentinelqa.plugins`.
 Every Protocol declares the same four required attributes:
 
 ```python
-class MyScanner:
-    kind = "scanner"           # one of the eight strings above
-    name = "my-scanner"        # lowercase kebab-case, unique
-    version = "0.1.0"          # plugin's own semver
-    capabilities = frozenset({"audit"})
-    permissions = frozenset({"network.outbound"})
-    requires_protocol = ">=1.0,<2.0"
+class MyScanner: kind = "scanner" # one of the eight strings above name = "my-scanner" # lowercase kebab-case, unique version = "0.1.0" # plugin's own semver capabilities = frozenset({"audit"}) permissions = frozenset({"network.outbound"}) requires_protocol = ">=1.0,<2.0"
 ```
 
 `requires_protocol` is a PEP 440 specifier against the host's
 `sentinelqa.plugins.PROTOCOL_VERSION` (currently `1.0.0`). Bumping the
 major version of `PROTOCOL_VERSION` requires an ADR and a deprecation
-window (CLAUDE.md §40).
+window.
 
 ## Packaging
 
@@ -64,13 +58,7 @@ sentinel plugins list
 The host calls your plugin once per audit run:
 
 ```python
-def run(self, context: PluginContext) -> ModuleResult:
-    # context.run_id              — stable run identifier
-    # context.target_url          — already safety-checked
-    # context.run_dir             — per-run artifact directory
-    # context.config_snapshot     — read-only loaded config
-    # context.has_permission(...) — check before risky calls
-    ...
+def run(self, context: PluginContext) -> ModuleResult: # context.run_id — stable run identifier # context.target_url — already safety-checked # context.run_dir — per-run artifact directory # context.config_snapshot — read-only loaded config # context.has_permission(...) — check before risky calls ...
 ```
 
 The exact method signature depends on the plugin kind — see the
@@ -78,27 +66,18 @@ Protocol definitions in `packages/python-sdk/src/sentinelqa/plugins.py`.
 
 ## Capabilities vs permissions
 
-- **Capabilities** are free-form tags describing what your plugin
-  _is_. They surface in `sentinel plugins info` and let users filter
-  plugin lists. Any string is accepted EXCEPT those in
-  `engine.policy.forbidden_features.FORBIDDEN_CAPABILITIES`
-  (`stealth_automation`, `bot_detection_bypass`, …). Declaring one of
-  those fails the load (CLAUDE.md §6).
+- **Capabilities** are free-form tags describing what your plugin _is_. They surface in `sentinel plugins info` and let users filter plugin lists. Any string is accepted EXCEPT those in `engine.policy.forbidden_features.FORBIDDEN_CAPABILITIES` (`stealth_automation`, `bot_detection_bypass`, …). Declaring one of those fails the load.
 
-- **Permissions** are runtime grants enforced by `PluginContext`. See
-  `docs/dev/plugin-permissions.md` for the full table. Permissions
-  follow the grammar `<group>.<verb>` or `<group>.<verb>:<scope>`.
+- **Permissions** are runtime grants enforced by `PluginContext`. See `docs/dev/plugin-permissions.md` for the full table. Permissions follow the grammar `<group>.<verb>` or `<group>.<verb>:<scope>`.
 
 ## Sandboxing
 
 Plugins that declare `subprocess.spawn` or `network.outbound` are
 launched in a child interpreter via `engine.plugins.sandbox.run_in_sandbox`:
 
-- The child sees only the env vars in `ALWAYS_INHERITED_ENV` plus any
-  `env.read:<NAME>` the manifest declared.
+- The child sees only the env vars in `ALWAYS_INHERITED_ENV` plus any `env.read:<NAME>` the manifest declared.
 - Communication is one line of JSON in and one line of JSON out.
-- Failures (timeouts, exceptions) surface as a `SandboxOutcome` with
-  `ok=False` so the orchestrator can continue without the plugin.
+- Failures (timeouts, exceptions) surface as a `SandboxOutcome` with `ok=False` so the orchestrator can continue without the plugin.
 
 Pure scanners (no subprocess, no outbound network) run in-process —
 the sandbox is opt-in based on what the manifest declared.
@@ -110,10 +89,9 @@ When the host calls `engine.plugins.discover()` it:
 1. Iterates `importlib.metadata.entry_points(group="sentinelqa.plugins")`.
 2. Loads each target (class or instance).
 3. Synthesises a manifest from class-level attributes.
-4. Rejects forbidden capabilities (CLAUDE.md §6).
+4. Rejects forbidden capabilities.
 5. Rejects incompatible `requires_protocol`.
-6. Verifies the loaded object passes
-   `isinstance(obj, PLUGIN_PROTOCOLS[kind])`.
+6. Verifies the loaded object passes `isinstance(obj, PLUGIN_PROTOCOLS[kind])`.
 
 Failures log and skip — the run continues without the broken plugin.
 Use `sentinel plugins list --show-errors` to see what was rejected.
@@ -121,9 +99,9 @@ Use `sentinel plugins list --show-errors` to see what was rejected.
 ## CLI surface
 
 ```bash
-sentinel plugins list                # discovered plugins
-sentinel plugins info <name>         # one plugin's manifest
-sentinel plugins validate <path>     # validate a JSON/TOML manifest
+sentinel plugins list # discovered plugins
+sentinel plugins info <name> # one plugin's manifest
+sentinel plugins validate <path> # validate a JSON/TOML manifest
 ```
 
 JSON output is available on all three:
@@ -136,22 +114,18 @@ sentinel --json plugins list
 
 Two reference plugins live under `examples/plugins/`:
 
-- `sentinelqa-scanner-example` — a `ScannerPlugin` that checks one
-  HTTP header.
-- `sentinelqa-reporter-example` — a `ReporterPlugin` that writes a
-  CSV summary.
+- `sentinelqa-scanner-example` — a `ScannerPlugin` that checks one HTTP header.
+- `sentinelqa-reporter-example` — a `ReporterPlugin` that writes a CSV summary.
 
 Copy either as a starting point.
 
 ## Versioning + deprecation
 
 Plugin protocol versioning follows the same rules as every other
-public SentinelQA contract (CLAUDE.md §40):
+public SentinelQA contract:
 
-- Additive changes (new optional fields, new Protocol kinds) bump
-  minor.
-- Breaking changes (changed method signatures, renamed attributes,
-  removed kinds) bump major AND require an ADR.
+- Additive changes (new optional fields, new Protocol kinds) bump minor.
+- Breaking changes (changed method signatures, renamed attributes, removed kinds) bump major AND require an ADR.
 
 A plugin that declares `requires_protocol: ">=1.0,<2.0"` is
 guaranteed to keep loading until the host reaches `2.0.0` — at which

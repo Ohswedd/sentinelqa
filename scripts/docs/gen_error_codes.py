@@ -116,8 +116,8 @@ def render() -> str:
         ),
         GENERATED_BANNER.format(generator="gen_error_codes", target="docs-gen-error-codes"),
         "",
-        "SentinelQA's CLI exits with a fixed code grid (PRD §13.2 / "
-        "CLAUDE.md §13). Structured error codes are emitted via the "
+        "SentinelQA's CLI exits with a fixed code grid (the documentation / "
+        "our engineering rules). Structured error codes are emitted via the "
         "agent-message contract and surfaced in `audit.log`.",
         "",
         "## CLI exit codes",

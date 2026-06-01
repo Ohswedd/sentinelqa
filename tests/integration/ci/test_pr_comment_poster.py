@@ -4,7 +4,7 @@ Strategy: load the poster module directly (it is invoked as a script
 from the composite Action), substitute a fake ``HttpClient`` that
 records calls, and exercise the upsert + retry paths end-to-end.
 
-CLAUDE.md §33 enforcement: a regression-style test asserts the
+our engineering rules enforcement: a regression-style test asserts the
 ``Authorization`` header value never leaks into log records.
 """
 

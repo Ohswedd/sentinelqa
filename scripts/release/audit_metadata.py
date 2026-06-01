@@ -25,7 +25,7 @@ Internal manifests (the monorepo root, the docs site, examples, the internal
 (TypeScript) or ``tool.uv.package = false`` / live under ``examples/`` (Python)
 so the auditor can confidently skip them.
 
-CLAUDE.md §3 forbids AI tool authorship; AI author names + email domains are
+our engineering rules forbids AI tool authorship; AI author names + email domains are
 rejected explicitly so a slip can't ride through review.
 
 Exit codes
@@ -88,7 +88,7 @@ REQUIRED_PY_URL_KEYS: tuple[str, ...] = (
 REQUIRED_TROVE_LICENSE = "License :: OSI Approved :: Apache Software License"
 
 # --------------------------------------------------------------------------- #
-# AI authorship deny-list (CLAUDE.md §3)
+# AI authorship deny-list
 # --------------------------------------------------------------------------- #
 
 AI_AUTHOR_NAMES: frozenset[str] = frozenset(
@@ -218,7 +218,7 @@ def audit_publishable_python(rel_path: str, *, root: Path = REPO_ROOT) -> list[A
                 fails.append(
                     AuditFailure(
                         rel_path,
-                        f"AI author rejected (CLAUDE.md §3): {_format_author_repr(author)}",
+                        f"AI author rejected: {_format_author_repr(author)}",
                     )
                 )
 
@@ -299,7 +299,7 @@ def audit_internal_python(rel_path: str, *, root: Path = REPO_ROOT) -> list[Audi
                 fails.append(
                     AuditFailure(
                         rel_path,
-                        f"AI author rejected (CLAUDE.md §3): {_format_author_repr(author)}",
+                        f"AI author rejected: {_format_author_repr(author)}",
                     )
                 )
 
@@ -355,7 +355,7 @@ def audit_publishable_ts(rel_path: str, *, root: Path = REPO_ROOT) -> list[Audit
                 email = text.split("<", 1)[1].split(">", 1)[0].strip() or None
                 name = text.split("<", 1)[0].strip()
         if _is_ai_author(name, email):
-            fails.append(AuditFailure(rel_path, f"AI author rejected (CLAUDE.md §3): {author!r}"))
+            fails.append(AuditFailure(rel_path, f"AI author rejected: {author!r}"))
 
     # Keywords (non-empty array).
     keywords = data.get("keywords")
@@ -397,7 +397,7 @@ def audit_internal_ts(rel_path: str, *, root: Path = REPO_ROOT) -> list[AuditFai
                 email = text.split("<", 1)[1].split(">", 1)[0].strip() or None
                 name = text.split("<", 1)[0].strip()
         if _is_ai_author(name, email):
-            fails.append(AuditFailure(rel_path, f"AI author rejected (CLAUDE.md §3): {author!r}"))
+            fails.append(AuditFailure(rel_path, f"AI author rejected: {author!r}"))
     return fails
 
 

@@ -1,10 +1,10 @@
-"""HTTP-first crawler (PRD §9.1, ADR-0010).
+"""HTTP-first crawler (the documentation, ADR-0010).
 
 The crawler walks the target app starting at ``base_url`` and produces a
 sequence of :class:`CrawlPage` records — pure data that downstream detectors
 (DOM map, forms, API detector, auth boundary) consume without re-fetching.
 
-Safety boundary (CLAUDE.md §6, PRD §2.2):
+Safety boundary (our engineering rules, the documentation):
 
 - Same-host-only by default; explicit allowlist for cross-host follow.
 - Transparent User-Agent (``SentinelQA/<version>``) — no spoofing.
@@ -30,13 +30,13 @@ from urllib.parse import urljoin, urlparse, urlunparse
 
 import httpx
 
-# Local-host suffixes that never need robots.txt — see PRD §2.2 and
+# Local-host suffixes that never need robots.txt — see the documentation and
 # engine.policy.safety.LOCAL_HOSTS for the wider allowlist.
 _LOCAL_HOSTS: frozenset[str] = frozenset({"localhost", "127.0.0.1", "::1"})
 
 
 def _sentinel_user_agent() -> str:
-    """Return the transparent UA mandated by CLAUDE §6 / PRD §2.2."""
+    """Return the transparent UA mandated by CLAUDE §6 / the documentation."""
 
     try:
         version = importlib_metadata.version("sentinelqa-engine")

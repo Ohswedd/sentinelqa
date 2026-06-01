@@ -1,7 +1,7 @@
 """``run.json`` writer (task 03.01).
 
 Serializes the per-run summary envelope. The schema lives at
-``packages/shared-schema/run.schema.json`` (CLAUDE.md §11, §38).
+``packages/shared-schema/run.schema.json`` (our engineering rules, §38).
 """
 
 from __future__ import annotations
@@ -103,7 +103,7 @@ def derive_release_decision(
 
     Phase 14 (quality scoring) populates :class:`PolicyDecision`. Until that
     lands, callers may pass ``policy=None`` and we derive a safe default
-    from the run status (CLAUDE.md §37 — no fake completion: an absent
+    from the run status (our engineering rules — no fake completion: an absent
     decision becomes ``"inconclusive"`` rather than a fake pass).
     """
 
@@ -169,7 +169,7 @@ def build_run_report(
         score_value = None
     else:
         # Round here so the writer and the score.json writer agree on
-        # precision (CLAUDE.md §25 — score is reproducible).
+        # precision (our engineering rules — score is reproducible).
         score_value = round(float(score.total), 2)
 
     paths_in = dict(artifact_paths) if artifact_paths else {}

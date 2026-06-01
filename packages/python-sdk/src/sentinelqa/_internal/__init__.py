@@ -1,4 +1,4 @@
-"""Internal SDK helpers — NOT public API (CLAUDE.md §14, PRD §40).
+"""Internal SDK helpers — NOT public API (our engineering rules, our product spec).
 
 Anything in this package may change without notice between minor
 versions. The single-underscore prefix is a hard rule per task 16.06:

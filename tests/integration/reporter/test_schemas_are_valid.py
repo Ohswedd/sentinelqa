@@ -34,7 +34,7 @@ def _vendored_external_schemas() -> list[Path]:
 
 
 def _domain_schemas() -> list[Path]:
-    """Generated per-domain schemas (PRD §18 entities)."""
+    """Generated per-domain schemas."""
 
     return sorted(SHARED_SCHEMA_ROOT.joinpath("schemas").glob("*.schema.json"))
 

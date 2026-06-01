@@ -1,4 +1,4 @@
-"""``sentinel plugins`` — Phase 24 / PRD §22 plugins CLI.
+"""``sentinel plugins`` — Phase 24 / our product spec plugins CLI.
 
 Three subcommands:
 
@@ -43,7 +43,7 @@ from sentinel_cli.state import GlobalState
 plugins_app = typer.Typer(
     name="plugins",
     help=(
-        "Manage SentinelQA plugins (PRD §22). `list` shows installed "
+        "Manage SentinelQA plugins. `list` shows installed "
         "plugins; `info` prints one plugin's manifest; `validate` "
         "checks a standalone manifest file."
     ),

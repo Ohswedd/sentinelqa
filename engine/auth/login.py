@@ -7,7 +7,7 @@ a redacted audit-log entry. Everything Playwright-related is gated by a
 single optional import — the unit tests substitute the launcher via
 :class:`BrowserLauncher` so the suite doesn't need Chromium.
 
-CLAUDE.md §6 hard rules enforced here:
+our engineering rules hard rules enforced here:
 
 - The operator signs in. SentinelQA never reads credentials.
 - If the post-login URL host doesn't match the start URL host AND isn't

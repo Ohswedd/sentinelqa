@@ -1,6 +1,6 @@
 """Phase 23.04 — UX edge case chaos integration tests.
 
-Acceptance criterion (`plans/phase-23-chaos-module/04-ux-edge-cases.md`):
+Acceptance criterion (the build plan):
 
     Fixture allowing duplicate submits → finding.
 """

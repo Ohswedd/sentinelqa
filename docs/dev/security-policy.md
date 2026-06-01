@@ -3,8 +3,8 @@
 Status: `Stable`
 
 Authority: `SECURITY.md` (public disclosure path),
-`CLAUDE.md` §6 (Safety boundary), §33 (Logging and secrets),
-`plans/phase-35-public-release/07-security-advisories.md`.
+our engineering rules(Safety boundary), §33 (Logging and secrets),
+.
 
 `SECURITY.md` is the **public** entrypoint — that's where reporters
 land. This file is the **operator** runbook: how SentinelQA receives,
@@ -50,14 +50,9 @@ extension in writing with the reporter.
 
 ## Embargo + advisory publication
 
-1. The fix lands on a private fork or in a draft GHSA — never on
-   `main` before publication.
-2. A regression test that proves the fix lands in the same PR
-   (`CLAUDE.md` §16).
-3. When the embargo lifts, the GHSA is published, the patch release
-   is tagged via `docs/release/pre-1.0-review.md`, `CHANGELOG.md`
-   gets a `### Security` section under that release, and the
-   reporter is credited.
+1. The fix lands on a private fork or in a draft GHSA — never on `main` before publication.
+2. A regression test that proves the fix lands in the same PR .
+3. When the embargo lifts, the GHSA is published, the patch release is tagged via `docs/release/pre-1.0-review.md`, `CHANGELOG.md` gets a `### Security` section under that release, and the reporter is credited.
 
 ## Dependabot
 
@@ -86,27 +81,17 @@ That setting cannot be configured on a private repo before the flip.
 
 1. New report arrives via GHSA or `security@sentinelqa.dev`.
 2. Acknowledge within 3 business days.
-3. Triage: reproduce, score (CVSS v4.0), file an internal tracker
-   issue with severity + supported-versions impact.
-4. Fix on a feature branch named `security/<short-slug>`. Tests
-   first, then the fix.
-5. Open a draft GHSA — never a public PR — for the patch. Use the
-   `cve` field if a CVE has been minted.
-6. Coordinate disclosure with the reporter; agree on a publication
-   date inside the 90-day window (sooner for criticals).
-7. Tag the patch release per `docs/release/pre-1.0-review.md`,
-   publish the GHSA, update `CHANGELOG.md`, post the deprecation
-   notice on the docs site.
-8. If the safety boundary was touched, open an ADR
-   (`docs/adr/_template.md`) before the publication date.
+3. Triage: reproduce, score (CVSS v4.0), file an internal tracker issue with severity + supported-versions impact.
+4. Fix on a feature branch named `security/<short-slug>`. Tests first, then the fix.
+5. Open a draft GHSA — never a public PR — for the patch. Use the `cve` field if a CVE has been minted.
+6. Coordinate disclosure with the reporter; agree on a publication date inside the 90-day window (sooner for criticals).
+7. Tag the patch release per `docs/release/pre-1.0-review.md`, publish the GHSA, update `CHANGELOG.md`, post the deprecation notice on the docs site.
+8. If the safety boundary was touched, open an ADR (`docs/adr/_template.md`) before the publication date.
 
 ## Related
 
 - [`SECURITY.md`](../../SECURITY.md) — public disclosure path.
 - [`docs/dev/semver.md`](./semver.md) — supported-versions policy.
-- [`docs/release/pre-1.0-review.md`](../release/pre-1.0-review.md) —
-  pre-tag review the owner signs.
-- [`.github/dependabot.yml`](../../.github/dependabot.yml) —
-  Dependabot config.
-- [`plans/phase-35-public-release/07-security-advisories.md`](../../plans/phase-35-public-release/07-security-advisories.md) —
-  task spec.
+- [`docs/release/pre-1.0-review.md`](../release/pre-1.0-review.md) — pre-tag review the owner signs.
+- [`.github/dependabot.yml`](../../.github/dependabot.yml) — Dependabot config.
+- [](../../) — task spec.

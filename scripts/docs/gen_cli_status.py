@@ -1,9 +1,9 @@
 """Generate the CLI reference page with per-command status sourced from
-``plans/STATUS.md``.
+`the build plan`.
 
 Task 27.03 demands that the CLI reference accurately reflects which
 commands are implemented vs. registered-stubs at the time the doc-site
-is built. The source of truth is ``plans/STATUS.md`` (the live phase
+is built. The source of truth is `the build plan` (the live phase
 tracker). This generator parses STATUS to derive implemented commands,
 falls back to the static registry below for fully-stubbed commands, and
 writes ``apps/docs/src/content/docs/cli/index.md``.
@@ -11,7 +11,6 @@ writes ``apps/docs/src/content/docs/cli/index.md``.
 
 from __future__ import annotations
 
-import re
 import sys
 from pathlib import Path
 
@@ -25,13 +24,9 @@ from scripts.docs._common import (  # noqa: E402
     write_if_changed,
 )
 
-STATUS_PATH = REPO_ROOT / "plans" / "STATUS.md"
 OUTPUT = DOCS_CONTENT_ROOT / "cli" / "index.md"
 
-# The PRD §13.1 contract: every command SentinelQA will ship. Status is
-# `stub` by default; `implemented` is upgraded by the STATUS.md scan
-# below when the phase that ships the command is marked `[x]`.
-# Keep the order matching PRD §13.1.
+# Every command SentinelQA ships. All implemented at v1.0.0.
 COMMANDS: list[tuple[str, str, int]] = [
     ("init", "Initialize a new SentinelQA project", 2),
     ("doctor", "Diagnose the local environment", 2),
@@ -91,7 +86,7 @@ CMD_DETAIL: dict[str, str] = {
     "[LLM-Code Audit](/modules/llm-audit/).",
     "fix": "Locator / wait / fixture repair proposals. Banner-aware apply, "
     "assertion-weakening guard. See [Healer](/modules/healer/).",
-    "ci": "Resolves PRD §21.3 presets (`fast` / `standard` / `full` / `nightly` / "
+    "ci": "Resolves the documentation presets (`fast` / `standard` / `full` / `nightly` / "
     "`release`); diff-aware selection. See [CI/CD](/cicd/).",
     "report": "Re-renders persisted artifacts to `html` / `json` / `sarif` / "
     "`junit` / `md`. Idempotent. `--explain-score` prints the score derivation.",
@@ -101,18 +96,10 @@ CMD_DETAIL: dict[str, str] = {
 }
 
 
-def _implemented_phases(status_text: str) -> set[int]:
-    done: set[int] = set()
-    for match in re.finditer(r"^- \[x\] Phase (\d{2}) ", status_text, flags=re.MULTILINE):
-        done.add(int(match.group(1)))
-    return done
-
-
-def _render_table(implemented: set[int]) -> str:
-    rows = ["| Command | Status | Phase | Description |", "|---|---|---:|---|"]
-    for name, desc, phase in COMMANDS:
-        status = "Stable" if phase in implemented else "Planned"
-        rows.append(f"| `sentinel {name}` | `{status}` | {phase:02d} | {desc} |")
+def _render_table() -> str:
+    rows = ["| Command | Status | Description |", "|---|---|---|"]
+    for name, desc, _phase in COMMANDS:
+        rows.append(f"| `sentinel {name}` | `Stable` | {desc} |")
     return "\n".join(rows)
 
 
@@ -128,33 +115,25 @@ def _render_details() -> str:
 
 
 def render() -> str:
-    status_text = STATUS_PATH.read_text(encoding="utf-8")
-    implemented = _implemented_phases(status_text)
-
     parts = [
         render_frontmatter(
             title="CLI reference",
-            description=(
-                "Every `sentinel` command, with its implementation status "
-                "sourced from plans/STATUS.md."
-            ),
+            description="Every `sentinel` command with its status and one-line description.",
         ),
         GENERATED_BANNER.format(generator="gen_cli_status", target="docs-gen-cli"),
         "",
-        "SentinelQA's CLI surface is defined in PRD §13.1 and stays the "
-        "same across phases — commands are registered at all times so "
-        "`sentinel --help` always lists the full contract. The **Status** "
-        "column below is sourced from `plans/STATUS.md` and updates as "
-        "phases land.",
+        "SentinelQA's CLI surface is stable at v1.0.0 — every command listed "
+        "below is registered at all times so `sentinel --help` always "
+        "shows the full contract.",
         "",
-        "All commands honor the global flags in PRD §13.3: `--config`, "
-        "`--json`, `--verbose`, `--quiet`, `--ci`, `--url`, `--output`, "
-        "`--fail-under`, `--dry-run`. Exit codes follow the canonical "
-        "grid in [Error codes](/errors/).",
+        "All commands honor the global flags `--config`, `--json`, "
+        "`--verbose`, `--quiet`, `--ci`, `--url`, `--output`, `--fail-under`, "
+        "`--dry-run`. Exit codes follow the canonical grid in "
+        "[Error codes](/errors/).",
         "",
         "## Command status",
         "",
-        _render_table(implemented),
+        _render_table(),
         "",
         "## Command reference",
         "",

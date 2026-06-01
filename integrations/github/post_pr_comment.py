@@ -13,7 +13,7 @@ body begins with the ``<!-- sentinelqa:pr-comment -->`` anchor (from
 :mod:`engine.reporter.pr_comment`), and edits it in place when found;
 otherwise creates a new comment.
 
-CLAUDE.md §33: the ``GITHUB_TOKEN`` is read from the environment only —
+our engineering rules: the ``GITHUB_TOKEN`` is read from the environment only —
 it is never logged, never written to disk, never echoed back via the
 process exit code, and never included in retry-error messages.
 """
@@ -58,7 +58,7 @@ class HttpClient:
 
     A class (rather than a free function) so tests can subclass and
     intercept calls without monkeypatching ``urllib.request`` globally.
-    The intentional sparsity is by design — CLAUDE.md §35 frowns on
+    The intentional sparsity is by design
     pulling in ``requests`` just to upsert a comment.
     """
 

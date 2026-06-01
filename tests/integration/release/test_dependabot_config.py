@@ -79,7 +79,7 @@ def test_every_entry_has_conventional_commit_prefix() -> None:
             failures.append(f"{entry['package-ecosystem']} @ {entry['directory']} " f"→ {prefix!r}")
     assert not failures, (
         "Dependabot commits must use Conventional Commits "
-        "(chore(deps) / ci(deps)) — CLAUDE.md §4:\n" + "\n".join(failures)
+        "(chore(deps) / ci(deps)):\n" + "\n".join(failures)
     )
 
 

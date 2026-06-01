@@ -1,4 +1,4 @@
-"""Pydantic models for ``sentinel.config.yaml`` (PRD §17.1).
+"""Pydantic models for ``sentinel.config.yaml`` (the documentation).
 
 Every key in the example YAML in the PRD maps to one of these models. The
 loader (`engine.config.loader`) rejects unknown keys (`extra="forbid"`) and
@@ -52,7 +52,7 @@ class TargetConfig(SentinelModel):
         for host in value:
             if "*" in host or "?" in host:
                 raise ValueError(
-                    f"Wildcard host {host!r} is not allowed (CLAUDE.md §6). "
+                    f"Wildcard host {host!r} is not allowed. "
                     "List every authorized host explicitly."
                 )
         return value
@@ -123,7 +123,7 @@ class ModulesConfig(SentinelModel):
     """`modules:` block.
 
     Booleans only — granular module config lives inside each module's own
-    sub-section (PRD §17 lists `security`, `performance`, etc. at the top
+    sub-section (our product spec lists `security`, `performance`, etc. at the top
     level of the YAML).
     """
 
@@ -220,13 +220,13 @@ class SecurityConfig(SentinelModel):
             raise ValueError(
                 "security.checks.xss_stored=true requires "
                 "security.mode='authorized_destructive' "
-                "(stored XSS writes state; see PRD §10.7 + CLAUDE.md §26)."
+                "(stored XSS writes state; see the documentation + our engineering rules)."
             )
         return self
 
 
 class PerformanceBudgets(SentinelModel):
-    """`performance.budgets:` block (PRD §10.5, CLAUDE §27)."""
+    """`performance.budgets:` block (the documentation, CLAUDE §27)."""
 
     lcp_ms: int = Field(default=2500, ge=0)
     cls: float = Field(default=0.1, ge=0)
@@ -280,7 +280,7 @@ class VisualMaskConfig(SentinelModel):
     the baseline filename); ``selector`` is the CSS selector the TS
     capture helper hides before screenshot. The Python diff layer ALSO
     accepts a static rectangle (``rect``) so test fixtures can verify
-    masking without driving Playwright (PRD §10.6 + CLAUDE §29).
+    masking without driving Playwright (the documentation + CLAUDE §29).
     """
 
     route: str = Field(min_length=1, max_length=512)
@@ -318,7 +318,7 @@ _DEFAULT_VIEWPORTS: tuple[VisualViewportConfig, ...] = (
 
 
 class VisualConfig(SentinelModel):
-    """`visual:` block (PRD §10.6, CLAUDE §29).
+    """`visual:` block (the documentation, CLAUDE §29).
 
     The visual module consumes already-captured PNGs from a run's
     ``visual/current/`` tree and diffs them against the baselines under
@@ -365,7 +365,7 @@ class DiscoveryGraphQLConfig(SentinelModel):
 
 
 class DiscoveryConfig(SentinelModel):
-    """`discovery:` block (PRD §9.1, ADR-0010).
+    """`discovery:` block (the documentation, ADR-0010).
 
     Two backends ship:
 
@@ -461,7 +461,7 @@ class LlmProviderConfig(SentinelModel):
     """One entry in the ``llm.providers:`` map (Phase 30, ADR-0042).
 
     Each registered provider takes its credential env-var name (never the
-    raw value — CLAUDE.md §33) plus per-caller model strings. Provider-
+    raw value) plus per-caller model strings. Provider-
     specific knobs (Azure resource/deployment/api_version, Ollama host,
     Vertex project/region) live on this object, validated strictly with
     ``extra="forbid"``.
@@ -569,7 +569,7 @@ class ApiAuthTestUser(SentinelModel):
 
     Names env vars holding bearer tokens for the auth-matrix check.
     Secrets are NEVER inlined — only ``token_env`` is accepted, matching
-    :class:`AuthConfig` and CLAUDE.md §33. ``label`` identifies the user
+    :class:`AuthConfig` and our engineering rules. ``label`` identifies the user
     in findings (``user_a``, ``admin``, etc.). ``role`` is informational
     and tags findings so the report distinguishes "low-priv user got
     200 on /admin" from "anonymous got 200 on /admin".
@@ -581,16 +581,16 @@ class ApiAuthTestUser(SentinelModel):
 
 
 class ApiConfig(SentinelModel):
-    """`api:` block (Phase 22, PRD §10.3, CLAUDE.md §30).
+    """`api:` block (Phase 22, the documentation, our engineering rules).
 
     Drives the ApiModule. Contract / negative / auth / latency /
     pagination / error-shape / backward-compat checks are individually
     gated through ``enabled_checks`` so operators can subset what runs
-    (PRD §10.3). Payload bounds are clamped so a misconfigured run
+    (the documentation). Payload bounds are clamped so a misconfigured run
     cannot turn into accidental fuzzing — ``negative_max_payload_kb``
     is capped at 64 KB, ``negative_max_variants_per_endpoint`` at 16.
     Aggressive fuzzing has **no** opt-in flag here, anywhere in the
-    schema, or in any CLI surface (CLAUDE.md §30 + the
+    schema, or in any CLI surface (our engineering rules + the
     ``tests/security/test_api_no_aggressive_flags.py`` guard).
     """
 
@@ -651,16 +651,16 @@ class ApiConfig(SentinelModel):
 
 
 class ChaosConfig(SentinelModel):
-    """`chaos:` block (Phase 23, PRD §10.8, CLAUDE.md §6, ADR-0028).
+    """`chaos:` block (Phase 23, the documentation, our engineering rules, ADR-0028).
 
     Drives the ChaosModule. The module is OFF by default in
     :class:`ModulesConfig` (``modules.chaos = false``); this block only
     configures which categories / scenarios the module exercises *when*
     it is opted in (via ``modules.chaos = true``, ``sentinel chaos
-    ...``, or the CI ``nightly`` preset). Defaults mirror PRD §10.8:
+    ...``, or the CI ``nightly`` preset). Defaults mirror the documentation:
     all four categories enabled with no scenario subsetting.
 
-    Safety boundary (CLAUDE.md §6): no field here lets an operator
+    Safety boundary: no field here lets an operator
     turn the module into an evasion tool. There is no ``aggressive``
     knob, no proxy-rotation knob, no detection-bypass knob — and the
     ``tests/security/test_chaos_no_evasion_flags.py`` guard greps the
@@ -819,7 +819,7 @@ class SupplyChainLicensesConfig(SentinelModel):
 
 
 class SupplyChainConfig(SentinelModel):
-    """`policy.supply_chain:` block (Phase 33, PRD §10.7.3, ADR-0045).
+    """`policy.supply_chain:` block (Phase 33, the documentation.3, ADR-0045).
 
     Drives the SupplyChainModule. Defaults match the Phase 33 README:
     every check on, conservative thresholds, OSV at 5 rps, default
@@ -845,10 +845,10 @@ class SupplyChainConfig(SentinelModel):
 
 
 class PolicyConfig(SentinelModel):
-    """`policy:` block (PRD §17.1, §19.4).
+    """`policy:` block (the documentation, §19.4).
 
     The severity-penalty fields default to the midpoint of the
-    PRD §19.2 / CLAUDE.md §25 ranges (high 10..25 -> 17.5; medium 3..10
+    the documentation / our engineering rules ranges (high 10..25 -> 17.5; medium 3..10
     -> 6.5; low 1..3 -> 2.0). Critical findings always carry a fixed
     penalty of 30 so the numeric score still reflects severity even
     when the run is otherwise blocked by `block_on_critical`.
@@ -880,7 +880,7 @@ class RunnerRetriesConfig(SentinelModel):
 
 
 class RunnerQuarantineConfig(SentinelModel):
-    """`runner.quarantine:` block (Phase 08.04, CLAUDE.md §23).
+    """`runner.quarantine:` block (Phase 08.04, our engineering rules).
 
     Quarantined tests run but their result does NOT block the quality gate.
     The list is enforced strictly: each entry must include an ``expires_at``
@@ -926,7 +926,7 @@ class RunnerConfig(SentinelModel):
 
 
 class HealerConfig(SentinelModel):
-    """`healer:` block (Phase 20, ADR-0025, CLAUDE.md §23).
+    """`healer:` block (Phase 20, ADR-0025, our engineering rules).
 
     Drives the self-repair pipeline. ``auto_apply`` is the operator's
     posture toward applying healer proposals without review:
@@ -966,7 +966,7 @@ class ReportConfig(SentinelModel):
 
 
 class RootConfig(SentinelModel):
-    """The fully-parsed `sentinel.config.yaml` (PRD §17.1)."""
+    """The fully-parsed `sentinel.config.yaml` (the documentation)."""
 
     SCHEMA_VERSION: ClassVar[str] = CONFIG_SCHEMA_VERSION
 

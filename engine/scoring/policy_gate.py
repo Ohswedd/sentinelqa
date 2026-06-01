@@ -1,4 +1,4 @@
-"""Policy gate (task 14.04, CLAUDE.md §25 §39).
+"""Policy gate (task 14.04, our engineering rules §39).
 
 Combines :mod:`engine.scoring.model`, :mod:`engine.scoring.blockers`,
 and :mod:`engine.scoring.decision` into the canonical lifecycle hooks
@@ -8,7 +8,7 @@ and step 14 (``apply_quality_gates``).
 After ``apply_quality_gates`` runs, the lifecycle's ``_finalize_status``
 reads ``ctx.quality_gate_passed`` and stamps ``test_run.status``.
 The CLI then maps that status onto the canonical exit-code grid
-via :mod:`engine.policy.exit_codes` (PRD §13.2):
+via :mod:`engine.policy.exit_codes` (the documentation):
 
 - ``passed`` → 0
 - ``failed`` → 1

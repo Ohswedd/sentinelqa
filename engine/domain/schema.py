@@ -2,7 +2,7 @@
 
 Single source of truth referenced by domain models, report writers (Phase 03),
 the SDK (Phase 16), and CI schema-validation hooks. Changing a constant here
-is a breaking change and requires an ADR per CLAUDE.md §34 (Report schema /
+is a breaking change and requires an ADR per our engineering rules (Report schema /
 Config schema triggers) and a note in `docs/dev/schema-versioning.md`.
 
 Each value is a major-version string (e.g. ``"1"``). Minor/patch additions
@@ -20,7 +20,7 @@ RUN_SCHEMA_VERSION: Final[str] = "1"
 """Version of `run.json` and the in-memory ``TestRun`` model."""
 
 FINDINGS_SCHEMA_VERSION: Final[str] = "2"
-"""Version of `findings.json` and the in-memory ``Finding`` model (PRD §18.2).
+"""Version of `findings.json` and the in-memory ``Finding`` model (the documentation).
 
 v2 (Phase 32, ADR-0044) adds three optional taxonomy ids — ``cwe_id``,
 ``attack_id``, ``owasp_api_id`` — so SARIF / dashboard consumers can
@@ -32,16 +32,16 @@ explicit when callers persist v1 inputs back as v2.
 """
 
 SCORE_SCHEMA_VERSION: Final[str] = "1"
-"""Version of `score.json` and the in-memory ``QualityScore`` model (PRD §19)."""
+"""Version of `score.json` and the in-memory ``QualityScore`` model."""
 
 CONFIG_SCHEMA_VERSION: Final[str] = "1"
-"""Version of `sentinel.config.yaml` accepted by the loader (PRD §17)."""
+"""Version of `sentinel.config.yaml` accepted by the loader."""
 
 REPAIR_SUGGESTION_SCHEMA_VERSION: Final[str] = "1"
-"""Version of healer ``RepairSuggestion`` artifacts (PRD §9.6, CLAUDE.md §23)."""
+"""Version of healer ``RepairSuggestion`` artifacts (the documentation, our engineering rules)."""
 
 AGENT_MESSAGE_SCHEMA_VERSION: Final[str] = "1"
-"""Version of agent-facing message envelopes (PRD §16, Phase 18)."""
+"""Version of agent-facing message envelopes (our product spec, Phase 18)."""
 
 
 # Convenience map for documentation / introspection. Keyed by the symbolic

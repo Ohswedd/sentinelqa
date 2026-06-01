@@ -3,7 +3,7 @@
 Each generator is deterministic and idempotent (see scripts/docs/_common.py).
 This test re-runs every generator and asserts the committed bytes match.
 If the test fails the fix is always: run ``make docs-gen-all`` and commit
-the diff (CLAUDE.md §17).
+the diff.
 """
 
 from __future__ import annotations

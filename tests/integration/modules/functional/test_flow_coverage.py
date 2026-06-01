@@ -1,6 +1,6 @@
 """Flow-coverage integration test (Phase 10.02).
 
-Builds a representative :class:`DiscoveryGraph` covering every PRD §10.1
+Builds a representative :class:`DiscoveryGraph` covering every our product spec1
 flow type, runs it through the deterministic planner + generator, and
 asserts that each named flow type produces at least one generated spec
 whose canonical tag set names the right ``@flow:`` / ``@module:`` /
@@ -113,7 +113,7 @@ def test_every_prd_10_1_flow_type_emits_a_spec(
     )
 
     extractors_seen = {flow.extractor for flow in plan.flows}
-    # PRD §10.1 named flow types: login, signup, logout, password reset,
+    # our product spec1 named flow types: login, signup, logout, password reset,
     # crud, search/filter/sort, admin, role, file upload, notification,
     # payment sandbox. Plus the deterministic ones the planner core
     # always emits: route.smoke, route.auth_boundary, form.submit,
@@ -136,7 +136,7 @@ def test_every_prd_10_1_flow_type_emits_a_spec(
         "api.contract",
     }
     missing = must_include - extractors_seen
-    assert not missing, f"missing PRD §10.1 flow types: {sorted(missing)}"
+    assert not missing, f"missing our product spec1 flow types: {sorted(missing)}"
 
 
 def test_generator_emits_canonical_tags_for_every_flow(
@@ -186,7 +186,7 @@ def test_payment_sandbox_template_uses_documented_test_card(
     """The payment template uses Stripe's published 4242 test card and gates
     the test on ``SENTINEL_PAYMENT_SANDBOX=1`` — never a real key.
 
-    This is a safety-boundary check (CLAUDE §6, PRD §2): the generator
+    This is a safety-boundary check (CLAUDE §6, our product spec): the generator
     must never emit a spec that submits a production card number.
     """
 

@@ -4,7 +4,7 @@ Pure function over :class:`AuthRouteProbe` records. The probe is
 populated outside this check (by an HTTP probe in the production
 wiring or by the test fixture). A finding fires when the UI hid the
 route from the role *and* the backend returned 2xx for the same role's
-direct request — a classic IDOR-adjacent defect (PRD §10.9).
+direct request — a classic IDOR-adjacent defect (the documentation).
 """
 
 from __future__ import annotations

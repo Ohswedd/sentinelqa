@@ -1,4 +1,4 @@
-"""Tests for the forbidden-capability registry (PRD §2.1, CLAUDE.md §6)."""
+"""Tests for the forbidden-capability registry (our product spec1, our engineering rules)."""
 
 from __future__ import annotations
 

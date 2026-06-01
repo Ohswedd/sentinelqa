@@ -1,4 +1,4 @@
-"""``AccessibilityModule`` (Phase 11, PRD §10.4, ADR-0016).
+"""``AccessibilityModule`` (Phase 11, the documentation, ADR-0016).
 
 Lifecycle (CLAUDE §9):
 
@@ -59,7 +59,7 @@ A11yRunnerFactory = Callable[[RootConfig, SafetyDecision], A11yRunner]
 
 
 class AccessibilityModule(SentinelModule):
-    """PRD §10.4 accessibility checks wired into the SentinelQA lifecycle."""
+    """the documentation accessibility checks wired into the SentinelQA lifecycle."""
 
     name: ClassVar[str] = "accessibility"
 

@@ -1,150 +1,141 @@
 # Contributing to SentinelQA
 
-Thank you for working on SentinelQA. This file is the cold-start guide: read it once, then refer back to `CLAUDE.md`, `PRD.md`, and `plans/` for the deep rules.
+Thank you for working on SentinelQA. This guide is the cold-start: read it
+once, then the topic-specific docs under [`docs/`](./docs) for the deep
+details.
 
-> **Authority order** (`CLAUDE.md` §2): system safety rules → user instructions → `CLAUDE.md` → `PRD.md` → ADRs → comments → `plans/`. If `CLAUDE.md` and `PRD.md` ever conflict, stop, resolve the conflict in the docs, then continue.
+## Ground rules
 
-## 0. Before you start
+- **Safety first.** SentinelQA is for authorized testing only — no stealth,
+  no evasion, no unauthorized targets. Every PR is reviewed against the
+  safety boundary in [`SECURITY.md`](./SECURITY.md). This is non-negotiable
+  in our engineering rules.
+- **AI tools may write code, but never as authors.** Do not add
+  `Co-authored-by:` trailers for AI tools and do not list AI tools as Git
+  authors, owners, or maintainers. The CI `no-ai-coauthor` workflow
+  enforces this on every PR.
+- **Be kind.** This project follows the [Contributor Covenant Code of
+  Conduct](./.github/CODE_OF_CONDUCT.md).
 
-- The repository is **private** until the human owner says otherwise (`CLAUDE.md` §3).
-- AI tools may write code, but they are never listed as Git authors, co-authors, owners, or maintainers (`CLAUDE.md` §3). See [`docs/dev/ownership.md`](./docs/dev/ownership.md).
-- SentinelQA is for **authorized testing only** — no stealth, no evasion, no unauthorized targets (`CLAUDE.md` §6 / `PRD.md` §2). Every PR is reviewed against the safety boundary.
-
-## 1. Cold-start setup
-
-You need:
-
-- Python 3.11+ (recommended: 3.12).
-- Node.js 20+.
-- [`uv`](https://docs.astral.sh/uv/) (Python package manager).
-- [`pnpm`](https://pnpm.io/) ≥ 9 (TypeScript package manager).
-
-Full details: [`docs/dev/local-setup.md`](./docs/dev/local-setup.md).
-
-Then:
+## Quick start for contributors
 
 ```bash
-git clone <your-fork-or-the-canonical-repo>
-cd "SENTINEL QA"
-make install          # installs Python deps, TS deps, and pre-commit hooks
-make ci               # runs format-check + lint + typecheck + tests
+# Clone + install
+git clone https://github.com/Ohswedd/sentinelqa.git
+cd sentinelqa
+make install
+
+# Hack on a branch
+git checkout -b feature/<short-slug>
+
+# Run the full local gate before pushing
+make ci
 ```
 
-If `make install` or `make ci` fails on a clean clone, that's a bug — open an issue with the output.
+`make install` provisions Python via `uv`, Node + pnpm, and the
+`pre-commit` hooks. `make ci` runs format-check, lint, typecheck, ADR
+template check, pytest, Prettier, ESLint, `tsc --noEmit`, and Vitest.
 
-## 2. Find the next thing to do
+## Project layout
 
-`plans/STATUS.md` is the live tracker. The **Active pointer** at the top says which phase, sub-phase, and task is active right now. Open that task file and follow it.
+```
+apps/cli/            Typer CLI (sentinelqa-cli)
+apps/docs/           Astro Starlight docs site
+engine/              Domain models, orchestrator, scoring, reporter
+modules/             Concrete audit modules (functional, a11y, perf, ...)
+integrations/        BrowserStack, Sauce Labs, Slack, GitHub, GitLab, ...
+packages/python-sdk/ Public Python SDK (sentinelqa)
+packages/mcp-server/ MCP server exposing the sentinel.* tools
+packages/ts-runtime/ Playwright runtime and JSONL bridge
+scripts/             Build / docs-gen / release scripts
+docs/                Long-form developer + user docs, ADRs
+tests/               unit + integration + property + security tests
+```
 
-The plan is documented in `plans/README.md` (overview) and `plans/PROMT.md` (the prompt that drives the execution loop for agents). See [`docs/dev/agent-workflow.md`](./docs/dev/agent-workflow.md) for the agent-facing playbook.
+## Branching and commits
 
-## 3. Branch, commit, push
+Use one of the standard prefixes:
 
-Branches:
+```
+feature/<name>   fix/<name>      docs/<name>
+refactor/<name>  security/<name> ci/<name>
+chore/<name>
+```
 
-- Use one of: `feature/`, `fix/`, `docs/`, `refactor/`, `security/`, `ci/`, `chore/`, `test/`, `perf/`, `build/`.
-- Phase work uses `feature/phase-<NN>-<short-slug>` (e.g. `feature/phase-00-foundation`).
+**Conventional Commits are required.** `commitlint` runs in the
+`commit-msg` hook locally and in CI. Examples:
 
-Commits:
+```
+feat(security): add JWT weakness check
+fix(runner): retry flaky Playwright launches up to twice
+docs(sdk): document async_audit return type
+ci(release): wire the v* tag publish workflow to OIDC
+```
 
-- [Conventional Commits](https://www.conventionalcommits.org/) with the type whitelist from `CLAUDE.md` §4 (enforced by `commitlint` locally + CI).
-- No `Co-authored-by:` trailers naming any AI tool (enforced by `.github/workflows/no-ai-coauthor.yml`).
+The pre-push hook runs `make ci`. Bypassing with `--no-verify` is only
+acceptable for a documented emergency.
 
-Push:
+## Definition of Done
 
-- The local `pre-push` hook runs `make ci` before any push leaves the laptop. If it fails, fix the gate locally; do **not** `--no-verify`.
+Before opening a PR:
 
-Reference docs:
+1. Implementation matches the documented behavior (CLI, SDK, MCP).
+2. Tests exist and pass (unit + integration as relevant; bug fixes get a
+   regression test).
+3. Format / lint / typecheck are clean (`make ci`).
+4. Safety implications reviewed against [`SECURITY.md`](./SECURITY.md).
+5. Reports / schemas updated if you changed an output format.
+6. Docs updated if behavior changed.
+7. No secrets or generated junk staged (`git status` clean after commit).
 
-- [`docs/dev/branching.md`](./docs/dev/branching.md) — branch policy + pre-PR checklist.
-- [`docs/dev/commits.md`](./docs/dev/commits.md) — Conventional Commits rules + 10 worked examples.
-- [`docs/dev/ci-and-branch-protection.md`](./docs/dev/ci-and-branch-protection.md) — what CI checks are required.
+## Tests
 
-## 4. Definition of Done (quoted from CLAUDE.md §18)
+No feature is complete without tests. The required categories vary by area:
 
-A task is done only when:
+- **Unit** — pure logic in `tests/unit/`.
+- **Integration** — multi-module flows in `tests/integration/`.
+- **CLI smoke** — when CLI surface changes.
+- **Schema / golden** — when persisted artifacts change (`make update-goldens`
+  regenerates with explicit confirmation; never commit unintended golden
+  drift).
+- **Security policy** — when target handling, allowlists, or check logic
+  changes.
+- **Report / SARIF** — when report shapes change.
 
-- Implementation matches PRD.
-- Tests exist and pass.
-- Types/lint pass where configured.
-- Safety implications are reviewed.
-- Reports/schemas are updated if affected.
-- Docs/PRD are updated if behavior changed.
-- No secrets are introduced.
-- `git status` is clean after commit.
+Run a targeted subset with `uv run pytest tests/unit/modules/security/ -v`
+or the full suite with `make ci`. Slow and property-based tests are
+excluded from `make ci`; run them with `make test-full`.
 
-You'll see this same checklist in the PR template.
+## Architecture Decision Records (ADRs)
 
-## 5. Updating the PRD
+If your change touches runtime architecture, plugin contracts, config
+schema, scoring, report schemas, security policy, the agent / MCP design,
+or the cloud boundary — write an ADR in [`docs/adr/`](./docs/adr/) before
+the implementation lands. Use [`docs/adr/_template.md`](./docs/adr/_template.md)
+as the starting point.
 
-`PRD.md` is the product source of truth (`CLAUDE.md` §5). Update it in the **same branch** as any change to:
+## Security and secrets
 
-- Product behavior.
-- CLI or SDK contract.
-- Module lifecycle.
-- Safety boundary.
-- Report schema or data model.
-- Quality scoring.
-- Roadmap.
+- Never commit `.env`, credentials, tokens, traces containing secrets, or
+  real customer data. Provide `.env.example` only.
+- Secret-shaped strings in test fixtures must be allowlisted in
+  [`.gitleaks.toml`](./.gitleaks.toml) with a comment naming the test.
+- Vulnerabilities go through the disclosure path in
+  [`SECURITY.md`](./SECURITY.md), not public issues.
 
-If your implementation reveals that the PRD is wrong or incomplete, fix the PRD first (or in the same PR), then change the code.
+## Releasing
 
-Record the PRD update in `plans/STATUS.md` → "PRD / CLAUDE.md sync log".
+Release engineering lives in [`docs/release/publish-runbook.md`](./docs/release/publish-runbook.md)
+and the four `.github/workflows/publish-*.yml` workflows. Tagging and
+publishing are maintainer actions, never delegated to automation.
 
-## 6. Architecture Decision Records (ADRs)
+## Getting unstuck
 
-If you hit any trigger in `CLAUDE.md` §34 (runtime architecture, plugin system, config schema, scoring algorithm, report schema, security policy, agent/MCP design, cloud boundary), you must add an ADR.
+- Re-read the relevant section of [`docs/`](./docs/) — the rule is almost
+  always there.
+- Check the [Architecture Decision Records](./docs/adr/) for the rationale
+  behind a contested design choice.
+- Open a draft PR with the failing run output; reviewers can usually see
+  the issue in the first read.
 
-- Template: [`docs/adr/_template.md`](./docs/adr/_template.md).
-- Filename: `docs/adr/NNNN-kebab-case-title.md` (NNNN = next four-digit number).
-- The `scripts/check-adrs.sh` validator is wired into `make ci` — a malformed ADR fails the build.
-
-Read the full procedure: [`docs/adr/README.md`](./docs/adr/README.md).
-
-## 7. Tests
-
-No feature is complete without tests (`CLAUDE.md` §16). The required categories vary by phase; the phase README tells you which apply. At minimum:
-
-- Unit tests for pure-domain logic.
-- Integration tests when crossing the Python ↔ TypeScript boundary or the CLI ↔ engine boundary.
-- CLI smoke tests when CLI behavior changes.
-- Schema/golden tests when an output schema changes.
-- Security policy tests when target/scanning behavior changes.
-
-Bug fixes require regression tests unless impossible. If impossible, document why.
-
-## 8. Secret hygiene
-
-- Never commit `.env`, credentials, tokens, or real customer data (`CLAUDE.md` §33).
-- `gitleaks` runs locally (pre-commit) and in CI on every PR.
-- Full procedure: [`docs/dev/secret-hygiene.md`](./docs/dev/secret-hygiene.md).
-
-## 9. Status labels in docs
-
-Every doc carries one of four status labels at the top: `Planned`, `Experimental`, `Stable`, `Deprecated`. See [`docs/dev/status-labels.md`](./docs/dev/status-labels.md) for definitions and examples.
-
-## 10. Getting help
-
-- Re-read the [`CLAUDE.md`](./CLAUDE.md) section the gate cites — the rule is almost always there.
-- Open an issue using the bug-report or feature-request template under `.github/ISSUE_TEMPLATE/`.
-- For safety-boundary concerns, tag the issue with `security` and assign to the human owner.
-
-## 11. Reference index
-
-- [`PRD.md`](./PRD.md) — product source of truth.
-- [`CLAUDE.md`](./CLAUDE.md) — engineering constitution.
-- [`plans/README.md`](./plans/README.md) — 30-phase execution plan overview.
-- [`plans/STATUS.md`](./plans/STATUS.md) — live status & active task.
-- [`plans/PROMT.md`](./plans/PROMT.md) — agent execution-loop prompt.
-- [`docs/README.md`](./docs/README.md) — every doc, one-line description.
-- [`docs/adr/README.md`](./docs/adr/README.md) — ADR procedure and index.
-- [`docs/dev/local-setup.md`](./docs/dev/local-setup.md) — local dev environment.
-- [`docs/dev/branching.md`](./docs/dev/branching.md) — branch policy.
-- [`docs/dev/commits.md`](./docs/dev/commits.md) — Conventional Commits rules.
-- [`docs/dev/secret-hygiene.md`](./docs/dev/secret-hygiene.md) — secret-handling rules.
-- [`docs/dev/ownership.md`](./docs/dev/ownership.md) — ownership + AI-tool policy.
-- [`docs/dev/ci-and-branch-protection.md`](./docs/dev/ci-and-branch-protection.md) — required CI checks and branch protection.
-- [`docs/dev/status-labels.md`](./docs/dev/status-labels.md) — doc status conventions.
-- [`docs/dev/agent-workflow.md`](./docs/dev/agent-workflow.md) — AI-contributor playbook.
-- [`docs/dev/schema-versioning.md`](./docs/dev/schema-versioning.md) — schema-versioning policy for every machine-readable artifact.
-- [`docs/user/error-codes.md`](./docs/user/error-codes.md) — exit-code / error-code matrix.
+Thanks for contributing.

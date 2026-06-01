@@ -6,7 +6,7 @@ existing per-caller protocols (:class:`engine.planner.llm_adapter.LlmPlanner`,
 :class:`engine.analyzer.llm_explainer.LlmExplainer`) remain as thin facades
 that wrap a canonical provider for their caller-specific call sites.
 
-Hard constraints (CLAUDE.md §35, §6, §33):
+Hard constraints (our engineering rules, §6, §33):
 
 - HTTP-only via :mod:`httpx`. No vendor SDKs are imported, anywhere, ever.
 - The user brings their own credentials (env-var only, never inlined).

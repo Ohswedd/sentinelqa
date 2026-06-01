@@ -3,12 +3,12 @@
 This is the **public** surface of SentinelQA. It is a typed, agent-friendly
 facade over the engine (``engine.*``) and intentionally does NOT re-export
 internal helpers; anything you can ``from sentinelqa import …`` is part of
-the stable contract documented in PRD §14.
+the stable contract documented in our product spec
 
 Importing this package is cheap: heavy submodules (orchestrator, planner,
 discovery, generator, runner, reporter) are imported lazily by the
 :class:`Sentinel` facade. ``import sentinelqa`` must stay under 200 ms so
-agent-facing tooling (PRD §6.8) starts quickly.
+agent-facing tooling (the documentation) starts quickly.
 """
 
 from __future__ import annotations
@@ -62,7 +62,7 @@ __all__ = [
     "DependencyMissingError",
     "TestExecutionError",
     "QualityGateFailedError",
-    # Schema versions — every public wire shape is versioned (PRD §14.4).
+    # Schema versions — every public wire shape is versioned (the documentation).
     "RUN_SCHEMA_VERSION",
     "FINDINGS_SCHEMA_VERSION",
     "SCORE_SCHEMA_VERSION",

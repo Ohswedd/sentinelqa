@@ -9,7 +9,7 @@ Proposed | Accepted | Superseded by ADR-NNNN | Deprecated
 
 ## Context
 
-What problem are we solving? What constraints, prior decisions, and PRD/CLAUDE.md citations frame the decision? One or two paragraphs.
+What problem are we solving? What constraints and prior decisions frame the decision? One or two paragraphs.
 
 ## Decision
 
@@ -30,6 +30,6 @@ For each alternative: a one-line description and the specific reason it was reje
 ## References
 
 - PRD section(s): PRD §N.M (Title)
-- CLAUDE.md rule(s): CLAUDE.md §N (Title)
+- our engineering rules rule(s): our engineering rules(Title)
 - External: links to RFCs, blog posts, vendor docs.
 - Related ADRs: ADR-XXXX.

@@ -7,7 +7,7 @@ that the report explicitly redacts or shows as text.
 
 The test scans the rendered HTML body for any embedded resource URL and
 fails the build if it sees one. This is the offline guarantee from
-CLAUDE.md §41 + PRD §9.7.
+our engineering rules + our product spec7.
 """
 
 from __future__ import annotations

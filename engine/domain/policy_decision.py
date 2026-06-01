@@ -1,4 +1,4 @@
-"""PolicyDecision entity (PRD §19.3)."""
+"""PolicyDecision entity (the documentation)."""
 
 from __future__ import annotations
 

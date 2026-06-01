@@ -2,7 +2,7 @@
 
 Status: `Stable`
 
-Authority: `CLAUDE.md` §42 (Competitor awareness), `CLAUDE.md` §40 (Versioning & release rules — package contents inspected pre-release), `plans/phase-28-versioning-release/05-trademark-check.md`.
+Authority: project engineering rules.md` §40 (Versioning & release rules — package contents inspected pre-release), .
 
 This is the Phase 28 trademark verdict for the product name **"SentinelQA"**. Until either verdict here changes, the name is cleared for **internal** use (the private monorepo, internal documentation, working-group conversation, this CI). Public publication (PyPI / npm / Docker Hub / dedicated domain / marketing) requires the human owner to complete the registered-marks search rows below before tagging the first release per `docs/dev/semver.md`.
 

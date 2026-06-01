@@ -8,7 +8,7 @@ SentinelQA runs in CI the same way it runs locally — same lifecycle,
 same exit codes, same artifacts. The integrations layer adds PR
 posting, mode presets, and diff-aware test selection.
 
-Authority: PRD §21, ADR-0022.
+Authority: our product spec, ADR-0022.
 
 ## Five modes
 
@@ -32,12 +32,7 @@ Dockerfile) or > 50 changed files force fallback to `full`.
 ## GitHub Action
 
 ```yaml
-- uses: Ohswedd/sentinelqa/integrations/github@main
-  with:
-    url: http://127.0.0.1:3000
-    mode: standard
-    fail-under: 80
-    diff: ${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }}
+- uses: Ohswedd/sentinelqa/integrations/github@main with: url: http://127.0.0.1:3000 mode: standard fail-under: 80 diff: ${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }}
 ```
 
 Outputs:
@@ -52,15 +47,9 @@ A reusable workflow lives at
 ## GitLab template
 
 ```yaml
-include:
-  - project: 'Ohswedd/sentinelqa'
-    file: 'integrations/gitlab/.gitlab-ci.sentinel.yml'
+include: - project: 'Ohswedd/sentinelqa' file: 'integrations/gitlab/.gitlab-ci.sentinel.yml'
 
-sentinelqa:
-  extends: .sentinelqa
-  variables:
-    SENTINEL_URL: 'http://127.0.0.1:3000'
-    SENTINEL_MODE: 'standard'
+sentinelqa: extends: .sentinelqa variables: SENTINEL_URL: 'http://127.0.0.1:3000' SENTINEL_MODE: 'standard'
 ```
 
 JUnit and Code Quality reports are uploaded natively.

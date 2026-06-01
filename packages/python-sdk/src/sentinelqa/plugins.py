@@ -1,4 +1,4 @@
-"""Public plugin contracts (PRD §22, CLAUDE §22).
+"""Public plugin contracts (our product spec, CLAUDE §22).
 
 This is the SDK-public surface third-party plugins implement. Each
 Protocol pins:
@@ -62,9 +62,9 @@ class PluginContext(Protocol):
     run_id: str
     #: Target URL the audit is running against (already safety-checked).
     target_url: str
-    #: Per-run artifact directory (PRD §11, CLAUDE §11).
+    #: Per-run artifact directory (our product spec, CLAUDE §11).
     run_dir: Path
-    #: Read-only snapshot of the loaded SentinelQA config (PRD §17).
+    #: Read-only snapshot of the loaded SentinelQA config.
     config_snapshot: Mapping[str, Any]
     #: The permissions the loader granted to this plugin (frozen).
     granted_permissions: frozenset[str]
@@ -105,7 +105,7 @@ class _PluginBase(Protocol):
 
 @runtime_checkable
 class DiscoveryPlugin(_PluginBase, Protocol):
-    """Custom discovery backend (PRD §22.1 "Discovery plugin").
+    """Custom discovery backend (the documentation "Discovery plugin").
 
     Returns a dict shaped like ``discovery.json``; downstream modules
     consume it identically to the built-in HTTP/Playwright backends.
@@ -119,7 +119,7 @@ class DiscoveryPlugin(_PluginBase, Protocol):
 
 @runtime_checkable
 class ScannerPlugin(_PluginBase, Protocol):
-    """Custom audit module (PRD §22.1 "Scanner plugin", §22.2).
+    """Custom audit module (the documentation "Scanner plugin", §22.2).
 
     Returns a typed :class:`ModuleResult` exactly like a built-in
     module (CLAUDE §9). The orchestrator merges the result into the run
@@ -134,7 +134,7 @@ class ScannerPlugin(_PluginBase, Protocol):
 
 @runtime_checkable
 class RunnerPlugin(_PluginBase, Protocol):
-    """Custom test-runner backend (PRD §22.1 "Runner plugin").
+    """Custom test-runner backend (the documentation "Runner plugin").
 
     Replaces or augments the built-in local/Docker Playwright runners
     (Phase 08). The return value is a free-form mapping that the
@@ -154,7 +154,7 @@ class RunnerPlugin(_PluginBase, Protocol):
 
 @runtime_checkable
 class ReporterPlugin(_PluginBase, Protocol):
-    """Custom report writer (PRD §22.1 "Reporter plugin").
+    """Custom report writer (the documentation "Reporter plugin").
 
     The plugin advertises which format names it emits and is invoked
     after scoring + policy decision (CLAUDE §10). Returns a mapping of
@@ -180,7 +180,7 @@ class ReporterPlugin(_PluginBase, Protocol):
 
 @runtime_checkable
 class PolicyPlugin(_PluginBase, Protocol):
-    """Custom policy evaluator (PRD §22.1 "Policy plugin").
+    """Custom policy evaluator (the documentation "Policy plugin").
 
     Receives the same inputs as the built-in policy gate (Phase 14) and
     returns a release decision. The orchestrator records both the
@@ -200,7 +200,7 @@ class PolicyPlugin(_PluginBase, Protocol):
 
 @runtime_checkable
 class AuthPlugin(_PluginBase, Protocol):
-    """Custom auth-acquisition plugin (PRD §22.1 "Auth plugin").
+    """Custom auth-acquisition plugin (the documentation "Auth plugin").
 
     Replaces the generated-login fixture for projects with bespoke
     auth flows (SSO, MFA bypass tokens, vendor-specific test
@@ -219,7 +219,7 @@ class AuthPlugin(_PluginBase, Protocol):
 
 @runtime_checkable
 class DataFixturePlugin(_PluginBase, Protocol):
-    """Custom data fixture plugin (PRD §22.1 "Data fixture plugin").
+    """Custom data fixture plugin (the documentation "Data fixture plugin").
 
     Seeds and tears down per-run test data. Only invoked when
     ``security.mode == authorized_destructive`` and the manifest
@@ -241,7 +241,7 @@ class DataFixturePlugin(_PluginBase, Protocol):
 
 @runtime_checkable
 class CloudExecutionPlugin(_PluginBase, Protocol):
-    """Custom cloud-execution backend (PRD §22.1 "Cloud execution plugin").
+    """Custom cloud-execution backend (the documentation "Cloud execution plugin").
 
     Submits a runner invocation to a remote service (BrowserStack,
     Sauce Labs, internal Kubernetes job runner) and returns the

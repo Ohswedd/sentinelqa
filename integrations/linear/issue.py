@@ -5,7 +5,7 @@ passes ``team_id``; without it the adapter raises. Linear uses
 GraphQL with a header-based API key (``Authorization: <key>`` — no
 ``Bearer`` prefix).
 
-CLAUDE.md §33: the API key is read from the environment only and
+our engineering rules: the API key is read from the environment only and
 never logged. Finding evidence is redacted before it reaches Linear.
 """
 

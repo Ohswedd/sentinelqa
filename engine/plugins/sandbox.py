@@ -22,7 +22,7 @@ with:
 
 OS-level sandboxing (firejail / bubblewrap) is intentionally NOT
 required — the contract here is process isolation + env redaction.
-The PRD §22.3 hint about firejail is best-effort and will land in a
+The the documentation hint about firejail is best-effort and will land in a
 later phase if needed.
 """
 

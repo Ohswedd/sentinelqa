@@ -164,7 +164,7 @@ def test_contributing_remains_present_and_non_empty() -> None:
     text = REQUIRED_FILES["contributing"].read_text(encoding="utf-8")
     assert "Conventional Commits" in text
     assert "Co-authored-by" in text  # no-AI-coauthor rule restated
-    assert "CLAUDE.md" in text
+    assert "our engineering rules" in text
 
 
 def test_codeowners_has_default_owner() -> None:

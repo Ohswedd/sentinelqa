@@ -2,7 +2,7 @@
 
 Status: `Stable`
 
-Authority: `CLAUDE.md` §17 (Quality Gates), §39 (CI Rules), §4 (Git Workflow). PRD §21 (CI/CD requirements).
+Authority: project engineering rules. our product spec (CI/CD requirements).
 
 This doc captures the required GitHub-side configuration. The workflow files themselves live under `.github/workflows/`; this doc tells the repo administrator what to wire up in the GitHub UI on top of them.
 
@@ -13,30 +13,18 @@ This doc captures the required GitHub-side configuration. The workflow files the
 | CI              | `.github/workflows/ci.yml`                           | `pull_request`, `push` to `main` | Python (3.11 + 3.12) and TypeScript (Node 20 + 22) matrices: ruff format-check + lint, mypy strict, pytest; prettier-check, eslint, tsc --noEmit, vitest; Playwright Chromium install smoke. |
 | Secret scan     | `.github/workflows/secret-scan.yml`                  | `pull_request`, `push` to `main` | gitleaks against the full PR diff (same pin as `.pre-commit-config.yaml`).                                                                                                                   |
 | Commitlint      | `.github/workflows/commitlint.yml`                   | `pull_request`                   | Every commit in the PR range validated against `commitlint.config.cjs`.                                                                                                                      |
-| No AI co-author | `.github/workflows/no-ai-coauthor.yml` (Phase 00.08) | `pull_request`, `push` to `main` | Rejects any commit message containing `Co-authored-by:` followed by a known AI-tool string (`CLAUDE.md` §3).                                                                                 |
+| No AI co-author | `.github/workflows/no-ai-coauthor.yml` (Phase 00.08) | `pull_request`, `push` to `main` | Rejects any commit message containing `Co-authored-by:` followed by a known AI-tool string.                                                                                                  |
 
 ## Required branch-protection rules for `main`
 
 Configure these in **GitHub → Settings → Branches → Branch protection rules** for the `main` branch:
 
-1. **Require a pull request before merging.**
-   - Required approving reviews: **1**.
-   - Require review from Code Owners: **enabled**.
-   - Dismiss stale approvals when new commits are pushed: **enabled**.
-2. **Require status checks to pass before merging.**
-   - Require branches to be up to date before merging: **enabled**.
-   - Required checks (the names below must match the `name:` fields in each workflow):
-     - `python (3.11)`
-     - `python (3.12)`
-     - `typescript (node 20)`
-     - `typescript (node 22)`
-     - `gitleaks`
-     - `commitlint`
-     - `no-ai-coauthor` (added in Phase 00.08)
-3. **Restrict who can push to matching branches.** Even with approvals, only repo admins may push directly — and even then only for emergencies. CLAUDE.md §4 forbids direct work on `main`.
+1. **Require a pull request before merging.** - Required approving reviews: **1**. - Require review from Code Owners: **enabled**. - Dismiss stale approvals when new commits are pushed: **enabled**.
+2. **Require status checks to pass before merging.** - Require branches to be up to date before merging: **enabled**. - Required checks (the names below must match the `name:` fields in each workflow): - `python (3.11)` - `python (3.12)` - `typescript (node 20)` - `typescript (node 22)` - `gitleaks` - `commitlint` - `no-ai-coauthor` (added in Phase 00.08)
+3. **Restrict who can push to matching branches.** Even with approvals, only repo admins may push directly — and even then only for emergencies. our engineering rules`main`.
 4. **Require linear history.** No merge commits; PR merges land as squash or rebase.
 5. **Require signed commits.** Optional but recommended (configure once Phase 28 lands the release-signing rules).
-6. **Restrict force-pushes.** Disallow force-push to `main` for everyone. (Force-push to feature branches is fine; CLAUDE.md §safety still forbids force-push to `main`.)
+6. **Restrict force-pushes.** Disallow force-push to `main` for everyone. (Force-push to feature branches is fine; our engineering rules-push to `main`.)
 7. **Lock the branch?** No — but the rules above effectively make `main` write-only via PR.
 
 ## Required repository settings
@@ -44,7 +32,7 @@ Configure these in **GitHub → Settings → Branches → Branch protection rule
 - **Default branch:** `main`.
 - **Default merge button:** `Squash and merge` (keeps the linear history of feature branches readable).
 - **Auto-delete merged branches:** enabled.
-- **Visibility:** `private` until the human owner explicitly publishes (`CLAUDE.md` §3).
+- **Visibility:** `private` until the human owner explicitly publishes.
 - **Collaborators:** human only. No AI tools, no bot accounts that act as members. The `gitleaks` GitHub Action runs as `GITHUB_TOKEN`, which is fine — that token is scoped per workflow and is not a member.
 
 ## What this means for contributors

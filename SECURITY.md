@@ -2,8 +2,7 @@
 
 SentinelQA takes security seriously. This document is the
 **private-disclosure** path for reporting vulnerabilities in
-SentinelQA itself and abuses of its safety boundary
-(`CLAUDE.md` §6 / `PRD.md` §2).
+SentinelQA itself and abuses of its safety boundary.
 
 > **Public issues are not the disclosure channel.** Do not file a
 > bug report or feature request for a security finding. Use one of
@@ -13,7 +12,7 @@ SentinelQA itself and abuses of its safety boundary
 
 ### Preferred — GitHub Private Vulnerability Reporting
 
-Once this repository is public, file a draft advisory privately at:
+File a draft advisory privately at:
 
 <https://github.com/Ohswedd/sentinelqa/security/advisories/new>
 
@@ -27,28 +26,20 @@ If GitHub Private Vulnerability Reporting is unavailable, email:
 
 **`security@sentinelqa.dev`**
 
-This inbox is owner-provisioned; until the public flip it is a
-placeholder address — file privately via the GitHub channel instead.
-
-Encrypted mail is preferred. The owner's PGP fingerprint is:
-
-```
-PGP-FINGERPRINT-PLACEHOLDER (owner publishes the real fingerprint
-with the v1.0.0 announcement; see Phase 35.08).
-```
+Encrypted mail is preferred. The maintainer PGP fingerprint is published
+alongside the v1.0.0 release.
 
 ## What to include
 
 - A clear description of the issue and its impact.
 - Reproduction steps (commands, config, redacted evidence).
 - SentinelQA version and commit (`sentinel --version`).
-- Whether the issue affects the safety boundary
-  (`CLAUDE.md` §6 — stealth, evasion, unauthorized targets,
-  destructive defaults).
+- Whether the issue affects the safety boundary (stealth, evasion,
+  unauthorized targets, destructive defaults).
 - Suggested remediation, if you have one.
 
 Please **redact secrets** (tokens, cookies, customer data) before
-including any artifact (`CLAUDE.md` §33).
+including any artifact.
 
 ## Coordinated disclosure timeline
 
@@ -60,7 +51,7 @@ SentinelQA follows a **90-day coordinated disclosure** policy
 |     0 | Report received. Acknowledgement within 3 business days.                                                                                 |
 |  0–14 | Triage, severity assessment (CVSS v4.0), reproduction.                                                                                   |
 | 14–60 | Fix developed, regression tests added, ADR opened if the safety boundary changed.                                                        |
-| 60–80 | Release prepared (patch version per `docs/dev/semver.md`). Reporter reviews the fix.                                                     |
+| 60–80 | Release prepared (patch version per [`docs/dev/semver.md`](./docs/dev/semver.md)). Reporter reviews the fix.                             |
 | 80–90 | Coordinated publication: release tagged, GitHub Security Advisory published, reporter credited (unless they prefer to remain anonymous). |
 
 If we cannot meet the 90-day deadline, we will coordinate an embargo
@@ -68,14 +59,13 @@ extension in writing with the reporter.
 
 ## Supported versions
 
-| Version   | Supported | Notes                                                               |
-| --------- | --------- | ------------------------------------------------------------------- |
-| `0.7.x`   | Yes       | Current pre-1.0 stream (`docs/dev/semver.md`).                      |
-| `< 0.7.0` | No        | Pre-1.0 releases supersede each other; upgrade to the latest minor. |
+| Version | Supported | Notes                                                                          |
+| ------- | --------- | ------------------------------------------------------------------------------ |
+| `1.0.x` | Yes       | Current stable.                                                                |
+| `0.x`   | No        | Pre-1.0 releases supersede each other; upgrade to the latest minor or `1.0.x`. |
 
-Once `v1.0.0` ships (Phase 36), SentinelQA switches to **"latest two
-minors"** support per `docs/dev/security-policy.md` (lands in task
-35.07).
+Once a `v2.0.0` ships, SentinelQA follows a **"latest two minors"** support
+window. See [`docs/dev/security-policy.md`](./docs/dev/security-policy.md).
 
 ## Severity ratings
 
@@ -129,5 +119,4 @@ release that ships the fix.
 
 ## Last reviewed
 
-`2026-05-31` (Phase 35.02). This policy is reviewed at every minor
-release.
+`2026-06-01`. This policy is reviewed at every minor release.

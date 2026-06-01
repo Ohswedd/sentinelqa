@@ -1,4 +1,4 @@
-"""Flow extractors (task 06.02, PRD §9.2, §10.1).
+"""Flow extractors (task 06.02, the documentation, §10.1).
 
 Each extractor inspects a :class:`DiscoveryGraph` and returns zero or more
 named :class:`Flow` records (e.g., login, signup, CRUD, admin). Extractors

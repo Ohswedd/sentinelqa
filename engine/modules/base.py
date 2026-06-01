@@ -1,4 +1,4 @@
-"""Abstract :class:`SentinelModule` (CLAUDE.md §9, PRD §9, §10).
+"""Abstract :class:`SentinelModule` (our engineering rules, our product spec, §10).
 
 Every module follows the same lifecycle:
 
@@ -8,7 +8,7 @@ Every module follows the same lifecycle:
 3. ``execute`` — drive the runner / external tool.
 4. ``collect_evidence`` — gather artifacts (already on disk from the runner).
 5. ``emit_findings`` — translate failures into typed :class:`Finding` records
-   with PRD §20 evidence.
+   with our product spec evidence.
 6. ``emit_metrics`` — derived from the runner outcome.
 7. ``summarize`` — return the final :class:`ModuleResult`.
 
@@ -21,7 +21,7 @@ a typed partial result unless the failure invalidates the entire run").
 The module owns:
 
 - Its own runner invocation (Phase 08).
-- Its own findings translation (PRD §18, §20).
+- Its own findings translation (our product spec, §20).
 - Its own metrics derivation.
 
 The module does NOT own:
@@ -272,13 +272,13 @@ def build_finding_from_failed_test(
 
     Evidence pulled from ``test.evidence`` is recorded as relative paths
     (per CLAUDE §11), and each artifact is exposed as a typed
-    :class:`Evidence` record so PRD §20 / §24 consumers (Reporter, SDK)
+    :class:`Evidence` record so our product spec / §24 consumers (Reporter, SDK)
     can render them.
     """
 
     evidence_paths = list(test.evidence)
     if not evidence_paths:
-        # PRD §20 requires every medium+ finding to carry evidence. When
+        # our product spec requires every medium+ finding to carry evidence. When
         # the runner couldn't capture a trace / screenshot (e.g. the test
         # fixture had none) we fall back to the per-module runner log,
         # which Phase 08 always writes under ``logs/runner.<module>.log``.

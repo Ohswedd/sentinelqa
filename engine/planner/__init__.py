@@ -1,4 +1,4 @@
-"""SentinelQA planner module (PRD §9.2).
+"""SentinelQA planner module (the documentation).
 
 The planner consumes a :class:`engine.domain.DiscoveryGraph` and a
 :class:`engine.domain.RiskMap` and emits a :class:`engine.domain.TestPlan`

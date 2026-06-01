@@ -5,7 +5,7 @@ status: Stable
 ---
 
 SentinelQA's safety story has three layers: a written boundary
-(PRD §2, CLAUDE.md §6), enforcement in code (`SafetyPolicy.enforce`
+(our product spec, our engineering rules §6), enforcement in code (`SafetyPolicy.enforce`
 on every URL-bearing surface), and continuous validation in tests
 (`tests/security/` AST guards run on every CI pass).
 
@@ -41,13 +41,9 @@ Each runs on every CI pass. A regression turns the build red.
 
 ## Telemetry, privacy, secrets
 
-- **No telemetry** by default (CLAUDE.md §41). If we ever add it,
-  it will be opt-in, documented, redacted, and disableable.
-- **Secret redaction** applies to every log line, every report,
-  every audit-log entry. Passwords, tokens, cookies, authorization
-  headers, session IDs, API keys, private keys.
-- `.env` is gitleaks-protected; `.env.example` is the only
-  committed sample.
+- **No telemetry** by default . If we ever add it, it will be opt-in, documented, redacted, and disableable.
+- **Secret redaction** applies to every log line, every report, every audit-log entry. Passwords, tokens, cookies, authorization headers, session IDs, API keys, private keys.
+- `.env` is gitleaks-protected; `.env.example` is the only committed sample.
 
 ## Reporting a vulnerability
 

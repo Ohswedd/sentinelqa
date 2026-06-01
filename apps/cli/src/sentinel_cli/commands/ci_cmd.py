@@ -1,6 +1,6 @@
 """`sentinel ci` — Phase 17 replacement for the Phase-02 stub (task 17.04).
 
-Implements the PRD §21 contract: a thin preset over the audit lifecycle
+Implements the our product spec contract: a thin preset over the audit lifecycle
 that selects modules, applies a Playwright ``--grep`` tag filter, and
 optionally raises the quality-gate floor.
 
@@ -60,7 +60,9 @@ def run_ci(
         typer.Option(
             "--mode",
             "-m",
-            help=("CI mode preset (PRD §21.3): " "fast | standard | full | nightly | release."),
+            help=(
+                "CI mode preset (the documentation): " "fast | standard | full | nightly | release."
+            ),
         ),
     ] = DEFAULT_CI_MODE,
     diff: Annotated[
@@ -78,7 +80,7 @@ def run_ci(
         int | None,
         typer.Option(
             "--fail-under",
-            help="Override policy.min_quality_score for the run (CLAUDE.md §17).",
+            help="Override policy.min_quality_score for the run.",
         ),
     ] = None,
     output: Annotated[
@@ -143,7 +145,7 @@ def run_ci(
         effective_cfg,
         requested_modules=requested_modules,
         dry_run=state.dry_run,
-        ci=True,  # `sentinel ci` always forces CI mode (CLAUDE.md §39).
+        ci=True,  # `sentinel ci` always forces CI mode.
         module_options=module_options,
     )
 
@@ -209,7 +211,7 @@ def _build_module_options(
     """Translate the mode's tag filter into the lifecycle's options channel.
 
     The functional module is the only module that consumes a ``grep`` —
-    other modules ignore unknown option keys (CLAUDE.md §9).
+    other modules ignore unknown option keys.
 
     The diff-aware tag set is OR-combined with the mode preset because
     impacted tags expand coverage (we never want a small diff to drop
@@ -250,7 +252,7 @@ def _resolve_diff_selection(*, diff_range: str) -> DiffSelection:
     """Compute the diff selection via ``git diff --name-only``.
 
     Errors are converted to typed CLI errors so the caller surfaces the
-    canonical exit-code grid (CLAUDE.md §13).
+    canonical exit-code grid.
     """
 
     from engine.errors.base import ConfigError, DependencyMissingError

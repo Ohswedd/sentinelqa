@@ -1,4 +1,4 @@
-"""Redaction primitives (CLAUDE.md §33, PRD §20, §23.1).
+"""Redaction primitives (our engineering rules, our product spec, §23.1).
 
 Every log line, audit entry, finding payload, and agent message passes
 through :func:`redact` (or :func:`redact_headers` / :func:`redact_url`)
@@ -382,7 +382,7 @@ _URL_SECRET_QUERY_KEYS: Final[frozenset[str]] = frozenset(
 def redact_url(url: str) -> str:
     """Strip userinfo from the netloc and redact secret-shaped query params.
 
-    **Cross-language parity note** (Phase 04, ADR-0009, PRD §15.7): the TS
+    **Cross-language parity note** (Phase 04, ADR-0009, the documentation): the TS
     mirror (``redactUrl`` in ``packages/ts-runtime/src/redact.ts``)
     canonicalises the hostname to lower case via the WHATWG ``URL`` API,
     while ``urlparse`` preserves the original hostname case. The two

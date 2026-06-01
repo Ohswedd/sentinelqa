@@ -1,4 +1,4 @@
-"""Canonical chaos scenario catalog (Phase 23, PRD §10.8).
+"""Canonical chaos scenario catalog (Phase 23, the documentation).
 
 Each :class:`ChaosScenario` is a *named, bounded* injection the TS
 chaos helpers know how to perform via Playwright's ``route()`` API
@@ -9,8 +9,8 @@ incoming options, and the TS helpers use the same identifiers in
 their event ``scenario_id`` fields so the two sides stay in lockstep
 across language boundaries.
 
-The catalog deliberately mirrors PRD §10.8's flat scenario list (and
-nothing more). New scenarios must be added here first; CLAUDE.md §37
+The catalog deliberately mirrors the documentation's flat scenario list (and
+nothing more). New scenarios must be added here first; our engineering rules
 forbids drive-by chaos additions without explicit PRD updates.
 """
 

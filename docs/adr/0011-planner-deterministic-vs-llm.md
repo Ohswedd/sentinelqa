@@ -9,15 +9,15 @@ Accepted
 
 ## Context
 
-Phase 06 builds the Planner module (PRD §9.2): given a `DiscoveryGraph` + `RiskMap`, emit a `TestPlan` that names every flow + test case the runner (Phase 08) will execute. The PRD's open questions (§31) explicitly asks whether the planner should be LLM-driven; PRD §6.8 already declares the principle that LLMs plan/explain while deterministic runners execute.
+Phase 06 builds the Planner module (the documentation): given a `DiscoveryGraph` + `RiskMap`, emit a `TestPlan` that names every flow + test case the runner (Phase 08) will execute. The PRD's open questions (§31) explicitly asks whether the planner should be LLM-driven; the documentation already declares the principle that LLMs plan/explain while deterministic runners execute.
 
 Constraints we must honor:
 
-- **Determinism (PRD §6.8, CLAUDE §19)** — same inputs must produce the same plan modulo IDs. A hosted LLM cannot guarantee that.
+- **Determinism (the documentation, CLAUDE §19)** — same inputs must produce the same plan modulo IDs. A hosted LLM cannot guarantee that.
 - **Safety (CLAUDE §6, §32, §41)** — no source-code upload, no PII in payloads, no destructive flows ever, no production credentials.
 - **No fake completion (CLAUDE §37)** — every planned test case must be reproducible from the graph alone, regardless of LLM availability.
 - **CI must work air-gapped** — CI runs without provider API keys; planning cannot become a hard dependency on a vendor's uptime.
-- **Vendor neutrality (PRD §31 open question 4)** — SentinelQA must not be locked into a single LLM provider.
+- **Vendor neutrality (our product spec open question 4)** — SentinelQA must not be locked into a single LLM provider.
 
 Two pressures pull on this design:
 
@@ -43,25 +43,11 @@ Concretely:
 
 ## Consequences
 
-- **Positive:**
+- **Positive:** - Planning is fully reproducible without an LLM. Tests, CI, and golden fixtures all work air-gapped. - Adding a third provider is a single subclass of `HttpLlmProviderBase`. - The locked, versioned prompt makes prompt-engineering changes reviewable as code — they show up in `git diff` as `planner.vN.md` changes plus an ADR. - The `source` field on `Flow` lets downstream modules treat LLM-proposed flows differently (e.g., scoring weights them lower, the healer requires human review). - The budget cap makes "LLM planner ran wild" impossible by construction.
 
-  - Planning is fully reproducible without an LLM. Tests, CI, and golden fixtures all work air-gapped.
-  - Adding a third provider is a single subclass of `HttpLlmProviderBase`.
-  - The locked, versioned prompt makes prompt-engineering changes reviewable as code — they show up in `git diff` as `planner.vN.md` changes plus an ADR.
-  - The `source` field on `Flow` lets downstream modules treat LLM-proposed flows differently (e.g., scoring weights them lower, the healer requires human review).
-  - The budget cap makes "LLM planner ran wild" impossible by construction.
+- **Negative / trade-off:** - The cost estimator is conservative (chars/4) and may over-refuse under exotic prompts. We accept that — refusing is the safe failure mode. - The HTTP-direct integration means we don't get vendor SDK ergonomics (streaming, retries with jitter, structured-output mode where the SDK provides one). We deemed this acceptable because the planner is a single short request per run. - Two providers (OpenAI + Anthropic) ship now, but vendors that don't speak chat-message HTTP+JSON (Bedrock, Vertex, local Ollama) need their own subclasses later.
 
-- **Negative / trade-off:**
-
-  - The cost estimator is conservative (chars/4) and may over-refuse under exotic prompts. We accept that — refusing is the safe failure mode.
-  - The HTTP-direct integration means we don't get vendor SDK ergonomics (streaming, retries with jitter, structured-output mode where the SDK provides one). We deemed this acceptable because the planner is a single short request per run.
-  - Two providers (OpenAI + Anthropic) ship now, but vendors that don't speak chat-message HTTP+JSON (Bedrock, Vertex, local Ollama) need their own subclasses later.
-
-- **Follow-up obligations:**
-  - The Phase 18 MCP agent interface (`sentinel.plan_with_llm`) will route through this same adapter — no parallel LLM path.
-  - The Phase 27 docs site documents the locked prompt verbatim.
-  - The Phase 29 final safety audit re-reads `planner.v1.md` to confirm no flow-class has crept in that violates CLAUDE §6 (stealth, evasion, etc.).
-  - The redaction layer (`engine.policy.redaction`) is the source of truth for what must NOT appear in the LLM payload; future changes to `build_graph_summary()` MUST round-trip through redaction tests.
+- **Follow-up obligations:** - The Phase 18 MCP agent interface (`sentinel.plan_with_llm`) will route through this same adapter — no parallel LLM path. - The Phase 27 docs site documents the locked prompt verbatim. - The Phase 29 final safety audit re-reads `planner.v1.md` to confirm no flow-class has crept in that violates CLAUDE §6 (stealth, evasion, etc.). - The redaction layer (`engine.policy.redaction`) is the source of truth for what must NOT appear in the LLM payload; future changes to `build_graph_summary()` MUST round-trip through redaction tests.
 
 ## Alternatives considered
 
@@ -73,7 +59,7 @@ Concretely:
 
 ## References
 
-- PRD section(s): PRD §6.8 (Principles), PRD §9.2 (Planner), PRD §15 (TypeScript Runtime — separate from this ADR), PRD §31 open question 4 (provider-agnostic).
-- CLAUDE.md rule(s): CLAUDE.md §6 (Safety boundary), §15 (Agent interface), §19 (Code quality), §32 (Error handling), §33 (Logging and secrets), §37 (No placeholder completion), §41 (Privacy and telemetry).
+- PRD section(s): the documentation (Principles), the documentation (Planner), our product spec (TypeScript Runtime — separate from this ADR), our product spec open question 4 (provider-agnostic).
+- our engineering rules rule(s): our engineering rules(Safety boundary), §15 (Agent interface), §19 (Code quality), §32 (Error handling), §33 (Logging and secrets), §37 (No placeholder completion), §41 (Privacy and telemetry).
 - Related ADRs: ADR-0005 (Config schema), ADR-0006 (Safety policy), ADR-0008 (Report schemas), ADR-0010 (Discovery MVP HTTP-first).
 - External: OpenAI Chat Completions API; Anthropic Messages API.

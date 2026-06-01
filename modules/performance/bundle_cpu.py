@@ -1,4 +1,4 @@
-"""Bundle size + CPU blocking evaluators (Phase 12.04, PRD §10.5, CLAUDE §27).
+"""Bundle size + CPU blocking evaluators (Phase 12.04, the documentation, CLAUDE §27).
 
 The TS runtime sums every JavaScript response's transfer + decoded size
 during the synthetic page loads and observes long tasks via

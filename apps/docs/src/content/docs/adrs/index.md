@@ -7,7 +7,7 @@ description: Index of every accepted ADR in the SentinelQA codebase.
 
 An ADR records *why* a non-obvious architectural choice was made, so the next contributor can extend, supersede, or revisit it with context instead of re-deriving the trade-off from first principles.
 
-ADR source files live under `docs/adr/` in the repository. See [`docs/adr/README.md`](https://github.com/Ohswedd/sentinelqa/blob/main/docs/adr/README.md) for the lifecycle rules and when an ADR is required (CLAUDE.md §34).
+ADR source files live under `docs/adr/` in the repository. See [`docs/adr/README.md`](https://github.com/Ohswedd/sentinelqa/blob/main/docs/adr/README.md) for the lifecycle rules and when an ADR is required .
 
 ## Index
 

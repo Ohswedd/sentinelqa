@@ -28,7 +28,7 @@ def test_default_weights_sum_to_one() -> None:
 
 
 def test_default_weights_match_prd_19_1() -> None:
-    # PRD §19.1: functional 30, security 20, performance 15,
+    # our product spec1: functional 30, security 20, performance 15,
     # accessibility 10, api 10, visual 5, llm_audit 5, flake_risk 5.
     assert DEFAULT_WEIGHTS["functional"] == 0.30
     assert DEFAULT_WEIGHTS["security"] == 0.20

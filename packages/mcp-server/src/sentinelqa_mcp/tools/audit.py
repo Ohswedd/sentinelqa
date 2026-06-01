@@ -1,4 +1,4 @@
-"""``sentinel.audit`` — run the canonical audit lifecycle (PRD §16.1)."""
+"""``sentinel.audit`` — run the canonical audit lifecycle (the documentation)."""
 
 from __future__ import annotations
 

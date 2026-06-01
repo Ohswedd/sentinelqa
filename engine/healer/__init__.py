@@ -1,4 +1,4 @@
-"""Healer module — propose safe test-side repairs (PRD §9.6, CLAUDE.md §23).
+"""Healer module — propose safe test-side repairs (the documentation, our engineering rules).
 
 The Healer is conservative by design. It proposes locator updates, wait
 condition improvements, and fixture refreshes; it never weakens
@@ -12,7 +12,7 @@ proposal carries:
 - ``requires_human_review`` — set conservatively per gating policy.
 - ``unified_diff`` — the literal patch a CI/agent would apply.
 
-The orchestrator (PRD §9.5 → §9.6) invokes the Healer for failures the
+The orchestrator (the documentation → §9.6) invokes the Healer for failures the
 Analyzer categorized as ``test_bug``. Other categories (app bugs,
 environment failures, security findings) are out of scope: the Healer
 must not paper over app behavior.

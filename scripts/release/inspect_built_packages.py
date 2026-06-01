@@ -4,7 +4,7 @@ Walks every artifact under ``dist/`` (wheels, sdists, npm tarballs) and asserts
 that no Python wheel, sdist, or npm tarball ships:
 
 * a ``.git/`` directory
-* a ``.env`` file (secrets — CLAUDE.md §33)
+* a ``.env`` file (secrets)
 * private-key files (``*.pem``, ``*.key``, ``id_rsa*``)
 * cloud-credential blobs (``credentials*``, ``service-account*.json``)
 * compiled Python caches (``__pycache__/``, ``*.pyc``)

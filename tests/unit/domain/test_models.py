@@ -1,4 +1,4 @@
-"""Round-trip + invariant tests for every PRD §18.1 domain entity."""
+"""Round-trip + invariant tests for every our product spec1 domain entity."""
 
 from __future__ import annotations
 
@@ -209,7 +209,7 @@ def test_module_result_sorts_findings_in_dict() -> None:
 def test_finding_matches_prd_18_2() -> None:
     f = _make_finding()
     payload = f.to_dict()
-    # PRD §18.2 required keys.
+    # our product spec2 required keys.
     for key in ("id", "module", "severity", "title", "description", "evidence"):
         assert key in payload
 

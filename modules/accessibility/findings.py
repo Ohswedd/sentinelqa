@@ -241,7 +241,7 @@ def findings_from_pages(
 
 
 def short_rule_hash(rule_id: str, route: str, selector: str) -> str:
-    """Stable short hash used in finding titles for grouping (PRD §18.2)."""
+    """Stable short hash used in finding titles for grouping (the documentation)."""
 
     digest = hashlib.sha1(
         f"{rule_id}|{route}|{selector}".encode(),
@@ -599,7 +599,7 @@ def _build_evidence(
     id_generator: IdGenerator,
     artifact_path: str | None,
 ) -> tuple[Evidence, ...]:
-    """Always attach at least one evidence record (PRD §20).
+    """Always attach at least one evidence record.
 
     When the runner persisted a per-route JSON artifact, point at it.
     Otherwise fall back to ``logs/runner.accessibility.log``.

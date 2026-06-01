@@ -9,7 +9,7 @@ Accepted
 
 ## Context
 
-SentinelQA's value proposition (PRD §6, CLAUDE.md §45) is to answer a single question with evidence: _can this software be trusted enough to ship?_ That answer is only credible if every audit runs through the same, auditable lifecycle. CLAUDE.md §10 codifies the lifecycle as a 17-step sequence and §11 requires every run to leave a fully-isolated artifact tree behind. PRD §12 (Workflows) and §26 (Implementation Skeleton) reference the same structure.
+SentinelQA's value proposition (our product spec, our engineering rules) is to answer a single question with evidence: _can this software be trusted enough to ship?_ That answer is only credible if every audit runs through the same, auditable lifecycle. our engineering rules-step sequence and §11 requires every run to leave a fully-isolated artifact tree behind. our product spec (Workflows) and §26 (Implementation Skeleton) reference the same structure.
 
 Without a single canonical lifecycle, two failure modes become unavoidable:
 
@@ -39,20 +39,16 @@ The lifecycle never bypasses safety. Unsafe targets short-circuit at step 4 with
 - **Positive:** modules and per-phase hooks are loosely coupled to the lifecycle, so Phase 24 (Plugin Architecture) can replace the registry with an entry-point loader without changing the lifecycle itself.
 - **Positive:** safety policy is enforced exactly once, in step 4, and an unsafe target produces a deterministic exit code (4) and a non-empty audit log.
 - **Negative / trade-off:** the class is moderately large (≈350 LOC). We accept that — splitting it across files would dilute the "one place" property the lifecycle relies on.
-- **Follow-up obligations:**
-  - Phase 03 will fill in the `generate_reports` hook with real report writers.
-  - Phase 14 will fill in `calculate_quality_score` and `apply_quality_gates`.
-  - Phase 24 will replace `register_builtins`-style registration with entry-point discovery, preserving the public registry interface.
-  - Phase 29 will re-audit the lifecycle for determinism (no hidden network calls, deterministic ordering) as part of final hardening.
+- **Follow-up obligations:** - Phase 03 will fill in the `generate_reports` hook with real report writers. - Phase 14 will fill in `calculate_quality_score` and `apply_quality_gates`. - Phase 24 will replace `register_builtins`-style registration with entry-point discovery, preserving the public registry interface. - Phase 29 will re-audit the lifecycle for determinism (no hidden network calls, deterministic ordering) as part of final hardening.
 
 ## Alternatives considered
 
 - **Free-function lifecycle (no class).** Rejected: free functions sharing context via a `dict` make the call graph harder to follow and lose the natural seams for per-step unit tests. The class adds zero runtime cost and keeps each step independently testable.
-- **Pipeline framework dependency (e.g. Luigi, Prefect).** Rejected: those frameworks ship orchestration, scheduling, persistence, and a UI we do not need. They would also leak framework concepts into the domain (PRD §11.2 forbids framework leakage into the core).
+- **Pipeline framework dependency (e.g. Luigi, Prefect).** Rejected: those frameworks ship orchestration, scheduling, persistence, and a UI we do not need. They would also leak framework concepts into the domain (the documentation forbids framework leakage into the core).
 - **One module per step in its own file.** Rejected: the steps are short, share context, and only make sense in sequence. Splitting them would force a layer of glue we'd then have to debug separately.
 
 ## References
 
-- PRD section(s): PRD §10 (Pillars), §12 (Workflows), §13 (CLI), §17 (Configuration), §26 (Implementation Skeleton).
-- CLAUDE.md rule(s): CLAUDE.md §6 (Safety boundary), §9 (Module contract), §10 (Run Lifecycle), §11 (Artifact rules), §13 (CLI rules), §39 (CI rules).
+- PRD section(s): our product spec (Pillars), §12 (Workflows), §13 (CLI), §17 (Configuration), §26 (Implementation Skeleton).
+- our engineering rules rule(s): our engineering rules(Safety boundary), §9 (Module contract), §10 (Run Lifecycle), §11 (Artifact rules), §13 (CLI rules), §39 (CI rules).
 - Related ADRs: ADR-0005 (Config schema), ADR-0006 (Safety policy).

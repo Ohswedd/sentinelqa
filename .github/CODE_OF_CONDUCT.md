@@ -37,7 +37,7 @@ Reports of abusive, harassing, or otherwise unacceptable behavior may
 be sent privately to the project maintainers at
 **`conduct@sentinelqa.dev`** (owner-provisioned inbox; placeholder
 until the public flip). For security issues — vulnerabilities or
-abuses of the safety boundary in `CLAUDE.md` §6 — use the
+abuses of the safety boundary in our engineering rules — use the
 private-disclosure path in [`SECURITY.md`](../SECURITY.md), not this
 inbox.
 

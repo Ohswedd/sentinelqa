@@ -1,4 +1,4 @@
-"""ApiEndpoint entity (PRD §18.1)."""
+"""ApiEndpoint entity (the documentation)."""
 
 from __future__ import annotations
 

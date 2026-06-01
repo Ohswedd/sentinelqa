@@ -1,4 +1,4 @@
-"""QualityScore entity (PRD §19)."""
+"""QualityScore entity."""
 
 from __future__ import annotations
 

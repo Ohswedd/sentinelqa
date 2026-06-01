@@ -6,24 +6,17 @@ status: Stable
 
 SentinelQA is a layered system. The two hard rules are:
 
-1. The **domain core** never depends on Typer, Playwright, FastAPI, or any
-   vendor SDK.
-2. External tools always sit **behind an adapter** so they can be replaced
-   without touching the core.
+1. The **domain core** never depends on Typer, Playwright, FastAPI, or any vendor SDK.
+2. External tools always sit **behind an adapter** so they can be replaced without touching the core.
 
 ## Layers
 
 ```
-CLI / SDK / MCP / Plugin entry points
-        ↓
-Application services (engine.orchestrator, engine.reporter, engine.scoring)
-        ↓
-Domain core (engine.domain, engine.errors, engine.policy)
-        ↓
-Ports / protocols (CrawlBackend, A11yRunner, PerformanceRunner, …)
-        ↓
-Adapters / integrations (sentinel-ts subprocess, Docker runner, BrowserStack)
-        ↓
+CLI / SDK / MCP / Plugin entry points ↓
+Application services (engine.orchestrator, engine.reporter, engine.scoring) ↓
+Domain core (engine.domain, engine.errors, engine.policy) ↓
+Ports / protocols (CrawlBackend, A11yRunner, PerformanceRunner, …) ↓
+Adapters / integrations (sentinel-ts subprocess, Docker runner, BrowserStack) ↓
 External tools (Playwright, axe-core, httpx, cloud APIs)
 ```
 
@@ -35,12 +28,12 @@ External tools (Playwright, axe-core, httpx, cloud APIs)
 | TypeScript | Playwright execution, browser instrumentation, axe injection, performance observers      |
 
 Communication between Python and TypeScript happens via NDJSON-framed
-JSONL events on stdout (ADR-0009 / PRD §15.4). No hidden coupling.
+JSONL events on stdout (ADR-0009 / the documentation). No hidden coupling.
 
 ## Modules
 
 Every audit capability is a `SentinelModule` instance with a
-deterministic seven-step lifecycle (CLAUDE.md §9):
+deterministic seven-step lifecycle :
 
 ```
 validate prerequisites

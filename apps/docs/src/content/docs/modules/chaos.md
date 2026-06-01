@@ -9,15 +9,15 @@ offline, API 500 / timeout, session expiry, double-submit races,
 empty / large datasets, corrupted storage. Every scenario is bounded
 — no unbounded slow modes, no infinite hangs.
 
-Authority: PRD §10.8, ADR-0028, CLAUDE.md §6.
+Authority: the documentation, ADR-0028, our engineering rules §6.
 
 ## Thirteen scenarios
 
 ```
-network    slow_3g · offline · api_500 · api_timeout
-session    expired_token · missing_permissions
-ux         duplicate_submit · double_click_race · back_forward · refresh_mid_flow
-data       empty_dataset · large_dataset · storage_corruption
+network slow_3g · offline · api_500 · api_timeout
+session expired_token · missing_permissions
+ux duplicate_submit · double_click_race · back_forward · refresh_mid_flow
+data empty_dataset · large_dataset · storage_corruption
 ```
 
 ## Bounded by config

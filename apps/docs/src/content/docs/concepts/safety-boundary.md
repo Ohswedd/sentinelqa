@@ -9,7 +9,7 @@ non-negotiable; it is enforced in code (config-load, every URL-bearing
 tool, CI gates) and in tests (security-policy AST guards run on every
 CI pass).
 
-Authority: PRD §2, CLAUDE.md §6.
+Authority: our product spec, our engineering rules §6.
 
 ## Forbidden
 
@@ -39,8 +39,7 @@ SentinelQA as "undetectable."
 
 - Authorized security assessment
 - Safe adversarial testing
-- Compliant realism (e.g. transparent UA, transparent
-  `X-SentinelQA-Test-Run` header)
+- Compliant realism (e.g. transparent UA, transparent `X-SentinelQA-Test-Run` header)
 - Audit logs
 - Rate limits
 - Target allowlists

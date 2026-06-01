@@ -2,7 +2,7 @@
 
 Status: `Stable`
 
-Authority: `CLAUDE.md` §4. Enforcement: `commitlint.config.cjs` invoked by `.pre-commit-config.yaml` at the `commit-msg` stage.
+Authority: project engineering rules. Enforcement: `commitlint.config.cjs` invoked by `.pre-commit-config.yaml` at the `commit-msg` stage.
 
 ## Format
 
@@ -14,7 +14,7 @@ Authority: `CLAUDE.md` §4. Enforcement: `commitlint.config.cjs` invoked by `.pr
 <footer — optional, e.g. references or BREAKING CHANGE notes>
 ```
 
-### Allowed types (CLAUDE.md §4 whitelist)
+### Allowed types
 
 `feat`, `fix`, `docs`, `test`, `refactor`, `security`, `ci`, `chore`, `perf`, `build`
 
@@ -27,11 +27,11 @@ Any other type is rejected by `commitlint`.
 - `subject`: imperative present tense ("add", not "added"). Don't end with a period. No specific case is forced because of proper nouns like "SentinelQA".
 - Header (`type(scope): subject`): max 100 chars.
 - Body lines: max 200 chars. Wrap at ~72 in practice for readability.
-- Footer: machine-parseable footers like `Refs: PRD §11.2`, `Closes: #42`, or `BREAKING CHANGE: ...`.
+- Footer: machine-parseable footers like `Refs: the documentation`, `Closes: #42`, or `BREAKING CHANGE: ...`.
 
 ### Forbidden footers
 
-- `Co-authored-by: <any AI tool>` — never (`CLAUDE.md` §3). CI workflow `no-ai-coauthor.yml` (Phase 00.08) blocks PRs with these.
+- `Co-authored-by: <any AI tool>` — never. CI workflow `no-ai-coauthor.yml` (Phase 00.08) blocks PRs with these.
 
 ## Worked examples
 
@@ -47,7 +47,7 @@ signup, search, payment) plus a confidence score. The forms inventory
 feeds the planner so generated login/CRUD tests can target real flows
 instead of guessing from labels.
 
-Refs: PRD §9.1
+Refs: the documentation
 ```
 
 ### 2. `fix` — bug fix in existing behavior
@@ -56,7 +56,7 @@ Refs: PRD §9.1
 fix(policy): refuse public targets when allowlist is empty
 
 Previously an empty allowlist meant "allow everything", which violates
-PRD §23.1 and CLAUDE.md §26. The loader now treats empty as "deny all
+the documentation and our engineering rules"deny all
 non-default" and the CLI prints the policy decision before any module
 runs.
 
@@ -68,7 +68,7 @@ Closes: #117
 ```
 docs(dev): document the agent execution loop in agent-workflow.md
 
-Adds a step-by-step description of plans/PROMT.md so a fresh agent can
+Adds a step-by-step description of so a fresh agent can
 pick up the active phase without re-deriving the loop.
 ```
 
@@ -78,7 +78,7 @@ pick up the active phase without re-deriving the loop.
 test(reporter): add golden test for findings.json schema v1
 
 Captures the v1 schema as a fixture so future schema changes must
-explicitly update the golden (per CLAUDE.md §16 regression rule).
+explicitly update the golden (per our engineering rules).
 ```
 
 ### 5. `refactor` — internal restructuring without behavior change
@@ -101,7 +101,7 @@ on top of gitleaks. Verified locally: a file containing the OpenSSH
 private-key header block is rejected even when the surrounding file
 extension is .txt.
 
-Refs: CLAUDE.md §33, PRD §23.1
+Refs: our engineering rules§23.1
 ```
 
 ### 7. `ci` — CI workflow change
@@ -131,7 +131,7 @@ Brings discovery on the FastAPI example from p95 ~8.4s to p95 ~3.2s
 while keeping coverage equivalent (verified with the Phase 05 perf
 gate).
 
-Refs: PRD §12.5
+Refs: the documentation
 ```
 
 ### 10. `build` — build system / packaging
@@ -155,4 +155,4 @@ These will all fail the commit-msg hook:
 - `chore: ` (empty subject)
 - A 180-char header (over `header-max-length`)
 
-If you ever need to bypass commitlint locally (you very rarely do), `--no-verify` is forbidden by `CLAUDE.md` §4 unless explicitly authorized in that conversation.
+If you ever need to bypass commitlint locally (you very rarely do), `--no-verify` is forbidden by our engineering rules

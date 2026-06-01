@@ -80,7 +80,7 @@ def _empty_graph() -> DiscoveryGraph:
 
 
 def test_discover_uses_safety_policy_first(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    """``discover`` MUST enforce safety before any I/O (PRD §2.3)."""
+    """``discover`` MUST enforce safety before any I/O (our product spec3)."""
 
     _write_minimal_config(tmp_path)
     qa = Sentinel(project_path=tmp_path)

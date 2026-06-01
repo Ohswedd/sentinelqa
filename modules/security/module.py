@@ -1,4 +1,4 @@
-"""``SecurityModule`` (Phase 13, PRD §10.7, ADR-0018).
+"""``SecurityModule`` (Phase 13, the documentation, ADR-0018).
 
 Lifecycle (CLAUDE §9):
 
@@ -86,7 +86,7 @@ _HTTP_CHECKS: tuple[tuple[str, Callable[[CheckContext], SecurityCheckResult]], .
 
 
 class SecurityModule(SentinelModule):
-    """PRD §10.7 safe security checks wired into the SentinelQA lifecycle."""
+    """the documentation safe security checks wired into the SentinelQA lifecycle."""
 
     name: ClassVar[str] = "security"
 

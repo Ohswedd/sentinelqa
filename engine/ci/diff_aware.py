@@ -1,4 +1,4 @@
-"""Diff-aware test selection (PRD §10.2, §12.3, task 17.05).
+"""Diff-aware test selection (the documentation, §12.3, task 17.05).
 
 Translates a git diff range into a set of impacted routes, API
 endpoints, and test files. Falls back to full-mode selection when the
@@ -14,12 +14,12 @@ The Phase 17 ``sentinel ci --diff`` command merges the returned
 Implementation discipline:
 
 - Always include the smoke (`@p0`) tag set, regardless of what changed
-  (CLAUDE.md §17 — smoke is the floor).
+  (our engineering rules — smoke is the floor).
 - Path heuristics are deliberately narrow and match the major React /
   Next.js / Vite layouts; unknown projects fall back to full mode
   rather than guessing.
 - Subprocess invocation uses :mod:`subprocess` with ``shell=False`` and
-  argument vectors only (CLAUDE.md §32 — no shell-string injection).
+  argument vectors only (our engineering rules — no shell-string injection).
 """
 
 from __future__ import annotations
@@ -36,7 +36,7 @@ DEFAULT_MAX_CHANGED_FILES: Final[int] = 50
 """Above this count the diff is treated as broad → fall back to full mode."""
 
 SMOKE_TAG: Final[str] = "@p0"
-"""The mandatory smoke tag every PR runs (CLAUDE.md §17)."""
+"""The mandatory smoke tag every PR runs."""
 
 # ---------------------------------------------------------------------------
 # Heuristic catalogues

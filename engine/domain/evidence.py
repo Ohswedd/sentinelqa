@@ -1,4 +1,4 @@
-"""Evidence entity (PRD §20)."""
+"""Evidence entity."""
 
 from __future__ import annotations
 

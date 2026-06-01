@@ -1,4 +1,4 @@
-"""RedactionFilter tests — secrets must not reach a stream (CLAUDE.md §33)."""
+"""RedactionFilter tests — secrets must not reach a stream."""
 
 from __future__ import annotations
 

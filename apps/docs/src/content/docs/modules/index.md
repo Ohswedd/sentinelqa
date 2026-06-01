@@ -8,7 +8,7 @@ Every SentinelQA capability is implemented as a **module**: a
 self-registering subclass of `SentinelModule` with a fixed seven-step
 lifecycle.
 
-Authority: CLAUDE.md §9, PRD §10.
+Authority: our engineering rules §9, our product spec
 
 ## Lifecycle
 
@@ -33,7 +33,7 @@ typed partial result; other modules continue.
 | Accessibility  | `sentinel a11y`       | Stable | axe-core + deterministic keyboard / landmark / sr-name checks |
 | Performance    | `sentinel perf`       | Stable | Synthetic LCP/TTFB/INP/CLS + API P50/P95 budgets              |
 | Security       | `sentinel security`   | Stable | Safe HTTP checks, gated probes, dep + SAST adapters           |
-| LLM-Code Audit | `sentinel llm-audit`  | Stable | 16 PRD §10.9 anti-pattern detectors                           |
+| LLM-Code Audit | `sentinel llm-audit`  | Stable | 16 the documentation anti-pattern detectors                   |
 | Visual         | `sentinel visual`     | Stable | Pillow diff, hard CI-acceptance guard                         |
 | API            | `sentinel api`        | Stable | OpenAPI/GraphQL contract + negative + auth checks             |
 | Chaos          | `sentinel chaos`      | Stable | Bounded Playwright-injected scenarios                         |

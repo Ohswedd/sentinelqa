@@ -2,8 +2,8 @@
 
 Given a failed locator + the descriptor captured when the spec was
 written, search the new DOM for the closest semantic match. The
-algorithm is deterministic and confidence-tiered per CLAUDE.md §23 /
-PRD §9.6:
+algorithm is deterministic and confidence-tiered per our engineering rules /
+the documentation:
 
 - Exact role + name match in the same landmark → ``0.95``.
 - Same role + fuzzy name match (string-similarity > 0.8) → ``0.75``.
@@ -141,7 +141,7 @@ def _name_arg_literal(name: str) -> str:
     """Render a string as a Playwright-compatible name regex literal.
 
     We always emit ``/.../i`` so casing flexibility is preserved, matching
-    Phase 04's generated specs (CLAUDE.md §21).
+    Phase 04's generated specs.
     """
 
     escaped = re.escape(name)

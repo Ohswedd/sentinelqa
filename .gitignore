@@ -1,5 +1,18 @@
 # SentinelQA .gitignore
-# Categories per plans/phase-00-foundation/04-secret-hygiene.md.
+
+# --- Internal-only artefacts (kept out of the public tree) ---------------
+# These can exist locally for maintainer convenience but never land on main.
+plans/
+CLAUDE.md
+PRD.md
+docs/release/pre-1.0-review.md
+docs/release/go-public-checklist.md
+docs/release/announcement-draft.md
+docs/release/*-audit-*.md
+docs/release/dod-sweep-*.md
+docs/release/prd-coverage.md
+docs/release/claude-md-coverage.md
+docs/release/bench-results-*.json
 
 # --- Python ---------------------------------------------------------------
 __pycache__/

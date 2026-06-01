@@ -1,6 +1,6 @@
 # sentinelqa-mcp
 
-The SentinelQA MCP server (PRD §16, ADR-0023). Pure-Python, stdlib-only
+The SentinelQA MCP server (our product spec, ADR-0023). Pure-Python, stdlib-only
 wire layer over the [Phase-16 Python SDK](../python-sdk/README.md). No
 runtime dependencies beyond `sentinelqa`, `sentinelqa-engine`, and
 Pydantic 2.10.x.
@@ -8,14 +8,12 @@ Pydantic 2.10.x.
 ## Wire protocol
 
 - JSON-RPC 2.0 over NDJSON-framed stdio (the MCP base transport).
-- MCP protocol version `2024-11-05` only — newer versions are rejected
-  during `initialize`, not silently accepted.
-- Methods: `initialize`, `notifications/initialized`, `tools/list`,
-  `tools/call`, `ping`. `notifications/cancelled` is observed.
+- MCP protocol version `2024-11-05` only — newer versions are rejected during `initialize`, not silently accepted.
+- Methods: `initialize`, `notifications/initialized`, `tools/list`, `tools/call`, `ping`. `notifications/cancelled` is observed.
 
 ## Tools
 
-The twelve PRD §16 tools, each implemented in
+The twelve our product spec tools, each implemented in
 [`src/sentinelqa_mcp/tools/`](src/sentinelqa_mcp/tools/):
 
 - `sentinel.discover`
@@ -59,4 +57,4 @@ A Claude Desktop config snippet lives at
 Every tool that takes a `url` argument runs `SafetyPolicy.enforce`
 before any SDK call. Unsafe targets surface as an envelope with
 `result=null` and a single `UNSAFE_TARGET` error agent-message
-(CLAUDE §6, PRD §15).
+(CLAUDE §6, our product spec).

@@ -1,6 +1,6 @@
 """Vague-finding linter (task 03.02).
 
-CLAUDE.md §24 forbids vague findings ("Security issue found." is the
+our engineering rules forbids vague findings ("Security issue found." is the
 canonical bad example). The linter emits non-fatal warnings so reviewers
 and Phase 24 plugin contract tests can flag drift. Callers decide whether
 to surface warnings to the user or include them in CI output.
@@ -18,7 +18,7 @@ from dataclasses import dataclass
 
 from engine.domain.finding import Finding
 
-# Minimum title length. CLAUDE.md §24 specifies < 8 chars is too short.
+# Minimum title length. our engineering rules specifies < 8 chars is too short.
 MIN_TITLE_LENGTH: int = 8
 
 # Maximum description "specificity ratio" cutoff. A description is too
@@ -74,7 +74,7 @@ def lint_finding(finding: Finding) -> list[FindingsLinterWarning]:
                 code="L-FND-001",
                 message=(
                     f"Title is too short ({len(title)} chars; minimum {MIN_TITLE_LENGTH}). "
-                    "CLAUDE.md §24: findings must be specific."
+                    "our engineering rules: findings must be specific."
                 ),
             )
         )
@@ -104,7 +104,7 @@ def lint_finding(finding: Finding) -> list[FindingsLinterWarning]:
             FindingsLinterWarning(
                 finding_id=finding.id,
                 code="L-FND-003",
-                message="Description is empty; CLAUDE.md §24 requires evidence-backed prose.",
+                message="Description is empty; evidence-backed prose is required.",
             )
         )
 
@@ -115,7 +115,7 @@ def lint_finding(finding: Finding) -> list[FindingsLinterWarning]:
                 code="L-FND-004",
                 message=(
                     f"Severity {finding.severity!r} requires at least one evidence artifact "
-                    "(PRD §20 — every failure must have evidence)."
+                    "(our product spec — every failure must have evidence)."
                 ),
             )
         )

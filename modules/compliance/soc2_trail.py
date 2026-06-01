@@ -16,7 +16,7 @@ The seven gates:
 5. **Module events recorded** — at least one ``module_start`` *and*
    one ``module_end`` entry per module that ran.
 6. **Artifact events recorded** — at least one ``artifact_written``
-   entry (PRD §11).
+   entry.
 7. **No secret leakage** — no cookie / Authorization / Set-Cookie
    *value* present unredacted. Re-uses the Phase 29.02 secret-leak
    rules — see :data:`SECRET_LEAK_TOKENS`.

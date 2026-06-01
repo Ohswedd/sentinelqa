@@ -15,7 +15,7 @@ Emits four small TypeScript files that generated specs import:
 - ``tests/sentinel/setup/global-teardown.ts`` — cleans up any data
   fixtures created during the suite.
 
-Safety boundary (CLAUDE §6 / PRD §2):
+Safety boundary (CLAUDE §6 / our product spec):
 
 - No credentials in the generated source.
 - Data fixtures abort when the SentinelQA security mode is not one of
@@ -60,7 +60,7 @@ class GeneratedFixture:
 _DATA_DESTRUCTIVE_SAFE_MODES: frozenset[str] = frozenset({"authorized_destructive"})
 """SentinelQA security modes that permit data-seed fixtures to run.
 
-CLAUDE §6 / PRD §2: ``safe`` mode is the conservative default and
+CLAUDE §6 / our product spec: ``safe`` mode is the conservative default and
 explicitly forbids destructive operations against shared targets. Data
 fixtures that POST to create users / records are destructive even when
 they clean up after themselves (failures mid-flow leak data), so they

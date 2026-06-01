@@ -54,7 +54,7 @@ def test_artifacts_root_override(tmp_path: Path) -> None:
     ],
 )
 def test_every_sync_method_has_async_counterpart(method_name: str) -> None:
-    """Every sync method has an ``async_<name>`` mirror (PRD §14.4)."""
+    """Every sync method has an ``async_<name>`` mirror (our product spec4)."""
 
     sync = getattr(Sentinel, method_name)
     async_method = getattr(Sentinel, f"async_{method_name}")

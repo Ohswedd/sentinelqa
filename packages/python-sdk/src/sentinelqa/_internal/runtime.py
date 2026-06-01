@@ -32,7 +32,7 @@ def load_root_config(
     ``project_path`` is used as the default config root when
     ``config_path`` is None. ``url`` overrides ``target.base_url`` for the
     duration of this object. ``safe_mode`` pins
-    ``security.mode='safe'`` so the SDK default is identical to PRD §14.1.
+    ``security.mode='safe'`` so the SDK default is identical to the documentation.
     """
 
     from engine.config.loader import load_config

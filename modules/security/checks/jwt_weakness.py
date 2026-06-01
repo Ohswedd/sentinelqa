@@ -5,7 +5,7 @@ and cookies during the audit run. Flags ``alg=none``, HS256 with a
 fixed wordlist of well-known weak secrets, missing ``exp``, expired
 ``exp``, and missing ``iss`` / ``aud`` for tokens that look
 multi-tenant. The scanner NEVER decodes a signature against an external
-wordlist (CLAUDE.md §6 forbids brute-force / dictionary attacks); the
+wordlist (our engineering rules forbids brute-force / dictionary attacks); the
 six-entry list below is hard-coded and enumerated, not iterated against
 a remote resource.
 """
@@ -39,7 +39,7 @@ _JWT_RE: Final[re.Pattern[str]] = re.compile(
     r"eyJ[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{4,}\.[A-Za-z0-9_-]{0,}"
 )
 
-# Fixed, enumerated wordlist of well-known weak HS256 secrets. CLAUDE.md
+# Fixed, enumerated wordlist of well-known weak HS256 secrets. our engineering rules
 # §6: we never iterate against an external dictionary or wordlist. CI
 # guard ``tests/security/test_jwt_no_brute_force.py`` proves this list
 # is the only set of candidate secrets in the module.
@@ -107,7 +107,7 @@ def _hs256_verifies_against(token: _DecodedJwt, secret: str) -> bool:
 
 
 def _redacted_prefix(token: str) -> str:
-    # First 8 chars + ellipsis. CLAUDE.md §33: never log the full token.
+    # First 8 chars + ellipsis. our engineering rules: never log the full token.
     cleaned = token.strip()
     return f"{cleaned[:8]}…"
 

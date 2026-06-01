@@ -1,4 +1,4 @@
-"""Planner writer (task 06.03, PRD §9.2 + §20.1).
+"""Planner writer (task 06.03, the documentation + §20.1).
 
 Emits two artifacts per run:
 

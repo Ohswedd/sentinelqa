@@ -1,4 +1,4 @@
-"""Logging-mode behaviour tests (CLAUDE.md §13)."""
+"""Logging-mode behaviour tests."""
 
 from __future__ import annotations
 

@@ -1,6 +1,6 @@
 # @sentinelqa/ts-runtime
 
-Status: `Experimental` — Phase 04 in flight (`plans/phase-04-typescript-playwright-runtime/`).
+Status: `Experimental` — Phase 04 in flight ().
 
 The TypeScript half of SentinelQA. Python (`engine/`) orchestrates; this
 package launches Playwright, runs spec files, captures evidence
@@ -11,8 +11,7 @@ structured JSONL events back to Python over `stdout`.
 
 The Python ↔ TypeScript contract is defined by:
 
-- The JSON Schema at `packages/shared-schema/ts-events.schema.json`
-  (every event SentinelQA emits, versioned via `schema_version`).
+- The JSON Schema at `packages/shared-schema/ts-events.schema.json` (every event SentinelQA emits, versioned via `schema_version`).
 - ADR-0009 (Python ↔ TS protocol) — rationale + change procedure.
 - `engine/orchestrator/ts_bridge.py` — Python-side parser.
 
@@ -23,35 +22,31 @@ silently rename a field.
 
 ## Public surface (per `package.json` exports)
 
-- `@sentinelqa/ts-runtime` — package identity, redaction helpers,
-  event emitter / parser.
-- `@sentinelqa/ts-runtime/playwright` — `sentinelTest`, `sentinelStep`,
-  `captureEvidence`, `redactedNetwork`.
-- `@sentinelqa/ts-runtime/protocol` — JSONL event types, emitter
-  helpers.
-- `@sentinelqa/ts-runtime/locators` — semantic-first locator chain,
-  brittleness audit (consumed by Phase 07 / Phase 20).
+- `@sentinelqa/ts-runtime` — package identity, redaction helpers, event emitter / parser.
+- `@sentinelqa/ts-runtime/playwright` — `sentinelTest`, `sentinelStep`, `captureEvidence`, `redactedNetwork`.
+- `@sentinelqa/ts-runtime/protocol` — JSONL event types, emitter helpers.
+- `@sentinelqa/ts-runtime/locators` — semantic-first locator chain, brittleness audit (consumed by Phase 07 / Phase 20).
 
 ## Binary
 
 `sentinel-ts` (resolved to `dist/cli.js`) is the executable Python
 spawns. Today only `--help` / `--version` are wired; `run`,
 `list-tests`, `validate-helpers` exit 7 with a "lands in Phase 04.03"
-message — CLAUDE.md §37 (no fake completion).
+message(no fake completion).
 
 ## Build & test
 
 ```bash
-pnpm --filter @sentinelqa/ts-runtime build      # emits dist/
-pnpm --filter @sentinelqa/ts-runtime typecheck  # tsc --noEmit
-pnpm --filter @sentinelqa/ts-runtime test       # vitest
+pnpm --filter @sentinelqa/ts-runtime build # emits dist/
+pnpm --filter @sentinelqa/ts-runtime typecheck # tsc --noEmit
+pnpm --filter @sentinelqa/ts-runtime test # vitest
 node packages/ts-runtime/dist/cli.js --version
 ```
 
-## Safety boundary (CLAUDE.md §6 / PRD §2)
+## Safety boundary (our engineering rules §6 / our product spec)
 
 This package never imports stealth, evasion, fingerprint-spoofing,
 CAPTCHA-bypass, or proxy-rotation libraries. Locator strategy is
-semantic-first (`getByRole`, `getByLabel`, …) per CLAUDE.md §21 — no
+semantic-first (`getByRole`, `getByLabel`, …) per our engineering rules §21 — no
 brittle CSS unless no semantic option exists, and never `wait_for_timeout`
 in generated tests.
