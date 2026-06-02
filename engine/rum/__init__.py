@@ -36,14 +36,28 @@ from engine.rum.schema import (
     RumEvent,
     parse_event,
 )
+from engine.rum.server import (
+    DEFAULT_HOST,
+    DEFAULT_PORT,
+    HttpResponse,
+    RumServerApp,
+    handle_request,
+    serve_forever,
+)
 
 __all__ = [
+    "DEFAULT_HOST",
+    "DEFAULT_PORT",
+    "HttpResponse",
     "RUM_EVENT_KINDS",
     "RUM_SCHEMA_VERSION",
     "RumEvent",
     "RumIngestError",
     "RumIngestResult",
+    "RumServerApp",
     "RumSession",
+    "handle_request",
     "ingest_jsonl",
     "parse_event",
+    "serve_forever",
 ]

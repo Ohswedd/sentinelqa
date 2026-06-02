@@ -387,10 +387,38 @@ def handle_request(app: ViewerApp, method: str, path: str) -> HttpResponse:
     match = re.match(r"^/api/diff/([^/]+)/([^/]+)\.json$", decoded)
     if match:
         return _diff(app, match.group(1), match.group(2))
+    match = re.match(r"^/runs/([^/]+)/rum$", decoded)
+    if match:
+        return _rum_replay(app, match.group(1))
+    match = re.match(r"^/api/runs/([^/]+)/rum\.json$", decoded)
+    if match:
+        return _rum_replay_json(app, match.group(1))
     match = re.match(r"^/runs/([^/]+)/([^/]+)$", decoded)
     if match:
         return _serve_run_artifact(app, match.group(1), match.group(2))
     return _text_response(int(HTTPStatus.NOT_FOUND), "not found")
+
+
+def _rum_replay_json(app: ViewerApp, run_id: str) -> HttpResponse:
+    """Return the parsed sessions + events for a RUM run."""
+
+    from engine.reporter.serve.rum_replay import build_replay_payload
+
+    payload = build_replay_payload(app.runs_root, run_id)
+    if payload is None:
+        return _text_response(int(HTTPStatus.NOT_FOUND), "no RUM data for this run")
+    return _json_response(int(HTTPStatus.OK), payload)
+
+
+def _rum_replay(app: ViewerApp, run_id: str) -> HttpResponse:
+    """Render the HTML replay page for a RUM run."""
+
+    from engine.reporter.serve.rum_replay import build_replay_payload, render_replay_html
+
+    payload = build_replay_payload(app.runs_root, run_id)
+    if payload is None:
+        return _text_response(int(HTTPStatus.NOT_FOUND), "no RUM data for this run")
+    return _text_response(int(HTTPStatus.OK), render_replay_html(run_id, payload))
 
 
 # --------------------------------------------------------------------------- #

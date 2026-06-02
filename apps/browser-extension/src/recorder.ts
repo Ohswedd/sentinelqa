@@ -231,3 +231,23 @@ export const _internal = {
   state,
   synthesizeSelector,
 };
+
+// When loaded as a content script via chrome.scripting.executeScript, expose
+// the recorder API on window so the popup can drive it from the extension
+// context. Plain ESM imports also work; this is just the bridge.
+if (typeof window !== 'undefined') {
+  const w = window as unknown as {
+    __sentinelqaRecorder?: {
+      startRecording: typeof startRecording;
+      stopRecording: typeof stopRecording;
+      buildTrace: typeof buildTrace;
+      clearRecording: typeof clearRecording;
+    };
+  };
+  w.__sentinelqaRecorder = {
+    startRecording,
+    stopRecording,
+    buildTrace,
+    clearRecording,
+  };
+}

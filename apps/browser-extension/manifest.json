@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "SentinelQA",
-  "version": "1.10.0",
+  "version": "1.11.0",
   "description": "Audit the current tab with a local SentinelQA MCP server (loopback only).",
   "homepage_url": "https://github.com/Ohswedd/sentinelqa",
   "icons": {
@@ -22,6 +22,6 @@
     "service_worker": "dist/background.js",
     "type": "module"
   },
-  "permissions": ["activeTab", "storage"],
+  "permissions": ["activeTab", "scripting", "storage", "downloads"],
   "host_permissions": ["http://127.0.0.1:*/*", "http://localhost:*/*"]
 }
