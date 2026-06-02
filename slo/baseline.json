@@ -3,24 +3,24 @@
     {
       "name": "import_time_s",
       "samples": 3,
-      "value_seconds": 0.42007837499841116
+      "value_seconds": 1.5
     },
     {
       "name": "cli_cold_start_s",
       "samples": 3,
-      "value_seconds": 0.45302304200595245
+      "value_seconds": 1.5
     },
     {
       "name": "time_to_first_finding_s",
       "samples": 2,
-      "value_seconds": 0.6727276875026291
+      "value_seconds": 2.0
     },
     {
       "name": "full_audit_s",
       "samples": 2,
-      "value_seconds": 0.6727276875026291
+      "value_seconds": 2.0
     }
   ],
   "schema_version": "1",
-  "sentinelqa_version": "1.7.0"
+  "sentinelqa_version": "1.8.0"
 }
