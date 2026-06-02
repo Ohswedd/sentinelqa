@@ -69,6 +69,7 @@
         "model_fields": [
           "affected_target",
           "attack_id",
+          "attestation",
           "category",
           "compliance_id",
           "confidence",

@@ -57,6 +57,16 @@ jobs:
       - name: Dry-run (build + twine check --strict)
         run: uv run python -m scripts.release.dry_run_pypi --out-dir dist
 
+      - name: Generate SLSA build provenance (v1.7.0, phase 37)
+        uses: actions/attest-build-provenance@v2
+        with:
+          # All wheels + sdists under dist/. The generated attestation is
+          # written to the GitHub attestation store and surfaced via
+          # `gh attestation verify`. Together with the PyPI Trusted
+          # Publisher OIDC contract, this gives us SLSA build-track L3
+          # claims and tooling for L4 verification on download.
+          subject-path: 'dist/*'
+
       - name: Upload dist/ artifact
         uses: actions/upload-artifact@v4
         with:
@@ -71,9 +81,12 @@ jobs:
       name: pypi-release
       url: https://pypi.org/project/sentinelqa-cli/
     # `id-token: write` is the OIDC trusted-publisher contract.
+    # `attestations: write` lets pypa/gh-action-pypi-publish attach the
+    # build-provenance attestation generated above to the published artifact.
     # `contents: read` is enough — we never push.
     permissions:
       id-token: write
+      attestations: write
       contents: read
     steps:
       - name: Download dist/ artifact
@@ -82,7 +95,7 @@ jobs:
           name: python-dist
           path: dist
 
-      - name: Publish to PyPI (Trusted Publisher)
+      - name: Publish to PyPI (Trusted Publisher, with attestations)
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           # Trusted Publisher (OIDC) auth — see
@@ -92,6 +105,10 @@ jobs:
           # a repeat tag is a workflow bug, not a recoverable state.
           skip-existing: false
           verbose: true
+          # v1.7.0 (phase 37): emit Sigstore + GitHub-attestation provenance
+          # alongside the upload. SLSA build-track L3 in transit; L4 with
+          # the hermetic-build expectations in docs/release/slsa.md.
+          attestations: true
 
   verify:
     name: verify (install from PyPI)

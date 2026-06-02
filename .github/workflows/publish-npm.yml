@@ -24,6 +24,10 @@ jobs:
   build:
     name: build (@sentinelqa/ts-runtime tarball)
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
     outputs:
       version: ${{ steps.version.outputs.version }}
       tarball: ${{ steps.pack.outputs.tarball }}
@@ -70,6 +74,14 @@ jobs:
           TARBALL="$(ls dist/npm/sentinelqa-ts-runtime-*.tgz | head -n1)"
           echo "tarball=$TARBALL" >> "$GITHUB_OUTPUT"
 
+      - name: Generate SLSA build provenance for the tarball (v1.7.0, phase 37)
+        uses: actions/attest-build-provenance@v2
+        with:
+          # GitHub-side attestation for the tarball, in addition to the
+          # npm-side provenance the publish step already emits. Belt +
+          # braces — verifiable via `gh attestation verify` after release.
+          subject-path: ${{ steps.pack.outputs.tarball }}
+
       - name: Upload tarball artifact
         uses: actions/upload-artifact@v4
         with:
@@ -85,6 +97,7 @@ jobs:
       url: https://www.npmjs.com/package/@sentinelqa/ts-runtime
     permissions:
       id-token: write
+      attestations: write
       contents: read
     steps:
       - name: Checkout

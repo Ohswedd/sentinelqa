@@ -10,6 +10,76 @@ and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html). See
 
 _No unreleased changes._
 
+## [1.7.0] - 2026-06-02
+
+Quality + safety hardening release. Five additions that close the
+meta-loops — the tools SentinelQA uses on other apps now apply to
+SentinelQA itself.
+
+### Added
+
+Domain model:
+
+- **`Attestation` provenance on `Finding`** (`engine/domain/attestation.py`)
+  — optional `attestation` field records the check that emitted the
+  finding, the rule id + version that fired, the SentinelQA commit at
+  decision time, and the decision timestamp. Closes the "who decided
+  this?" question for auditors. Wire schema bumped (additive); golden
+  fixtures regenerated.
+
+Tests:
+
+- **Property-based scoring chain invariants**
+  (`tests/property/scoring/test_scoring_chain_invariants.py`) — four
+  Hypothesis properties over the full
+  `compute_score → compute_blockers → decide` chain: monotonicity (adding a finding never raises the
+  total score), determinism (same inputs → byte-identical decision
+  payload across calls), the `block_on_critical` invariant (a critical
+  finding never produces `release_decision == "pass"` when the policy
+  blocks on critical), and score-axis clamping to `[0, 100]`.
+- **Mutation-guard tests for the safety boundary**
+  (`tests/unit/policy/test_safety_mutation_guards.py`) — eight focused
+  assertions that fail under common mutations of `SafetyPolicy.enforce`:
+  un-allowlisted public host must raise, destructive mode without proof
+  must raise on local and allowlisted targets, expired proof must
+  raise, `SafetyDecision.allowed` has no default, and the audit log
+  hits disk before the refusal propagates.
+
+Tooling:
+
+- **`make mutation`** — `mutmut` configured under `[tool.mutmut]` to
+  mutate `engine/scoring/`, `engine/policy/safety.py`,
+  `engine/policy/exit_codes.py`, and `engine/scoring/policy_gate.py`
+  against the focused test set. Run on demand; not part of CI.
+  Operator guidance in `docs/dev/mutation-testing.md`.
+
+CI:
+
+- **`audit-of-self` required check** (`.github/workflows/ci.yml` +
+  `scripts/audit-of-self.py`) — hermetic stdlib `http.server` fixture
+  plus `sentinel discover`. Asserts the discovery graph carries the
+  expected route count. < 15 s end-to-end; no browser, no network.
+  Promotes self-audit to a blocking PR check.
+
+Release engineering:
+
+- **SLSA L3 build provenance on every publish surface**
+  (`actions/attest-build-provenance@v2` wired into
+  `publish-pypi.yml`, `publish-npm.yml`, `publish-docker.yml`, and
+  `github-release.yml`). PyPI uploads attach Sigstore + GitHub
+  attestations via `pypa/gh-action-pypi-publish` with
+  `attestations: true`. Docker images carry both Buildx
+  `provenance: mode=max` + SBOM and a signed Sigstore attestation
+  pushed as an OCI referrer. The path to L4 (hermetic builds,
+  two-party review, self-hosted runners) is documented in
+  `docs/release/slsa.md`.
+
+### Operations
+
+- All nine workspace manifests bumped to `1.7.0`; SDK API snapshot
+  regenerated; golden findings fixtures regenerated for the
+  additive `attestation` field.
+
 ## [1.6.0] - 2026-06-02
 
 Reporting + UI release. Seven additions that close the gap between

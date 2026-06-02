@@ -147,6 +147,21 @@ test-fast: test-py
 test-full:
 	$(UV) run pytest --override-ini="addopts=-ra --strict-config --strict-markers --import-mode=importlib"
 
+# Mutation testing against the critical paths defined in [tool.mutmut].
+# Wall-clock is several minutes; run only on demand, not in CI.
+# Surviving mutants point at gaps in the test suite — see docs/dev/mutation-testing.md.
+mutation:
+	$(UV) run mutmut run
+	$(UV) run mutmut results
+mutation-show:
+	$(UV) run mutmut show all
+
+# Audit-of-self CI check (v1.7.0, phase 37). Runs `sentinel discover`
+# against a hermetic local fixture and asserts route discovery shape.
+# The check is a required gate on PRs.
+audit-of-self:
+	$(UV) run python scripts/audit-of-self.py
+
 # Generate JSON Schemas for every domain model into packages/shared-schema/.
 # Also re-export the redaction ruleset the TS runtime mirrors.
 schemas:

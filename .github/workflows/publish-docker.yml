@@ -25,6 +25,13 @@ jobs:
   build-and-push:
     name: build-and-push (multi-arch)
     runs-on: ubuntu-latest
+    # v1.7.0 (phase 37): id-token + attestations for SLSA L4 build
+    # provenance via actions/attest-build-provenance.
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+      packages: write
     environment:
       name: docker-release
       url: https://hub.docker.com/r/sentinelqa/runner
@@ -66,13 +73,18 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build and push multi-arch image
+        id: build
         uses: docker/build-push-action@v6
         with:
           context: apps/cli/sentinel/runner/docker
           file: apps/cli/sentinel/runner/docker/Dockerfile.publish
           platforms: linux/amd64,linux/arm64
           push: true
-          provenance: true
+          # mode=max emits the maximum-detail Buildx provenance + SBOM
+          # claims; the signed Sigstore attestation is added in the next
+          # step. Together they cover SLSA L3 + the L4 verification path
+          # documented in docs/release/slsa.md.
+          provenance: mode=max
           sbom: true
           tags: |
             sentinelqa/runner:${{ steps.meta.outputs.version }}
@@ -88,6 +100,19 @@ jobs:
             org.opencontainers.image.version=${{ steps.meta.outputs.version }}
             org.opencontainers.image.revision=${{ github.sha }}
             org.opencontainers.image.created=${{ steps.meta.outputs.build_date }}
+
+      - name: Generate SLSA build provenance for the image
+        uses: actions/attest-build-provenance@v2
+        with:
+          # subject-name is the registry-qualified image name; subject-digest
+          # is the manifest digest the previous step pushed. push-to-registry
+          # writes the attestation as an OCI referrer next to the image so
+          # downstream tooling (`cosign verify-attestation`,
+          # `gh attestation verify --type slsaprovenance1.x`) can find it
+          # without an external store.
+          subject-name: docker.io/sentinelqa/runner
+          subject-digest: ${{ steps.build.outputs.digest }}
+          push-to-registry: true
 
   verify:
     name: verify (pull + manifest inspect + run)
