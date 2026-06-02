@@ -10,6 +10,65 @@ and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html). See
 
 _No unreleased changes._
 
+## [1.8.0] - 2026-06-02
+
+Performance + scalability release. Three additions that turn cold-start,
+memory, and sharding into measurable + gated surfaces instead of
+assumptions.
+
+### Added
+
+Benchmarks:
+
+- **`sentinel bench` CLI command** (`engine/bench/`, `apps/cli/.../bench_cmd.py`) —
+  reproducible SLO suite over four metrics: `import_time_s`,
+  `cli_cold_start_s`, `time_to_first_finding_s`, and `full_audit_s`.
+  Median over `--samples` for each metric; output writable as JSON.
+  With `--compare-to slo/baseline.json`, exits non-zero on regression
+  beyond `--threshold` (default 10 %, per-metric overrides supported).
+- **`slo/baseline.json`** — pinned cold-start + audit wall-clock SLOs
+  with the v1.8.0 ceiling. Update protocol documented in
+  `slo/README.md`: only when a real perf improvement lets us cut the
+  baseline, or a justified slowdown ships and the PR carries the
+  reasoning.
+- **`bench-slo` required CI job** (`.github/workflows/ci.yml`) — runs
+  the bench against the pinned baseline on every PR and uploads the
+  measured result as an artefact. Headline regressions trip CI before
+  they reach `main`.
+
+Memory:
+
+- **Memory profile harness** (`scripts/profile-memory.py`,
+  `make profile-memory`) — spawns `sentinel discover` against a
+  synthetic `N`-route fixture and reports peak RSS via
+  `resource.getrusage(RUSAGE_CHILDREN)`. Stdlib-only (no `memray`,
+  no `psutil`). Platform-aware: kB on Linux, bytes-to-kB on macOS.
+  Targets the §10 goal of driving a 200-route audit comfortably under
+  2 GB.
+
+Sharding:
+
+- **Distributed shard protocol** (`engine/runner/shards/protocol.py`) —
+  `ShardTask`, `ShardLease`, `ShardResult`, plus the `ShardCoordinator`
+  and `ShardWorker` Protocols. Wire-compatible across backends so a
+  Redis Streams / Postgres NOTIFY / SQS implementation drops in
+  without engine changes. Schema version pinned at
+  `SHARD_PROTOCOL_VERSION = "1"`.
+- **`InMemoryCoordinator` reference implementation**
+  (`engine/runner/shards/in_memory.py`) — thread-safe single-process
+  coordinator backed by a `dict` + `RLock`. Used as the conformance
+  target for new queue backends; the same test suite
+  (`tests/unit/runner/shards/test_in_memory.py`, 15 cases) must pass
+  verbatim against any new implementation.
+- **`docs/dev/distributed-shards.md`** — Protocol contract,
+  invariants (exclusive claim, lease expiry, stateless workers,
+  result idempotence), and a Redis-backend sketch.
+
+### Operations
+
+- All nine workspace manifests bumped to `1.8.0`; SDK API snapshot
+  regenerated.
+
 ## [1.7.0] - 2026-06-02
 
 Quality + safety hardening release. Five additions that close the

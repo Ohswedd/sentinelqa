@@ -162,6 +162,16 @@ mutation-show:
 audit-of-self:
 	$(UV) run python scripts/audit-of-self.py
 
+# SLO benchmark suite (v1.8.0, phase 38). Local convenience target —
+# CI runs the equivalent through `sentinel bench --compare-to`.
+bench:
+	$(UV) run sentinel bench --compare-to slo/baseline.json
+
+# Memory profile harness (v1.8.0, phase 38). Reports peak RSS for a
+# discover run; not a CI gate (signal is noisy on shared runners).
+profile-memory:
+	$(UV) run python scripts/profile-memory.py --routes 20
+
 # Generate JSON Schemas for every domain model into packages/shared-schema/.
 # Also re-export the redaction ruleset the TS runtime mirrors.
 schemas:

@@ -1,0 +1,26 @@
+{
+  "metrics": [
+    {
+      "name": "import_time_s",
+      "samples": 3,
+      "value_seconds": 1.5
+    },
+    {
+      "name": "cli_cold_start_s",
+      "samples": 3,
+      "value_seconds": 1.5
+    },
+    {
+      "name": "time_to_first_finding_s",
+      "samples": 2,
+      "value_seconds": 2.0
+    },
+    {
+      "name": "full_audit_s",
+      "samples": 2,
+      "value_seconds": 2.0
+    }
+  ],
+  "schema_version": "1",
+  "sentinelqa_version": "1.8.0"
+}

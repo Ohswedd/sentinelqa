@@ -23,6 +23,7 @@ from sentinel_cli.commands import (
     ask_cmd,
     audit_cmd,
     auth_cmd,
+    bench_cmd,
     chaos_cmd,
     ci_cmd,
     discover_cmd,
@@ -277,6 +278,15 @@ def build_app() -> typer.Typer:
             "status page. Stdlib-only — no FastAPI dependency."
         ),
     )(serve_cmd.run_serve)
+    cli.command(
+        name="bench",
+        help=(
+            "Measure the SLO benchmark suite (import time, CLI cold-start, "
+            "time-to-first-finding, full-audit wall-clock). With "
+            "--compare-to <baseline.json>, exits non-zero on regression "
+            "beyond --threshold (default 10%). Used by the CI bench-slo gate."
+        ),
+    )(bench_cmd.run_bench_command)
     cli.command(
         name="ci",
         help=(
