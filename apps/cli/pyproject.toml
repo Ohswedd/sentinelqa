@@ -37,10 +37,10 @@ dependencies = [
     "sentinelqa-integrations",
     "sentinelqa",
     "sentinelqa-mcp",
-    "typer==0.15.1",
-    "click==8.1.8",
-    "pydantic==2.10.3",
-    "pyyaml==6.0.2",
+    "typer==0.26.6",
+    "click==8.4.1",
+    "pydantic==2.13.4",
+    "pyyaml==6.0.3",
     "httpx==0.28.1",
 ]
 
