@@ -13,6 +13,7 @@ import typer
 from engine.recording import (
     default_postconditions,
     emit_spec,
+    llm_postconditions,
     parse_trace,
 )
 
@@ -51,6 +52,17 @@ def run_record_import(
             ),
         ),
     ] = True,
+    llm_postconditions_flag: Annotated[
+        bool,
+        typer.Option(
+            "--llm-postconditions/--no-llm-postconditions",
+            help=(
+                "Use the configured LLM provider to suggest richer "
+                "post-conditions (falls back to the deterministic suggester "
+                "when no provider is available). Default: off."
+            ),
+        ),
+    ] = False,
 ) -> None:
     """Parse the trace and write a spec."""
 
@@ -64,7 +76,12 @@ def run_record_import(
         typer.echo(f"invalid trace: {err}", err=True)
         raise typer.Exit(code=2) from err
 
-    postconditions = default_postconditions(trace) if suggest_postconditions else ()
+    if not suggest_postconditions:
+        postconditions: tuple[str, ...] = ()
+    elif llm_postconditions_flag:
+        postconditions = llm_postconditions(trace)
+    else:
+        postconditions = default_postconditions(trace)
     spec_path = emit_spec(
         trace,
         output_dir=output_dir,

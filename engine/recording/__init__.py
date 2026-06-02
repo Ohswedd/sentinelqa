@@ -29,6 +29,7 @@ from __future__ import annotations
 from engine.recording.postconditions import (
     PostconditionSuggester,
     default_postconditions,
+    llm_postconditions,
 )
 from engine.recording.spec_emitter import emit_spec
 from engine.recording.trace import (
@@ -45,5 +46,6 @@ __all__ = [
     "RecordingTrace",
     "default_postconditions",
     "emit_spec",
+    "llm_postconditions",
     "parse_trace",
 ]

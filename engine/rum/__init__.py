@@ -24,7 +24,12 @@ stable target.
 
 from __future__ import annotations
 
-from engine.rum.ingest import RumIngestError, RumIngestResult, ingest_jsonl
+from engine.rum.ingest import (
+    RumIngestError,
+    RumIngestResult,
+    RumSession,
+    ingest_jsonl,
+)
 from engine.rum.schema import (
     RUM_EVENT_KINDS,
     RUM_SCHEMA_VERSION,
@@ -38,6 +43,7 @@ __all__ = [
     "RumEvent",
     "RumIngestError",
     "RumIngestResult",
+    "RumSession",
     "ingest_jsonl",
     "parse_event",
 ]

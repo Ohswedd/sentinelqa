@@ -39,9 +39,12 @@ from engine.runner.shards.protocol import (
     ShardTask,
     ShardWorker,
 )
+from engine.runner.shards.redis_backend import RedisCoordinator, RedisLike
 
 __all__ = [
     "InMemoryCoordinator",
+    "RedisCoordinator",
+    "RedisLike",
     "SHARD_PROTOCOL_VERSION",
     "ShardCoordinator",
     "ShardLease",

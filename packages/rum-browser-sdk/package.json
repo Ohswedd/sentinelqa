@@ -1,6 +1,6 @@
 {
   "name": "@sentinelqa/rum",
-  "version": "1.9.0",
+  "version": "1.10.0",
   "description": "Real-User Monitoring SDK that emits SentinelQA-compatible JSONL events from the browser. Zero deps, ESM, drops into any frontend.",
   "license": "Apache-2.0",
   "author": "ohswedd",

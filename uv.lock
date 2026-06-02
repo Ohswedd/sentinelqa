@@ -1484,7 +1484,7 @@ wheels = [
 
 [[package]]
 name = "sentinelqa"
-version = "1.9.0"
+version = "1.10.0"
 source = { editable = "packages/python-sdk" }
 dependencies = [
     { name = "pydantic" },
@@ -1501,7 +1501,7 @@ requires-dist = [
 
 [[package]]
 name = "sentinelqa-cli"
-version = "1.9.0"
+version = "1.10.0"
 source = { editable = "apps/cli" }
 dependencies = [
     { name = "click" },
@@ -1532,7 +1532,7 @@ requires-dist = [
 
 [[package]]
 name = "sentinelqa-engine"
-version = "1.9.0"
+version = "1.10.0"
 source = { editable = "engine" }
 dependencies = [
     { name = "beautifulsoup4" },
@@ -1565,7 +1565,7 @@ requires-dist = [
 
 [[package]]
 name = "sentinelqa-integrations"
-version = "1.9.0"
+version = "1.10.0"
 source = { editable = "integrations" }
 dependencies = [
     { name = "sentinelqa-engine" },
@@ -1576,7 +1576,7 @@ requires-dist = [{ name = "sentinelqa-engine", editable = "engine" }]
 
 [[package]]
 name = "sentinelqa-mcp"
-version = "1.9.0"
+version = "1.10.0"
 source = { editable = "packages/mcp-server" }
 dependencies = [
     { name = "pydantic" },
@@ -1595,7 +1595,7 @@ requires-dist = [
 
 [[package]]
 name = "sentinelqa-modules"
-version = "1.9.0"
+version = "1.10.0"
 source = { editable = "modules" }
 dependencies = [
     { name = "sentinelqa-engine" },
