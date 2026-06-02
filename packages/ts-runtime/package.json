@@ -79,7 +79,7 @@
     "@types/node": "20.17.9",
     "@vitest/coverage-v8": "2.1.8",
     "ts-morph": "24.0.0",
-    "typescript": "5.7.2",
+    "typescript": "6.0.3",
     "vitest": "2.1.8"
   }
 }
