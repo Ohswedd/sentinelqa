@@ -53,7 +53,7 @@ jobs:
 
       - name: Upload Python test artifacts on failure
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: python-junit-${{ matrix.python }}
           path: |
@@ -106,7 +106,7 @@ jobs:
 
       - name: Upload TS test artifacts on failure
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ts-artifacts-node-${{ matrix.node }}
           path: |
@@ -159,7 +159,7 @@ jobs:
 
       - name: Upload built docs on failure
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: docs-dist
           path: apps/docs/dist/**
@@ -222,7 +222,7 @@ jobs:
 
       - name: Upload bench artefact
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: bench-result
           path: bench-result.json
@@ -264,7 +264,7 @@ jobs:
 
       - name: Upload Playwright report on failure
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: playwright-smoke-report
           path: |
@@ -331,7 +331,7 @@ jobs:
 
       - name: Upload run artifacts on failure
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: discovery-playwright-artifacts
           path: |
