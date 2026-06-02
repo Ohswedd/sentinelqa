@@ -190,6 +190,44 @@ jobs:
         # browser, no network, < 15 s. See scripts/audit-of-self.py.
         run: make audit-of-self
 
+  bench-slo:
+    name: bench-slo
+    runs-on: ubuntu-latest
+    needs: python
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up uv (with cache)
+        uses: astral-sh/setup-uv@v4
+        with:
+          version: '0.5.24'
+          enable-cache: true
+
+      - name: Install Python 3.12
+        run: uv python install 3.12
+
+      - name: Install Python deps (frozen)
+        run: uv sync --frozen --all-packages
+
+      - name: Run SLO bench against pinned baseline
+        # v1.8.0 (phase 38): regression gate over import time, CLI cold-
+        # start, time-to-first-finding, and full-audit wall-clock.
+        # Baseline lives at slo/baseline.json; see slo/README.md for
+        # update protocol.
+        run: |
+          uv run sentinel bench \
+            --output bench-result.json \
+            --compare-to slo/baseline.json
+
+      - name: Upload bench artefact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bench-result
+          path: bench-result.json
+          if-no-files-found: ignore
+
   chromium-smoke:
     name: chromium smoke (gated)
     runs-on: ubuntu-latest

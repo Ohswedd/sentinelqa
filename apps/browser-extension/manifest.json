@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "SentinelQA",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "description": "Audit the current tab with a local SentinelQA MCP server (loopback only).",
   "homepage_url": "https://github.com/Ohswedd/sentinelqa",
   "icons": {
