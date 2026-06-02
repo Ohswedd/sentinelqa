@@ -4,6 +4,7 @@
     {
       "affected_target": "https://localhost:8080",
       "attack_id": null,
+      "attestation": null,
       "category": "security/cookies",
       "compliance_id": null,
       "confidence": 0.9,
@@ -38,6 +39,7 @@
     {
       "affected_target": "https://localhost:8080",
       "attack_id": null,
+      "attestation": null,
       "category": "a11y/contrast",
       "compliance_id": null,
       "confidence": 0.7,
@@ -72,6 +74,7 @@
     {
       "affected_target": "https://localhost:8080",
       "attack_id": null,
+      "attestation": null,
       "category": "perf/lcp",
       "compliance_id": null,
       "confidence": 0.6,

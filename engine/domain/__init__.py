@@ -13,6 +13,7 @@ JSON-schema dumper) are imported via their own modules.
 from __future__ import annotations
 
 from engine.domain.api_endpoint import ApiEndpoint, ApiEndpointSource
+from engine.domain.attestation import Attestation
 from engine.domain.base import SentinelModel
 from engine.domain.discovery_graph import AuthBoundary, DiscoveryGraph
 from engine.domain.element import Element
@@ -81,6 +82,7 @@ __all__ = [
     "Finding",
     "FindingLocation",
     "Severity",
+    "Attestation",
     "Evidence",
     "EvidenceType",
     "QualityScore",

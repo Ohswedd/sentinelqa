@@ -7,6 +7,7 @@ from typing import Any, ClassVar, Literal
 
 from pydantic import Field, field_validator
 
+from engine.domain.attestation import Attestation
 from engine.domain.base import SentinelModel
 from engine.domain.evidence import Evidence
 from engine.domain.ids import validate_id
@@ -67,6 +68,8 @@ class Finding(SentinelModel):
     ``regime`` is lower-kebab-case (``wcag-2.2``, ``gdpr``, ``ccpa``,
     ``soc2``) and ``rule-id`` is a per-regime identifier.
     """
+    attestation: Attestation | None = None
+    """Schema v2 (phase 37): rule + commit provenance for this finding."""
     created_at: datetime
     schema_version: str = Field(default=FINDINGS_SCHEMA_VERSION)
 
@@ -102,4 +105,4 @@ class Finding(SentinelModel):
         return finding_to_agent_message(self)
 
 
-__all__ = ["Finding", "FindingLocation", "Severity"]
+__all__ = ["Attestation", "Finding", "FindingLocation", "Severity"]

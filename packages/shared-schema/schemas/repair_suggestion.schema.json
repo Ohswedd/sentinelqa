@@ -45,7 +45,7 @@
     }
   },
   "additionalProperties": false,
-  "description": "A healer-proposed locator or test repair.\n\nEvery field carries first-class evidence so reviewers can judge the\nproposal without re-running the failing test. Assertion-weakening or\nintent-changing repairs are forbidden by the engineering guidelines and must be\nsurfaced as ``requires_human_review=True``.",
+  "description": "A healer-proposed locator or test repair.\n\nEvery field carries first-class evidence so reviewers can judge the\nproposal without re-running the failing test. Assertion-weakening or\nintent-changing repairs are forbidden by our engineering rules and must be\nsurfaced as ``requires_human_review=True``.",
   "properties": {
     "confidence": {
       "maximum": 1.0,

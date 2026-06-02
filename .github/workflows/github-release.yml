@@ -13,6 +13,8 @@ on:
 
 permissions:
   contents: write # needed to create the release
+  id-token: write # v1.7.0 (phase 37): SLSA build provenance via OIDC
+  attestations: write # required by actions/attest-build-provenance@v2
 
 concurrency:
   group: github-release-${{ github.ref }}
@@ -71,6 +73,18 @@ jobs:
 
       - name: Inspect built artifacts
         run: uv run python -m scripts.release.inspect_built_packages --dist-dir dist
+
+      - name: Generate SLSA build provenance for every release asset
+        # v1.7.0 (phase 37): every wheel, sdist, and tarball that ends up
+        # attached to the Release gets a signed Sigstore + GitHub
+        # attestation. Verifiable post-release with
+        # `gh attestation verify --owner Ohswedd <file>`.
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: |
+            dist/*.whl
+            dist/*.tar.gz
+            dist/sentinelqa-ts-runtime-*.tgz
 
       - name: Extract CHANGELOG section into release notes
         env:

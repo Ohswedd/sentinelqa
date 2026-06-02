@@ -118,7 +118,10 @@ def test_dry_run_script_never_pushes() -> None:
 def test_publish_workflow_builds_multi_arch_with_provenance() -> None:
     workflow = WORKFLOW.read_text(encoding="utf-8")
     assert "platforms: linux/amd64,linux/arm64" in workflow
-    assert "provenance: true" in workflow
+    # v1.7.0 (phase 37): Buildx provenance is now `mode=max` (full claims)
+    # and a signed Sigstore attestation is added by attest-build-provenance.
+    assert "provenance: mode=max" in workflow
+    assert "actions/attest-build-provenance" in workflow
     assert "sbom: true" in workflow
     assert "push: true" in workflow
 

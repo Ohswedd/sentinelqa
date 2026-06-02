@@ -4,6 +4,7 @@
     {
       "affected_target": "https://localhost:8080",
       "attack_id": null,
+      "attestation": null,
       "category": "security/headers",
       "compliance_id": null,
       "confidence": 0.95,

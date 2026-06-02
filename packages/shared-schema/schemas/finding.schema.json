@@ -1,5 +1,51 @@
 {
   "$defs": {
+    "Attestation": {
+      "additionalProperties": false,
+      "description": "Provenance metadata recorded alongside a finding.",
+      "properties": {
+        "check_name": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Check Name",
+          "type": "string"
+        },
+        "decided_at": {
+          "format": "date-time",
+          "title": "Decided At",
+          "type": "string"
+        },
+        "rule_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Rule Id",
+          "type": "string"
+        },
+        "rule_version": {
+          "maxLength": 32,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9._\\-+]+$",
+          "title": "Rule Version",
+          "type": "string"
+        },
+        "sentinelqa_commit": {
+          "maxLength": 64,
+          "minLength": 7,
+          "pattern": "^[0-9a-f]+$",
+          "title": "Sentinelqa Commit",
+          "type": "string"
+        }
+      },
+      "required": [
+        "check_name",
+        "rule_id",
+        "rule_version",
+        "sentinelqa_commit",
+        "decided_at"
+      ],
+      "title": "Attestation",
+      "type": "object"
+    },
     "Evidence": {
       "additionalProperties": false,
       "description": "One artifact proving a finding.",
@@ -105,7 +151,7 @@
     }
   },
   "additionalProperties": false,
-  "description": "A specific, evidence-backed defect observed during a run.\n\nWire format aligned with the documentation (extended with the bookkeeping fields\nrequired by the engineering guidelines: ``run_id``, ``module``, ``confidence``,\n``created_at``, ``schema_version``).",
+  "description": "A specific, evidence-backed defect observed during a run.\n\nWire format aligned with the documentation (extended with the bookkeeping fields\nrequired by our engineering rules: ``run_id``, ``module``, ``confidence``,\n``created_at``, ``schema_version``).",
   "properties": {
     "affected_target": {
       "anyOf": [
@@ -133,6 +179,17 @@
       ],
       "default": null,
       "title": "Attack Id"
+    },
+    "attestation": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Attestation"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
     },
     "category": {
       "maxLength": 128,

@@ -42,6 +42,9 @@ dev = [
     # : RS256 JWT signing for the Vertex AI provider. See
     # engine/pyproject.toml for the dependency rationale.
     "cryptography==45.0.1",
+    # phase 37 (v1.7.0): mutation testing on critical paths.
+    # Used by `make mutation`; not required for the standard test suite.
+    "mutmut==2.4.4",
 ]
 
 [tool.uv]
@@ -277,3 +280,14 @@ exclude_lines = [
     "raise NotImplementedError",
     "if TYPE_CHECKING:",
 ]
+
+# Mutation testing on the critical paths (v1.7.0, phase 37). Run with
+# `make mutation`; results land in `.mutmut-cache/`. The list of paths is
+# the same boundary the user pays for: scoring, policy, and the
+# orchestrator's policy gate. Adding modules here is fine, but expect
+# wall-clock to grow linearly.
+[tool.mutmut]
+paths_to_mutate = "engine/scoring/,engine/policy/safety.py,engine/policy/exit_codes.py,engine/scoring/policy_gate.py"
+runner = "uv run pytest -x -q tests/unit/scoring tests/unit/policy tests/property/scoring -m 'not slow and not bench'"
+backup = false
+tests_dir = "tests"

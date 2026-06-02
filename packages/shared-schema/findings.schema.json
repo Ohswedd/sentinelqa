@@ -52,6 +52,7 @@
         "attack_id",
         "owasp_api_id",
         "compliance_id",
+        "attestation",
         "created_at",
         "schema_version"
       ],
@@ -140,12 +141,48 @@
           "pattern": "^[a-z][a-z0-9.-]*:[A-Za-z0-9][A-Za-z0-9._/-]*$",
           "maxLength": 128
         },
+        "attestation": {
+          "anyOf": [{ "$ref": "#/$defs/Attestation" }, { "type": "null" }]
+        },
         "created_at": {
           "type": "string",
           "format": "date-time"
         },
         "schema_version": {
           "const": "2"
+        }
+      }
+    },
+    "Attestation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["check_name", "rule_id", "rule_version", "sentinelqa_commit", "decided_at"],
+      "properties": {
+        "check_name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "rule_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "rule_version": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32,
+          "pattern": "^[A-Za-z0-9._\\-+]+$"
+        },
+        "sentinelqa_commit": {
+          "type": "string",
+          "minLength": 7,
+          "maxLength": 64,
+          "pattern": "^[0-9a-f]+$"
+        },
+        "decided_at": {
+          "type": "string",
+          "format": "date-time"
         }
       }
     },
