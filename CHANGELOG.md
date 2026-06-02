@@ -10,6 +10,65 @@ and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html). See
 
 _No unreleased changes._
 
+## [1.9.0] - 2026-06-02
+
+Long-shots release. Three MVPs that establish new product surfaces
+without overpromising: AI-app fingerprint detector, RUM SDK + receiver,
+and recording-to-spec generator.
+
+### Added
+
+LLM audit:
+
+- **AI-app fingerprint detector** (`modules/llm_audit/checks/ai_fingerprints.py`,
+  catalogue at `modules/llm_audit/data/ai-app-fingerprints.yaml`) —
+  data-driven detector that matches high-precision patterns common in
+  LLM-built apps: Stripe test keys (`pk_test_*` / `sk_test_*`), the
+  canonical 4242 test card, Lorem ipsum blocks, demo credentials,
+  `localhost:NNNN` API URLs, `john.doe@example.com`, 555 phone
+  numbers, very long Tailwind class strings, "TODO: implement"
+  comments, AI-tool watermark headers, and `api.example.com` defaults.
+  New rule `LLM-AI-FINGERPRINT`; wired into the existing llm_audit
+  module pipeline as check id `ai_fingerprints`.
+
+Real-User Monitoring:
+
+- **`@sentinelqa/rum` browser SDK** (`packages/rum-browser-sdk/`) —
+  zero-dep, ESM, drops into any modern frontend. Auto-wires
+  `run.start` / `page.view` / `page.error` from `window.error` +
+  `unhandledrejection` / `run.end` on `shutdown()`. Flushes via
+  `navigator.sendBeacon` on `beforeunload`,
+  `visibilitychange:hidden`, on a configurable interval, and when the
+  buffer hits the size cap. Never throws into the host app.
+- **RUM receiver** (`engine/rum/`) — parses the JSONL stream into a
+  synthetic SentinelQA run under `<runs-root>/<run-id>/` byte-equivalent
+  to a discover-only synthetic run (reporter, SDK, MCP consume it
+  unchanged). `page.error` events become high-severity findings;
+  duplicate `(route, message)` pairs collapse to one finding.
+- **`sentinel rum ingest`** CLI command — wraps the receiver with
+  `--runs-root` / `--project` / `--base-url` controls.
+
+Recording-driven test generation:
+
+- **Recording trace parser + spec emitter** (`engine/recording/`) —
+  parses a JSON action log (compatible with saved `playwright codegen`
+  output and hand-authored equivalents) into a `RecordingTrace` and
+  emits a SentinelQA-tagged Playwright `.spec.ts`. Supported actions:
+  `navigate`, `click`, `dblclick`, `fill`, `press`, `select`, `check`,
+  `uncheck`, `hover`, `wait_for`, `expect`. Unknown actions raise.
+- **Postcondition stub** (`engine/recording/postconditions.py`) —
+  deterministic default suggester proposes presence checks for the
+  last interactive selectors; the `PostconditionSuggester` Protocol
+  is the seam for LLM-driven post-conditions.
+- **`sentinel record import`** CLI command — wraps the parser +
+  emitter with `--output` / `--suggest-postconditions` controls.
+
+### Operations
+
+- All nine workspace manifests bumped to `1.9.0`; SDK API snapshot
+  regenerated; `scripts/release/audit_metadata.py` updated to include
+  the new publishable `@sentinelqa/rum` package.
+
 ## [1.8.0] - 2026-06-02
 
 Performance + scalability release. Three additions that turn cold-start,

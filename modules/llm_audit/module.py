@@ -37,6 +37,7 @@ from engine.orchestrator.registry import ModuleRegistry, default_registry
 from engine.policy.safety import SafetyDecision
 from engine.runner.results import EnvironmentContext, RunnerOutcome
 
+from modules.llm_audit.checks.ai_fingerprints import check_ai_fingerprints
 from modules.llm_audit.checks.coming_soon import check_coming_soon
 from modules.llm_audit.checks.console_errors import check_console_errors
 from modules.llm_audit.checks.dead_buttons import check_dead_buttons
@@ -72,6 +73,7 @@ ALL_CHECKS: tuple[str, ...] = (
     "validation_mismatch",
     "coming_soon",
     "console_errors",
+    "ai_fingerprints",
 )
 
 
@@ -316,6 +318,17 @@ class LlmAuditModule(SentinelModule):
                         third_party_hosts=inputs.third_party_console_hosts,
                     ),
                     signal_available=bool(inputs.console_entries),
+                )
+            )
+        if "ai_fingerprints" in enabled:
+            results.append(
+                _CheckOutcome(
+                    name="ai_fingerprints",
+                    findings=check_ai_fingerprints(
+                        inputs.source_files,
+                        inputs.rendered_text,
+                    ),
+                    signal_available=bool(inputs.source_files or inputs.rendered_text),
                 )
             )
         return tuple(results)
