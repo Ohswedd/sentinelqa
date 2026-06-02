@@ -124,7 +124,7 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "@types/node": "20.17.9",
+    "@types/node": "25.9.1",
     "@types/vscode": "1.86.0",
     "typescript": "5.7.2",
     "vitest": "2.1.8"
