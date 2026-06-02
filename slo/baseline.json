@@ -3,24 +3,24 @@
     {
       "name": "import_time_s",
       "samples": 3,
-      "value_seconds": 1.5
+      "value_seconds": 1.4
     },
     {
       "name": "cli_cold_start_s",
       "samples": 3,
-      "value_seconds": 1.5
+      "value_seconds": 1.4
     },
     {
       "name": "time_to_first_finding_s",
       "samples": 2,
-      "value_seconds": 2.0
+      "value_seconds": 1.85
     },
     {
       "name": "full_audit_s",
       "samples": 2,
-      "value_seconds": 2.0
+      "value_seconds": 1.85
     }
   ],
   "schema_version": "1",
-  "sentinelqa_version": "1.8.0"
+  "sentinelqa_version": "1.10.0"
 }

@@ -10,6 +10,81 @@ and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html). See
 
 _No unreleased changes._
 
+## [1.10.0] - 2026-06-03
+
+Close-outs release. Seven items that fully ship the work the v1.6.0
+through v1.9.0 release notes explicitly deferred.
+
+### Added
+
+Distributed shards (closes v1.8.0 §10 follow-up):
+
+- **`RedisCoordinator`** (`engine/runner/shards/redis_backend.py`) — a
+  Redis-backed implementation of the `ShardCoordinator` protocol.
+  Engine declares no `redis` dependency; users pass `redis.Redis(...)`
+  or any object satisfying the small `RedisLike` Protocol. Uses
+  `SET NX`, sorted sets keyed on lease expiry, and an exclusive-claim
+  path so behaviour matches `InMemoryCoordinator` under contention.
+  Conformance tested via the same 16-test surface as the reference
+  in-memory backend (`tests/unit/runner/shards/test_redis_backend.py`).
+
+Recording (closes v1.9.0 §11 "LLM-backed post-condition implementation"):
+
+- **`llm_postconditions`** (`engine/recording/postconditions.py`) —
+  calls the configured LLM provider via
+  `engine.llm.defaults.get_default_provider` with a locked prompt and
+  a JSON-schema response. Falls back to the deterministic suggester
+  on provider unavailability, exceptions, or empty assertions. New
+  `sentinel record import --llm-postconditions` flag.
+
+RUM (closes v1.9.0 §11 "session correlation"):
+
+- **`RumSession` aggregation** (`engine/rum/ingest.py`) — events grouped
+  by `payload.session_id` (events without one bucket into `anonymous`).
+  Receiver emits a new `sessions.json` artefact and extends `run.json`
+  with `rum.session_count` and `rum.sessions_with_errors`.
+
+Fingerprint corpus harness (closes v1.9.0 §11 "automated corpus crawl"):
+
+- **`engine/fingerprints/`** + **`scripts/cluster-fingerprints.py`** —
+  walks a local corpus of source files, counts recurring 12-80 char
+  substrings, drops universal-noise patterns, and ranks candidates
+  by `occurrences × file_coverage`. Output is a human-review starting
+  point; nothing auto-promotes to the YAML catalogue. Configurable
+  `--top` and `--min`.
+
+In-browser recorder (closes v1.9.0 §11 "in-browser recorder UI"):
+
+- **`apps/browser-extension/src/recorder.ts`** — content-script
+  recorder that listens for click / change / keydown and emits the
+  v1 trace JSON `sentinel record import` consumes. Selector
+  synthesis prefers `#id`, then `[data-testid]`, `[aria-label]`,
+  `[name]`, then a positional CSS path. Auto-records a `navigate`
+  step on start; supports `click`, `fill`, `select`, `check` /
+  `uncheck`, and `press` (Enter / Escape / Tab). `safeCssEscape`
+  inlines the spec algorithm so jsdom can drive the recorder in unit
+  tests without polyfills.
+
+SLO baseline (closes v1.8.0 commit-message note "ratchet baseline
+back down from real CI measurements"):
+
+- **`slo/baseline.json`** ratcheted from 1.5/1.5/2.0/2.0 down to
+  1.4/1.4/1.85/1.85 based on v1.9.0 CI medians (1.17 / 1.22 / 1.60).
+  Historical baseline table added to `slo/README.md`.
+
+### Documentation
+
+- **`docs/release/slsa.md`** "Path to L4" rewritten as a three-row
+  status table (two-party review / hermetic builds / hermetic infra)
+  with concrete GitHub Environment configuration steps for two-party
+  review and explicit prerequisites for hermetic builds and the
+  self-hosted runner pool.
+
+### Operations
+
+- All ten workspace manifests bumped to `1.10.0` (now includes
+  `packages/rum-browser-sdk`); SDK API snapshot regenerated.
+
 ## [1.9.0] - 2026-06-02
 
 Long-shots release. Three MVPs that establish new product surfaces

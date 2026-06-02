@@ -34,6 +34,18 @@ class RumIngestError(Exception):
 
 
 @dataclass(frozen=True, slots=True)
+class RumSession:
+    """One real-user session aggregated from the JSONL stream."""
+
+    session_id: str
+    event_count: int
+    page_views: int
+    errors: int
+    started_at: str
+    ended_at: str
+
+
+@dataclass(frozen=True, slots=True)
 class RumIngestResult:
     """Outcome of one ingestion."""
 
@@ -42,6 +54,7 @@ class RumIngestResult:
     events_processed: int
     parse_errors: int
     findings_emitted: int
+    sessions: tuple[RumSession, ...] = ()
 
 
 def ingest_jsonl(
@@ -72,6 +85,8 @@ def ingest_jsonl(
     run_dir.mkdir(parents=True, exist_ok=True)
 
     _write_events(run_dir / "events.jsonl", events)
+    sessions = _sessions_from_events(events)
+    _write_sessions(run_dir / "sessions.json", sessions, run_id=run_id, now=now)
     findings = _derive_findings(events, run_id=run_id, now=now)
     _write_findings(run_dir / "findings.json", findings, run_id=run_id, now=now)
     _write_run_json(
@@ -81,6 +96,7 @@ def ingest_jsonl(
         base_url=base_url,
         events_processed=len(events),
         findings_count=len(findings),
+        sessions=sessions,
         now=now,
     )
 
@@ -90,6 +106,7 @@ def ingest_jsonl(
         events_processed=len(events),
         parse_errors=parse_errors,
         findings_emitted=len(findings),
+        sessions=sessions,
     )
 
 
@@ -153,6 +170,59 @@ def _write_events(path: Path, events: list[RumEvent]) -> None:
             )
         )
     path.write_text("\n".join(lines) + ("\n" if lines else ""), encoding="utf-8")
+
+
+def _sessions_from_events(events: list[RumEvent]) -> tuple[RumSession, ...]:
+    """Group events into sessions by ``payload.session_id``.
+
+    Events without an explicit session id are bucketed under
+    ``"anonymous"`` so they still show up in the summary; this also
+    keeps the downstream contract simple (every event lands in exactly
+    one session).
+    """
+
+    buckets: dict[str, list[RumEvent]] = {}
+    for event in events:
+        session_id = str(event.payload.get("session_id", "anonymous"))
+        buckets.setdefault(session_id, []).append(event)
+
+    sessions: list[RumSession] = []
+    for session_id, bucket in buckets.items():
+        timestamps = [e.ts for e in bucket if e.ts]
+        sessions.append(
+            RumSession(
+                session_id=session_id,
+                event_count=len(bucket),
+                page_views=sum(1 for e in bucket if e.type == "page.view"),
+                errors=sum(1 for e in bucket if e.type == "page.error"),
+                started_at=min(timestamps) if timestamps else "",
+                ended_at=max(timestamps) if timestamps else "",
+            )
+        )
+    return tuple(sorted(sessions, key=lambda s: s.session_id))
+
+
+def _write_sessions(
+    path: Path, sessions: tuple[RumSession, ...], *, run_id: str, now: datetime
+) -> None:
+    payload = {
+        "schema_version": "1",
+        "run_id": run_id,
+        "generated_at": now.isoformat(),
+        "count": len(sessions),
+        "sessions": [
+            {
+                "session_id": s.session_id,
+                "event_count": s.event_count,
+                "page_views": s.page_views,
+                "errors": s.errors,
+                "started_at": s.started_at,
+                "ended_at": s.ended_at,
+            }
+            for s in sessions
+        ],
+    }
+    path.write_text(json.dumps(payload, sort_keys=True, indent=2), encoding="utf-8")
 
 
 def _derive_findings(
@@ -233,6 +303,7 @@ def _write_run_json(
     base_url: str,
     events_processed: int,
     findings_count: int,
+    sessions: tuple[RumSession, ...],
     now: datetime,
 ) -> None:
     payload = {
@@ -252,6 +323,8 @@ def _write_run_json(
         "rum": {
             "events_processed": events_processed,
             "schema_version": "1",
+            "session_count": len(sessions),
+            "sessions_with_errors": sum(1 for s in sessions if s.errors > 0),
         },
     }
     path.write_text(json.dumps(payload, sort_keys=True, indent=2), encoding="utf-8")
@@ -262,4 +335,4 @@ def _stable_finding_id(*parts: str) -> str:
     return f"FND-{digest}"
 
 
-__all__ = ["RumIngestError", "RumIngestResult", "ingest_jsonl"]
+__all__ = ["RumIngestError", "RumIngestResult", "RumSession", "ingest_jsonl"]

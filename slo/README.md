@@ -33,6 +33,14 @@ by more than 10 % (configurable per-metric in
 `engine/bench/compare.py:DEFAULT_REGRESSION_THRESHOLD`). The current
 baseline values include headroom for GitHub-hosted runner jitter.
 
+### Historical baseline
+
+| Version | import_time | cli_cold_start | ttff   | full_audit | Notes                                                                |
+| ------- | ----------- | -------------- | ------ | ---------- | -------------------------------------------------------------------- |
+| 1.8.0   | 1.5 s       | 1.5 s          | 3.0 s  | 3.0 s      | Initial — generous so the first CI run wouldn't trip the gate.       |
+| 1.8.0   | 1.5 s       | 1.5 s          | 2.0 s  | 2.0 s      | Tightened mid-release after the first green CI run.                  |
+| 1.10.0  | 1.4 s       | 1.4 s          | 1.85 s | 1.85 s     | Ratcheted down from observed v1.9.0 CI medians (1.17 / 1.22 / 1.60). |
+
 ## Local development
 
 Run the suite locally to compare your branch against `main`:

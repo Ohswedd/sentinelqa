@@ -1,6 +1,6 @@
 [project]
 name = "sentinelqa"
-version = "1.9.0"
+version = "1.10.0"
 description = "SentinelQA Python SDK — typed facade for embedding SentinelQA in scripts and AI-agent flows."
 readme = "README.md"
 requires-python = ">=3.11"

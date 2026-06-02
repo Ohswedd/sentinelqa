@@ -44,21 +44,73 @@ artifact.
 
 ## Path to L4
 
-L4 requires:
+L4 requires three operational changes. The current status of each is
+tracked here; PRs that move the needle should update this table.
 
-1. **Hermetic builds.** Every input to the build step must be pinned
-   and reproducible: pinned base images (digest, not tag), pinned
-   `uv` / `pnpm` versions, no network access at build time beyond the
-   pinned dependency lock. Today PyPI / Docker builds use frozen
-   lockfiles but pull from network during the build step; the
-   reproducibility audit is incomplete.
-2. **Two-party review.** The publish workflows already gate on the
-   `pypi-release` / `npm-release` / `docker-release` GitHub
-   Environments, which require a single human approver. L4 wants
-   two-party approval — see the runbook for the planned change.
-3. **Hermetic build infrastructure.** GitHub-hosted runners are
-   ephemeral but not hermetic by SLSA's definition. Moving release
-   builds to a self-hosted runner pool with no inbound network is the
-   path; tracked in ADR-0048 (planned).
+| Requirement              | Status      | What's actually needed                                                                                                                                                                                                                                        |
+| ------------------------ | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Two-party review**     | not started | Configure the `pypi-release`, `npm-release`, `docker-release`, `github-release` GitHub Environments to require ≥2 reviewers. See "Two-party review" below for the exact GitHub Environment settings.                                                          |
+| **Hermetic builds**      | partial     | Pin every base image by digest (not tag), drop network access during the build step, and snapshot the toolchain (uv / pnpm / Node / Python) by SHA. We pin lockfiles already; the remaining hermetic-build gap is documented under "Build hermeticity" below. |
+| **Hermetic build infra** | not started | Move publish builds onto a self-hosted runner pool with egress-deny network policy. The GitHub-hosted runner pool is ephemeral but not hermetic. See "Self-hosted runner pool" below.                                                                         |
 
-When all three land, this page bumps the L3 entries above to L4.
+When all three land, the L3 entries above bump to L4 in the same
+commit.
+
+### Two-party review
+
+Each publish workflow gates on a GitHub Environment so an existing
+human approver must consent before any upload. L4 requires that
+**two** distinct humans consent.
+
+In each of `pypi-release`, `npm-release`, `docker-release`, and
+`github-release`:
+
+1. Under **Deployment protection rules → Required reviewers**, add at
+   least two members of the publish maintainers team.
+2. Set **Required number of reviewers** to 2.
+3. Set **Prevent self-review** to on. The opener of the workflow run
+   cannot count as one of the two reviewers.
+
+Both approvers must approve before the publish job dispatches; the
+GitHub audit log records both identities and timestamps, which feeds
+the SLSA provenance attestation.
+
+### Build hermeticity
+
+Today's publish workflows already:
+
+- pin `uv` to `0.5.24` (`astral-sh/setup-uv@v4`),
+- pin `pnpm` to `9.15.0` (`pnpm/action-setup@v4`),
+- pin Node to a known minor (`actions/setup-node@v4` with explicit `node-version`),
+- run `uv sync --frozen --all-packages` / `pnpm install --frozen-lockfile`,
+- generate a Sigstore attestation over the produced artefacts.
+
+The remaining gap is the build _step_: PyPI / Docker / npm builds
+still pull from the public internet (PyPI mirror, registry.npmjs.org,
+Debian apt) during the build itself. L4 wants every build input to
+have been observed by the attestation system.
+
+Path to close:
+
+1. Pin every Docker base image to its `@sha256:...` digest in
+   `apps/cli/sentinel/runner/docker/Dockerfile.publish`.
+2. Run the publish builds with `--network=none` once all wheel
+   downloads are pre-staged into the runner's local cache.
+3. Snapshot the toolchain SHA into the SLSA provenance subject (the
+   `attest-build-provenance` action already records the workflow SHA;
+   we need to extend it with the resolved toolchain SHA).
+
+### Self-hosted runner pool
+
+GitHub-hosted runners satisfy SLSA L3 (ephemeral, vendor-isolated) but
+not L4 (hermetic, controlled by the build maintainer). The path:
+
+1. Stand up a self-hosted runner pool labelled `sentinelqa-publish`
+   with egress-deny network policy except for the configured
+   registries (PyPI / npm / Docker Hub).
+2. Tag the publish jobs in `.github/workflows/publish-*.yml` with
+   `runs-on: [self-hosted, sentinelqa-publish]`.
+3. Disable interactive shell access; only the runner process runs.
+
+Tracked in ADR-0048 (planned). This is the final piece; once all
+three sections show "done", flip the L3 column to L4.
