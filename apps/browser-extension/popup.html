@@ -11,12 +11,39 @@
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         margin: 0;
         padding: 16px;
-        width: 320px;
+        width: 360px;
         font-size: 13px;
       }
       h1 {
         font-size: 14px;
         margin: 0 0 12px;
+      }
+      .tabs {
+        display: flex;
+        border-bottom: 1px solid #d0d7de;
+        margin-bottom: 12px;
+      }
+      .tab-button {
+        flex: 1;
+        padding: 8px;
+        border: 0;
+        background: transparent;
+        color: inherit;
+        font-weight: 600;
+        cursor: pointer;
+        margin: 0;
+        border-bottom: 2px solid transparent;
+        border-radius: 0;
+      }
+      .tab-button[aria-selected='true'] {
+        border-bottom-color: #0f766e;
+        color: #0f766e;
+      }
+      .panel {
+        display: none;
+      }
+      .panel[aria-hidden='false'] {
+        display: block;
       }
       .row {
         display: flex;
@@ -29,13 +56,16 @@
         font-weight: 500;
       }
       input[type='text'],
-      input[type='number'] {
+      input[type='number'],
+      select {
         width: 100%;
         padding: 6px 8px;
         font-size: 12px;
         border: 1px solid #d0d7de;
         border-radius: 4px;
         font-family: ui-monospace, SFMono-Regular, monospace;
+        background: transparent;
+        color: inherit;
       }
       button {
         padding: 8px 12px;
@@ -47,6 +77,9 @@
         cursor: pointer;
         width: 100%;
         margin-top: 12px;
+      }
+      button.secondary {
+        background: #475569;
       }
       button:disabled {
         background: #94a3b8;
@@ -77,25 +110,85 @@
     </style>
   </head>
   <body>
-    <h1>SentinelQA — Audit this page</h1>
-    <div>
-      <label for="url">URL</label>
-      <input id="url" type="text" readonly />
+    <h1>SentinelQA</h1>
+
+    <div class="tabs" role="tablist">
+      <button
+        class="tab-button"
+        id="tab-audit-button"
+        role="tab"
+        aria-controls="tab-audit"
+        aria-selected="true"
+      >
+        Audit
+      </button>
+      <button
+        class="tab-button"
+        id="tab-record-button"
+        role="tab"
+        aria-controls="tab-record"
+        aria-selected="false"
+      >
+        Record
+      </button>
     </div>
-    <div>
-      <label for="host">Local MCP host</label>
-      <input id="host" type="text" value="http://127.0.0.1" />
-    </div>
-    <div>
-      <label for="port">Port</label>
-      <input id="port" type="number" value="7333" min="1" max="65535" />
-    </div>
-    <button id="audit">Audit this page</button>
-    <p class="hint">
-      Requires a local <code>sentinel mcp --http --port &lt;port&gt;</code> running on 127.0.0.1.
-      The extension only posts to loopback addresses — see the SECURITY.md.
-    </p>
-    <div id="status" class="status"></div>
+
+    <section
+      id="tab-audit"
+      class="panel"
+      role="tabpanel"
+      aria-labelledby="tab-audit-button"
+      aria-hidden="false"
+    >
+      <div>
+        <label for="url">URL</label>
+        <input id="url" type="text" readonly />
+      </div>
+      <div>
+        <label for="host">Local MCP host</label>
+        <input id="host" type="text" value="http://127.0.0.1" />
+      </div>
+      <div>
+        <label for="port">Port</label>
+        <input id="port" type="number" value="7333" min="1" max="65535" />
+      </div>
+      <button id="audit">Audit this page</button>
+      <p class="hint">
+        Requires a local <code>sentinel mcp --http --port &lt;port&gt;</code> running on 127.0.0.1.
+        The extension only posts to loopback addresses — see the SECURITY.md.
+      </p>
+      <div id="status" class="status"></div>
+    </section>
+
+    <section
+      id="tab-record"
+      class="panel"
+      role="tabpanel"
+      aria-labelledby="tab-record-button"
+      aria-hidden="true"
+    >
+      <div>
+        <label for="recording-name">Recording name</label>
+        <input id="recording-name" type="text" value="recording" />
+      </div>
+      <div>
+        <label for="recording-priority">Priority</label>
+        <select id="recording-priority">
+          <option value="p0">p0 — release-blocking</option>
+          <option value="p1">p1 — high</option>
+          <option value="p2" selected>p2 — medium</option>
+          <option value="p3">p3 — low</option>
+        </select>
+      </div>
+      <button id="record-start">Start recording</button>
+      <button id="record-stop" class="secondary" disabled>Stop &amp; download trace</button>
+      <p class="hint">
+        Click <em>Start</em>, then drive the flow in the active tab. Click <em>Stop</em> to download
+        a trace JSON file the <code>sentinel record import</code> CLI consumes.
+      </p>
+      <div id="recorder-status" class="status"></div>
+    </section>
+
     <script type="module" src="dist/popup.js"></script>
   </body>
 </html>

@@ -1,0 +1,181 @@
+name: Publish (Browser Extension)
+
+# Triggered on a `v*` tag push. Builds the manifest-v3 extension under
+# apps/browser-extension/, packages a Chrome `.zip` and Firefox `.zip`,
+# attaches both to the GitHub Release, and (when the matching secrets
+# are present) submits them to the Chrome Web Store and Firefox AMO.
+#
+# All three submission steps are gated on environments
+# (`chrome-webstore-release`, `firefox-amo-release`) so a human owner
+# manually approves before any storefront upload.
+#
+# When the storefront credentials aren't configured yet, the build +
+# zip + release-asset steps still run; only the upload steps skip.
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+  id-token: write
+  attestations: write
+
+concurrency:
+  group: publish-browser-extension-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: build (manifest-v3 zip)
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      chrome_zip: ${{ steps.pack.outputs.chrome_zip }}
+      firefox_zip: ${{ steps.pack.outputs.firefox_zip }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: '9.15.0'
+          run_install: false
+
+      - name: Set up Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: pnpm
+
+      - name: Install deps (frozen)
+        run: pnpm install --frozen-lockfile
+
+      - name: Resolve version
+        id: version
+        run: |
+          set -euo pipefail
+          TAG="${GITHUB_REF##*/}"
+          VERSION="${TAG#v}"
+          MANIFEST_VERSION="$(node -p "require('./apps/browser-extension/manifest.json').version")"
+          if [ "$VERSION" != "$MANIFEST_VERSION" ]; then
+            echo "::error::tag $TAG (= $VERSION) does not match manifest.json version $MANIFEST_VERSION"
+            exit 1
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Build extension
+        run: pnpm --filter sentinelqa-browser run build
+
+      - name: Pack Chrome + Firefox zips
+        id: pack
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.version.outputs.version }}"
+          OUT="dist/extension"
+          mkdir -p "$OUT"
+          STAGE="$(mktemp -d)"
+          cp -R apps/browser-extension/manifest.json \
+                apps/browser-extension/popup.html \
+                apps/browser-extension/dist \
+                apps/browser-extension/icons \
+                "$STAGE/"
+          CHROME_ZIP="$OUT/sentinelqa-extension-chrome-${VERSION}.zip"
+          FIREFOX_ZIP="$OUT/sentinelqa-extension-firefox-${VERSION}.zip"
+          (cd "$STAGE" && zip -qr "$GITHUB_WORKSPACE/$CHROME_ZIP" .)
+          cp "$CHROME_ZIP" "$FIREFOX_ZIP"
+          echo "chrome_zip=$CHROME_ZIP" >> "$GITHUB_OUTPUT"
+          echo "firefox_zip=$FIREFOX_ZIP" >> "$GITHUB_OUTPUT"
+
+      - name: Generate SLSA build provenance for the zips
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: |
+            ${{ steps.pack.outputs.chrome_zip }}
+            ${{ steps.pack.outputs.firefox_zip }}
+
+      - name: Attach to the GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          files: |
+            ${{ steps.pack.outputs.chrome_zip }}
+            ${{ steps.pack.outputs.firefox_zip }}
+          fail_on_unmatched_files: true
+
+      - name: Upload zips as workflow artefacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-extension-zips
+          path: |
+            ${{ steps.pack.outputs.chrome_zip }}
+            ${{ steps.pack.outputs.firefox_zip }}
+
+  publish-chrome:
+    name: publish (Chrome Web Store)
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: chrome-webstore-release
+      url: https://chrome.google.com/webstore/devconsole/
+    if: ${{ vars.CHROME_EXTENSION_ID != '' }}
+    steps:
+      - name: Download zip artefact
+        uses: actions/download-artifact@v4
+        with:
+          name: browser-extension-zips
+          path: dist
+
+      - name: Upload to Chrome Web Store
+        uses: mnao305/chrome-extension-upload@v5.0.0
+        with:
+          file-path: dist/sentinelqa-extension-chrome-${{ needs.build.outputs.version }}.zip
+          extension-id: ${{ vars.CHROME_EXTENSION_ID }}
+          client-id: ${{ secrets.CHROME_WEB_STORE_CLIENT_ID }}
+          client-secret: ${{ secrets.CHROME_WEB_STORE_CLIENT_SECRET }}
+          refresh-token: ${{ secrets.CHROME_WEB_STORE_REFRESH_TOKEN }}
+          # publish=true would auto-publish; we keep it false so a human
+          # reviewer flips it from the dev console. The action still
+          # uploads + sets it to "Ready to publish".
+          publish: false
+
+  publish-firefox:
+    name: publish (Firefox AMO)
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: firefox-amo-release
+      url: https://addons.mozilla.org/en-US/developers/
+    if: ${{ vars.FIREFOX_EXTENSION_ID != '' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Download zip artefact
+        uses: actions/download-artifact@v4
+        with:
+          name: browser-extension-zips
+          path: dist
+
+      - name: Submit to Firefox AMO via web-ext
+        # `web-ext sign` uploads and waits for the signed XPI. The
+        # action requires JWT_ISSUER and JWT_SECRET from the AMO API
+        # credentials page.
+        env:
+          WEB_EXT_API_KEY: ${{ secrets.FIREFOX_AMO_JWT_ISSUER }}
+          WEB_EXT_API_SECRET: ${{ secrets.FIREFOX_AMO_JWT_SECRET }}
+        run: |
+          set -euo pipefail
+          mkdir -p staged
+          (cd staged && unzip -q "$GITHUB_WORKSPACE/dist/sentinelqa-extension-firefox-${{ needs.build.outputs.version }}.zip")
+          npx --yes web-ext@8.3.0 sign \
+            --source-dir staged \
+            --channel listed \
+            --artifacts-dir dist/signed

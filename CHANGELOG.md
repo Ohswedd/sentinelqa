@@ -10,6 +10,73 @@ and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html). See
 
 _No unreleased changes._
 
+## [1.11.0] - 2026-06-03
+
+Final §11 close-outs release. Four additions that ship the three
+remaining items the v1.10.0 IMPROVEMENTS.md still flagged as "Still
+deferred" — and removes the deferral.
+
+### Added
+
+Recorder UI:
+
+- **Browser-extension recorder tab** (`apps/browser-extension/popup.html`,
+  `apps/browser-extension/src/popup.ts`) — tabbed popup with `Audit` /
+  `Record` panes. Recorder pane carries name + priority inputs,
+  `Start recording` / `Stop & download trace` buttons. Start injects
+  `dist/recorder.js` into the active tab via `chrome.scripting`,
+  calls `window.__sentinelqaRecorder.startRecording`; Stop collects
+  the trace, packs it as JSON, and downloads it through a
+  `URL.createObjectURL` link. Manifest gains the `scripting` and
+  `downloads` permissions.
+- **`__sentinelqaRecorder` bridge** (`apps/browser-extension/src/recorder.ts`)
+  — attaches the recorder API to `window` when loaded as a content
+  script. Existing 10-test recorder suite passes unchanged.
+
+Storefront publishing:
+
+- **`/.github/workflows/publish-browser-extension.yml`** — fires on
+  `v*` tag pushes, builds and zips the extension, attaches both
+  Chrome and Firefox zips to the GitHub Release, and emits an SLSA
+  build-provenance attestation. Submission to the Chrome Web Store
+  and Firefox AMO is gated on environment-level secrets
+  (`chrome-webstore-release`, `firefox-amo-release`); jobs skip
+  cleanly until those credentials are configured.
+- **`apps/browser-extension/PUBLISHING.md`** — runbook documenting
+  every required secret / variable, how to obtain it, and the
+  first-time-listing workflow.
+
+RUM hosted ingest:
+
+- **`engine/rum/server.py`** — stdlib HTTP receiver. `POST /rum`
+  appends a JSONL batch to an inbox file; once the buffered event
+  count crosses `--bake-threshold` (default 200), the receiver bakes
+  the inbox into a synthetic run via the existing
+  `engine.rum.ingest.ingest_jsonl`. `POST /bake` forces an immediate
+  bake; `GET /healthz` returns liveness; `OPTIONS /rum` returns the
+  CORS preflight so the browser SDK can post cross-origin.
+  Loopback-only by default. Pure-router design (`handle_request`)
+  keeps it socket-free under test.
+- **`sentinel rum serve`** CLI command — lifts the receiver with
+  `--host` / `--port` / `--runs-root` / `--project` / `--base-url` /
+  `--bake-threshold`. Bakes the inbox on graceful shutdown.
+
+RUM replay UI:
+
+- **`engine/reporter/serve/rum_replay.py`** + **`/runs/<id>/rum`** +
+  **`/api/runs/<id>/rum.json`** routes on the existing `sentinel
+serve` viewer. Renders a session-grouped timeline reading
+  `sessions.json` + `events.jsonl` from the run directory. Pure
+  Python rendering with `html.escape` on every user-controllable
+  value — no JS framework, no XSS surface. `page.error` events are
+  flagged red; sessions with at least one error get a red border on
+  the section card.
+
+### Operations
+
+- All ten workspace manifests bumped to `1.11.0`; SDK API snapshot
+  regenerated.
+
 ## [1.10.0] - 2026-06-03
 
 Close-outs release. Seven items that fully ship the work the v1.6.0

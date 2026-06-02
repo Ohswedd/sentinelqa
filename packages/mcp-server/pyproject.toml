@@ -1,6 +1,6 @@
 [project]
 name = "sentinelqa-mcp"
-version = "1.10.0"
+version = "1.11.0"
 description = "SentinelQA MCP server — JSON-RPC over stdio/HTTP for the twelve the documentation* tools. ADR-0023."
 readme = "README.md"
 requires-python = ">=3.11"

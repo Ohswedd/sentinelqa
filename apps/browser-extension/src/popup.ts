@@ -92,14 +92,150 @@ async function runAudit(): Promise<void> {
   }
 }
 
+// --------------------------------------------------------------------------- //
+// Recorder tab (v1.11.0, phase 41)
+// --------------------------------------------------------------------------- //
+
+function setRecorderStatus(message: string, kind: 'ok' | 'error' | 'idle'): void {
+  const node = document.getElementById('recorder-status');
+  if (!node) return;
+  node.textContent = message;
+  node.className = 'status' + (kind === 'idle' ? '' : ' ' + kind);
+}
+
+async function injectAndStartRecording(name: string, priority: string): Promise<void> {
+  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  if (!tab?.id) {
+    setRecorderStatus('No active tab.', 'error');
+    return;
+  }
+  // Push the recorder script into the page and immediately call start.
+  await chrome.scripting.executeScript({
+    target: { tabId: tab.id },
+    files: ['dist/recorder.js'],
+  });
+  await chrome.scripting.executeScript({
+    target: { tabId: tab.id },
+    func: (n: string, p: string) => {
+      const w = window as unknown as {
+        __sentinelqaRecorder?: {
+          startRecording: (n: string, p: 'p0' | 'p1' | 'p2' | 'p3') => void;
+        };
+      };
+      w.__sentinelqaRecorder?.startRecording(n, p as 'p0' | 'p1' | 'p2' | 'p3');
+    },
+    args: [name, priority],
+  });
+}
+
+async function stopAndCollectRecording(): Promise<unknown> {
+  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  if (!tab?.id) {
+    return null;
+  }
+  const [result] = await chrome.scripting.executeScript({
+    target: { tabId: tab.id },
+    func: () => {
+      const w = window as unknown as {
+        __sentinelqaRecorder?: { stopRecording: () => unknown };
+      };
+      return w.__sentinelqaRecorder?.stopRecording() ?? null;
+    },
+  });
+  return result?.result ?? null;
+}
+
+function downloadTrace(trace: unknown, name: string): void {
+  const json = JSON.stringify(trace, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const safeName = (name || 'recording').replace(/[^A-Za-z0-9_-]+/g, '-');
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `${safeName}.trace.json`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
+
+async function onRecordStart(): Promise<void> {
+  const nameInput = document.getElementById('recording-name') as HTMLInputElement;
+  const prioritySelect = document.getElementById('recording-priority') as HTMLSelectElement;
+  const startBtn = document.getElementById('record-start') as HTMLButtonElement;
+  const stopBtn = document.getElementById('record-stop') as HTMLButtonElement;
+  const name = (nameInput.value || 'recording').trim();
+  const priority = prioritySelect.value;
+  try {
+    await injectAndStartRecording(name, priority);
+    startBtn.disabled = true;
+    stopBtn.disabled = false;
+    setRecorderStatus(
+      `Recording '${name}' (${priority}). Drive the flow in the active tab, then click Stop.`,
+      'ok',
+    );
+  } catch (err) {
+    setRecorderStatus(
+      'Could not start recording: ' + String(err instanceof Error ? err.message : err),
+      'error',
+    );
+  }
+}
+
+async function onRecordStop(): Promise<void> {
+  const nameInput = document.getElementById('recording-name') as HTMLInputElement;
+  const startBtn = document.getElementById('record-start') as HTMLButtonElement;
+  const stopBtn = document.getElementById('record-stop') as HTMLButtonElement;
+  try {
+    const trace = await stopAndCollectRecording();
+    if (!trace) {
+      setRecorderStatus('No trace returned from the page.', 'error');
+      return;
+    }
+    downloadTrace(trace, nameInput.value);
+    setRecorderStatus('Trace downloaded. Feed it to `sentinel record import <file.json>`.', 'ok');
+  } catch (err) {
+    setRecorderStatus(
+      'Could not stop recording: ' + String(err instanceof Error ? err.message : err),
+      'error',
+    );
+  } finally {
+    startBtn.disabled = false;
+    stopBtn.disabled = true;
+  }
+}
+
+function setupTabs(): void {
+  const buttons = Array.from(document.querySelectorAll<HTMLButtonElement>('.tab-button'));
+  const panels = Array.from(document.querySelectorAll<HTMLElement>('.panel'));
+  for (const btn of buttons) {
+    btn.addEventListener('click', () => {
+      const targetId = btn.getAttribute('aria-controls');
+      for (const b of buttons) {
+        b.setAttribute('aria-selected', b === btn ? 'true' : 'false');
+      }
+      for (const p of panels) {
+        p.setAttribute('aria-hidden', p.id === targetId ? 'false' : 'true');
+      }
+    });
+  }
+}
+
 async function init(): Promise<void> {
   const urlInput = document.getElementById('url') as HTMLInputElement;
   const url = await getActiveTabUrl();
   if (url) urlInput.value = url;
   await restoreSettings();
-  const button = document.getElementById('audit') as HTMLButtonElement;
-  button.addEventListener('click', () => {
+  const auditBtn = document.getElementById('audit') as HTMLButtonElement;
+  auditBtn.addEventListener('click', () => {
     void runAudit();
+  });
+  setupTabs();
+  document.getElementById('record-start')?.addEventListener('click', () => {
+    void onRecordStart();
+  });
+  document.getElementById('record-stop')?.addEventListener('click', () => {
+    void onRecordStop();
   });
 }
 
