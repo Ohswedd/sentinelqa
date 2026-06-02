@@ -10,6 +10,74 @@ and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html). See
 
 _No unreleased changes._
 
+## [1.6.0] - 2026-06-02
+
+Reporting + UI release. Seven additions that close the gap between
+"raw JSON" and "release decision" — a self-hosted run viewer, status
+widget, run-to-run diff surfaced in HTML, accessibility heatmap
+overlay, weekly email digest, deep links into the source host, and a
+public status-page endpoint.
+
+### Added
+
+Reporter modules (`engine/reporter/`):
+
+- **Run viewer** (`serve/`) — `sentinel serve` lifts a stdlib HTTP
+  server (no FastAPI) over loopback that lists past runs at `/`,
+  serves each run's `report.html` and other allowlisted artifacts,
+  and exposes `/api/runs.json`, `/api/trends.json`,
+  `/api/status.json`, and `/api/diff/<a>/<b>.json`. Path-traversal
+  defence + extension allowlist + `X-Content-Type-Options: nosniff`
+  and `Cache-Control: no-store` on every response. Defaults to
+  `127.0.0.1:7331`; the router is split from the I/O layer so it
+  stays unit-testable without sockets.
+- **History + status snapshot** (`history.py`) — computes
+  per-run timeseries (score, per-severity finding counts) over a
+  90-day window and a compact `StatusSnapshot` for the public
+  widget. `release_decision` derived from threshold + status:
+  `pass` / `blocked` / `inconclusive` / `unsafe_target_rejected`.
+- **Status-page widget** (`render_status_widget_js`) — embeddable
+  `<script src="…/widget.js" data-endpoint="…/api/status.json">`
+  resolves itself against `document.currentScript.previousElementSibling`
+  and renders "last score: 94 (PASS), updated 2h ago". Zero deps.
+- **Run-to-run diff** (`run_diff.py`) — `compute_run_diff(before, after)`
+  reuses `engine.runs.compare.compare_runs` to surface
+  per-artifact byte deltas, and `render_run_diff_section()` produces
+  a self-contained `<section>` fragment for inclusion in `report.html`.
+- **Per-finding deep links** (`deep_links.py`) — `CodeRef` +
+  `DeepLinkConfig` build `github`, `gitlab`, `bitbucket`, and
+  `vscode://` URLs from a file/line/column. Path normalisation
+  strips leading `./` and collapses Windows separators.
+- **Accessibility heatmap overlay** (`a11y_heatmap.py`) — converts
+  axe-core JSON into absolute-percentage-positioned `<div>` overlays
+  on the captured screenshot. Severity-coloured (critical / high /
+  medium / low / info), with an inline legend and a 40-box-per-page
+  cap. axe impact → severity mapping. All emitted text is
+  `html.escape`-d.
+
+Integrations:
+
+- **Weekly email digest** (`integrations/email/`) — `DigestBuilder`
+  picks the latest run and a window-start ~5 runs back, calls
+  `compute_run_diff`, and emits a plain-text + HTML summary
+  (scorecard, score delta, top 3 regressions/improvements). stdlib
+  `smtplib` + `EmailMessage` with STARTTLS by default and an SMTP_SSL
+  fallback. Transport seam (`Callable[[SmtpConfig, EmailMessage], None]`)
+  so tests don't open sockets. CLI:
+  `python -m integrations.email.digest --to … --smtp-host …`.
+
+CLI (`apps/cli/`):
+
+- **`sentinel serve`** subcommand (`commands/serve_cmd.py`) — wires
+  the viewer into the Typer app with `--host` / `--port` /
+  `--runs-root` / `--threshold`. Loopback-only by default; rebinding
+  to `0.0.0.0` is explicit.
+
+### Operations
+
+- All nine workspace manifests bumped to `1.6.0`; Python SDK API
+  snapshot regenerated.
+
 ## [1.5.0] - 2026-06-01
 
 Integration-breadth release. Nine additions covering the CI surfaces,

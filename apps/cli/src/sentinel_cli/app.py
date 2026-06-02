@@ -41,6 +41,7 @@ from sentinel_cli.commands import (
     plugins_cmd,
     report_cmd,
     security_cmd,
+    serve_cmd,
     stubs,
     supply_chain_cmd,
     test_cmd,
@@ -266,6 +267,16 @@ def build_app() -> typer.Typer:
             "Reads from `.sentinel/runs/<run-id>/`; no module re-execution."
         ),
     )(report_cmd.run_report)
+    cli.command(
+        name="serve",
+        help=(
+            "Self-hosted SentinelQA run viewer over loopback HTTP. Lists "
+            "past runs, serves each run's report.html, exposes /api/runs.json, "
+            "/api/trends.json, /api/status.json, /api/diff/<a>/<b>.json, "
+            "and a /widget.js for embedding the status badge on a public "
+            "status page. Stdlib-only — no FastAPI dependency."
+        ),
+    )(serve_cmd.run_serve)
     cli.command(
         name="ci",
         help=(
