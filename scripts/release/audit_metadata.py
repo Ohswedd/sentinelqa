@@ -60,7 +60,10 @@ PUBLISHABLE_PY: tuple[str, ...] = (
     "packages/mcp-server/pyproject.toml",
 )
 
-PUBLISHABLE_TS: tuple[str, ...] = ("packages/ts-runtime/package.json",)
+PUBLISHABLE_TS: tuple[str, ...] = (
+    "packages/ts-runtime/package.json",
+    "packages/rum-browser-sdk/package.json",
+)
 
 INTERNAL_PY: tuple[str, ...] = (
     "pyproject.toml",  # monorepo root (tool.uv.package = false)

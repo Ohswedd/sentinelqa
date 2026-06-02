@@ -1,0 +1,190 @@
+# SentinelQA AI-app fingerprint catalogue (v1.9.0, phase 39).
+#
+# Each fingerprint is a high-precision pattern that strongly indicates
+# LLM-generated boilerplate that should not have shipped to production.
+# Patterns are scoped by `target`:
+#
+#   * source      → matched against bundle / source file bodies
+#                    (modules.llm_audit.models.SourceFile.body)
+#   * rendered    → matched against rendered page text
+#                    (modules.llm_audit.models.RenderedTextSample.text)
+#
+# Severity defaults reflect "would a human reviewer block release?"
+# Test keys and demo credentials are high; mock data and placeholders
+# are medium; AI-tool watermarks are low.
+#
+# To add a fingerprint:
+#   1. Confirm the pattern is high-signal — it must not match clean
+#      production code. If you can show the same regex matches a
+#      well-known open-source app, drop it.
+#   2. Pin a confidence < 1.0 if the pattern can legitimately appear
+#      in test fixtures.
+#   3. Land an ADR-0024 amendment when the wording shifts; the rule
+#      identity (`id`) is part of the public SARIF surface.
+
+schema_version: '1'
+fingerprints:
+  - id: ai-stripe-test-key
+    target: source
+    category: secrets
+    severity: high
+    confidence: 0.95
+    title: 'Stripe test key in bundle'
+    pattern: 'pk_test_[A-Za-z0-9]{24,}'
+    description: |
+      The bundle contains a Stripe test key (``pk_test_...``). LLM
+      assistants frequently emit the example key verbatim from the
+      Stripe docs; shipping it leaks the demo account and is a
+      well-known indicator that the app was not reviewed before
+      release.
+
+  - id: ai-stripe-secret-key
+    target: source
+    category: secrets
+    severity: critical
+    confidence: 0.98
+    title: 'Stripe SECRET key in bundle'
+    pattern: 'sk_test_[A-Za-z0-9]{24,}'
+    description: |
+      A Stripe SECRET key (``sk_test_...``) is in the bundle. Secret
+      keys should never leave the server; this almost certainly came
+      from an LLM that pasted both the publishable + secret examples.
+
+  - id: ai-fake-credit-card
+    target: rendered
+    category: mock_data
+    severity: medium
+    confidence: 0.90
+    title: 'Stripe test credit card in rendered text'
+    # The canonical Stripe test PAN (4242 4242 4242 4242) and a few
+    # other common test PANs. We deliberately match the spaced form
+    # too because LLM-generated demo UIs often render it for users.
+    pattern: '4242[\s-]?4242[\s-]?4242[\s-]?4242'
+    description: |
+      The page renders the canonical Stripe test card number
+      (4242 4242 4242 4242). Production apps must not display test
+      PANs; this is a common LLM-generated demo pattern.
+
+  - id: ai-lorem-ipsum-block
+    target: rendered
+    category: placeholder
+    severity: medium
+    confidence: 0.95
+    title: 'Lorem ipsum block in production'
+    # Match a substantial Lorem block (>= 30 chars from the canonical
+    # phrase) rather than a single word, so we don't catch unrelated
+    # uses of "lorem" elsewhere.
+    pattern: 'Lorem ipsum dolor sit amet[, ]+consectetur'
+    description: |
+      The route renders a Lorem ipsum block. LLM-generated apps often
+      ship placeholder copy when the model could not invent real text.
+      Replace the block with real content or hide the page until ready.
+
+  - id: ai-john-doe-email
+    target: rendered
+    category: mock_data
+    severity: low
+    confidence: 0.80
+    title: 'John Doe demo email'
+    pattern: '\bjohn\.doe@example\.com\b'
+    description: |
+      ``john.doe@example.com`` is the canonical LLM-generated demo
+      email. Production apps should display real users' addresses or
+      a neutral placeholder.
+
+  - id: ai-demo-credentials-pair
+    target: rendered
+    category: secrets
+    severity: high
+    confidence: 0.85
+    title: 'Demo credentials in rendered text'
+    # Match "demo/demo" or "admin/admin" patterns that show up in
+    # LLM-built login pages "for testing".
+    pattern: '\b(?:demo|admin|test)\s*[/:]\s*(?:demo|admin|test|password)\b'
+    description: |
+      The page shows ``demo/demo``-style credentials in rendered text.
+      LLM-generated apps frequently ship these as "test users";
+      shipping to production is an auth bypass invitation.
+
+  - id: ai-localhost-api-url
+    target: source
+    category: configuration
+    severity: high
+    confidence: 0.85
+    title: 'Localhost API URL in production bundle'
+    pattern: 'https?://(?:localhost|127\.0\.0\.1):[0-9]{2,5}/[A-Za-z0-9_/.-]*'
+    description: |
+      The bundle hardcodes a localhost API URL. LLM-generated apps
+      often emit ``http://localhost:3001/api`` as the default fetch
+      target; the request will fail in production.
+
+  - id: ai-555-phone-number
+    target: rendered
+    category: mock_data
+    severity: low
+    confidence: 0.85
+    title: '555 placeholder phone number'
+    # Matches +1 (555) 555-5555 / 555-555-5555 / (555) 555 5555.
+    pattern: '\(?\s*555\s*\)?[\s.-]*555[\s.-]*[0-9]{4}\b'
+    description: |
+      The page renders a ``(555) 555-5555`` placeholder phone number.
+      LLM-generated demo UIs often surface 555-numbers as fake
+      contact info; replace before launch.
+
+  - id: ai-tailwind-class-soup
+    target: source
+    category: code_smell
+    severity: info
+    confidence: 0.60
+    title: 'Very long Tailwind class string'
+    # 12+ consecutive Tailwind-style utility tokens (lowercase, possibly
+    # with `:` for responsive variants) inside a className. LLM models
+    # over-emit utility classes; this is a soft signal, not a defect on
+    # its own.
+    pattern: 'className\s*=\s*"(?:[a-z][a-z0-9:_-]*\s+){12,}'
+    description: |
+      A ``className`` carries 12+ Tailwind utility tokens. This is a
+      common LLM-generated style; while not a bug per se, it often
+      hides redundant or contradictory utilities.
+
+  - id: ai-todo-implement-comment
+    target: source
+    category: placeholder
+    severity: medium
+    confidence: 0.80
+    title: 'Unimplemented TODO in source'
+    # Catches `// TODO: implement` / `# TODO: implement this` / similar.
+    pattern: '(?://|#|<!--|\*)\s*TODO:?\s+(?:implement|wire|add|finish|fix)'
+    description: |
+      The source carries a TODO indicating the function or wiring is
+      unfinished. LLM assistants frequently leave these markers when
+      they stub a function; shipping them risks an unimplemented path
+      reaching production users.
+
+  - id: ai-watermark-comment
+    target: source
+    category: provenance
+    severity: info
+    confidence: 0.90
+    title: 'AI-tool watermark in source'
+    # Common headers LLM tooling injects. Low severity — not a defect,
+    # just a signal that this file was AI-generated.
+    pattern: '(?://|#|<!--|\*)\s*(?:Generated by|Generated using|Created with)\s+(?:Claude|ChatGPT|GPT-4|Copilot|Cursor|Lovable|Bolt|v0|Codeium)'
+    description: |
+      The source carries a watermark from an AI coding tool. This is
+      not a defect; it's a provenance signal recorded for the
+      "AI-built app" use case so the report can scope its findings.
+
+  - id: ai-fake-api-example-route
+    target: source
+    category: configuration
+    severity: high
+    confidence: 0.80
+    title: 'Hardcoded example.com API URL'
+    # Matches /api.example.com/* and api.example.org. Common LLM
+    # default when the model couldn't infer the real backend host.
+    pattern: 'https?://(?:www\.)?api\.example\.(?:com|org|net)/'
+    description: |
+      The bundle calls ``api.example.com``. LLM-generated apps default
+      to example.com when the prompt omits the backend host; the call
+      will fail in production.

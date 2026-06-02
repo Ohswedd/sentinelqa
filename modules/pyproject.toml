@@ -1,6 +1,6 @@
 [project]
 name = "sentinelqa-modules"
-version = "1.8.0"
+version = "1.9.0"
 description = "SentinelQA concrete audit modules — accessibility, api, chaos, functional, llm-audit, performance, security, visual. the documentation"
 readme = "README.md"
 requires-python = ">=3.11"

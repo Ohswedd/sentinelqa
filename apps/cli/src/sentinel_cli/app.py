@@ -40,7 +40,9 @@ from sentinel_cli.commands import (
     perf_cmd,
     plan_cmd,
     plugins_cmd,
+    record_cmd,
     report_cmd,
+    rum_cmd,
     security_cmd,
     serve_cmd,
     stubs,
@@ -370,6 +372,27 @@ def build_app() -> typer.Typer:
             "for known CVEs, checks lockfile freshness, scans "
             "postinstall hooks, scans a configured container image, "
             "and audits SPDX licenses."
+        ),
+    )
+    cli.add_typer(
+        record_cmd.record_app,
+        name="record",
+        help=(
+            "Recording-driven test generation (Phase 39). "
+            "`record import <trace.json>` parses a JSON recording "
+            "(e.g. saved Playwright codegen) and emits a "
+            "SentinelQA-tagged Playwright spec under the chosen output dir."
+        ),
+    )
+    cli.add_typer(
+        rum_cmd.rum_app,
+        name="rum",
+        help=(
+            "Real-User Monitoring (Phase 39, ADR-0049). `rum ingest "
+            "<file.jsonl>` reads a stream from the @sentinelqa/rum "
+            "browser SDK and writes a synthetic run under "
+            "`.sentinel/runs/` so reporter / SDK / MCP consume it "
+            "identically to a synthetic Playwright run."
         ),
     )
     cli.add_typer(

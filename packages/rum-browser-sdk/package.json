@@ -1,0 +1,47 @@
+{
+  "name": "@sentinelqa/rum",
+  "version": "1.9.0",
+  "description": "Real-User Monitoring SDK that emits SentinelQA-compatible JSONL events from the browser. Zero deps, ESM, drops into any frontend.",
+  "license": "Apache-2.0",
+  "author": "ohswedd",
+  "type": "module",
+  "main": "./src/index.ts",
+  "module": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "import": "./src/index.ts",
+      "types": "./src/index.ts"
+    }
+  },
+  "files": [
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "echo 'no unit tests yet — SDK is browser code; covered by engine/rum ingest tests' && exit 0"
+  },
+  "devDependencies": {
+    "typescript": "5.7.2"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "keywords": [
+    "sentinelqa",
+    "rum",
+    "real-user-monitoring",
+    "telemetry",
+    "observability"
+  ],
+  "homepage": "https://github.com/Ohswedd/sentinelqa",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ohswedd/sentinelqa.git",
+    "directory": "packages/rum-browser-sdk"
+  }
+}

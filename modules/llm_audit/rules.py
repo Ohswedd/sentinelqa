@@ -256,6 +256,23 @@ LLM_UNHANDLED_PROMISE = LlmAuditRule(
 )
 
 
+LLM_AI_APP_FINGERPRINT = LlmAuditRule(
+    id="LLM-AI-FINGERPRINT",
+    category="llm_audit_ai_fingerprint",
+    title="AI-generated app fingerprint matched",
+    severity="medium",
+    confidence=0.85,
+    remediation=(
+        "Review the matched pattern: AI assistants commonly emit demo "
+        "credentials, placeholder copy, and provider-supplied test "
+        "keys (Stripe, etc.) when scaffolding an app. Replace the "
+        "matched value with real production input or remove it before "
+        "release. See `modules/llm_audit/data/ai-app-fingerprints.yaml` "
+        "for the per-fingerprint guidance."
+    ),
+)
+
+
 RULES: tuple[LlmAuditRule, ...] = (
     LLM_DEAD_BTN,
     LLM_FAKE_ROUTE,
@@ -273,6 +290,7 @@ RULES: tuple[LlmAuditRule, ...] = (
     LLM_PLACEHOLDER_TEXT,
     LLM_CONSOLE_ERROR_IGNORED,
     LLM_UNHANDLED_PROMISE,
+    LLM_AI_APP_FINGERPRINT,
 )
 
 
@@ -305,4 +323,5 @@ __all__ = [
     "LLM_PLACEHOLDER_TEXT",
     "LLM_CONSOLE_ERROR_IGNORED",
     "LLM_UNHANDLED_PROMISE",
+    "LLM_AI_APP_FINGERPRINT",
 ]
